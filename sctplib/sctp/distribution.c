@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.22 2004/05/03 10:29:30 ajung Exp $
+ *  $Id: distribution.c,v 1.23 2004/07/09 07:12:37 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -3738,12 +3738,13 @@ void mdi_communicationUpNotif(unsigned short status)
                                                                 currentAssociation->supportsPRSCTP,
                                                                 currentAssociation->ulp_dataptr);
             LEAVE_CALLBACK("communicationUpNotif");
-
-            for (pathNum = 0; pathNum < currentAssociation->noOfNetworks; pathNum++) {
-                if (pm_pathConfirmed(pathNum) == TRUE) {
-                    mdi_networkStatusChangeNotif(pathNum, PM_PATH_CONFIRMED);
-                }
-            }
+	    if (currentAssociation != NULL) {
+		for (pathNum = 0; pathNum < currentAssociation->noOfNetworks; pathNum++) {
+		    if (pm_pathConfirmed(pathNum) == TRUE) {
+			mdi_networkStatusChangeNotif(pathNum, PM_PATH_CONFIRMED);
+		    }
+		}
+	    }
         } else {
             currentAssociation->ulp_dataptr = NULL;
         }
