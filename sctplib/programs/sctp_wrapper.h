@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.h,v 1.6 2004/11/21 14:06:33 tuexen Exp $
+ *  $Id: sctp_wrapper.h,v 1.7 2004/12/24 14:25:13 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -114,6 +114,9 @@ int
 SCTP_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length);
 
 int SCTP_unregisterStdinCallback();
+
+int SCTP_changeHeartBeat(unsigned int associationID,
+                         short path_id, int heartbeatON, unsigned int timeIntervall);
 
 #ifndef WIN32
 int

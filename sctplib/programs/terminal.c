@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.13 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: terminal.c,v 1.14 2004/12/24 14:25:13 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -74,6 +74,9 @@ static int useAbort = 0;
 static int sendOOTBAborts = 1;
 static unsigned int myRwnd = 0;
 static int myRwndSpecified = 0;
+static int HBInterval = 30000;
+static int rto_min = 1000;
+static int rto_max = 60000;
 static int timeToLive     = SCTP_INFINITE_LIFETIME;
 static short numberOutStreams = 0;
 static short currentStream = 0;
@@ -120,6 +123,9 @@ void printUsage(void)
     printf("options:\n");
     printf("-a       use abort\n");
     printf("-c       use all streams when sending (round-robin)\n");
+    printf("-h       Heartbeat Interval in ms (default = 30000)\n");
+    printf("-m       RTO.min in ms (default = 1000)\n");
+    printf("-M       RTO.max in ms (default = 60000)\n");
     printf("-l       local port\n");   
     printf("-q       type of service\n");
     printf("-r       remote port (default echoport = %u)\n", ECHO_PORT);
@@ -139,7 +145,7 @@ void getArgs(int argc, char **argv)
 
      for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
-            switch (argv[i][1])	
+            switch (argv[i][1]) 
       {
         case 'a':
             useAbort = 1;
@@ -148,30 +154,42 @@ void getArgs(int argc, char **argv)
             rotateStreams = 1;
             break;
         case 'd':
-			opt=argv[++i];
+            opt=argv[++i];
             if (strlen(opt) < SCTP_MAX_IP_LEN) {
                 strcpy((char *)destinationAddress, opt);
             }
             hasDestinationAddress = 1;
             break;
+        case 'h':
+            opt=argv[++i];
+            HBInterval = atoi(opt);
+            break;
         case 'l':
-			opt=argv[++i];
+            opt=argv[++i];
             localPort = atoi(opt);
             break;
+        case 'm':
+            opt=argv[++i];
+            rto_min = atoi(opt);
+            break;
+        case 'M':
+            opt=argv[++i];
+            rto_max = atoi(opt);
+            break;
         case 'q':
-			opt=argv[++i];
+            opt=argv[++i];
             tosByte = (unsigned char) atoi(opt);
             break;
         case 'r':
-			opt=argv[++i];
+            opt=argv[++i];
             remotePort = atoi(opt);
             break;
         case 's':
-			if (i+1 >= argc) {
+            if (i+1 >= argc) {
                         printUsage();
-				        exit(0);
-				    }
-			opt = argv[++i];
+                        exit(0);
+                    }
+            opt = argv[++i];
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(opt) < SCTP_MAX_IP_LEN  )) {
                 strcpy((char *)localAddressList[noOfLocalAddresses], opt);
@@ -179,7 +197,7 @@ void getArgs(int argc, char **argv)
             }
             break;
         case 't':
-			opt=argv[++i];
+            opt=argv[++i];
             timeToLive = atoi(opt);
             break;
         case 'i':
@@ -193,7 +211,7 @@ void getArgs(int argc, char **argv)
             vverbose = 1;
             break;
         case 'w':
-			opt=argv[++i];
+            opt=argv[++i];
             myRwnd = atoi(opt);
             myRwndSpecified = 1;
             break;
@@ -305,7 +323,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{	
+{   
     SCTP_PathStatus pathStatus;
     unsigned int i;
     
@@ -317,6 +335,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
         for (i=0; i < noOfDestinations; i++) {
             SCTP_getPathStatus(assocID, (unsigned short)i, &pathStatus);
             fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
+            SCTP_changeHeartBeat(assocID, (short)i, 1, HBInterval);
         }
     }
     numberOutStreams = noOfOutStreams;
@@ -324,7 +343,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{	
+{   
     unsigned char buffer[SCTP_MAXIMUM_DATA_LENGTH];
     unsigned int bufferLength;
     unsigned short streamID, streamSN;
@@ -404,23 +423,23 @@ void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
 void
 stdinCallback(char *readBuffer, int length)
 {
-	if (length == 0) {
-		SCTP_unregisterStdinCallback();
+    if (length == 0) {
+        SCTP_unregisterStdinCallback();
         if (useAbort) {
             SCTP_abort(associationID);
         } else {
             SCTP_shutdown(associationID);
         }
     }
-	if (length > 0) {
-		SCTP_send(associationID,
+    if (length > 0) {
+        SCTP_send(associationID,
                   currentStream,
                   readBuffer, length,
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
-                  timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);	
-	}
-	if (rotateStreams) currentStream = (currentStream + 1)%numberOutStreams;	
+                  timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
+    }
+    if (rotateStreams) currentStream = (currentStream + 1)%numberOutStreams;
 }
 
 
@@ -429,7 +448,7 @@ int main(int argc, char **argv)
     SCTP_ulpCallbacks terminalUlp;
     SCTP_InstanceParameters instanceParameters;
     SCTP_LibraryParameters params;
-	char buffer[2000];
+    char buffer[2000];
 
     /* initialize the terminal_ulp variable */
     terminalUlp.dataArriveNotif           = &dataArriveNotif;
@@ -461,11 +480,14 @@ int main(int argc, char **argv)
     /* set the TOS byte */
     SCTP_getAssocDefaults(sctpInstance, &instanceParameters);
     instanceParameters.ipTos               = tosByte;
+    instanceParameters.rtoMin              = rto_min;
+    instanceParameters.rtoMax              = rto_max;
+    instanceParameters.rtoInitial          = rto_min;
     if (myRwndSpecified)
       instanceParameters.myRwnd = myRwnd;
     SCTP_setAssocDefaults(sctpInstance, &instanceParameters);
 
-	SCTP_registerStdinCallback(&stdinCallback, buffer, sizeof(buffer));
+    SCTP_registerStdinCallback(&stdinCallback, buffer, sizeof(buffer));
     associationID=SCTP_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
     
     /* run the event handler forever */

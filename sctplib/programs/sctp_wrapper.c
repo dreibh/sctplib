@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.c,v 1.6 2004/11/19 21:07:49 tuexen Exp $
+ *  $Id: sctp_wrapper.c,v 1.7 2004/12/24 14:25:13 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -446,6 +446,17 @@ SCTP_associate(unsigned short SCTP_InstanceName,
 }
 
 
+int SCTP_changeHeartBeat(unsigned int associationID,
+                         short path_id, int heartbeatON, unsigned int timeInterval)
+{
+    int result;
+    
+    if ((result = sctp_changeHeartBeat(associationID, path_id, heartbeatON, timeInterval)) < 0) {
+        fprintf(stderr, "sctp_changeHeartBeat: an error occured.\n");
+        fflush(stderr);        
+    }
+    return result;        
+}
 
 int
 SCTP_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
