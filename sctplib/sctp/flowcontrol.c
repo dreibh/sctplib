@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.8 2003/10/06 09:44:56 ajung Exp $
+ * $Id: flowcontrol.c,v 1.9 2003/10/28 18:28:47 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -49,10 +49,6 @@
 
 #include <stdio.h>
 #include <glib.h>
-
-/* here we should not have to worry about wrap */
-#define max(x,y)            ((x)>(y))?(x):(y)
-#define min(x,y)            ((x)<(y))?(x):(y)
 
 /* #define Current_event_log_ 6 */
 /**
@@ -333,7 +329,8 @@ void fc_shutdown()
 void fc_stop_timers(void)
 {
     fc_data *fc;
-    int count, result;
+    unsigned int count;
+    int result;
 
     fc = (fc_data *) mdi_readFlowControl();
     event_log(INTERNAL_EVENT_0, "fc_stop_timers()... ");
@@ -657,7 +654,8 @@ gboolean fc_send_okay(fc_data* fc,
  */
 int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doInitialRetransmit)
 {
-    int result, len, obpa;
+    int result;
+    unsigned int len, obpa;
     fc_data *fc;
     chunk_data *dat;
     unsigned int total_size, destination, oldDestination, peer_rwnd, rto_time;
@@ -858,8 +856,9 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
 void fc_check_t3(unsigned int ad_idx, boolean all_acked, boolean new_acked)
 {
     fc_data *fc = NULL;
-    int result,count, obpa = 0;
-
+    int result, obpa = 0;
+    unsigned int count;
+    
     fc = (fc_data *) mdi_readFlowControl();
     if (!fc) {
         error_log(ERROR_MAJOR, "fc_data instance not set !");
@@ -1046,7 +1045,8 @@ int fc_adjustCounters(fc_data *fc, unsigned int addressIndex,
                       unsigned int number_of_addresses)
 
 {
-    int count, diff;
+    unsigned int count;
+    int diff;
     struct timeval last_update, now;
     unsigned int rtt_time;
 
@@ -1439,7 +1439,7 @@ int fc_readCWND(short path_id)
         return -1;
     }
 
-    if (path_id >= fc->number_of_addresses || path_id < 0) {
+    if ((unsigned int)path_id >= fc->number_of_addresses || path_id < 0) {
         error_logi(ERROR_MAJOR, "Association has only %u addresses !!! ", fc->number_of_addresses);
         return -1;
     }
@@ -1462,7 +1462,7 @@ int fc_readCWND2(short path_id)
         return -1;
     }
 
-    if (path_id >= fc->number_of_addresses || path_id < 0) {
+    if ((unsigned int)path_id >= fc->number_of_addresses || path_id < 0) {
         error_logi(ERROR_MAJOR, "Association has only %u addresses !!! ", fc->number_of_addresses);
         return -1;
     }
@@ -1483,7 +1483,7 @@ int fc_readSsthresh(short path_id)
         error_log(ERROR_MAJOR, "flow control instance not set !");
         return -1;
     }
-    if (path_id >= fc->number_of_addresses || path_id < 0) {
+    if ((unsigned int)path_id >= fc->number_of_addresses || path_id < 0) {
         error_logi(ERROR_MAJOR, "Association has only %u addresses !!! ", fc->number_of_addresses);
         return -1;
     }
@@ -1504,7 +1504,7 @@ unsigned int fc_readMTU(short path_id)
         error_log(ERROR_MAJOR, "flow control instance not set !");
         return 0;
     }
-    if (path_id >= fc->number_of_addresses || path_id < 0) {
+    if ((unsigned int)path_id >= fc->number_of_addresses || path_id < 0) {
         error_logi(ERROR_MAJOR, "Association has only %u addresses !!! ", fc->number_of_addresses);
         return 0;
     }
@@ -1525,7 +1525,7 @@ int fc_readPBA(short path_id)
         error_log(ERROR_MAJOR, "flow control instance not set !");
         return -1;
     }
-    if (path_id >= fc->number_of_addresses || path_id < 0) {
+    if ((unsigned int)path_id >= fc->number_of_addresses || path_id < 0) {
         error_logi(ERROR_MAJOR, "Association has only %u addresses !!! ", fc->number_of_addresses);
         return -1;
     }

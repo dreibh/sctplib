@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.4 2003/09/25 10:52:46 ajung Exp $
+ *  $Id: globals.h,v 1.5 2003/10/28 18:28:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -174,8 +174,12 @@ typedef struct chunk_data_struct
     gpointer context;
 } chunk_data;
 
-
-
+#ifndef max
+#define max(x,y)            ((x)>(y))?(x):(y)
+#endif
+#ifndef min
+#define min(x,y)            ((x)<(y))?(x):(y)
+#endif
 
 #define event_log(x,y)        if (Current_event_log_ >= x) event_log1((x), __FILE__, (y))
 #define event_logi(x,y,z)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z))

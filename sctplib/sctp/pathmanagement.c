@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.5 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: pathmanagement.c,v 1.6 2003/10/28 18:28:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -51,9 +51,6 @@
 #define RTO_ALPHA            0.125
 #define RTO_BETA              0.25
 
-
-#define max(x,y)            (((x)>(y))?(x):(y))
-#define min(x,y)            (((x)<(y))?(x):(y))
 
 /*----------------------- Typedefs ------------------------------------------------------------*/
 
@@ -195,7 +192,7 @@ static gboolean handleChunksRetransmitted(short pathID)
         return FALSE;
     }
 
-    if (pmData->peerRetranscount >= sci_getMaxAssocRetransmissions()) {
+    if (pmData->peerRetranscount >= (unsigned int)sci_getMaxAssocRetransmissions()) {
         mdi_deleteCurrentAssociation();
         mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
         mdi_clearAssociationData();
@@ -204,7 +201,7 @@ static gboolean handleChunksRetransmitted(short pathID)
         return TRUE;
     }
 
-    if (pmData->pathData[pathID].pathRetranscount >= pmData->maxPathRetransmissions) {
+    if (pmData->pathData[pathID].pathRetranscount >= (unsigned int)pmData->maxPathRetransmissions) {
         /* Set state of this path to inactive and notify change of state to ULP */
         pmData->pathData[pathID].state = PM_INACTIVE;
         event_logi(INTERNAL_EVENT_0, "handleChunksRetransmitted: path %d to INACTIVE ", pathID);
@@ -261,20 +258,20 @@ static void handleChunksAcked(short pathID, unsigned int newRTT)
         if (pmData->pathData[pathID].firstRTO) {
             pmData->pathData[pathID].srtt = newRTT;
             pmData->pathData[pathID].rttvar = max(newRTT / 2, GRANULARITY);;
-            pmData->pathData[pathID].rto = max(min(newRTT * 3, pmData->rto_max), pmData->rto_min);
+            pmData->pathData[pathID].rto = max(min(newRTT * 3, pmData->rto_max), (unsigned int)pmData->rto_min);
             pmData->pathData[pathID].firstRTO = FALSE;
         } else {
-            pmData->pathData[pathID].rttvar =
+            pmData->pathData[pathID].rttvar = (unsigned int)
                 (1. - RTO_BETA) * pmData->pathData[pathID].rttvar +
                 RTO_BETA * abs(pmData->pathData[pathID].srtt - newRTT);
-            pmData->pathData[pathID].rttvar = max(pmData->pathData[pathID].rttvar, GRANULARITY);
+            pmData->pathData[pathID].rttvar = max((unsigned int)pmData->pathData[pathID].rttvar, GRANULARITY);
 
-            pmData->pathData[pathID].srtt =
+            pmData->pathData[pathID].srtt = (unsigned int)
                 (1. - RTO_ALPHA) * pmData->pathData[pathID].srtt + RTO_ALPHA * newRTT;
 
             pmData->pathData[pathID].rto = pmData->pathData[pathID].srtt +
                 4 * pmData->pathData[pathID].rttvar;
-            pmData->pathData[pathID].rto = max(min(pmData->pathData[pathID].rto, pmData->rto_max), pmData->rto_min);
+            pmData->pathData[pathID].rto = max(min((unsigned int)pmData->pathData[pathID].rto, (unsigned int)pmData->rto_max), (unsigned int)pmData->rto_min);
         }
         event_logiii(INTERNAL_EVENT_0,
                      "handleChunksAcked: RTO update done: RTTVAR: %u msecs, SRTT: %u msecs, RTO: %u msecs",
@@ -342,7 +339,7 @@ void pm_heartbeatTimer(TimerID timerID, void *associationIDvoid, void *pathIDvoi
         mdi_clearAssociationData();
         return;
     }
-    if (!(pathID >= 0 && pathID < pmData->numberOfPaths)) {
+    if (!(pathID >= 0 && pathID < (unsigned int)pmData->numberOfPaths)) {
         error_logi(ERROR_MAJOR, "pm_heartbeatTimer: invalid path ID %d", pathID);
         mdi_clearAssociationData();
         return;
@@ -365,7 +362,7 @@ void pm_heartbeatTimer(TimerID timerID, void *associationIDvoid, void *pathIDvoi
         if (!removed_association) {
             if (!pmData->pathData[pathID].timerBackoff) {
                 /* Timer backoff */
-                pmData->pathData[pathID].rto = min(2 * pmData->pathData[pathID].rto, pmData->rto_max);
+                pmData->pathData[pathID].rto = min(2 * pmData->pathData[pathID].rto, (unsigned int)pmData->rto_max);
                 event_logii(VERBOSE, "Backing off timer : Path %d, RTO= %u", pathID,pmData->pathData[pathID].rto);
             }
         }
@@ -549,10 +546,10 @@ void pm_chunksAcked(short pathID, unsigned int newRTT)
         return;
     }
 
-    if (newRTT > pmData->rto_max)
+    if (newRTT > (unsigned int)pmData->rto_max)
         error_logi(ERROR_MINOR, "pm_chunksAcked: Warning: RTO > RTO_MAX: %d", newRTT);
 
-    newRTT = min(newRTT, pmData->rto_max);
+    newRTT = min(newRTT, (unsigned int)pmData->rto_max);
 
     if (pmData->pathData[pathID].state == PM_ACTIVE) {
         /* Update RTO only if is the first data chunk acknowldged in this RTT intervall. */
@@ -673,7 +670,7 @@ void pm_rto_backoff(short pathID)
 
     if (pmData->pathData[pathID].state == PM_ACTIVE) {
         /* Backoff timer anyway ! */
-        pmData->pathData[pathID].rto = min(2 * pmData->pathData[pathID].rto, pmData->rto_max);
+        pmData->pathData[pathID].rto = min(2 * pmData->pathData[pathID].rto, (unsigned int)pmData->rto_max);
 
         event_logii(INTERNAL_EVENT_0,
                         "pm_rto_backoff called for path %u: new RTO =%d",

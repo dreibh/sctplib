@@ -1,5 +1,5 @@
 /*
- *  $Id: auxiliary.c,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: auxiliary.c,v 1.3 2003/10/28 18:28:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -224,10 +224,10 @@ unsigned long generate_crc32c(unsigned char *buffer, int length)
     }
     crc32 =~ crc32;
     /* do the swap */	
-    byte0 = crc32 & 0xff;
-    byte1 = (crc32>>8) & 0xff;
-    byte2 = (crc32>>16) & 0xff;
-    byte3 = (crc32>>24) & 0xff;
+    byte0 = (unsigned char) crc32 & 0xff;
+    byte1 = (unsigned char) (crc32>>8) & 0xff;
+    byte2 = (unsigned char) (crc32>>16) & 0xff;
+    byte3 = (unsigned char) (crc32>>24) & 0xff;
     swap = byte0; byte0 = byte3; byte3 = swap;
     swap = byte1; byte1 = byte2; byte2 = swap;
     crc32 = ((byte3 << 24)|(byte2 << 16)|(byte1 << 8)| byte0);

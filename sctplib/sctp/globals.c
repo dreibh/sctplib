@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.c,v 1.3 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: globals.c,v 1.4 2003/10/28 18:28:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -58,6 +58,10 @@
 #include <unistd.h>
 #endif
 
+#ifdef WIN32
+#include <time.h>
+#include <process.h>
+#endif
 
 
 boolean globalTrace;

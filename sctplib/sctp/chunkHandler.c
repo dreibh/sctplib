@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.5 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.6 2003/10/28 18:28:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -71,6 +71,14 @@
 
 
 #define MAX_CHUNKS 8
+
+#ifndef IN_EXPERIMENTAL
+#define	IN_EXPERIMENTAL(a)	((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#endif
+
+#ifndef IN_BADCLASS
+#define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
+#endif
 
 /* Other constants */
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.11 2003/10/23 16:48:11 tuexen Exp $
+ *  $Id: distribution.c,v 1.12 2003/10/28 18:28:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -74,13 +74,25 @@
 
 #include  <sys/types.h>
 #include  <errno.h>
+#ifdef WIN32
+#include <winsock2.h>
+#else
 #include  <arpa/inet.h>         /* for inet_ntoa() under both SOLARIS/LINUX */
+#endif
+
+#ifndef IN_EXPERIMENTAL
+#define	IN_EXPERIMENTAL(a)	((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#endif
+
+#ifndef IN_BADCLASS
+#define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
+#endif
 
 /*------------------------ Default Definitions --------------------------------------------------*/
 
 static int      myRWND                      = 0x7FFF;
 static union    sockunion *myAddressList    = NULL;
-static int      myNumberOfAddresses         = 0;
+static unsigned int myNumberOfAddresses     = 0;
 static gboolean sendAbortForOOTB            = TRUE;
 static int      checksumAlgorithm           = SCTP_CHECKSUM_ALGORITHM_CRC32C;
 static gboolean librarySupportsPRSCTP         = TRUE;
@@ -626,7 +638,7 @@ static unsigned short seizePort(void)
  * releasePort frees a previously used port.
  * @param portSeized port that is to be freed.
  */
-static void releasePort(unsigned char portSeized)
+static void releasePort(unsigned short portSeized)
 {
     if (portsSeized[portSeized])
         error_log(ERROR_MINOR, "Warning: release of port that is not seized");
@@ -683,7 +695,7 @@ static void mdi_removeAssociationData(Association * assoc)
  */
 boolean mdi_destination_address_okay(union sockunion * dest_addr)
 {
-    int i;
+    unsigned int i;
     gboolean found = FALSE;
     gboolean any_set = FALSE;
 
@@ -796,7 +808,8 @@ mdi_receiveMessage(gint socket_fd,
     SCTP_vlparam_header* vlptr = NULL;
 
     union sockunion alternateFromAddress;
-    unsigned int i=0, len, state, chunkArray = 0;
+    int i = 0;
+    unsigned int len, state, chunkArray = 0;
     boolean sourceAddressExists = FALSE;
     boolean sendAbort = FALSE;
     boolean discard = FALSE;
@@ -1543,7 +1556,7 @@ TRUE;                }
 gboolean mdi_checkForCorrectAddress(union sockunion* su)
 {
     gboolean found = FALSE;
-    int counter;
+    unsigned int counter;
 
     /* make sure, if IN(6)ADDR_ANY is specified, it is the only specified address */
     switch(sockunion_family(su)) {
@@ -1595,7 +1608,8 @@ sctp_registerInstance(unsigned short port,
                            SCTP_ulpCallbacks ULPcallbackFunctions)
 {
 
-    int adl_rscb_code, i;
+    unsigned int i;
+    int adl_rscb_code;
     union sockunion su;
     gboolean with_ipv4 = FALSE;
     unsigned short result;
@@ -4563,7 +4577,8 @@ mdi_newAssociation(void*  sInstance,
                    union sockunion *destinationAddressList)
 {
     SCTP_instance*  instance = NULL;
-    int ii, result;
+    unsigned int ii;
+    int result;
 
     if (sInstance == NULL) {
         if (sctpInstance == NULL) {
