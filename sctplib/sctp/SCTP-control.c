@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.2 2003/06/01 19:44:55 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.3 2003/06/02 19:52:41 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1707,24 +1707,23 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
         bu_sendAllChunks(&lastFromPath);
 		bu_unlock_sender(&lastFromPath);
         ch_deleteChunk(abortCID);
-        ch_forgetChunk(shutdownCID);
         /* delete all data of this association */
         mdi_deleteCurrentAssociation();
-
         removed = TRUE;
-
-
         return_state = STATE_STOP_PARSING_REMOVED;
         break;
 
     case COOKIE_WAIT:
     case COOKIE_ECHOED:
     case SHUTDOWNPENDING:
+        event_logi(EXTERNAL_EVENT, "event: scr_shutdown in state %2u -> discarding !", state);
+        ch_forgetChunk(shutdownCID);
+        break;
+
     case SHUTDOWNRECEIVED:
     case SHUTDOWNACKSENT:
-        event_logi(EXTERNAL_EVENT, "event: scr_shutdown in state %2u -> discarding !", state);
-        /* stop init timer */
-        ch_forgetChunk(shutdownCID);
+        event_log(EXTERNAL_EVENT, "scr_shutdown in state SHUTDOWN_RECEIVED/SHUTDOWN_ACK_SENT -> acking CTSNA !");
+        rtx_rcv_shutdown_ctsna(ch_cummulativeTSNacked(shutdownCID));
         break;
 
     case ESTABLISHED:
@@ -1747,7 +1746,6 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
             bu_put_Ctrl_Chunk(ch_chunkString(shutdownAckCID),&lastFromPath);
             bu_sendAllChunks(&lastFromPath);
             ch_deleteChunk(shutdownAckCID);
-            ch_forgetChunk(shutdownCID);
             if (localData->initTimer != 0) sctp_stopTimer(localData->initTimer);
 
             localData->initTimer =
@@ -1776,7 +1774,6 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
             bu_put_Ctrl_Chunk(ch_chunkString(shutdownAckCID),&lastFromPath);
             bu_sendAllChunks(&lastFromPath);
             ch_deleteChunk(shutdownAckCID);
-            ch_forgetChunk(shutdownCID);
             if (localData->initTimer != 0) sctp_stopTimer(localData->initTimer);
             localData->initTimer =
                 adl_startTimer(localData->initTimerDuration, &sci_timer_expired,TIMER_TYPE_SHUTDOWN,
@@ -1796,6 +1793,7 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
         event_logi(EXTERNAL_EVENT_X, "scr_shutdown in state %02d: unexpected event", state);
         break;
     }
+    ch_forgetChunk(shutdownCID);
     if (sendNotification) {
         mdi_peerShutdownReceivedNotif();
     }
