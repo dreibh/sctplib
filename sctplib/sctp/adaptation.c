@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.10 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: adaptation.c,v 1.11 2003/10/23 16:37:53 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -488,11 +488,12 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
             if (setsockopt(sfd, IPPROTO_IP, IP_HDRINCL, (char *) &ch, sizeof(ch))< 0) {
                 error_log(ERROR_FATAL, "setsockopt: IP_HDRINCL failed !");
             }
+            /*
             ch = 1;
             if (setsockopt(sfd, IPPROTO_IP, IP_RECVDSTADDR, (char *) &ch, sizeof(ch)) < 0) {
                 error_log(ERROR_FATAL, "setsockopt: IP_RECVDSTADDR failed !");
             }
-
+            */
             error_log(ERROR_MINOR, "TODO : PATH MTU Discovery Disabled For Now !!!");
     #endif /* USE_RFC2292BIS */
 #endif
@@ -910,23 +911,18 @@ adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
 int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, union sockunion *to)
 {
     int len;
+#ifdef HAVE_IPV6
     struct msghdr rmsghdr;
     struct cmsghdr *rcmsgp;
     struct iovec  data_vec;
-
-#if defined (USE_RFC2292BIS)   
-    struct ip *iph;
-#endif    
-    
-    
-#if defined (LINUX)
-    unsigned char mbuf[(CMSG_SPACE(sizeof (struct in_pktinfo)))];
-    struct in_pktinfo *pktinfo;
-#else
-    unsigned char mbuf[(CMSG_SPACE(sizeof (struct in_addr)))];
-    struct in_addr* dptr;
 #endif
 
+#ifdef LINUX
+    struct iphdr *iph;
+#else
+    struct ip *iph;
+#endif
+    
 #ifdef HAVE_IPV6
     unsigned char m6buf[(CMSG_SPACE(sizeof (struct in6_pktinfo)))];
     struct in6_pktinfo *pkt6info;
@@ -935,49 +931,31 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
     len = -1;
     if ((dest == NULL) || (from == NULL) || (to == NULL)) return -1;
 
-    data_vec.iov_base = dest;
-    data_vec.iov_len  = maxlen;
-
     if (sfd == sctp_sfd) {
-        rcmsgp = (struct cmsghdr *)mbuf;
-        /* receive control msg */
-        rcmsgp->cmsg_level = IPPROTO_IP;
-
-#if defined (LINUX)
-        rcmsgp->cmsg_type = IP_PKTINFO;
-        rcmsgp->cmsg_len = CMSG_LEN (sizeof (struct in_pktinfo));
-        pktinfo = (struct in_pktinfo *)(CMSG_DATA(rcmsgp));
+        len = recv (sfd, dest, maxlen, 0);
+#ifdef LINUX
+        iph = (struct iphdr *)dest;
 #else
-        rcmsgp->cmsg_type = IP_RECVDSTADDR;
-        rcmsgp->cmsg_len = CMSG_LEN(sizeof(struct in_addr));
-        dptr = (struct in_addr *)(CMSG_DATA(rcmsgp));
-#endif
-        rmsghdr.msg_iov = &data_vec;
-        rmsghdr.msg_iovlen = 1;
-        rmsghdr.msg_name = (caddr_t) &from->sin;
-        rmsghdr.msg_namelen = sizeof (struct sockaddr_in);
-        rmsghdr.msg_control = (caddr_t) mbuf;
-        rmsghdr.msg_controllen = sizeof (mbuf);
-
-        len = recvmsg (sfd, &rmsghdr, 0);
-#if defined (USE_RFC2292BIS)
         iph = (struct ip *)dest;
-#endif        
-
+#endif
         to->sa.sa_family = AF_INET;
         to->sin.sin_port = htons(0);
-#if defined (LINUX)
-        to->sin.sin_addr.s_addr = pktinfo->ipi_addr.s_addr;
+#ifdef LINUX
+        to->sin.sin_addr.s_addr = iph->daddr;
 #else
-    #if defined (USE_RFC2292BIS)
-    to->sin.sin_addr.s_addr = iph->ip_dst.s_addr;
-    #else
-        to->sin.sin_addr.s_addr = dptr->s_addr;
-    #endif
+        to->sin.sin_addr.s_addr = iph->ip_dst.s_addr;
+#endif        
+        from->sa.sa_family = AF_INET;
+        from->sin.sin_port = htons(0);
+#ifdef LINUX
+        from->sin.sin_addr.s_addr = iph->saddr;
+#else
+        from->sin.sin_addr.s_addr = iph->ip_src.s_addr;
 #endif
-
     }
 #ifdef HAVE_IPV6
+    data_vec.iov_base = dest;
+    data_vec.iov_len  = maxlen;
     if (sfd == sctpv6_sfd) {
         rcmsgp = (struct cmsghdr *)m6buf;
         pkt6info = (struct in6_pktinfo *)(CMSG_DATA(rcmsgp));
@@ -1060,7 +1038,7 @@ void dispatch_event(int num_of_events)
 
     if (!poll_fds[i].revents)
         continue;
-
+        
         if (poll_fds[i].revents & POLLERR) {
             /* We must have specified this callback funtion for treating/logging the error */
             if (event_callbacks[i]->eventcb_type == EVENTCB_TYPE_USER) {
@@ -1099,8 +1077,8 @@ void dispatch_event(int num_of_events)
                 ((sctp_socketCallback)*(event_callbacks[i]->action)) (poll_fds[i].fd, rbuf, length, src_address, portnum);
 
             } else if (event_callbacks[i]->eventcb_type == EVENTCB_TYPE_SCTP) {
-
                 length = adl_receive_message(poll_fds[i].fd, rbuf, MAX_MTU_SIZE, &src, &dest);
+                
                 if(length < 0) break;
 
                 event_logiiii(VERBOSE, "SCTP-Message on socket %u , len=%d, portnum=%d, sockunion family %u",
@@ -1124,7 +1102,7 @@ void dispatch_event(int num_of_events)
                                     length, inet_ntoa(src_in->sin_addr));
                     } else {
                         length -= hlen;
-                        mdi_receiveMessage(poll_fds[i].fd, &rbuf[hlen],length, &src, &dest);
+                        mdi_receiveMessage(poll_fds[i].fd, &rbuf[hlen], length, &src, &dest);
                     }
                     break;
 #ifdef HAVE_IPV6
@@ -1134,7 +1112,7 @@ void dispatch_event(int num_of_events)
                     event_logii(VERBOSE, "IPv6/SCTP-Message from %s (%d bytes) -> activating callback",
                                    src_address, length);
 
-                    mdi_receiveMessage(poll_fds[i].fd, &rbuf[hlen],length, &src, &dest);
+                    mdi_receiveMessage(poll_fds[i].fd, &rbuf[hlen], length, &src, &dest);
                     break;
 
 #endif                          /* HAVE_IPV6 */
