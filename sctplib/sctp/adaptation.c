@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.18 2003/11/20 19:22:12 tuexen Exp $
+ *  $Id: adaptation.c,v 1.19 2003/11/20 19:42:10 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -794,7 +794,7 @@ int adl_remove_poll_fd(gint sfd)
  
 int
 adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
-                   sctp_socketCallback action, void* userData)
+                   void (*action) (void *, void *) , void* userData)
 {
      if (num_of_fds < NUM_FDS && sfd >= 0) {
         assign_poll_fd(num_of_fds, sfd, event_mask);
@@ -803,7 +803,7 @@ adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
             error_log(ERROR_FATAL, "Could not allocate memory in  register_fd_cb \n");
         event_callbacks[num_of_fds]->sfd = sfd;
         event_callbacks[num_of_fds]->eventcb_type = eventcb_type;
-        event_callbacks[num_of_fds]->action = action;
+        event_callbacks[num_of_fds]->action = (void (*) ())action;
         event_callbacks[num_of_fds]->userData = userData;
         num_of_fds++;
         return num_of_fds;
@@ -1385,7 +1385,7 @@ int adl_registerUdpCallback(unsigned char me[],
     new_sfd = adl_open_udp_socket(&my_address);
 
     if (new_sfd != -1) {
-        result = adl_register_fd_cb(new_sfd, EVENTCB_TYPE_UDP, POLLIN | POLLPRI, scf, NULL);
+        result = adl_register_fd_cb(new_sfd, EVENTCB_TYPE_UDP, POLLIN | POLLPRI, (void(*)())scf, NULL);
         event_logi(INTERNAL_EVENT_0, "Registered ULP-Callback: now %d registered callbacks !!!",result);
         return  new_sfd;
     }
@@ -1416,7 +1416,7 @@ int adl_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, shor
 {
     int result;
     /* 0 is the standard input ! */
-    result = adl_register_fd_cb(fd, EVENTCB_TYPE_USER, eventMask, sdf, userData);
+    result = adl_register_fd_cb(fd, EVENTCB_TYPE_USER, eventMask, (void (*) ())sdf, userData);
     if (result != -1) {
         event_logii(EXTERNAL_EVENT,"----------> Registered User Callback: fd=%d result=%d -------\n", fd, result);
     }
@@ -1435,7 +1435,7 @@ int adl_unregisterUserCallback(int fd)
 int
 adl_register_socket_cb(gint sfd, sctp_socketCallback scf)
 {
-    return (adl_register_fd_cb(sfd, EVENTCB_TYPE_SCTP, POLLIN | POLLPRI, scf, NULL));
+    return (adl_register_fd_cb(sfd, EVENTCB_TYPE_SCTP, POLLIN | POLLPRI, (void(*)())scf, NULL));
 }
 
 
