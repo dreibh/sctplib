@@ -1,5 +1,5 @@
 /*
- *  $Id: auxiliary.c,v 1.4 2003/11/20 13:24:10 tuexen Exp $
+ *  $Id: auxiliary.c,v 1.5 2003/11/21 14:41:21 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -41,6 +41,7 @@
 #include "auxiliary.h"
 #include "globals.h"
 #include "sctp.h"
+#include "adaptation.h"
 
 #include <stdio.h>
 
