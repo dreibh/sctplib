@@ -8,7 +8,7 @@ AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AC_CONFIG_SRCDIR(sctplib/programs/discard_server.c)
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(sctplib,1.0.2-pre4)
+AM_INIT_AUTOMAKE(sctplib,1.0.2)
 
 AC_CANONICAL_HOST
 
@@ -210,7 +210,6 @@ AC_CONFIG_FILES([Makefile
                  sctplib/Makefile
                  sctplib/docs/Makefile
                  sctplib/docs/en/Makefile
-                 sctplib/docs/html/Makefile
                  sctplib/docs/sctplib/Makefile
                  sctplib/manual/Makefile
                  sctplib/programs/Makefile
