@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.33 2005/03/07 09:35:05 dreibh Exp $
+ *  $Id: distribution.c,v 1.34 2005/03/07 14:00:20 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -287,6 +287,8 @@ static unsigned int numberOfSeizedPorts;
 
 
 /* ---------------------- Internal Function Prototypes ------------------------------------------- */
+unsigned short mdi_getUnusedInstanceName(void);
+
 
 /* ------------------------- Function Implementations --------------------------------------------- */
 
@@ -365,6 +367,34 @@ gint CompareInstanceNames(gconstpointer a, gconstpointer b)
     if ((((SCTP_instance*)a)->sctpInstanceName) < ((SCTP_instance*)b)->sctpInstanceName) return -1;
     else if ((((SCTP_instance*)a)->sctpInstanceName) > ((SCTP_instance*)b)->sctpInstanceName) return 1;
     else return 0;
+}
+
+
+/**
+  * Retrieve instance.
+  *
+  * @param instance_name Instance name.
+  * @return SCTP_instance or NULL if not found.
+  */
+SCTP_instance* retrieveInstance(unsigned short instance_name)
+{
+    SCTP_instance* instance;
+    SCTP_instance  temporary;
+    GList*         result = NULL;
+
+    event_logi(INTERNAL_EVENT_0, "retrieving instance %u from list", instance_name);
+
+    temporary.sctpInstanceName = instance_name;
+    result = g_list_find_custom(InstanceList, &temporary,&CompareInstanceNames);
+    if (result != NULL) {
+       instance = result->data;
+    }
+    else {
+       event_logi(INTERNAL_EVENT_0, "instance %u not in list", instance_name);
+       instance = NULL;
+    }
+
+    return(instance);
 }
 
 
@@ -1605,7 +1635,7 @@ gboolean mdi_checkForCorrectAddress(union sockunion* su)
  *  @param ULPcallbackFunctions   call back functions for primitives passed from sctp to ULP
  *  @return     instance name of this SCTP-instance or 0 in case of errors, or error code
  */
-short
+int
 sctp_registerInstance(unsigned short port,
                            unsigned short noOfInStreams,
                            unsigned short noOfOutStreams,
@@ -1838,9 +1868,13 @@ sctp_registerInstance(unsigned short port,
     }
 
 
-    sctpInstance->sctpInstanceName = lastSCTP_instanceName++;
-    if (sctpInstance->sctpInstanceName == 0) {
-        sctpInstance->sctpInstanceName = lastSCTP_instanceName++;
+    sctpInstance->sctpInstanceName = mdi_getUnusedInstanceName();
+    if(sctpInstance->sctpInstanceName == 0) {
+        releasePort(port);
+        sctpInstance = old_Instance;
+        currentAssociation = old_assoc;
+        LEAVE_LIBRARY("sctp_registerInstance");
+        return SCTP_OUT_OF_RESOURCES;
     }
 
     sctpInstance->ULPcallbackFunctions = ULPcallbackFunctions;
@@ -1867,7 +1901,7 @@ sctp_registerInstance(unsigned short port,
     sctpInstance = old_Instance;
     currentAssociation = old_assoc;
     LEAVE_LIBRARY("sctp_registerInstance");
-    return result;
+    return (int)result;
 
 }                               /* end: sctp_registerInstance */
 
@@ -4041,12 +4075,36 @@ unsigned int mdi_getUnusedAssocId(void)
     unsigned int newId;
 
     do {
-        newId =  nextAssocId;
-        tmp=retrieveAssociation(newId);
+        if(nextAssocId == 0) {
+           nextAssocId++;
+        }
+        newId = nextAssocId;
+        tmp   = retrieveAssociation(newId);
         nextAssocId++;
     } while (tmp != NULL);
 
     return newId;
+}
+
+unsigned short mdi_getUnusedInstanceName(void)
+{
+    SCTP_instance* tmp = NULL;
+    unsigned short newId;
+    unsigned int   i;
+
+    for(i = 0;i < 65536;i++) {
+        if(lastSCTP_instanceName == 0) {
+           lastSCTP_instanceName++;
+        }
+        newId = lastSCTP_instanceName;
+        tmp   = retrieveInstance(newId);
+        lastSCTP_instanceName++;
+        if(tmp == NULL) {
+           return(newId);
+        }
+    }
+
+    return(0);
 }
 
 /**

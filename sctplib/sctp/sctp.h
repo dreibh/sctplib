@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.13 2004/11/17 21:04:01 tuexen Exp $
+ *  $Id: sctp.h,v 1.14 2005/03/07 14:00:20 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -504,12 +504,12 @@ int sctp_initLibrary(void);
 unsigned int sctp_getLibraryVersion(void);
 
 
-short sctp_registerInstance(unsigned short localPort,
-                            unsigned short noOfInStreams,
-                            unsigned short noOfOutStreams,
-                            unsigned int   noOfLocalAddresses,
-                            unsigned char  localAddressList[SCTP_MAX_NUM_ADDRESSES][SCTP_MAX_IP_LEN],
-                            SCTP_ulpCallbacks ULPcallbackFunctions);
+int sctp_registerInstance(unsigned short localPort,
+                          unsigned short noOfInStreams,
+                          unsigned short noOfOutStreams,
+                          unsigned int   noOfLocalAddresses,
+                          unsigned char  localAddressList[SCTP_MAX_NUM_ADDRESSES][SCTP_MAX_IP_LEN],
+                          SCTP_ulpCallbacks ULPcallbackFunctions);
 
 int sctp_unregisterInstance(unsigned short instance_name);
 
@@ -670,10 +670,10 @@ int sctp_sendUdpData(int sfd, unsigned char* buf, int length,
 
 typedef void (*sctp_StdinCallback) (char*, int);
 
-int sctp_registerStdinCallback(sctp_StdinCallback sdf, 
+int sctp_registerStdinCallback(sctp_StdinCallback sdf,
                                  char* buffer, int length);
-								 
-int sctp_unregisterStdinCallback();							
+
+int sctp_unregisterStdinCallback();
 
 /**
  * this function registers a callback function for catching
