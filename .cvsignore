@@ -10,4 +10,4 @@ aclocal.m4
 config.h.in
 configure
 ltmain.sh
-
+.DS_Store
