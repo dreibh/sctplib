@@ -1,5 +1,5 @@
 /*
- *  $Id: flowcontrol.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ * $Id: flowcontrol.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -41,6 +41,11 @@
  *
  */
 
+/**
+ *  TODO:
+ *
+ */
+
 #include "flowcontrol.h"
 #include "bundling.h"
 #include "adaptation.h"
@@ -70,11 +75,11 @@ typedef struct __congestion_parameters
     ///
     unsigned int ssthresh;
     ///
-    unsigned int outstanding_bytes_per_address;
-    ///
     unsigned int mtu;
     ///
     struct timeval time_of_cwnd_adjustment;
+    ///
+    struct timeval last_send_time;
     //@}
 } cparm;
 
@@ -95,10 +100,6 @@ typedef struct flowcontrol_struct
     GList *chunk_list;
     ///
     unsigned int list_length;
-    ///
-    unsigned int last_active_address;
-    ///
-    TimerID cwnd_timer;
     /** one timer may be running per destination address */
     TimerID *T3_timer;
     /** for passing as parameter in callback functions */
@@ -114,13 +115,15 @@ typedef struct flowcontrol_struct
     ///
     boolean one_packet_inflight;
     ///
+    boolean doing_retransmission;
+    ///
     unsigned int maxQueueLen;
     //@}
 } fc_data;
 
 
 /* ---------------  Function Prototypes -----------------------------*/
-int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen);
+int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doInitialRetransmit);
 /* ---------------  Function Prototypes -----------------------------*/
 
 
@@ -169,19 +172,18 @@ void *fc_new_flowcontrol(unsigned int peer_rwnd,
         (tmp->cparams[count]).cwnd2 = 0L;
         (tmp->cparams[count]).partial_bytes_acked = 0L;
         (tmp->cparams[count]).ssthresh = peer_rwnd;
-        (tmp->cparams[count]).outstanding_bytes_per_address = 0L;
         (tmp->cparams[count]).mtu = MAX_SCTP_PDU;
-        adl_gettime( &(tmp->cparams[count].time_of_cwnd_adjustment) );
+        adl_gettime( &(tmp->cparams[count].time_of_cwnd_adjustment));
+        timerclear(&(tmp->cparams[count].last_send_time));
     }
     tmp->outstanding_bytes = 0;
     tmp->announced_rwnd = peer_rwnd;
-    tmp->cwnd_timer = 0;
-    tmp->last_active_address = pm_readPrimaryPath();
     tmp->number_of_addresses = number_of_destination_addresses;
     tmp->waiting_for_sack = FALSE;
     tmp->shutdown_received = FALSE;
     tmp->t3_retransmission_sent = FALSE;
     tmp->one_packet_inflight = FALSE;
+    tmp->doing_retransmission = FALSE;
     tmp->chunk_list = NULL;
     tmp->maxQueueLen = maxQueueLen;
     tmp->list_length = 0;
@@ -217,9 +219,9 @@ void fc_restart(guint32 new_rwnd, unsigned int iTSN, unsigned int maxQueueLen)
         (tmp->cparams[count]).cwnd2 = 0L;
         (tmp->cparams[count]).partial_bytes_acked = 0L;
         (tmp->cparams[count]).ssthresh = new_rwnd;
-        (tmp->cparams[count]).outstanding_bytes_per_address = 0L;
         (tmp->cparams[count]).mtu = MAX_SCTP_PDU;
         adl_gettime( &(tmp->cparams[count].time_of_cwnd_adjustment) );
+        timerclear(&(tmp->cparams[count].last_send_time));
     }
     tmp->outstanding_bytes = 0;
     tmp->announced_rwnd = new_rwnd;
@@ -227,6 +229,7 @@ void fc_restart(guint32 new_rwnd, unsigned int iTSN, unsigned int maxQueueLen)
     tmp->shutdown_received = FALSE;
     tmp->t3_retransmission_sent = FALSE;
     tmp->one_packet_inflight = FALSE;
+    tmp->doing_retransmission = FALSE;
     tmp->current_tsn = iTSN;
     tmp->maxQueueLen = maxQueueLen;
     rtx_set_remote_receiver_window(new_rwnd);
@@ -281,12 +284,9 @@ void fc_debug_cparams(short event_log_level)
         event_log(event_log_level,
                   "----------------------------------------------------------------------");
         event_log(event_log_level, "Debug-output for Congestion Control Parameters ! ");
-        event_logii(event_log_level,
-                    "outstanding_bytes == %u; current_tsn == %u; ",
-                    fc->outstanding_bytes, fc->current_tsn);
-        event_logii(event_log_level,
-                    "chunks queued in flowcontrol== %lu; last_active_address == %u ",
-                    fc->list_length, fc->last_active_address);
+        event_logii(event_log_level, "outstanding_bytes == %u; current_tsn == %u; ",
+                                fc->outstanding_bytes, fc->current_tsn);
+        event_logi(event_log_level, "chunks queued in flowcontrol== %lu; ", fc->list_length);
         event_logii(event_log_level,
                     "shutdown_received == %s; waiting_for_sack == %s",
                     ((fc->shutdown_received == TRUE) ? "TRUE" : "FALSE"),
@@ -295,10 +295,8 @@ void fc_debug_cparams(short event_log_level)
         event_logi(event_log_level, "t3_retransmission_sent == %s ",
                    ((fc->t3_retransmission_sent == TRUE) ? "TRUE" : "FALSE"));
         for (count = 0; count < fc->number_of_addresses; count++) {
-            event_logiiii(event_log_level,
-                          "%u   %u   %u  address=%u XYZ",
-                          (fc->cparams[count]).outstanding_bytes_per_address,
-                          (fc->cparams[count]).cwnd, (fc->cparams[count]).ssthresh,count);
+            event_logiii(event_log_level,"cwnd:%u  ssthresh:%u  address=%u XYZ",
+                         (fc->cparams[count]).cwnd, (fc->cparams[count]).ssthresh,count);
             event_logiiiii(event_log_level,
                            "%u :  mtu=%u   T3=%u   cwnd2=%u   pb_acked=%u",
                            count, (fc->cparams[count]).mtu,
@@ -331,29 +329,6 @@ void fc_shutdown()
     return;
 }
 
-int fc_decrease_outstanding_bytes(unsigned int address, unsigned int numOfBytes)
-{
-    fc_data *fc;
-    fc = (fc_data *) mdi_readFlowControl();
-    event_log(VERBOSE, "fc_adjust_outstanding_bytes()");
-    if (!fc) {
-        error_log(ERROR_MINOR, "fc_data instance not set !");
-        return -1;
-    }
-    if (fc->cparams[address].outstanding_bytes_per_address >= numOfBytes) {
-        fc->cparams[address].outstanding_bytes_per_address -= numOfBytes;
-    } else {
-        fc->cparams[address].outstanding_bytes_per_address = 0;
-    }
-
-    if (fc->outstanding_bytes >= numOfBytes) {
-        fc->outstanding_bytes -= numOfBytes;
-    } else {
-        fc->outstanding_bytes = 0;
-    }
-    return 0;
-}
-
 
 /**
  * this function stops all currently running timers of the flowcontrol module
@@ -379,77 +354,49 @@ void fc_stop_timers(void)
             event_logii(VVERBOSE, "Stopping T3-Timer(%d) = %d ", count, result);
         }
     }
-    if (fc->cwnd_timer != 0) {
-        result = sctp_stopTimer(fc->cwnd_timer);
-        fc->cwnd_timer = 0;
-        if (result == 1)
-            error_log(ERROR_MINOR, "Timer not correctly reset to 0 !");
-        event_logi(VVERBOSE, "Stopping cwnd_timer = %d ", result);
-    }
-
+    return;
 }
 
 
 /**
- *  timer controlled callback function, that reduces cwnd, if data is not sent within a certain time.
- *  As all timer callbacks, it takes three arguments, the timerID, and two pointers to relevant data
- *  @param  tid the id of the timer that has gone off
- *  @param  assoc  pointer to the association structure, where cwnd needs to be reduced
- *  @param  data2  currently unused == NULL
+ *  function, that resets cwnd, when data was not sent for at least one RTO on a path.
+ *  @param  pathId      ID of the path, where the cwnd is to be reset to 2*MTU
+ *  @return   error parameter (SCTP_SUCCESS, SCTP_PARAMETER_PROBLEM, SCTP_MODULE_NOT_FOUND)
  */
-void fc_timer_cb_reduce_cwnd(TimerID tid, void *assoc, void *data2)
+int fc_reset_cwnd(unsigned int pathId)
 {
-    /* TODO : verify that last_active_address is always set correctly */
-    unsigned int ad_idx;
-    fc_data *fc;
-    int res;
+    fc_data *fc = NULL;
     unsigned int rto;
+    short pId;
+    struct timeval now, resetTime;
 
-    event_log(INTERNAL_EVENT_0, "----------------> fc_timer_cb_reduce_cwnd <------------------");
-    event_logi(VVERBOSE, "Association ID == %d \n", *(unsigned int *) assoc);
-    res = mdi_setAssociationData(*(unsigned int *) assoc);
-    if (res == 1) {
-        error_log(ERROR_MAJOR, " association does not exist !");
-        return;
-    }
-    if (res == 2) {
-        error_log(ERROR_MAJOR, "Association was not cleared..... !!!");
-        /* failure treatment ? */
-    }
 
     fc = (fc_data *) mdi_readFlowControl();
     if (!fc) {
         error_log(ERROR_MAJOR, "fc_data instance not set !");
-        return;
+        return SCTP_MODULE_NOT_FOUND;
     }
-
     /* try opening up, if possible */
     if (fc->outstanding_bytes == 0) {
         fc->one_packet_inflight = FALSE;
     }
-
-    fc->cwnd_timer = 0L;
-    /* function does nothing and effectively stops this timer if list is not empty */
-    ad_idx = fc->last_active_address;
-    if ((fc->chunk_list) == NULL) {
-        rto = pm_readRTO(ad_idx);
-        event_logii(INTERNAL_EVENT_0, "RTO for address %d was : %d msecs\n", ad_idx, rto);
-        if (rto < 2)
-            rto = 2;
-        /* we have nothing to send, so cut cwnd in half ! */
-        fc->cparams[ad_idx].cwnd = max(2 * MAX_MTU_SIZE, (fc->cparams[ad_idx].cwnd) / 2);
-        event_logii(INTERNAL_EVENT_0,
-                    "updating cwnd[%d], setting it to : %d\n", ad_idx, fc->cparams[ad_idx].cwnd);
-        /* is this call inside the if, or outside the if ???? */
-        /* do these pointers survive ? */
-        /* timer is only restarted now, if list is empty */
-        fc->cwnd_timer = adl_startTimer(rto, &fc_timer_cb_reduce_cwnd,TIMER_TYPE_CWND, assoc, data2);
+    if (pathId >= fc->number_of_addresses) {
+        error_logi(ERROR_MAJOR, "Address Parameter wrong in fc_reset_cwnd(== %u)", pathId);
+        return SCTP_PARAMETER_PROBLEM;
     }
-    /* ------------------ DEBUGGING ----------------------------- */
-    /* fc_debug_cparams(VERBOSE);	*/
-    /* ------------------ DEBUGGING ----------------------------- */
-    mdi_clearAssociationData();
-    return;
+    pId = (short)pathId;
+    adl_gettime(&now);
+    rto = pm_readRTO(pId);
+    resetTime = fc->cparams[pathId].last_send_time;
+    adl_add_msecs_totime(&resetTime, rto);
+    if (timercmp(&now, &resetTime, > )) {
+        event_logi(INTERNAL_EVENT_0, "----------------> fc_reset_cwnd: resetting CWND for idle path %u <------------------", pathId);
+        /* path has been idle for at least on RTO */
+        fc->cparams[pathId].cwnd = 2 * MAX_MTU_SIZE;
+        adl_gettime(&(fc->cparams[pathId].last_send_time));
+        event_logii(INTERNAL_EVENT_0, "resetting cwnd[%d], setting it to : %d\n", pathId, fc->cparams[pathId].cwnd);
+    }
+    return SCTP_SUCCESS;
 }
 
 unsigned int fc_getNextActivePath(fc_data* fc, unsigned int start)
@@ -529,23 +476,22 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
 
     res = mdi_setAssociationData(*(unsigned int *) assoc);
     if (res == 1) {
-        error_log(ERROR_MAJOR, " association does not exist !");
+        error_log(ERROR_FATAL, " association does not exist !");
         return;
     }
+
     if (res == 2) {
         error_log(ERROR_MAJOR, "Association was not cleared..... !!!");
-        /* failure treatment ? */
     }
 
     fc = (fc_data *) mdi_readFlowControl();
     if (!fc) {
-        error_log(ERROR_MAJOR, "fc_data instance not set !");
+        error_log(ERROR_FATAL, "fc_data instance not set !");
         return;
     }
+
     ad_idx = *((unsigned int *) data2);
-
     event_logi(INTERNAL_EVENT_0, "===============> fc_timer_cb_t3_timeout(address=%u) <========", ad_idx);
-
     fc->T3_timer[ad_idx] = 0;
 
     num_of_chunks = rtx_readNumberOfUnackedChunks();
@@ -553,12 +499,14 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
 
     if (num_of_chunks <= 0) {
         event_log(VERBOSE, "Number of Chunks was 0 BEFORE calling rtx_t3_timeout - returning");
-        if (fc->shutdown_received == TRUE)
-            error_log(ERROR_MAJOR,
+        if (fc->shutdown_received == TRUE) {
+            error_log(ERROR_FATAL,
                       "T3 Timeout with 0 chunks in rtx-queue,  sci_allChunksAcked() should have been called !");
+        }
         mdi_clearAssociationData();
         return;
     }
+
     chunks = malloc(num_of_chunks * sizeof(chunk_data *));
     num_of_chunks = rtx_t3_timeout(&(fc->my_association), ad_idx, fc->cparams[ad_idx].mtu, chunks);
     if (num_of_chunks <= 0) {
@@ -569,10 +517,15 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
     }
     oldListLen = fc->list_length;
 
-    /* adjust ssthresh, cwnd - section 6.3.3.E1, respectively 7.2.3) */
-    /* basically we halve the ssthresh, and set cwnd = mtu */
-    fc->cparams[ad_idx].ssthresh = max(fc->cparams[ad_idx].cwnd / 2, 2 * fc->cparams[ad_idx].mtu);
-    fc->cparams[ad_idx].cwnd = fc->cparams[ad_idx].mtu;
+    /* do not do this if we are in fast recovery mode - see SCTP imp guide */
+    if (rtx_is_in_fast_recovery() == FALSE) {
+        /* adjust ssthresh, cwnd - section 6.3.3.E1, respectively 7.2.3) */
+        /* basically we halve the ssthresh, and set cwnd = mtu */
+        fc->cparams[ad_idx].ssthresh = max(fc->cparams[ad_idx].cwnd / 2, 2 * fc->cparams[ad_idx].mtu);
+        fc->cparams[ad_idx].cwnd = fc->cparams[ad_idx].mtu;
+        /* as per implementor's guide */
+        fc->cparams[ad_idx].partial_bytes_acked = 0;
+    }
 
     for (count = 0; count < num_of_chunks; count++) {
         retransmitted_bytes += chunks[count]->chunk_len;
@@ -586,11 +539,6 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
     else
         fc->outstanding_bytes = 0;
 
-    if (fc->cparams[ad_idx].outstanding_bytes_per_address >= retransmitted_bytes)
-        fc->cparams[ad_idx].outstanding_bytes_per_address -= retransmitted_bytes;
-    else
-        fc->cparams[ad_idx].outstanding_bytes_per_address = 0;
-
     /* insert chunks to be retransmitted at the beginning of the list */
     /* make sure, that they are unique in this list ! */
 
@@ -598,7 +546,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
         if (g_list_find(fc->chunk_list, chunks[count]) == NULL){
             fc->chunk_list = g_list_insert_sorted(fc->chunk_list, chunks[count], (GCompareFunc) sort_tsn);
             fc->list_length++;
-          } else {
+        } else {
             event_logi(VERBOSE, "Chunk number %u already in list, skipped adding it", chunks[count]->chunk_tsn);
         }
 
@@ -623,7 +571,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
     }
     pm_rto_backoff(ad_idx);
 
-    fc_check_for_txmit(fc, oldListLen);
+    fc_check_for_txmit(fc, oldListLen, TRUE);
 
     mdi_clearAssociationData();
     return;
@@ -649,7 +597,7 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
         error_log(ERROR_MINOR, "Maximum number of assumed transmissions exceeded ");
         dat->num_of_transmissions = MAX_DEST - 1;
     } else if (dat->num_of_transmissions < 1) {
-        error_log(ERROR_FATAL, "Somehow dat->num_of_transmissions became less than 1 !");
+        error_log(ERROR_FATAL, "Somehow dat->num_of_transmissions became 0 !");
         exit(-1);
     }
 
@@ -657,27 +605,50 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
     last_destination =  dat->last_destination;
     dat->last_destination = destination;
 
-    /* if (dat->num_of_transmissions == 1)*/
-    /* chunk is being transmitted the first time */
-    /* outstanding byte counter has been decreased if chunks were scheduled for RTX, increase here ! */
-    fc->outstanding_bytes += dat->chunk_len;
 
-    if (dat->num_of_transmissions <= 1) { /* chunk is transmitted for the first time */
-        fc->cparams[destination].outstanding_bytes_per_address += dat->chunk_len;
-    }
     /* section 6.2.1.B */
     /* leave peers arwnd untouched for retransmitted data !!!!!!!!! */
     if (dat->num_of_transmissions == 1) {
+        /* outstanding byte counter has been decreased if chunks were scheduled for RTX, increase here ! */
+        fc->outstanding_bytes += dat->chunk_len;
         if (dat->chunk_len >= rwnd)
             rtx_set_remote_receiver_window(0);
         else
             rtx_set_remote_receiver_window(rwnd - dat->chunk_len);
     }
 
-    event_logiii(VERBOSE, "outstanding_bytes_per_address(%u)=%u bytes, Overall: %u",
-                destination, fc->cparams[destination].outstanding_bytes_per_address,
-                fc->outstanding_bytes);
+    event_logi(VERBOSE, "outstanding_bytes overall: %u", fc->outstanding_bytes);
     return;
+}
+
+gboolean fc_send_okay(fc_data* fc,
+                      chunk_data* nextChunk,
+                      unsigned int destination,
+                      unsigned int totalSize,
+                      unsigned int obpa)
+{
+
+    if (nextChunk == NULL) return FALSE;
+
+
+    if (fc->doing_retransmission == TRUE) {
+        if (totalSize + nextChunk->chunk_len > fc->cparams[destination].mtu) {
+            fc->doing_retransmission = FALSE;
+        } else {
+            /* we must send at least on MTU worth of data without paying */
+            /* attention to the CWND */
+            return TRUE;
+        }
+    }
+    if ((totalSize + obpa < (fc->cparams[destination].cwnd+fc->cparams[destination].mtu-1)) &&
+        (
+         ((nextChunk->num_of_transmissions==0)&&(rtx_read_remote_receiver_window() > nextChunk->chunk_len)) ||
+          (rtx_read_remote_receiver_window()==0 && fc->one_packet_inflight == FALSE) ||
+          (nextChunk->num_of_transmissions > 0)) ) {
+        return TRUE;
+    }
+
+    return FALSE;
 }
 
 
@@ -688,27 +659,24 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
  *  @param fc_instance  pointer to the flowcontrol instance used here
  *  @return  0 for successful send event, -1 for error, 1 if nothing was sent
  */
-int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
+int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doInitialRetransmit)
 {
-    int result, len;
+    int result, len, obpa;
     fc_data *fc;
     chunk_data *dat;
-    unsigned int total_size, destination, chunk_len, peer_rwnd, rto_time;
-    unsigned int obpa;
+    unsigned int total_size, destination, oldDestination, peer_rwnd, rto_time;
+
     gboolean data_is_retransmitted = FALSE;
     gboolean lowest_tsn_is_retransmitted = FALSE;
     gboolean data_is_submitted = FALSE;
     peer_rwnd = rtx_read_remote_receiver_window();
+
     event_logi(INTERNAL_EVENT_0, "Entering fc_check_for_txmit(rwnd=%u)... ", peer_rwnd);
 
     fc = (fc_data *) fc_instance;
-    /* ------------------ DEBUGGING ----------------------------- */
-    /*  chunk_list_debug(VVERBOSE, fc->chunk_list); */
-    /* fc_debug_cparams(VERBOSE);                           */
-    /* ------------------ DEBUGGING ----------------------------- */
 
     if (fc->chunk_list != NULL) {
-          dat = g_list_nth_data(fc->chunk_list, 0);
+        dat = g_list_nth_data(fc->chunk_list, 0);
     } else {
         return -1;
     }
@@ -718,55 +686,68 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
     destination = fc_select_destination(fc, dat, data_is_retransmitted, NULL);
 
     total_size = 0;
-    chunk_len = dat->chunk_len;
 
-    event_logiii(VERBOSE, "Called fc_select_destination == %d, chunk_len=%u, outstanding(p.add)=%u",
-                 destination, chunk_len, fc->cparams[destination].outstanding_bytes_per_address);
+    /* ------------------------------------ DEBUGGING --------------------------------------------------- */
+    event_logii(VERBOSE, "Called fc_select_destination == %d, chunk_len=%u", destination, dat->chunk_len);
     event_logiiii(VERBOSE, "cwnd(%u) == %u, mtu == %u, MAX_MTU = %d ",
                   destination, fc->cparams[destination].cwnd, fc->cparams[destination].mtu, MAX_MTU_SIZE);
+    /* ------------------------------------- DEBUGGING --------------------------------------------------- */
 
     if (peer_rwnd == 0 && fc->one_packet_inflight == TRUE) {    /* section 6.1.A */
-            event_log(VERBOSE, "NOT SENDING (peer rwnd == 0 and already one packet in flight ");
-            return 1;
-    }
-
-    if (fc->cparams[destination].cwnd <= fc->cparams[destination].outstanding_bytes_per_address) {
-        event_logiii(VERBOSE, "NOT SENDING (cwnd=%u, outstanding(%u)=%u)",
-                     fc->cparams[destination].cwnd, destination,
-                     fc->cparams[destination].outstanding_bytes_per_address);
+        event_log(VERBOSE, "NOT SENDING (peer rwnd == 0 and already one packet in flight ");
+        event_log(VERBOSE, "################## -> Returned in fc_check_for_txmit ##################");
         return 1;
     }
 
+    obpa = rtx_get_obpa(destination, &fc->outstanding_bytes);
+    if (obpa < 0) {
+        error_log(ERROR_MAJOR, "rtx_get_obpa error !");
+        return -1;
+    }
+
+    if (!doInitialRetransmit) {
+        if (fc->cparams[destination].cwnd <= obpa) {
+            event_logiii(VERBOSE, "NOT SENDING (cwnd=%u, outstanding(%u)=%u)",
+                         fc->cparams[destination].cwnd, destination, obpa);
+            return 1;
+        }
+    } else {
+        /* set this flag here, it will be reset after the while loop */
+        fc->doing_retransmission = TRUE;
+    }
+
+    /*   make sure we send only one retransmission after T3 timeout      */
+    /*   waiting_for_sack is only TRUE after T3 timeout.                 */
     if (fc->waiting_for_sack == TRUE && data_is_retransmitted == TRUE) {
-        /* make sure we send only one retransmission after T3 timeout */
         if (fc->t3_retransmission_sent == TRUE) {
-            event_log(VERBOSE, "########################################## -> Returned in fc_check_for_txmit");
+            event_log(VERBOSE, "################## -> Returned in fc_check_for_txmit ##################");
             return 1;
         }
     }
+    /* check, if the destination path has been idle for more than one RTO */
+    /* if so, reset CWND to 2*MTU                                         */
+    fc_reset_cwnd(destination);
 
-    obpa = fc->cparams[destination].outstanding_bytes_per_address;
-
-    while ((dat != NULL) &&
-           (total_size + obpa < (fc->cparams[destination].cwnd+fc->cparams[destination].mtu-1)) &&
-           (
-            ((dat->num_of_transmissions==0)&&(rtx_read_remote_receiver_window() > chunk_len)) ||
-            (rtx_read_remote_receiver_window()==0 && fc->one_packet_inflight == FALSE) ||
-            (dat->num_of_transmissions > 0)) ) {
+    while (fc_send_okay(fc, dat, destination, total_size, obpa) == TRUE) {
 
         /* size is used to see, whether we may send this next chunk, too */
         total_size += dat->chunk_len;
 
+        /* -------------------- DEBUGGING --------------------------------------- */
         event_logiii(VVERBOSE, "Chunk: len=%u, tsn=%u, gap_reports=%u",
                      dat->chunk_len, dat->chunk_tsn, dat->gap_reports);
         event_logii(VVERBOSE, "Chunk: ack_time=%d, num_of_transmissions=%u",
                     dat->ack_time, dat->num_of_transmissions);
+        /* -------------------- DEBUGGING --------------------------------------- */
 
         result = bu_put_Data_Chunk((SCTP_simple_chunk *) dat->data, &destination);
         data_is_submitted = TRUE;
+        adl_gettime(&(fc->cparams[destination].last_send_time));
 
+        /* -------------------- DEBUGGING --------------------------------------- */
         event_logi(VERBOSE, "sent chunk (tsn=%u) to bundling", dat->chunk_tsn);
-        event_log(VVERBOSE, "Calling fc_update_chunk_data \n");
+        event_log(VVERBOSE, "=======###======== Calling fc_update_chunk_data =========###========");
+        /* -------------------- DEBUGGING --------------------------------------- */
 
         fc_update_chunk_data(fc, dat, destination);
         if (dat->num_of_transmissions == 1) {
@@ -781,16 +762,24 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
         fc->one_packet_inflight = TRUE;
         fc->chunk_list = g_list_remove(fc->chunk_list, (gpointer) dat);
         fc->list_length--;
+
         dat = g_list_nth_data(fc->chunk_list, 0);
-
         if (dat != NULL) {
-            if (dat->num_of_transmissions >= 1)  data_is_retransmitted = TRUE;
+            if (dat->num_of_transmissions >= 1)    data_is_retransmitted = TRUE;
             else if (dat->num_of_transmissions == 0) data_is_retransmitted = FALSE;
-            chunk_len = dat->chunk_len;
+            oldDestination = destination;
             destination = fc_select_destination(fc, dat, data_is_retransmitted, &destination);
-            event_logi(VERBOSE, "Called fc_select_destination == %d\n", destination);
+            if (destination != oldDestination) {
+                obpa = rtx_get_obpa(destination, &fc->outstanding_bytes);
+                if (obpa < 0) {
+                    error_log(ERROR_MAJOR, "rtx_get_obpa error !");
+                    break;
+                }
+                total_size = 0;
+            }
+            event_logii(VERBOSE, "Called fc_select_destination == %d, obpa = %d \n", destination, obpa);
 
-            if ((rtx_read_remote_receiver_window() < chunk_len) && data_is_retransmitted == FALSE) {
+            if ((rtx_read_remote_receiver_window() < dat->chunk_len) && data_is_retransmitted == FALSE) {
                 break;
             }
 
@@ -814,9 +803,13 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
     /* ------------------ DEBUGGING ----------------------------- */
 
     if (fc->T3_timer[destination] == 0) { /* see section 5.1 */
-        fc->T3_timer[destination] =
-            adl_startTimer(pm_readRTO(destination), &fc_timer_cb_t3_timeout,TIMER_TYPE_RTXM,
-                            &(fc->my_association), &(fc->addresses[destination]));
+
+        fc->T3_timer[destination] =  adl_startTimer(pm_readRTO(destination),
+                                                    &fc_timer_cb_t3_timeout,
+                                                    TIMER_TYPE_RTXM,
+                                                    &(fc->my_association),
+                                                    &(fc->addresses[destination]));
+
         event_logiii(INTERNAL_EVENT_0,
                      "fc_check_for_transmit: started T3 Timer with RTO(%u)==%u msecs on address %u",
                      destination, pm_readRTO(destination), fc->addresses[destination]);
@@ -827,8 +820,8 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
             event_logiii(INTERNAL_EVENT_0,
                          "RTX of lowest TSN: Restarted T3 Timer with RTO(%u)==%u msecs on address %u",
                          destination, pm_readRTO(destination), fc->addresses[destination]);
-            fc->T3_timer[destination] =
-                adl_restartTimer(fc->T3_timer[destination], pm_readRTO(destination));
+
+            fc->T3_timer[destination] =  adl_restartTimer(fc->T3_timer[destination], pm_readRTO(destination));
         }
     }
 
@@ -838,20 +831,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
         fc->one_packet_inflight = TRUE;
         bu_sendAllChunks(&destination);
         rto_time = pm_readRTO(destination);
-        fc->last_active_address = destination;
 
-        if (fc->cwnd_timer == 0) {
-            fc->cwnd_timer =
-                adl_startTimer(rto_time, &fc_timer_cb_reduce_cwnd, TIMER_TYPE_CWND, &(fc->my_association), NULL);
-            event_logi(INTERNAL_EVENT_0,
-                       "fc_check_for_txmit...started reduce-cwnd-Timer going off %u msecs from now",
-                       rto_time);
-        } else {
-            fc->cwnd_timer = adl_restartTimer(fc->cwnd_timer, rto_time);
-            event_logi(INTERNAL_EVENT_0,
-                       "fc_check_for_txmit...re-started reduce-cwnd-Timer going off %u msecs from now",
-                       rto_time);
-        }
         if (fc->maxQueueLen != 0) {
             if (len < fc->maxQueueLen && oldListLen >= fc->maxQueueLen) {
                  mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, len);
@@ -879,20 +859,22 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen)
   @param all_acked   has all data been acked ?
   @param new_acked   have new chunks been acked ? CHECKME : has the ctsna advanced ?
 */
-void fc_check_t3(unsigned int ad_idx, unsigned int obpa, boolean all_acked, boolean new_acked)
+void fc_check_t3(unsigned int ad_idx, boolean all_acked, boolean new_acked)
 {
-    fc_data *fc;
-    int result,count;
+    fc_data *fc = NULL;
+    int result,count, obpa = 0;
+
     fc = (fc_data *) mdi_readFlowControl();
-
-    event_logiii(INTERNAL_EVENT_0,
-                 "fc_check_t3(%u,all_acked=%s, new_acked=%s)... ", ad_idx,
-                 (all_acked == TRUE) ? "true" : "false", (new_acked == TRUE) ? "true" : "false");
-
     if (!fc) {
         error_log(ERROR_MAJOR, "fc_data instance not set !");
         return;
     }
+    obpa = rtx_get_obpa(ad_idx, &fc->outstanding_bytes);
+    if (obpa < 0) return;
+
+    event_logiiii(INTERNAL_EVENT_0, "fc_check_t3(), outstanding==%u on path %u (all_acked=%s, new_acked=%s)... ",
+                    obpa, ad_idx, (all_acked == TRUE) ? "true" : "false", (new_acked == TRUE) ? "true" : "false");
+
     if (all_acked == TRUE) {
         for (count = 0; count < fc->number_of_addresses; count++) {
             if (fc->T3_timer[count] != 0) {
@@ -1000,6 +982,7 @@ int fc_send_data_chunk(chunk_data * chunkd,
     chunkd->context     = context;
     chunkd->hasBeenAcked= FALSE;
     chunkd->hasBeenDropped = FALSE;
+    chunkd->hasBeenFastRetransmitted = FALSE;
     chunkd->last_destination = 0;
 
     if (destAddressIndex >= 0) chunkd->initial_destination = destAddressIndex;
@@ -1025,7 +1008,7 @@ int fc_send_data_chunk(chunk_data * chunkd,
     event_log(VVERBOSE, "Printing Chunk List / Congestion Params in  fc_send_data_chunk - after");
     chunk_list_debug(VVERBOSE, fc->chunk_list);
 
-    fc_check_for_txmit(fc, fc->list_length);
+    fc_check_for_txmit(fc, fc->list_length, FALSE);
 
     return SCTP_SUCCESS;
 }
@@ -1060,6 +1043,75 @@ int fc_dequeue_acked_chunks(unsigned int ctsna)
     return 0;
 }
 
+int fc_adjustCounters(fc_data *fc, unsigned int addressIndex,
+                      unsigned int num_acked,
+                      gboolean all_data_acked,
+                      gboolean new_data_acked,
+                      unsigned int number_of_addresses)
+
+{
+    int count, diff;
+    struct timeval last_update, now;
+    unsigned int rtt_time;
+
+    fc->outstanding_bytes = (fc->outstanding_bytes <= num_acked) ? 0 : (fc->outstanding_bytes - num_acked);
+    /* see section 6.2.1, section 6.2.2 */
+    if (fc->cparams[addressIndex].cwnd <= fc->cparams[addressIndex].ssthresh) { /* SLOW START */
+        for (count = 0; count < number_of_addresses; count++) {
+            fc->cparams[count].partial_bytes_acked = 0;
+        }
+
+       if (new_data_acked == TRUE) {
+           fc->cparams[addressIndex].cwnd += min(MAX_MTU_SIZE, num_acked);
+           adl_gettime(&(fc->cparams[addressIndex].time_of_cwnd_adjustment));
+       }
+
+    } else {                    /* CONGESTION AVOIDANCE, as per section 6.2.2 */
+        if (new_data_acked == TRUE) {
+            fc->cparams[addressIndex].partial_bytes_acked += num_acked;
+            event_logii(VVERBOSE, "CONG. AVOIDANCE : new data acked: increase PBA(%u) to %u",
+                addressIndex, fc->cparams[addressIndex].partial_bytes_acked);
+        }
+        /*
+         * Section 7.2.2 :
+         * "When partial_bytes_acked is equal to or greater than cwnd and
+         * before the arrival of the SACK the sender had cwnd or more bytes
+         * of data outstanding (i.e., before arrival of the SACK, flightsize
+         * was greater than or equal to cwnd), increase cwnd by MTU, and
+         * reset partial_bytes_acked to (partial_bytes_acked - cwnd)."
+         */
+        rtt_time = pm_readSRTT(addressIndex);
+        last_update = fc->cparams[addressIndex].time_of_cwnd_adjustment;
+        adl_add_msecs_totime(&last_update, rtt_time);
+        adl_gettime(&now);
+        diff = adl_timediff_to_msecs(&now, &last_update); /* a-b */
+        event_logii(VVERBOSE, "CONG. AVOIDANCE : rtt_time=%u diff=%d", rtt_time, diff);
+
+        if (diff >= 0) {
+            if ((fc->cparams[addressIndex].partial_bytes_acked >= fc->cparams[addressIndex].cwnd)
+                && (fc->outstanding_bytes >= fc->cparams[addressIndex].cwnd)) {
+                fc->cparams[addressIndex].cwnd += MAX_MTU_SIZE;
+                fc->cparams[addressIndex].partial_bytes_acked -= fc->cparams[addressIndex].cwnd;
+                /* update time of window adjustment (i.e. now) */
+                event_log(VVERBOSE,
+                          "CONG. AVOIDANCE : updating time of adjustment !!!!!!!!!! NOW ! ");
+                adl_gettime(&(fc->cparams[addressIndex].time_of_cwnd_adjustment));
+            }
+            event_logii(VERBOSE, "CONG. AVOIDANCE : updated counters: %u bytes outstanding, cwnd=%u",
+                        fc->outstanding_bytes, fc->cparams[addressIndex].cwnd);
+        }
+
+        event_logii(VVERBOSE, "CONG. AVOIDANCE : partial_bytes_acked(%u)=%u ",
+                    addressIndex, fc->cparams[addressIndex].partial_bytes_acked);
+
+        /* see section 7.2.2 */
+        if (all_data_acked == TRUE) fc->cparams[addressIndex].partial_bytes_acked = 0;
+
+    }
+    return SCTP_SUCCESS;
+}
+
+
 /**
  * function called by Reliable Transfer, when it requests retransmission
  * in SDL diagram this signal is called (Req_RTX, RetransChunks)
@@ -1068,7 +1120,6 @@ int fc_dequeue_acked_chunks(unsigned int ctsna)
  * @param   num_acked number of bytes that have been newly acked, else 0
  * @param   number_of_addresses so many addresses may have outstanding bytes
  *          actually that value may also be retrieved from the association struct (?)
- * @param   num_acked_per_address array of integers, that hold number of bytes acked for each address
  * @param   number_of_rtx_chunks number indicatin, how many chunks are to be retransmitted in on datagram
  * @param   chunks  array of pointers to data_chunk structures. These are to be retransmitted
  * @return   -1 on error, 0 on success, (1 if problems occurred ?)
@@ -1077,17 +1128,11 @@ int fc_fast_retransmission(unsigned int address_index, unsigned int arwnd, unsig
                      unsigned int rtx_bytes, boolean all_data_acked,
                      boolean new_data_acked, unsigned int num_acked,
                      unsigned int number_of_addresses,
-                     unsigned int *num_acked_per_address,
                      int number_of_rtx_chunks, chunk_data ** chunks)
 {
     fc_data *fc;
     int count, result;
-    unsigned int oldListLen;
-
-    unsigned rtt_time, peer_rwnd;
-    struct timeval last_update, now;
-//    chunk_data temp;
-    int diff;
+    unsigned int oldListLen, peer_rwnd;
 
     fc = (fc_data *) mdi_readFlowControl();
     if (!fc) {
@@ -1097,129 +1142,57 @@ int fc_fast_retransmission(unsigned int address_index, unsigned int arwnd, unsig
 
     oldListLen = fc->list_length;
 
+    /* apply rules from sections 7.2.1 and 7.2.2 */
+    fc_adjustCounters(fc, address_index, num_acked, all_data_acked, new_data_acked,
+                      number_of_addresses);
+
     /* ------------------ DEBUGGING ----------------------------- */
     fc_debug_cparams(VERBOSE);
+    for (count = 0; count < number_of_rtx_chunks; count++) {
+        event_logi(VERBOSE, "fc_fast_retransmission: Got TSN==%u for RTXmit\n",chunks[count]->chunk_tsn);
+    }
     /* ------------------ DEBUGGING ----------------------------- */
 
     fc->t3_retransmission_sent = FALSE; /* we have received a SACK, so reset this */
-    /* if (num_acked > 0) */
+
     /* just checking if the other guy is still alive */
-        fc->waiting_for_sack = FALSE;
+    fc->waiting_for_sack = FALSE;
 
-    for (count = 0; count < number_of_rtx_chunks; count++)
-        event_logi(VERBOSE, "fc_fast_retransmission: Got TSN==%u for RTXmit\n",
-                   chunks[count]->chunk_tsn);
-
-
-    /* see section 6.2.1, section 6.2.2 */
-    if (fc->cparams[address_index].cwnd <= fc->cparams[address_index].ssthresh) { /* SLOW START */
-        for (count = 0; count < number_of_addresses; count++) {
-            event_logii(VERBOSE, "SLOW START : outstanding bytes on(%d)=%u ",
-                        count, fc->cparams[count].outstanding_bytes_per_address);
-            event_logii(VERBOSE, "SLOW START : numacked per address(%d)=%u ",
-                        count, num_acked_per_address[count]);
-            fc->cparams[count].partial_bytes_acked = 0;
-        }
-	    fc->outstanding_bytes =
-    	    (fc->outstanding_bytes <= num_acked) ? 0 : (fc->outstanding_bytes - num_acked);
-    	for (count = 0; count < number_of_addresses; count++) {
-        	fc->cparams[count].outstanding_bytes_per_address =
-            	(fc->cparams[count].outstanding_bytes_per_address <
-             	num_acked_per_address[count]) ? 0 : (fc->cparams
-                                                  [count].outstanding_bytes_per_address
-                                                  - num_acked_per_address[count]);
-    	}
-        if (new_data_acked == TRUE) {
-            fc->cparams[address_index].cwnd += min(MAX_MTU_SIZE, num_acked);
-        }
-    } else {                    /* CONGESTION AVOIDANCE, as per section 6.2.2 */
-        if (new_data_acked == TRUE) {
-            fc->cparams[address_index].partial_bytes_acked += num_acked;
-            event_logii(VVERBOSE, "CONG. AVOIDANCE : (fast RTX) -> new data acked: increase PBA(%u) to %u",
-                address_index,fc->cparams[address_index].partial_bytes_acked);
-        }
-
-        rtt_time = pm_readSRTT(address_index);
-        memcpy(&last_update, &(fc->cparams[address_index].time_of_cwnd_adjustment), sizeof(struct timeval));
-        adl_add_msecs_totime(&last_update, rtt_time);
-        adl_gettime(&now);
-        diff = adl_timediff_to_msecs(&now, &last_update); /* a-b */
-        event_logii(VVERBOSE, "CONG. AVOIDANCE : rtt_time=%u diff=%d", rtt_time, diff);
-
-        if (diff >= 0) {
-            if ((fc->cparams[address_index].partial_bytes_acked >= fc->cparams[address_index].cwnd)
-                && (fc->outstanding_bytes >= fc->cparams[address_index].cwnd)) {
-                fc->cparams[address_index].cwnd += MAX_MTU_SIZE;
-                fc->cparams[address_index].partial_bytes_acked -= fc->cparams[address_index].cwnd;
-                /* update time of window adjustment (i.e. now) */
-                event_log(VVERBOSE,
-                          "CONG. AVOIDANCE : updating time of adjustment !!!!!!!!!! NOW ! ");
-            }
-            event_logii(VERBOSE,
-                        "CONG. AVOIDANCE : updated counters: %u bytes outstanding, cwnd=%u",
-                        fc->outstanding_bytes, fc->cparams[address_index].cwnd);
-        }
-	    fc->outstanding_bytes =
-    	    (fc->outstanding_bytes <= num_acked) ? 0 : (fc->outstanding_bytes - num_acked);
-    	for (count = 0; count < number_of_addresses; count++) {
-        	fc->cparams[count].outstanding_bytes_per_address =
-            	(fc->cparams[count].outstanding_bytes_per_address <
-            	 num_acked_per_address[count]) ? 0 : (fc->cparams
-                                                  [count].outstanding_bytes_per_address
-                                                  - num_acked_per_address[count]);
-    	}
-
-        event_logii(VVERBOSE, "CONG. AVOIDANCE : partial_bytes_acked(%u)=%u ",
-                    address_index, fc->cparams[address_index].partial_bytes_acked);
-
-        for (count = 0; count < number_of_addresses; count++) {
-            event_logii(VVERBOSE,
-                        "CONG. AVOIDANCE : outstanding bytes on(%d)=%u ",
-                        count, fc->cparams[count].outstanding_bytes_per_address);
-            event_logii(VVERBOSE,
-                        "CONG. AVOIDANCE : numacked per address(%d)=%u ",
-                        count, num_acked_per_address[count]);
-        }
-        /* see section 7.2.2 */
-        if (all_data_acked == TRUE)
-            fc->cparams[address_index].partial_bytes_acked = 0;
-
-    }
     result = -2;
-    /* We HAVE retransmission, so DO UPDATE OF WINDOW PARAMETERS , see section 6.2.3 */
-    fc->cparams[address_index].ssthresh =
-        max(fc->cparams[address_index].cwnd / 2, 2 * fc->cparams[address_index].mtu);
-    fc->cparams[address_index].cwnd = fc->cparams[address_index].ssthresh;
-    event_logiiii(VERBOSE,
-                  "fc_fast_retransmission: updated: %u bytes outstanding, %u bytes per address, cwnd=%u, ssthresh=%u",
-                  fc->outstanding_bytes,
-                  fc->cparams[address_index].outstanding_bytes_per_address,
-                  fc->cparams[address_index].cwnd, fc->cparams[address_index].ssthresh);
+    /* We HAVE retransmission, so DO UPDATE OF WINDOW PARAMETERS unless we are in fast recovery, */
+    /* see sections 7.2.3 and 7.2.4 and the implementors guide */
+    if (rtx_is_in_fast_recovery() == FALSE) {
+        fc->cparams[address_index].ssthresh =
+            max(fc->cparams[address_index].cwnd / 2, 2 * fc->cparams[address_index].mtu);
+        fc->cparams[address_index].cwnd = fc->cparams[address_index].ssthresh;
+        /* as per implementor's guide */
+        fc->cparams[address_index].partial_bytes_acked = 0;
+        rtx_enter_fast_recovery();
+    }
+    event_logiii(VERBOSE, "fc_fast_retransmission: updated: %u bytes outstanding,cwnd=%u, ssthresh=%u",
+                  fc->outstanding_bytes, fc->cparams[address_index].cwnd, fc->cparams[address_index].ssthresh);
 
     /* This is to be an ordered list containing no duplicate entries ! */
     for (count = number_of_rtx_chunks - 1; count >= 0; count--) {
 
         if (g_list_find(fc->chunk_list, chunks[count]) != NULL){
-            event_logii(VERBOSE,
-                        "chunk_tsn==%u, count==%u already in the list -- continue with next\n",
+            event_logii(VERBOSE, "chunk_tsn==%u, count==%u already in the list -- continue with next\n",
                         chunks[count]->chunk_tsn, count);
             continue;
         }
-        event_logii(INTERNAL_EVENT_0,
-                    "inserting chunk_tsn==%u, count==%u in the list\n",
+        event_logii(INTERNAL_EVENT_0, "inserting chunk_tsn==%u, count==%u in the list\n",
                     chunks[count]->chunk_tsn, count);
 
         fc->chunk_list = g_list_insert_sorted(fc->chunk_list, chunks[count], (GCompareFunc) sort_tsn);
         fc->list_length++;
     }
-    fc->last_active_address = address_index;
 
-    event_log(VVERBOSE, "fc_fast_retransmission: FlowControl Chunklist after Re-Insertion \n");
+    /* ------------------ DEBUGGING ----------------------------- */
+    event_log(VVERBOSE, "============== fc_fast_retransmission: FlowControl Chunklist after Re-Insertion ======================");
     chunk_list_debug(VVERBOSE, fc->chunk_list);
+    /* ------------------ DEBUGGING ----------------------------- */
 
-    fc_check_t3(address_index, fc->cparams[address_index].outstanding_bytes_per_address,
-                all_data_acked, new_data_acked);
-
+    fc_check_t3(address_index, all_data_acked, new_data_acked);
 
     /* section 6.2.1.D ?? */
     if (arwnd >= fc->outstanding_bytes) {
@@ -1230,18 +1203,7 @@ int fc_fast_retransmission(unsigned int address_index, unsigned int arwnd, unsig
     /* section 6.2.1.C */
     rtx_set_remote_receiver_window(peer_rwnd);
 
-
-    if (fc->outstanding_bytes >= rtx_bytes)
-        fc->outstanding_bytes -= rtx_bytes;
-    else
-        fc->outstanding_bytes = 0;
-
-    if (fc->cparams[address_index].outstanding_bytes_per_address >= rtx_bytes)
-        fc->cparams[address_index].outstanding_bytes_per_address -= rtx_bytes;
-    else
-        fc->cparams[address_index].outstanding_bytes_per_address = 0;
-
-    if (fc->outstanding_bytes==0) {
+    if (all_data_acked == TRUE) {
         fc->one_packet_inflight = FALSE;
     } else {
         fc->one_packet_inflight = TRUE;
@@ -1249,7 +1211,7 @@ int fc_fast_retransmission(unsigned int address_index, unsigned int arwnd, unsig
 
     /* send as many to bundling as allowed, requesting new destination address */
     if (fc->chunk_list != NULL){
-       result = fc_check_for_txmit(fc, oldListLen);
+       result = fc_check_for_txmit(fc, oldListLen, TRUE);
     }
     /* make sure that SACK chunk is actually sent ! */
     if (result != 0) bu_sendAllChunks(NULL);
@@ -1268,17 +1230,12 @@ int fc_fast_retransmission(unsigned int address_index, unsigned int arwnd, unsig
  * @param   num_acked number of bytes that have been newly acked, else 0
  * @param   number_of_addresses so many addresses may have outstanding bytes
  *          actually that value may also be retrieved from the association struct (?)
- * @param   num_acked_per_address array of integers, that hold number of bytes acked for each address
  */
 void fc_sack_info(unsigned int address_index, unsigned int arwnd,unsigned int ctsna,
              boolean all_data_acked, boolean new_data_acked,
-             unsigned int num_acked, unsigned int number_of_addresses,
-             unsigned int *num_acked_per_address)
+             unsigned int num_acked, unsigned int number_of_addresses)
 {
     fc_data *fc;
-    unsigned int count, rto_time, rtt_time;
-    struct timeval last_update, now;
-    int diff;
     unsigned int oldListLen;
 
     fc = (fc_data *) mdi_readFlowControl();
@@ -1299,105 +1256,10 @@ void fc_sack_info(unsigned int address_index, unsigned int arwnd,unsigned int ct
 
     oldListLen = fc->list_length;
 
-    /* see section 6.2.1, section 6.2.2 */
-    if (fc->cparams[address_index].cwnd <= fc->cparams[address_index].ssthresh) { /* SLOW START */
-        for (count = 0; count < number_of_addresses; count++) {
-            event_logii(VERBOSE, "SLOW START : outstanding bytes on(%d)=%u ",
-                        count, fc->cparams[count].outstanding_bytes_per_address);
-            event_logii(VERBOSE, "SLOW START : numacked per address(%d)=%u ",
-                        count, num_acked_per_address[count]);
-            fc->cparams[count].partial_bytes_acked = 0;
-  	        fc->cparams[count].outstanding_bytes_per_address =
-    	        (fc->cparams[count].outstanding_bytes_per_address <
-        	     num_acked_per_address[count]) ? 0 : (fc->cparams
-                                                  [count].outstanding_bytes_per_address
-                                                  - num_acked_per_address[count]);
-        }
-        if (new_data_acked == TRUE) {
-            fc->cparams[address_index].cwnd += min(MAX_MTU_SIZE, num_acked);
-            adl_gettime(&(fc->cparams[address_index].time_of_cwnd_adjustment));
-        }
-	    fc->outstanding_bytes =
-    	    (fc->outstanding_bytes <= num_acked) ? 0 : (fc->outstanding_bytes - num_acked);
-        event_logiii(VERBOSE,
-                     "SLOW START : updated counters: TOTAL %u bytes outstanding, cwnd(%u)=%u",
-                     fc->outstanding_bytes, address_index, fc->cparams[address_index].cwnd);
-    } else {                    /* CONGESTION AVOIDANCE, as per section 6.2.2 */
+    fc_adjustCounters(fc, address_index, num_acked, all_data_acked, new_data_acked,
+                      number_of_addresses);
 
-        if (new_data_acked == TRUE) {
-            fc->cparams[address_index].partial_bytes_acked += num_acked;
-            event_logii(VVERBOSE, "CONG. AVOIDANCE : new data acked: increase PBA(%u) to %u",
-                address_index,fc->cparams[address_index].partial_bytes_acked);
-        }
-        /*
-         * Section 7.2.2 :
-		 * "When partial_bytes_acked is equal to or greater than cwnd and
-      	 * before the arrival of the SACK the sender had cwnd or more bytes
-      	 * of data outstanding (i.e., before arrival of the SACK, flightsize
-      	 * was greater than or equal to cwnd), increase cwnd by MTU, and
-      	 * reset partial_bytes_acked to (partial_bytes_acked - cwnd)."
-      	 */
-        rtt_time = pm_readSRTT(address_index);
-        memcpy(&last_update, &(fc->cparams[address_index].time_of_cwnd_adjustment), sizeof(struct timeval));
-        adl_add_msecs_totime(&last_update, rtt_time);
-        adl_gettime(&now);
-        diff = adl_timediff_to_msecs(&now, &last_update); /* a-b */
-
-        event_logii(VVERBOSE, "CONG. AVOIDANCE : rtt_time=%u diff=%d", rtt_time, diff);
-
-        if (diff >= 0) { /* we may update cwnd once per SRTT */
-            if ((fc->cparams[address_index].partial_bytes_acked >= fc->cparams[address_index].cwnd)
-                && (fc->outstanding_bytes >= fc->cparams[address_index].cwnd)) {
-                fc->cparams[address_index].cwnd += MAX_MTU_SIZE;
-                fc->cparams[address_index].partial_bytes_acked -= fc->cparams[address_index].cwnd;
-                event_log(VVERBOSE,
-                          "CONG. AVOIDANCE : updating time of adjustment !!!!!!!!!! NOW ! ");
-                adl_gettime(&(fc->cparams[address_index].time_of_cwnd_adjustment));
-            }
-            event_logii(VERBOSE,
-                        "CONG. AVOIDANCE : updated counters: %u bytes outstanding, cwnd=%u",
-                        fc->outstanding_bytes, fc->cparams[address_index].cwnd);
-            /* update time of window adjustment (i.e. now) */
-        }
-
-   	    fc->outstanding_bytes =
-    	    (fc->outstanding_bytes <= num_acked) ? 0 : (fc->outstanding_bytes - num_acked);
-
-        event_logii(VVERBOSE, "CONG. AVOIDANCE : partial_bytes_acked(%u)=%u ",
-                    address_index, fc->cparams[address_index].partial_bytes_acked);
-
-        for (count = 0; count < number_of_addresses; count++) {
-	        fc->cparams[count].outstanding_bytes_per_address =
-    	        (fc->cparams[count].outstanding_bytes_per_address <
-        	     num_acked_per_address[count]) ? 0 : (fc->cparams
-                                                  [count].outstanding_bytes_per_address
-                                                  - num_acked_per_address[count]);
-
-            event_logii(VVERBOSE,
-                        "CONG. AVOIDANCE : outstanding bytes on(%d)=%u ",
-                        count, fc->cparams[count].outstanding_bytes_per_address);
-            event_logii(VVERBOSE,
-                        "CONG. AVOIDANCE : numacked per address(%d)=%u ",
-                        count, num_acked_per_address[count]);
-        }
-        /* see section 7.2.2 */
-        if (all_data_acked == TRUE) fc->cparams[address_index].partial_bytes_acked = 0;
-
-    }
-    /* if we don't send data, cwnd = max(cwnd/2, 2*MTU), once per RTO */
-    rto_time = pm_readRTO(address_index);
-    fc->last_active_address = address_index;
-
-    if ((fc->cwnd_timer == 0) && (fc->chunk_list == NULL)) {
-        fc->cwnd_timer =
-            adl_startTimer(rto_time, &fc_timer_cb_reduce_cwnd,TIMER_TYPE_CWND, &(fc->my_association), NULL);
-        event_logi(INTERNAL_EVENT_0,
-                   "fc_sack_info...started reduce-cwnd-Timer going off %u msecs from now",
-                   rto_time);
-    }
-
-    fc_check_t3(address_index, fc->cparams[address_index].outstanding_bytes_per_address,
-                all_data_acked, new_data_acked);
+    fc_check_t3(address_index, all_data_acked, new_data_acked);
 
     if (fc->outstanding_bytes == 0) {
         fc->one_packet_inflight = FALSE;
@@ -1413,7 +1275,7 @@ void fc_sack_info(unsigned int address_index, unsigned int arwnd,unsigned int ct
         rtx_set_remote_receiver_window(0);
 
     if (fc->chunk_list != NULL) {
-        fc_check_for_txmit(fc, oldListLen);
+        fc_check_for_txmit(fc, oldListLen, FALSE);
     }
     return;
 }    /* end: fc_sack_info  */
@@ -1674,26 +1536,6 @@ int fc_readPBA(short path_id)
     return (int)fc->cparams[path_id].partial_bytes_acked;
 }
 
-/**
- * Function returns the outstanding byte count value of a certain path.
- * @param path_id    path index of which we want to know the outstanding_bytes_per_address
- * @return current outstanding_bytes_per_address value, else -1
- */
-int fc_readOutstandingBytesPerAddress(short path_id)
-{
-    fc_data *fc;
-    fc = (fc_data *) mdi_readFlowControl();
-
-    if (!fc) {
-        error_log(ERROR_MAJOR, "flow control instance not set !");
-        return -1;
-    }
-    if (path_id >= fc->number_of_addresses || path_id < 0) {
-        error_logi(ERROR_MAJOR, "Association has only %u addresses !!! ", fc->number_of_addresses);
-        return -1;
-    }
-    return (int)fc->cparams[path_id].outstanding_bytes_per_address;
-}
 
 /**
  * Function returns the outstanding byte count value of this association.

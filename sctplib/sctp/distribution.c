@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: distribution.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -2463,6 +2463,7 @@ int sctp_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatu
 {
 
     guint16 result;
+    unsigned int totalBytesInFlight;
     SCTP_instance *old_Instance = sctpInstance;
     Association *old_assoc = currentAssociation;
 
@@ -2492,7 +2493,7 @@ int sctp_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatu
         status->cwnd2 = fc_readCWND2(path_id);
         status->partialBytesAcked = fc_readPBA(path_id);
         status->ssthresh = fc_readSsthresh(path_id);
-        status->outstandingBytesPerAddress = fc_readOutstandingBytesPerAddress(path_id);
+        status->outstandingBytesPerAddress = rtx_get_obpa((unsigned int)path_id, &totalBytesInFlight);
         status->mtu = fc_readMTU(path_id);
         status->ipTos = currentAssociation->ipTos;
         result = SCTP_SUCCESS;
@@ -2640,7 +2641,7 @@ int sctp_getAssocStatus(unsigned int associationID, SCTP_AssociationStatus* stat
         status->state = sci_getState();
         status->numberOfAddresses = currentAssociation->noOfNetworks;
         status->sourcePort =currentAssociation->localPort;
-        status->destPort =currentAssociation->remotePort;
+        status->destPort = currentAssociation->remotePort;
         status->primaryAddressIndex = pm_readPrimaryPath();
 
         adl_sockunion2str(&(currentAssociation->destinationAddresses[status->primaryAddressIndex]),
@@ -2766,10 +2767,18 @@ int sctp_getAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParamet
     }
     if (instance->noOfLocalAddresses > SCTP_MAX_NUM_ADDRESSES)
         numOfAddresses = SCTP_MAX_NUM_ADDRESSES;
+    else  numOfAddresses = instance->noOfLocalAddresses;
 
-    params->noOfLocalAddresses = numOfAddresses;
-    for (count = 0; count < numOfAddresses; count++) {
-        adl_sockunion2str(&(instance->localAddressList[count]), params->localAddressList[count], SCTP_MAX_IP_LEN);
+    if (numOfAddresses == 0) {
+        params->noOfLocalAddresses = myNumberOfAddresses;
+        for (count = 0; count < myNumberOfAddresses; count++) {
+            adl_sockunion2str(&(myAddressList[count]), params->localAddressList[count], SCTP_MAX_IP_LEN);
+        }
+    } else {
+        params->noOfLocalAddresses = numOfAddresses;
+        for (count = 0; count < numOfAddresses; count++) {
+            adl_sockunion2str(&(instance->localAddressList[count]), params->localAddressList[count], SCTP_MAX_IP_LEN);
+        }
     }
     params->rtoInitial = instance->default_rtoInitial;
     params->rtoMin  = instance->default_rtoMin;

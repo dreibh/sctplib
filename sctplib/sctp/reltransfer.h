@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: reltransfer.h,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -58,7 +58,7 @@ void rtx_delete_reltransfer(void *rtx_instance);
 /**
  * this is called by bundling, when a SACK needs to be processed
  */
-int rtx_process_sack(unsigned int adr_index, void *sack_chunk);
+int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int totalLen);
 
 /**
  * TODO : does nothing right now
@@ -116,6 +116,16 @@ int rtx_set_remote_receiver_window(unsigned int new_arwnd);
 unsigned int rtx_readLocalTSNacked(void);
 
 gboolean rtx_is_lowest_tsn(unsigned int atsn);
+
+int rtx_enter_fast_recovery(void);
+
+gboolean rtx_is_in_fast_recovery(void);
+
+/**
+ * returns the current number of outstanding bytes queued in the retransmission
+ * queue
+ */
+int rtx_get_obpa(unsigned int adIndex, unsigned int *totalInFlight);
 
 /**
  * is called, in case we receive a Cookie in the ESTABLISHED state,

@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: reltransfer.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -54,7 +54,7 @@
 #define max(x,y)            ((x)>(y))?(x):(y)
 #define min(x,y)            ((x)<(y))?(x):(y)
 
-#define MAX_NUM_OF_CHUNKS   375 /* for 1500 MTU */
+#define MAX_NUM_OF_CHUNKS   500 
 
 static chunk_data *rtx_chunks[MAX_NUM_OF_CHUNKS];
 
@@ -88,16 +88,17 @@ typedef struct rtx_buffer_struct
     ///
     unsigned int num_of_addresses;
     ///
-    unsigned int *newly_acked_per_address;
-    ///
     unsigned int my_association;
     ///
     unsigned int peer_arwnd;
     ///
-    boolean shutdown_received;
+    gboolean shutdown_received;
     ///
+    gboolean fast_recovery_active;
+    /// the exit point is only valid, if we are in fast recovery
+    unsigned int fr_exit_point;
     unsigned int advancedPeerAckPoint;
-
+    ///
     unsigned int lastSentForwardTSN;
     unsigned int lastReceivedCTSNA;
 
@@ -113,11 +114,7 @@ typedef struct rtx_buffer_struct
  */
 void rtx_reset_bytecounters(rtx_buffer * rtx)
 {
-    unsigned int count;
-
     rtx->newly_acked_bytes = 0L;
-    for (count = 0; count < rtx->num_of_addresses; count++)
-        rtx->newly_acked_per_address[count] = 0L;
     return;
 }
 
@@ -152,9 +149,10 @@ void *rtx_new_reltransfer(unsigned int number_of_destination_addresses, unsigned
     tmp->save_num_of_txm = 0L;
     tmp->peer_arwnd = 0L;
     tmp->shutdown_received = FALSE;
+    tmp->fast_recovery_active = FALSE;
+    tmp->fr_exit_point = 0L;
     tmp->num_of_addresses = number_of_destination_addresses;
     tmp->advancedPeerAckPoint = iTSN - 1;   /* a save bet */
-    tmp->newly_acked_per_address = malloc(number_of_destination_addresses * sizeof(unsigned int));
     tmp->prChunks = g_array_new(FALSE, TRUE, sizeof(pr_stream_data));
     tmp->my_association = mdi_readAssociationID();
     event_logi(VVERBOSE, "RTX : Association-ID== %d ", tmp->my_association);
@@ -181,7 +179,6 @@ void rtx_delete_reltransfer(void *rtx_instance)
     g_list_free(rtx->chunk_list);
     g_array_free(rtx->prChunks, TRUE);
 
-    free(rtx->newly_acked_per_address);
     free(rtx_instance);
 }
 
@@ -212,6 +209,59 @@ void rtx_rtt_update(unsigned int adr_idx, rtx_buffer * rtx)
     return;
 }
 
+
+/**
+ * this function enters fast recovery and sets correct exit point
+ * iff fast recovery is not already active
+ */
+int rtx_enter_fast_recovery(void)
+{
+    rtx_buffer *rtx = NULL;
+    rtx = (rtx_buffer *) mdi_readReliableTransfer();
+    if (!rtx) {
+        error_log(ERROR_MAJOR, "rtx_buffer instance not set !");
+        return (SCTP_MODULE_NOT_FOUND);
+    }
+
+    if (rtx->fast_recovery_active == FALSE) {
+        event_logi(INTERNAL_EVENT_0, "=============> Entering FAST RECOVERY !!!, Exit Point: %u <================", rtx->highest_tsn);
+        rtx->fast_recovery_active = TRUE;
+        rtx->fr_exit_point = rtx->highest_tsn;
+    }
+    return SCTP_SUCCESS;
+}
+
+
+/**
+ * this function leaves fast recovery if it was activated, and all chunks up to
+ * fast recovery exit point were acknowledged.
+ */
+static inline int rtx_check_fast_recovery(rtx_buffer* rtx, unsigned int ctsna)
+{
+    if (rtx->fast_recovery_active == TRUE) {
+        if (after (ctsna, rtx->fr_exit_point) || ctsna == rtx->fr_exit_point) {
+            event_logi(INTERNAL_EVENT_0, "=============> Leaving FAST RECOVERY !!! CTSNA: %u <================", ctsna);
+            rtx->fast_recovery_active = FALSE;
+            rtx->fr_exit_point = 0;
+        }
+    }
+    return SCTP_SUCCESS;
+}
+
+/**
+ * this function returns true, if fast recovery is active
+ * else it returns FALSE
+ */
+gboolean rtx_is_in_fast_recovery(void)
+{
+    rtx_buffer *rtx = NULL;
+    rtx = (rtx_buffer *) mdi_readReliableTransfer();
+    if (!rtx) {
+        error_log(ERROR_MAJOR, "rtx_buffer instance not set !");
+        return (FALSE);
+    }
+    return rtx->fast_recovery_active;
+}
 
 
 /**
@@ -265,7 +315,6 @@ int rtx_dequeue_up_to(unsigned int ctsna, unsigned int addr_index)
 
             if (dat->hasBeenAcked == FALSE && dat->hasBeenDropped == FALSE) {
                 rtx->newly_acked_bytes += dat->chunk_len;
-                rtx->newly_acked_per_address[dat->last_destination] += dat->chunk_len;
                 dat->hasBeenAcked = TRUE;
             }
 
@@ -393,6 +442,36 @@ int rtx_send_forward_tsn(rtx_buffer *rtx, unsigned int forward_tsn, unsigned int
 }
 
 
+int rtx_get_obpa(unsigned int adIndex, unsigned int *totalInFlight)
+{
+    rtx_buffer *rtx=NULL;
+    chunk_data *dat=NULL;
+    int count, len, numBytesPerAddress = 0, numTotalBytes = 0;
+
+    rtx = (rtx_buffer *) mdi_readReliableTransfer();
+    if (!rtx) {
+        error_log(ERROR_FATAL, "rtx_buffer instance not set !");
+        return SCTP_MODULE_NOT_FOUND;
+    }
+    len = g_list_length(rtx->chunk_list);
+    if (len == 0) {
+        *totalInFlight = 0;
+        return 0;
+    }
+    for (count = 0; count < len; count++) {
+        dat = g_list_nth_data(rtx->chunk_list, count);
+        if (dat == NULL) break;
+        if (!dat->hasBeenDropped && !dat->hasBeenAcked) {
+            if (dat->last_destination == adIndex) {
+                numBytesPerAddress+= dat->chunk_len;
+            }
+            numTotalBytes += dat->chunk_len;
+        }
+    }
+    *totalInFlight = numTotalBytes;
+    return numBytesPerAddress;
+}
+
 /**
  * this is called by bundling, when a SACK needs to be processed. This is a LONG function !
  * FIXME : check correct update of rtx->lowest_tsn !
@@ -402,7 +481,7 @@ int rtx_send_forward_tsn(rtx_buffer *rtx, unsigned int forward_tsn, unsigned int
  * @param  sack_chunk  pointer to the sack chunk
  * @return -1 on error, 0 if okay.
  */
-int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
+int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int totalLen)
 {
     rtx_buffer *rtx=NULL;
     SCTP_sack_chunk *sack=NULL;
@@ -439,7 +518,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
     rtx->lastReceivedCTSNA = ctsna;
 
     old_own_ctsna = rtx->lowest_tsn;
-    event_logii(VVERBOSE, "Received ctsna==%u, old_own_ctsna==%u", ctsna, old_own_ctsna);
+    event_logii(VERBOSE, "Received ctsna==%u, old_own_ctsna==%u", ctsna, old_own_ctsna);
 
     adl_gettime(&(rtx->sack_arrival_time));
 
@@ -448,8 +527,12 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
 
     /* a false value here may do evil things !!!!! */
     chunk_len = ntohs(sack->chunk_header.chunk_length);
+    /* this is just a very basic safety check */
+    if (chunk_len > totalLen) return -1;
 
-    /* maybe add sanity checks  !!! */
+    rtx_check_fast_recovery(rtx,  ctsna);
+
+    /* maybe add some more sanity checks  !!! */
     advertised_rwnd = ntohl(sack->a_rwnd);
     num_of_gaps = ntohs(sack->num_of_fragments);
     num_of_dups = ntohs(sack->num_of_duplicates);
@@ -489,9 +572,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
             event_log(VERBOSE,
                       "Size of retransmission list was zero, we received fragment report -> ignore");
         } else {
-            /* use     num_of_rtxm as index to that array.... */
-            /*              rxc_send_sack_everytime();     */
-            /* this will be expensive !!!!!!!!!!!!!!!! */
+            /* this may become expensive !!!!!!!!!!!!!!!! */
             pos = 0;
             dat = g_list_nth_data(rtx->chunk_list, i);
             if (rtx->chunk_list != NULL && dat != NULL) {
@@ -513,36 +594,29 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
                         event_logiii(VVERBOSE,
                                      "Chunk in a gap: before(%u,%u)==true -- Marking it up (%u Gap Reports)!",
                                      dat->chunk_tsn, low, dat->gap_reports);
-                        if (dat->gap_reports == 4) {
-                            event_logi(VVERBOSE, "Got four gap_reports, scheduling %u for RTX", dat->chunk_tsn);
-                            rtx_necessary = TRUE;
+                        if (dat->gap_reports >= 4) {
                             /* FIXME : Get MTU of address, where RTX is to take place, instead of MAX_SCTP_PDU */
+                            event_logi(VVERBOSE, "Got four gap_reports, ==checking== chunk %u for rtx OR drop", dat->chunk_tsn);
                             /* check sum of chunk sizes (whether it exceeds MTU for current address */
                             if(dat->hasBeenDropped == FALSE) {
-                                if ((retransmitted_bytes + dat->chunk_len) < MAX_SCTP_PDU) {
-                                    if (timerisset(&dat->expiry_time)) {
-                                        if (timercmp(&(rtx->sack_arrival_time), &(dat->expiry_time), >)) {
-                                            fc_decrease_outstanding_bytes(dat->last_destination, dat->chunk_len);
-                                            /*-----------------------------------------------------------------------------*/
-                                            /* rtx_update_fwtsn_list(rtx, dat); */
-                                            /*-----------------------------------------------------------------------------*/
-                                            dat->hasBeenDropped = TRUE;
-                                        } else {
-                                            /* retransmit it, chunk is not yet expired */
-                                            rtx_chunks[chunks_to_rtx] = dat;
-                                            chunks_to_rtx++;
-                                            /* preparation for what is in section 6.2.1.C */
-                                            retransmitted_bytes += dat->chunk_len;
-                                        }
-                                    } else { /* default: infinite lifetime */
-                                        rtx_chunks[chunks_to_rtx] = dat;
-                                        chunks_to_rtx++;
-                                        /* preparation for what is in section 6.2.1.C */
-                                        retransmitted_bytes += dat->chunk_len;
-                                    }
+                                if (timerisset(&dat->expiry_time) && timercmp(&(rtx->sack_arrival_time), &(dat->expiry_time), >)) {
+                                    event_logi(VVERBOSE, "Got four gap_reports, dropping chunk %u !!!", dat->chunk_tsn);
+                                    dat->hasBeenDropped = TRUE;
+                                    /* this is a trick... */
+                                    dat->hasBeenFastRetransmitted = TRUE;
+                                } else if (dat->hasBeenFastRetransmitted == FALSE) {
+                                    event_logi(VVERBOSE, "Got four gap_reports, scheduling %u for RTX", dat->chunk_tsn);
+                                    /* retransmit it, chunk is not yet expired */
+                                    rtx_necessary = TRUE;
+                                    rtx_chunks[chunks_to_rtx] = dat;
+                                    dat->gap_reports = 0;
+                                    dat->hasBeenFastRetransmitted = TRUE;
+                                    chunks_to_rtx++;
+                                    /* preparation for what is in section 6.2.1.C */
+                                    retransmitted_bytes += dat->chunk_len;
                                 }
-                            }
-                        }
+                            } /*  if(dat->hasBeenDropped == FALSE)  */
+                        }     /*  if (dat->gap_reports == 4) */
                         /* read next chunk */
                         i++;
                         dat = g_list_nth_data(rtx->chunk_list, i);
@@ -556,7 +630,6 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
                         event_logiii(VVERBOSE, "between(%u,%u,%u)==true", low, dat->chunk_tsn, hi);
                         if (dat->hasBeenAcked == FALSE && dat->hasBeenDropped == FALSE) {
                             rtx->newly_acked_bytes += dat->chunk_len;
-                            rtx->newly_acked_per_address[dat->last_destination] += dat->chunk_len;
                             dat->hasBeenAcked = TRUE;
                         }
                         if (dat->num_of_transmissions < 1) {
@@ -649,7 +722,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
 
     if (rtx_necessary == FALSE) {
         fc_sack_info(adr_index, advertised_rwnd, ctsna, all_acked, new_acked,
-                     rtx->newly_acked_bytes, rtx->num_of_addresses, rtx->newly_acked_per_address);
+                     rtx->newly_acked_bytes, rtx->num_of_addresses);
         rtx_reset_bytecounters(rtx);
     } else {
         /* retval = */
@@ -658,7 +731,6 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk)
                                             all_acked, new_acked,
                                             rtx->newly_acked_bytes,
                                             rtx->num_of_addresses,
-                                            rtx->newly_acked_per_address,
                                             chunks_to_rtx, rtx_chunks);
         rtx_reset_bytecounters(rtx);
     }
@@ -704,7 +776,7 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
     struct timeval now;
     GList *tmp;
     chunk_data *dat=NULL;
-    event_logi(INTERNAL_EVENT_0, "rtx_t3_timeout (address==%u)", address);
+    event_logi(INTERNAL_EVENT_0, "========================= rtx_t3_timeout (address==%u) =====================", address);
 
     rtx = (rtx_buffer *) mdi_readReliableTransfer();
 
@@ -716,8 +788,7 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
 
     while (tmp) {
         if (((chunk_data *)(tmp->data))->num_of_transmissions < 1) {
-            error_log(ERROR_MAJOR,
-                      "Somehow chunk->num_of_transmissions is less than 1 !");
+            error_log(ERROR_FATAL, "Somehow chunk->num_of_transmissions is less than 1 !");
             break;
         }
         /* only take chunks that were transmitted to *address* */
@@ -726,11 +797,6 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
                 if (timerisset( &((chunk_data *)(tmp->data))->expiry_time)) {
                     if (timercmp(&now, &((chunk_data *)(tmp->data))->expiry_time, > )) {
                         /* chunk has expired, maybe send FORWARD_TSN */
-                        fc_decrease_outstanding_bytes(((chunk_data *)(tmp->data))->last_destination,
-                                                      ((chunk_data *)(tmp->data))->chunk_len);
-                        /*-----------------------------------------------------------------------------*/
-                        /* rtx_update_fwtsn_list(rtx, (chunk_data *)(tmp->data) ); */
-                        /*-----------------------------------------------------------------------------*/
                         ((chunk_data *)(tmp->data))->hasBeenDropped = TRUE;
                     } else { /* chunk has not yet expired */
                         chunks[chunks_to_rtx] = tmp->data;
@@ -751,8 +817,8 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
 
                     chunks_to_rtx++;
                 }
-            }
-        }
+            }       /* hasBeenDropped == FALSE     */
+        }           /* last_destination == address */
         tmp = g_list_next(tmp);
     }
     event_logi(VVERBOSE, "Scheduled %d chunks for rtx", chunks_to_rtx);
@@ -1105,7 +1171,7 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
         if (rtx->newly_acked_bytes != 0) new_acked = TRUE;
         if (g_list_length(rtx->chunk_list) == 0) all_acked = TRUE;
         fc_sack_info(0, rtx->peer_arwnd, ctsna, all_acked, new_acked,
-                     rtx->newly_acked_bytes, rtx->num_of_addresses, rtx->newly_acked_per_address);
+                     rtx->newly_acked_bytes, rtx->num_of_addresses);
         rtx_reset_bytecounters(rtx);
     }
 

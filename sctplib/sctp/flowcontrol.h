@@ -1,5 +1,5 @@
 /*
- *  $Id: flowcontrol.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: flowcontrol.h,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -117,7 +117,6 @@ int fc_fast_retransmission(unsigned int address_index, unsigned int arwnd,unsign
                          unsigned int rtx_bytes, boolean all_data_acked,
                          boolean new_data_acked, unsigned int num_acked,
                          unsigned int number_of_addresses,
-                         unsigned int *num_acked_per_address,
                          int number_of_rtx_chunks, chunk_data ** chunks);
 
 /**
@@ -134,7 +133,7 @@ void fc_sack_info(unsigned int address_index, unsigned int arwnd, unsigned int c
                   boolean all_data_acked,
                   boolean new_data_acked,
                   unsigned int num_acked,
-                  unsigned int number_of_addresses, unsigned int *num_acked_per_address);
+                  unsigned int number_of_addresses);
 
 int fc_dequeueUnackedChunk(unsigned int tsn);
 
@@ -194,15 +193,6 @@ unsigned int fc_readMTU(short path_id);
  */
 int fc_readPBA(short path_id);
 
-
-/**
- * Function returns the outstanding byte count value of a certain path.
- * @param path_id    path index of which we want to know the outstanding_bytes_per_address
- * @return current outstanding_bytes_per_address value, else -1
- */
-int fc_readOutstandingBytesPerAddress(short path_id);
-
-int fc_decrease_outstanding_bytes(unsigned int address, unsigned int numOfBytes);
 
 /**
  * Function returns the outstanding byte count value of this association.

@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: pathmanagement.h,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -171,10 +171,10 @@ int  pm_setMaxPathRetransmisions(int new_max);
 /*------------------- Functions called by ULP to read pathmanagement state info ------------------*/
 
 
-/* pm_readRTO is called by reliable transfer and sctp-control to adjust T3-timeout and
-   init-timeout, respectively.
-   Params: pathID:      path-ID 
-           returns:     current RTO
+/**
+ * pm_readRTO returns the currently set RTO value in msecs for a certain path.
+ * @param     pathID      index of the address/path
+ * @return                path's current RTO in msecs
 */
 unsigned int pm_readRTO(short pathID);
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: recvctrl.h,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -100,10 +100,6 @@ boolean rxc_sack_timer_is_running(void);
 void rxc_send_sack_everytime(void);
 void rxc_send_sack_every_second_time(void);
 
-/**
- * Helper function to get last address on which data arrived
- */
-short rxc_read_last_active_address(void);
 
 /**
  * returns my actual buffer size (for now a constant)

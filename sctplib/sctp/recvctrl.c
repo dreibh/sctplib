@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: recvctrl.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -880,31 +880,6 @@ void rxc_send_sack_every_second_time(void)
         return;
     }
     rxc->sack_flag = 2;
-
-}
-
-/**
- * Helper function to get last address on which data arrived
- */
-short rxc_read_last_active_address(void)
-{
-    rxc_buffer *rxc;
-    short idx;
-    rxc = (rxc_buffer *) mdi_readRX_control();
-    if (!rxc) {
-        error_log(ERROR_MAJOR, "rxc_buffer instance not set !");
-        return -1;
-    }
-    if (rxc->last_address > SCTP_MAX_NUM_ADDRESSES) {
-        error_log(ERROR_FATAL, "Internal Error - Address index out of range in rxc_read_last_active_address()");
-        return -1;
-    }
-
-    idx = (short) rxc->last_address;
-    if (rxc->datagrams_received == -1)
-        return pm_readPrimaryPath();
-    else
-        return idx;
 
 }
 

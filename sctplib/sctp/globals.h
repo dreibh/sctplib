@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: globals.h,v 1.2 2003/05/23 10:40:53 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -52,10 +52,6 @@
 #include <glib.h>
 #include <string.h>
 #include <stdlib.h>
-
-// ----------------------------------
-// #include "dmalloc.h"
-// ----------------------------------
 
 
 #ifdef  STDC_HEADERS
@@ -174,6 +170,7 @@ typedef struct chunk_data_struct
     gboolean isUnreliable;
     gboolean hasBeenAcked;
     gboolean hasBeenDropped;
+    gboolean hasBeenFastRetransmitted;
     gpointer context;
 } chunk_data;
 
