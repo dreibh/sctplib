@@ -50,7 +50,9 @@
 
 #define MAX_BUFFER_LENGTH                   1400	
 
+#ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
+#endif
 
 static unsigned char localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
 static unsigned char destinationAddress[SCTP_MAX_IP_LEN];
@@ -106,7 +108,7 @@ void getArgs(int argc, char **argv)
         switch (c) {
         case 'd':
             if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy(destinationAddress, optarg);
+                strcpy((char *)destinationAddress, optarg);
 		client = 1;
             }
             break;
@@ -119,7 +121,7 @@ void getArgs(int argc, char **argv)
         case 's':
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
+                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
                 noOfLocalAddresses++;
             }
             break;
@@ -176,7 +178,7 @@ void getDestinationIPaddr(char paddr[SCTP_MAX_IP_LEN])
 
    pathID = sctp_getPrimary(associationID);
    sctp_getPathStatus(associationID, pathID, &pathStatus);
-   strcpy(paddr,pathStatus.destinationAddress);
+   strcpy((char *)paddr, (const char *)pathStatus.destinationAddress);
 
    /* refreshes the ncurses window with the new IP address */
    mvwaddstr(peerWinStatus, 0, 0, paddr);
@@ -223,7 +225,7 @@ void initializecurses()
     selfWinStatus = newwin(1,selfX2,0,0);
     peerWinStatus = newwin(1,peerX2,peerY1-1,0);
     
-    getDestinationIPaddr(peeraddr);
+    getDestinationIPaddr((char *)peeraddr);
 
     waddstr(selfWinStatus,usrid);
  
@@ -247,7 +249,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned short streamSN,unsigned int TSN, unsigned int protoID, unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[SCTP_MAXIMUM_DATA_LENGTH];
-    int length;
+    unsigned int length;
     unsigned int tsn;
     unsigned short ssn;
  
@@ -264,7 +266,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
     if (!(len>length)) {
       chunk[len] = 0;
     }
-    waddstr(peerWin,chunk);
+    waddstr(peerWin, (char *)chunk);
     wrefresh(peerWin);
 
 }
@@ -307,7 +309,7 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
         /* and use it */
         if (pathID < assocStatus.numberOfAddresses) {
             sctp_setPrimary(assocID, pathID);
-	    getDestinationIPaddr(peeraddr);
+	    getDestinationIPaddr((char *)peeraddr);
 	   
         }
     }
@@ -409,7 +411,8 @@ void stdinCallback(int fd,short int revent, short int* gotEvents, void* dummy)
      from user (for handling of Ctrl-C and Ctrl-\ see function finish()) */
     
     static int t;
-    unsigned char c, buffer[MAX_BUFFER_LENGTH];
+    unsigned char c;
+    char buffer[MAX_BUFFER_LENGTH];
  
     /* call ncurses function wgetch() to read in one user keystroke. 
        Did not use the wgetstr() function because it blocks until the user#
@@ -433,10 +436,10 @@ void stdinCallback(int fd,short int revent, short int* gotEvents, void* dummy)
 	strcpy(buffer,usrid);        /* adds the user ID into buffer */
 	buffer[usrid_len] = '\0';
 	strcat(buffer,"# ");
-	strcat(buffer,buf);          /* adds the contents of buf into buffer */
+	strcat(buffer, (char *)buf);          /* adds the contents of buf into buffer */
 	sctp_send(associationID,
                   0,
-                  buffer, strlen(buffer),
+                  (unsigned char *)buffer, strlen(buffer),
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
                   SCTP_INFINITE_LIFETIME, SCTP_ORDERED_DELIVERY,

@@ -1,5 +1,5 @@
 /*
- *  $Id: main.c,v 1.3 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: main.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -379,7 +379,7 @@ void getArgs(int argc, char **argv)
         while ((tokstr = strtok(tokens_str, ",")) != NULL) {
             tokens_str = NULL;
             printf("sourceaddresses separated: %s\n", tokstr);
-            strncpy(sourceAddrs[noOfsourceAddrs], tokstr, 16);
+            strncpy((char *)sourceAddrs[noOfsourceAddrs], tokstr, 16);
             noOfsourceAddrs++;
         }
     }
@@ -391,7 +391,7 @@ void getArgs(int argc, char **argv)
         while ((tokstr = strtok(tokens_str, ",")) != NULL) {
             tokens_str = NULL;
             printf("IPv6 sourceaddresses separated: %s\n", tokstr);
-            strncpy(sourceAddrs[noOfsourceAddrs], tokstr, SCTP_MAX_IP_LEN);
+            strncpy((char *)sourceAddrs[noOfsourceAddrs], tokstr, SCTP_MAX_IP_LEN);
             noOfsourceAddrs++;
         }
     }
@@ -402,13 +402,13 @@ void getArgs(int argc, char **argv)
 
     for (i = 0; i < dflg; i++) {
         printf("Destinationaddress to Host%d: %s\n", i, destins[i]);
-        strncpy(destinAddrs[noOfdestinAddrs], destins[i], 16);
+        strncpy((char *)destinAddrs[noOfdestinAddrs], destins[i], 16);
         noOfdestinAddrs++;
     }
 #ifdef HAVE_IPV6
     for (i = 0; i < dv6flg; i++) {
         printf("Destinationaddress to Host%d: %s\n", i, v6_destins[i]);
-        strncpy(destinAddrs[noOfdestinAddrs], v6_destins[i], SCTP_MAX_IP_LEN);
+        strncpy((char *)destinAddrs[noOfdestinAddrs], v6_destins[i], SCTP_MAX_IP_LEN);
         noOfdestinAddrs++;
     }
 

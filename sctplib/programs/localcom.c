@@ -1,5 +1,5 @@
 /*
- *  $Id: localcom.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: localcom.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -46,7 +46,9 @@
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS        17
 #define MAXIMUM_PAYLOAD_LENGTH             8192
 
+#ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
+#endif
 
 struct ulp_data {
     int maximumStreamID;
@@ -132,7 +134,8 @@ void serverDataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned
                            unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length, result;
+    unsigned int length;
+    int result;
     unsigned short ssn;
     unsigned int the_tsn;
 
@@ -157,7 +160,8 @@ void clientDataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned
                            unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length,  result;
+    unsigned int length;
+    int  result;
     unsigned short ssn;
     unsigned int the_tsn;
 
@@ -414,7 +418,7 @@ int main(int argc, char **argv)
 
     
     noOfLocalAddresses = 1;
-    strcpy(localAddressList[0], "127.0.0.1");
+    strcpy((char *)localAddressList[0], "127.0.0.1");
     
     sctpServerInstance = SCTP_registerInstance(ECHO_PORT,
                                                MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
@@ -426,7 +430,7 @@ int main(int argc, char **argv)
                                                noOfLocalAddresses, localAddressList,
                                                echoClientUlp);
 
-    strcpy(destinationAddress, "127.0.0.1");    
+    strcpy((char *)destinationAddress, "127.0.0.1");    
 
 
     SCTP_associate(sctpClientInstance, 1, destinationAddress, ECHO_PORT, NULL);

@@ -1,5 +1,5 @@
 /*
- *  $Id: mini-ulp.c,v 1.3 2003/09/10 21:21:50 tuexen Exp $
+ *  $Id: mini-ulp.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -217,7 +217,7 @@ int doPingPong(void)
 {
     int i;
 	/* use ascii bulk ping mode. */
-    strncpy(pingBuffer, "ping", 4);
+    strncpy((char *)pingBuffer, "ping", 4);
 	for (i = 4; i < pingBufSize; i++) {
 			pingBuffer[i] = 'A' + (i % 26);
 	}
@@ -595,7 +595,7 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned
     fprintf(stderr, "%lu.%06lu \n", t->tv_sec, t->tv_usec);
 */
     if (pingPongCount > 0) {
-        if (strncmp(chunk, "pong", 4) == 0) {
+        if (strncmp((char *)chunk, "pong", 4) == 0) {
 			i = handlePong();
             if (i==-1) {
                 printf("Data not sent, SHUTDOWN-state reached, terminating Ping-Pong !\n");
@@ -606,11 +606,11 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned
 
     }
 
-    if(strncmp(chunk, "ping", 4) == 0) {
+    if(strncmp((char *)chunk, "ping", 4) == 0) {
         /* it is a ping-pong message, send it back after changing
 		 * the first 4 bytes to pong
 		 */
-		strncpy(chunk, "pong", 4);
+		strncpy((char *)chunk, "pong", 4);
         SID = (unsigned short) stream_id;
         i = sctp_send(assoc_id, SID, (unsigned char *) chunk,
             len, protoID, -1, 0, 0, 0, 0);

@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.6 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: terminal.c,v 1.7 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -114,7 +114,7 @@ void getArgs(int argc, char **argv)
             break;
         case 'd':
             if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy(destinationAddress, optarg);
+                strcpy((char *)destinationAddress, optarg);
             }
             hasDestinationAddress = 1;
             break;
@@ -130,7 +130,7 @@ void getArgs(int argc, char **argv)
         case 's':
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
+                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
                 noOfLocalAddresses++;
             }
             break;
@@ -168,9 +168,9 @@ void checkArgs(void)
     
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
-        strcpy(localAddressList[noOfLocalAddresses], "::0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
 #else
-        strcpy(localAddressList[noOfLocalAddresses], "0.0.0.0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "0.0.0.0");
 #endif
         noOfLocalAddresses++;
     }
@@ -194,8 +194,8 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned short streamSN, unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {
-    char chunk[SCTP_MAXIMUM_DATA_LENGTH + 1];
-    int length;
+    unsigned char chunk[SCTP_MAXIMUM_DATA_LENGTH + 1];
+    unsigned int length;
     unsigned short ssn;
     unsigned int the_tsn;
  
@@ -207,7 +207,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
     /* read it */
         
     length = SCTP_MAXIMUM_DATA_LENGTH;
-    SCTP_receive(assocID, streamID, chunk, &length,&ssn, &the_tsn, SCTP_MSG_DEFAULT);
+    SCTP_receive(assocID, streamID, chunk, &length, &ssn, &the_tsn, SCTP_MSG_DEFAULT);
     chunk[length] = 0;
     fprintf(stdout, "%s", chunk);
     fflush(stdout);
@@ -349,7 +349,7 @@ void stdinCallback(int fd, short int revents, short int* gotEvents,  void* dummy
 
     memset(readBuffer, (int)currentStream, sizeof(readBuffer));
     
-    if (fgets(readBuffer, sizeof(readBuffer), stdin)==NULL) {
+    if (fgets((char *)readBuffer, sizeof(readBuffer), stdin) == NULL) {
         if (useAbort) {
             SCTP_abort(associationID);
         } else {
@@ -358,7 +358,7 @@ void stdinCallback(int fd, short int revents, short int* gotEvents,  void* dummy
     } else {
         SCTP_send(associationID,
                   currentStream,
-                  readBuffer,  strlen(readBuffer) /*sizeof(readBuffer)*/,
+                  readBuffer,  strlen((char *)readBuffer),
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
                   timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);

@@ -1,5 +1,5 @@
 /*
- *  $Id: combined_server.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: combined_server.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -36,6 +36,7 @@
 #include <stdio.h>
 #include <stdlib.h>         /* for atoi() under Linux */
 #include <time.h>
+#include <ctype.h>
 #include "sctp_wrapper.h"
 
 #ifdef HAVE_CONFIG_H
@@ -54,7 +55,9 @@
 #define BUFFER_LENGTH                      1024
 #define SEND_QUEUE_SIZE                     100
 
+#ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
+#endif
 
 struct ulp_data {
     int maximumStreamID;
@@ -84,40 +87,51 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
-
-    while ((c = getopt(argc, argv, "hs:it:vV")) != -1)
-    {
-        switch (c) {
-        case 'h':
-            printUsage();
-            exit(0);
-        case 's':
-            if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
-                noOfLocalAddresses++;
-            };
-            break;
-        case 'i':
-            sendOOTBAborts = 0;
-            break;
-        case 't':
-            timeToLive = atoi(optarg);
-            break;
-        case 'v':
-            verbose = 1;
-            break;
-        case 'V':
-            verbose = 1;
-            vverbose = 1;
-            break;
-        default:
-            unknownCommand = 1;
-            break;
-       }
+    int i;
+    char *opt;
+    
+    for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (tolower(argv[i][1])) {
+                case 'h':
+				    printUsage();
+				    exit(0);  
+                case 's':
+				    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+				    if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) && (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+				        strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+				        noOfLocalAddresses++;
+				    };
+				    break;
+                case 'i':
+				    sendOOTBAborts = 0;
+				    break;
+                case 't':
+				    if (i+1 >= argc) {
+                        printUsage();
+						exit(0);
+				    }
+				    opt=argv[++i];
+				    timeToLive = atoi(opt);
+				    break;
+                case 'v':
+				    verbose = 1;
+				    break;
+                case 'V':
+				    verbose = 1;
+				    vverbose = 1;
+				    break;
+                default:
+				    unknownCommand = 1;
+				    break;
+			}			
+        }
+		else
+			unknownCommand = 1;
     }
 }
 
@@ -131,9 +145,9 @@ void checkArgs(void)
     
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
-        strcpy(localAddressList[noOfLocalAddresses], "::0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
 #else
-        strcpy(localAddressList[noOfLocalAddresses], "0.0.0.0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "0.0.0.0");
 #endif
         noOfLocalAddresses++;
     }
@@ -152,7 +166,7 @@ void echoDataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned i
                          unsigned short streamSN, unsigned int TSN, unsigned int protoID, unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length;
+    unsigned int length;
     unsigned short ssn;
     unsigned int tsn;
 
@@ -163,7 +177,7 @@ void echoDataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned i
     }
     /* read it */
     length = MAXIMUM_PAYLOAD_LENGTH;
-    SCTP_receive(assocID, streamID, chunk, &length,&ssn, &tsn, SCTP_MSG_DEFAULT);
+    SCTP_receive(assocID, streamID, chunk, &length, &ssn, &tsn, SCTP_MSG_DEFAULT);
     /* and send it */
     SCTP_send(assocID,
               min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
@@ -177,7 +191,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length;
+    unsigned int length;
     unsigned short ssn;
     unsigned int tsn;
 
@@ -277,7 +291,7 @@ void* daytimeCommunicationUpNotif(unsigned int assocID, int status,
    
     SCTP_send(assocID,
               0,
-              timeAsString, strlen(timeAsString),
+              (unsigned char *)timeAsString, strlen(timeAsString),
               SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
 	          timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
@@ -293,7 +307,7 @@ void* chargenCommunicationUpNotif(unsigned int assocID, int status,
                                   int associationSupportsPRSCTP, void* dummy)
 {	
     int length;
-    char buffer[BUFFER_LENGTH];
+    unsigned char buffer[BUFFER_LENGTH];
     struct ulp_data *ulpDataPtr;
 
     if (verbose) {  
@@ -301,8 +315,8 @@ void* chargenCommunicationUpNotif(unsigned int assocID, int status,
         fflush(stdout);
     }
     
-    length = 1 + (random() % 512);
-    memset(buffer, 'A', length);
+    length = 1 + (rand() % 512);
+    memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
     
     while(SCTP_send(assocID, 0, buffer, length, SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
@@ -312,7 +326,7 @@ void* chargenCommunicationUpNotif(unsigned int assocID, int status,
           fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
           fflush(stdout);
       }
-      length = 1 + (random() % 512);
+      length = 1 + (rand() % 512);
       memset(buffer, 'A', length);
       buffer[length-1] = '\n';
     }
@@ -389,16 +403,16 @@ void communicationErrorNotif(unsigned int assocID, unsigned short status, void* 
 
 void chargenRestartNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    int length;
-    char buffer[BUFFER_LENGTH];
+    unsigned int length;
+    unsigned char buffer[BUFFER_LENGTH];
    
     if (verbose) {  
         fprintf(stdout, "%-8x: Restart\n", assocID);
         fflush(stdout);
     }
 
-    length = 1 + (random() % 512);
-    memset(buffer, 'A', length);
+    length = 1 + (rand() % 512);
+    memset((void *) buffer, 'A', length);
     buffer[length-1] = '\n';
     
     while((!(((struct ulp_data *)ulpDataPtr)->ShutdownReceived)) &&
@@ -409,7 +423,7 @@ void chargenRestartNotif(unsigned int assocID, void* ulpDataPtr)
           fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
           fflush(stdout);
       }
-      length = 1 + (random() % 512);
+      length = 1 + (rand() % 512);
       memset(buffer, 'A', length);
       buffer[length-1] = '\n';
     }
@@ -461,8 +475,8 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
 
 void chargenQueueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, int queueLength, void* ulpDataPtr)
 {	
-    int length;
-    char buffer[BUFFER_LENGTH];
+    unsigned int length;
+    unsigned char buffer[BUFFER_LENGTH];
 
     if (vverbose) {
         fprintf(stdout, "%-8x: Queue status change notification: Type %d, ID %d, Length %d\n",
@@ -471,8 +485,8 @@ void chargenQueueStatusChangeNotif(unsigned int assocID, int queueType, int queu
     }
     
     if (queueType == SCTP_SEND_QUEUE) {
-      length = 1 + (random() % 512);
-      memset(buffer, 'A', length);
+      length = 1 + (rand() % 512);
+      memset((void *)buffer, 'A', length);
       buffer[length-1] = '\n';
       
       while((!(((struct ulp_data *)ulpDataPtr)->ShutdownReceived)) &&
@@ -483,7 +497,7 @@ void chargenQueueStatusChangeNotif(unsigned int assocID, int queueType, int queu
             fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
             fflush(stdout);
         }
-        length = 1 + (random() % 512);
+        length = 1 + (rand() % 512);
         memset(buffer, 'A', length);
         buffer[length-1] = '\n';
       }

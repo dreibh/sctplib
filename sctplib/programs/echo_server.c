@@ -1,5 +1,5 @@
     /*
- *  $Id: echo_server.c,v 1.4 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: echo_server.c,v 1.5 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -44,7 +44,9 @@
 #include <config.h>
 #endif
 
+#ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
+#endif
 
 #define ECHO_PORT                             7
 #define MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES    10
@@ -91,7 +93,7 @@ void getArgs(int argc, char **argv)
         case 's':
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
+                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
                 noOfLocalAddresses++;
             };
             break;
@@ -124,9 +126,9 @@ void checkArgs(void)
     
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
-        strcpy(localAddressList[noOfLocalAddresses], "::0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
 #else
-        strcpy(localAddressList[noOfLocalAddresses], "0.0.0.0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "0.0.0.0");
 #endif
         noOfLocalAddresses++;
     }
@@ -146,7 +148,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length;
+    unsigned int length;
     unsigned short ssn;
     unsigned int tsn;
 

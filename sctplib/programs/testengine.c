@@ -184,8 +184,8 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
         unsigned char ip[1][SCTP_MAX_IP_LEN], *ipStr;
         unsigned short port, instreams, outstreams;
 
-        ipStr = getStrParam(sc, "IP", &errors, MANDATORY, lineNum);
-        if (strlen(ipStr) > SCTP_MAX_IP_LEN - 1) {
+        ipStr = (unsigned char *)getStrParam(sc, "IP", &errors, MANDATORY, lineNum);
+        if (strlen((char *)ipStr) > SCTP_MAX_IP_LEN - 1) {
             fprintf(stderr, "Line %u: Invalid IP-Address\n", lineNum);
             errors++;
         }
@@ -204,7 +204,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                 return 0;
             }
 
-            strcpy(ip[0], ipStr);
+            strcpy((char *)ip[0], (const char *)ipStr);
 
             ulpCallbacks.dataArriveNotif          = &dataArriveNotif;
             ulpCallbacks.sendFailureNotif         = &sendFailureNotif;
@@ -220,7 +220,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
 
             if (instanceID > 0) {
                 printf("SCTP instance successfully initialized\n");
-                strcpy(localIP, ipStr);
+                strcpy((char *)localIP, (const char *)ipStr);
             } else {
                 fprintf(stderr, "Initialize FAILED. Please check your parameters!\n");
                 exit(1);
@@ -324,7 +324,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                 asciival[0] = contentsStr[++i];
                 asciival[1] = contentsStr[++i];
                 asciival[2] = '\0';
-                asciichar = (unsigned char) strtoul(asciival, &endp, 16);
+                asciichar = (unsigned char) strtoul((char *)asciival, &endp, 16);
                 if (*endp != '\0') {
                     fprintf(stderr, "Error in line %u: ASCII code expected after '\\'\n", lineNum);
                     return (++errors);
@@ -375,7 +375,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                 asciival[0] = contentsStr[++i];
                 asciival[1] = contentsStr[++i];
                 asciival[2] = '\0';
-                asciichar = (unsigned char) strtoul(asciival, &endp, 16);
+                asciichar = (unsigned char) strtoul((char *)asciival, &endp, 16);
                 if (*endp != '\0') {
                     fprintf(stderr, "Error in line %u: ASCII code expected after '\\'\n", lineNum);
                     return (++errors);
@@ -474,7 +474,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
 
             while (n <= num)
             {
-                sendRes = sctp_send(assocID, stream, payloadContents, payloadLength, /*protoID*/ 0,
+                sendRes = sctp_send(assocID, stream, (unsigned char *)payloadContents, payloadLength, /*protoID*/ 0,
                                     SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME,
                                     SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
                 n++;
@@ -679,7 +679,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                 return 0;
             }
 
-            if (sctp_associate(instanceID, outstreams, ip, port, NULL) == 0) {
+            if (sctp_associate(instanceID, outstreams, (unsigned char *)ip, port, NULL) == 0) {
                 printf("Exception in line %u: ASSOCIATE failed.\n", lineNum);
             }
 
@@ -818,7 +818,7 @@ void doReceive(unsigned int assoc)
     unsigned int tsn;
 
     while (unreceivedChunks > 0) {
-        sctp_receive(assoc, /*stream*/ 0, chunk, &length, &seqno, &tsn, SCTP_MSG_DEFAULT);
+        sctp_receive(assoc, /*stream*/ 0, (unsigned char *)chunk, &length, &seqno, &tsn, SCTP_MSG_DEFAULT);
         unreceivedChunks--;
         printf("Data received (%u bytes) -- %u chunks in receive queue\n", length, unreceivedChunks);
         length = MAX_PAYLOAD_LENGTH;
@@ -858,7 +858,7 @@ void dataArriveNotif(unsigned int assoc, unsigned int stream, unsigned int len,
                      unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAX_PAYLOAD_LENGTH];
-    int length = MAX_PAYLOAD_LENGTH;
+    unsigned int length = MAX_PAYLOAD_LENGTH;
     unsigned short seqno;
     unsigned int tsn;
 
@@ -880,7 +880,7 @@ void dataArriveNotif(unsigned int assoc, unsigned int stream, unsigned int len,
 
     if (receiveMode == RECEIVE_MIRROR) {
         int sendRes;
-        sendRes = sctp_send(assocID, stream, payloadContents, payloadLength, /*protoID*/ 0,
+        sendRes = sctp_send(assocID, stream, (unsigned char *)payloadContents, (unsigned int)payloadLength, /*protoID*/ 0,
                             SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME,
                             SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
 

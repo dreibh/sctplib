@@ -122,7 +122,7 @@ void getArgs(int argc, char **argv)
         switch (c) {
         case 'd':
             if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy(destinationAddress, optarg);
+                strcpy((char *)destinationAddress, optarg);
 		client = 1;
             }
             break;
@@ -135,7 +135,7 @@ void getArgs(int argc, char **argv)
         case 's':
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
+                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
                 noOfLocalAddresses++;
             }
             break;
@@ -364,7 +364,7 @@ void ncurses_display_PathStatus(unsigned int assocID)
     for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++)
       {
 	sctp_getPathStatus(assocID, pathID, &pathStatus);
-	strcpy(destaddr[pathID], pathStatus.destinationAddress);
+	strcpy((char *)destaddr[pathID], (const char *)pathStatus.destinationAddress);
 	State[pathID] = pathStatus.state;
 	Rto[pathID] = pathStatus.rto;
 	HB_Interval[pathID] = pathStatus.heartbeatIntervall;
@@ -500,7 +500,8 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned int unordered, void* ulpDataPtr)
 {
     char chunk[SCTP_MAXIMUM_DATA_LENGTH + 1];
-    int length, i; 
+    unsigned int length;
+    int i; 
     unsigned int InstreamID_position = 0;
     unsigned int tsn;
     unsigned short ssn;
@@ -513,7 +514,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
 
     /* read it */
     length = SCTP_MAXIMUM_DATA_LENGTH;
-    sctp_receive(assocID, streamID, chunk, &length, &ssn, &tsn, SCTP_MSG_DEFAULT);
+    sctp_receive(assocID, streamID, (unsigned char *)chunk, &length, &ssn, &tsn, SCTP_MSG_DEFAULT);
     chunk[length]=0;  
     
     /* and display it */
@@ -721,7 +722,7 @@ void stdinCallback(int fd, short int revents, short int* gotEvents, void* dummy)
 	if (outstreamID == statusUpdate.noOfOutStreams)
 	  outstreamID = 0;
 
-    sctp_send(associationID, outstreamID, buffer, strlen(buffer),
+    sctp_send(associationID, outstreamID, (unsigned char *)buffer, strlen(buffer),
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
                   SCTP_INFINITE_LIFETIME, SCTP_ORDERED_DELIVERY, 

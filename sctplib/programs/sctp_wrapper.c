@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.c,v 1.3 2003/09/10 21:21:50 tuexen Exp $
+ *  $Id: sctp_wrapper.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -104,7 +104,7 @@ SCTP_initLibrary(void)
         exit(result);
     }
     return result;
-};
+}
 
 short
 SCTP_registerInstance(unsigned short port,
@@ -133,7 +133,7 @@ SCTP_registerInstance(unsigned short port,
         exit(result);
     }
     return result;
-};
+}
 
 int SCTP_unregisterInstance(unsigned short instance_name)
 {
@@ -144,7 +144,7 @@ int SCTP_unregisterInstance(unsigned short instance_name)
         fflush(stderr);        
     }
     return result;
-};
+}
 
 int
 SCTP_deleteAssociation(unsigned int associationID)
@@ -164,7 +164,7 @@ SCTP_deleteAssociation(unsigned int associationID)
         fflush(stderr);
     }
     return result;
-};
+}
 
 int 
 SCTP_send(unsigned int associationID, unsigned short streamID,
@@ -205,7 +205,7 @@ SCTP_send(unsigned int associationID, unsigned short streamID,
         fflush(stderr);
     }
     return result;
-};
+}
 
 int
 SCTP_receive(unsigned int associationID, unsigned short streamID, unsigned char *buffer, 
@@ -232,7 +232,7 @@ SCTP_receive(unsigned int associationID, unsigned short streamID, unsigned char 
         fflush(stderr);
     }
     return result;
-};
+}
 
 int
 SCTP_shutdown(unsigned int associationID)
@@ -249,7 +249,7 @@ SCTP_shutdown(unsigned int associationID)
         fflush(stderr);
     }
     return result;
-};
+}
 
 int 
 SCTP_abort(unsigned int associationID)
@@ -266,7 +266,7 @@ SCTP_abort(unsigned int associationID)
         fflush(stderr);
     }
     return result;
-};
+}
 
 int SCTP_getAssocStatus(unsigned int associationID, SCTP_AssociationStatus* status)
 {
@@ -287,7 +287,7 @@ int SCTP_getAssocStatus(unsigned int associationID, SCTP_AssociationStatus* stat
         fflush(stderr);
     }
     return result;
-};
+}
 
 int
 SCTP_receiveUnacked(unsigned int associationID, unsigned char *buffer, unsigned int *length, unsigned int* tsn,
@@ -316,7 +316,7 @@ SCTP_receiveUnacked(unsigned int associationID, unsigned char *buffer, unsigned 
         fflush(stderr);
     }
     return result;
-};
+}
 
 int
 SCTP_receiveUnsent(unsigned int associationID, unsigned char *buffer, unsigned int *length, unsigned int* tsn,
@@ -344,7 +344,7 @@ SCTP_receiveUnsent(unsigned int associationID, unsigned char *buffer, unsigned i
         fflush(stderr);
     }
     return result;
-};
+}
 
 short
 SCTP_setPrimary(unsigned int associationID, short path_id)
@@ -401,7 +401,7 @@ SCTP_eventLoop(void)
         fflush(stderr);
     }
     return result;
-};
+}
 
 int 
 SCTP_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatus* status)
@@ -423,7 +423,7 @@ SCTP_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatus* s
         }
     }
     return result;
-};
+}
 
 unsigned int
 SCTP_associate(unsigned short SCTP_InstanceName,
@@ -443,7 +443,7 @@ SCTP_associate(unsigned short SCTP_InstanceName,
         fflush(stderr);        
     }
     return result;
-};
+}
 
 int
 SCTP_registerUserCallback(int fd, sctp_userCallback sdf, void* userData)
@@ -455,7 +455,7 @@ SCTP_registerUserCallback(int fd, sctp_userCallback sdf, void* userData)
         fflush(stderr);
     }
     return result;
-};
+}
 
 int 
 SCTP_getAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParameters* params)
@@ -467,7 +467,7 @@ SCTP_getAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParameters*
         fflush(stderr);
     }
     return result;
-};
+}
 
 int 
 SCTP_setAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParameters* params)
@@ -479,12 +479,12 @@ SCTP_setAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParameters*
         fflush(stderr);
     }
     return result;
-};
+}
 
 unsigned int
 SCTP_startTimer(unsigned int milliseconds, sctp_timerCallback timer_cb,
                 void *param1, void *param2)
 {    
      return sctp_startTimer(milliseconds/1000, (milliseconds%1000)*1000, timer_cb, param1, param2);
-};
+}
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: daytime_server.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: daytime_server.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -89,7 +89,7 @@ void getArgs(int argc, char **argv)
         case 's':
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
+                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
                 noOfLocalAddresses++;
             };
             break;  
@@ -120,9 +120,9 @@ void checkArgs(void)
     
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
-        strcpy(localAddressList[noOfLocalAddresses], "::0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
 #else
-        strcpy(localAddressList[noOfLocalAddresses], "0.0.0.0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "0.0.0.0");
 #endif
         noOfLocalAddresses++;
     }
@@ -142,7 +142,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length;
+    unsigned int length;
     unsigned int tsn;
     unsigned short ssn;
 
@@ -199,7 +199,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
    
     SCTP_send(assocID,
               0,
-              timeAsString, strlen(timeAsString),
+              (unsigned char *)timeAsString, strlen(timeAsString),
               SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
 	          timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);

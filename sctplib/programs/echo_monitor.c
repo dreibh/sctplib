@@ -51,7 +51,10 @@
 #define MAXIMUM_NUMBER_OF_ASSOCIATIONS        5
 #define MAXIMUM_NUMBER_OF_IN_STREAMS         17
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS        17
+
+#ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
+#endif
 
 struct ulp_data {
   int maximumStreamID;
@@ -183,7 +186,7 @@ void getArgs(int argc, char **argv)
 	break;
       case 'd':
 	if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-	  strcpy(destinationAddress, optarg);
+	  strcpy((char *)destinationAddress, optarg);
 	  startAssociation = 1;
 	}
 	break;
@@ -206,7 +209,7 @@ void getArgs(int argc, char **argv)
       case 's':
 	if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
 	    (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-	  strcpy(localAddressList[noOfLocalAddresses], optarg);
+	  strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
 	  noOfLocalAddresses++;
 	}
 	break;  
@@ -340,9 +343,9 @@ void store_AssocStatus (unsigned int assocID)
 	  MonitorAssocStatus[i].numberOfAddresses   = assocStatus.numberOfAddresses;
 	  for (LocalAddressID=0; LocalAddressID < noOfLocalAddresses; LocalAddressID++)
 	    {
-	      strcpy(MonitorAssocStatus[i].localAddressList[LocalAddressID],localAddressList[LocalAddressID]);
+	      strcpy((char *)MonitorAssocStatus[i].localAddressList[LocalAddressID], (const char *)localAddressList[LocalAddressID]);
 	    }  
-	  strcpy(MonitorAssocStatus[i].primaryDestinationAddress, assocStatus.primaryDestinationAddress);
+	  strcpy((char *)MonitorAssocStatus[i].primaryDestinationAddress, (const char *)assocStatus.primaryDestinationAddress);
 	  MonitorAssocStatus[i].inStreams = assocStatus.inStreams;
 	  MonitorAssocStatus[i].outStreams = assocStatus.outStreams;
 	  MonitorAssocStatus[i].primaryAddressIndex = assocStatus.primaryAddressIndex;
@@ -386,7 +389,7 @@ void store_PathStatus (unsigned int assocID)
 	  for (path=0; path < assocStatus.numberOfAddresses; path++)
 	    {
 	      sctp_getPathStatus(assocID, path, &pathStatus);
-	      strcpy(MonitorPathStatus[i].destinationAddress[path],pathStatus.destinationAddress);
+	      strcpy((char *)MonitorPathStatus[i].destinationAddress[path], (const char *)pathStatus.destinationAddress);
 	      MonitorPathStatus[i].state[path] = pathStatus.state;
 	      MonitorPathStatus[i].srtt[path] = pathStatus.srtt;
 	      MonitorPathStatus[i].rto[path] = pathStatus.rto;
@@ -578,7 +581,8 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned int unordered, void* ulpDataPtr)
 {
   unsigned char chunk[SCTP_MAXIMUM_DATA_LENGTH];
-  int length, index=0, result;
+  unsigned int length;
+  int index=0, result;
   unsigned int tsn;
   unsigned short ssn;
   

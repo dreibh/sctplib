@@ -1,5 +1,5 @@
 /*
- *  $Id: echo_tool.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: echo_tool.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -50,7 +50,9 @@
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS        17
 #define MAXIMUM_PAYLOAD_LENGTH             8192
 
+#ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
+#endif 
 
 struct ulp_data {
     int maximumStreamID;
@@ -122,7 +124,7 @@ void getArgs(int argc, char **argv)
             break;
         case 'd':
             if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy(destinationAddress, optarg);
+                strcpy((char *)destinationAddress, optarg);
                 startAssociation = 1;
             }
             break;
@@ -154,7 +156,7 @@ void getArgs(int argc, char **argv)
         case 's':
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                 (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy(localAddressList[noOfLocalAddresses], optarg);
+                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
                 noOfLocalAddresses++;
             }
             break;  
@@ -190,9 +192,9 @@ void checkArgs(void)
     
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
-        strcpy(localAddressList[noOfLocalAddresses], "::0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
 #else
-        strcpy(localAddressList[noOfLocalAddresses], "0.0.0.0");
+        strcpy((char *)localAddressList[noOfLocalAddresses], "0.0.0.0");
 #endif
         noOfLocalAddresses++;
     }
@@ -213,7 +215,8 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                      unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-    int length, index=0, result;
+    unsigned int length;
+    int index=0, result;
     unsigned short ssn;
     unsigned int the_tsn;
 
