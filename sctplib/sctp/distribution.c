@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.4 2003/06/06 13:07:14 ajung Exp $
+ *  $Id: distribution.c,v 1.5 2003/06/24 08:53:31 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1091,9 +1091,9 @@ mdi_receiveMessage(gint socket_fd,
                      event_log(INTERNAL_EVENT_0, "mdi_receiveMsg: INIT Message - processing it !");
 
                      /* union sockunion alternateFromAddress; */
-                     /* while (get_alternate_address_from(initPtr, &alternateFromAddress) > 0 && currentAssociation == NULL) { */
-                     /*     currentAssociation = retrieveAssociationByTransportAddress(lastFromAddress, lastFromPort,lastDestPort);*/
-                     /* } */
+                     /* while (get_alternate_address_from(initPtr, &alternateFromAddress) > 0 && currentAssociation == 
+NULL) { */                     /*     currentAssociation = retrieveAssociationByTransportAddress(lastFromAddress, 
+lastFromPort,lastDestPort);*/                     /* } */
 
                         /* TODO : check for all src address parameters in INIT, whether they correspond
                            to an association. If there are addresses previously unknown (that may have
@@ -1192,10 +1192,8 @@ mdi_receiveMessage(gint socket_fd,
         if (lastFromPort != currentAssociation->remotePort
             || lastDestPort != currentAssociation->localPort) {
             error_logiiii(ERROR_FATAL,
-                          "port mismatch in received DG (lastFromPort=%u, assoc->remotePort=%u, lastDestPort=%u, assoc->localPort=%u ",
-                          lastFromPort, currentAssociation->remotePort,
-                          lastDestPort, currentAssociation->localPort);
-            currentAssociation = NULL;
+                          "port mismatch in received DG (lastFromPort=%u, assoc->remotePort=%u, lastDestPort=%u, assoc->localPort=%u ",   lastFromPort, currentAssociation->remotePort,                          lastDestPort, currentAssociation->localPort);
+	    currentAssociation = NULL;
             sctpInstance = NULL;
             lastFromAddress = NULL;
             lastDestAddress = NULL;
@@ -1498,8 +1496,8 @@ gboolean mdi_addressListContainsLocalhost(unsigned int noOfAddresses,
         if (sctpInstance) {
             if (sctpInstance->noOfLocalAddresses > 0){
                 for (counter = 0; counter < sctpInstance->noOfLocalAddresses; counter++) {
-                    if (adl_equal_address(&(addressList[ii]), &(sctpInstance->localAddressList[counter])) == TRUE) result = TRUE;
-                }
+                    if (adl_equal_address(&(addressList[ii]), &(sctpInstance->localAddressList[counter])) == TRUE) result = 
+TRUE;                }
             } else {
                 if (sctpInstance->has_INADDR_ANY_set) {
                     for (counter = 0; counter < myNumberOfAddresses; counter++) {
@@ -1957,12 +1955,13 @@ unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
                              unsigned int   maxSimultaneousInits,
                              unsigned short destinationPort,
                              void* ulp_data)
- 
+
 {
     unsigned int assocID, count;
     unsigned short zlocalPort;
     union sockunion dest_su[SCTP_MAX_NUM_ADDRESSES];
     gboolean withPRSCTP;
+	AddressScopingFlags filterFlags = flag_Default;
     SCTP_instance temporary;
     GList* result = NULL;
 
@@ -1973,9 +1972,23 @@ unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
 
     ZERO_CHECK_LIBRARY;
 
+    if (destinationPort == 0) {
+            error_log(ERROR_MAJOR, "sctp_associate: destination port is zero....this is not allowed");
+            sctpInstance = old_Instance;
+            currentAssociation = old_assoc;
+            LEAVE_LIBRARY("sctp_associate");
+            return 0;
+    }
+
     for (count = 0; count <  noOfDestinationAddresses; count++) {
         if (adl_str2sockunion(destinationAddresses[count], &dest_su[count]) < 0) {
-            error_log(ERROR_MAJOR, "sctp_associate: could not convert destination adress");
+            error_log(ERROR_MAJOR, "sctp_associate: destination adress not good !");
+            sctpInstance = old_Instance;
+            currentAssociation = old_assoc;
+            LEAVE_LIBRARY("sctp_associate");
+            return 0;
+        } else if(adl_filterInetAddress(&dest_su[count], filterFlags) == FALSE) {
+            error_log(ERROR_MAJOR, "sctp_associate: destination adress not good !");
             sctpInstance = old_Instance;
             currentAssociation = old_assoc;
             LEAVE_LIBRARY("sctp_associate");
@@ -2464,8 +2477,8 @@ sctp_setFailureThreshold(unsigned int associationID, unsigned short pathMaxRetra
 
     CHECK_LIBRARY;
 
-    event_logii(VERBOSE, "sctp_setFailureThreshold: Association %u, pathMaxRetr. %u", associationID, pathMaxRetransmissions);
-
+    event_logii(VERBOSE, "sctp_setFailureThreshold: Association %u, pathMaxRetr. %u", associationID, 
+pathMaxRetransmissions);
     currentAssociation = retrieveAssociation(associationID);
 
     if (currentAssociation != NULL) {
@@ -3353,8 +3366,8 @@ int sctp_sendRawData(unsigned int associationID, short path_id,
                 return 1;
             }
         }
-        event_logiii(INTERNAL_EVENT_1, "sctp_sendRawData(assoc:%u, path: %d): send %u bytes",associationID, path_id,length);
-
+        event_logiii(INTERNAL_EVENT_1, "sctp_sendRawData(assoc:%u, path: %d): send %u bytes",associationID, 
+path_id,length);
         /* Forward chunk to the addressed association */
         result = mdi_send_message((SCTP_message *) buffer, length, path_id);
 
@@ -4274,9 +4287,9 @@ unsigned short mdi_readLocalInStreams(void)
     } else {
         /* retrieve SCTP-instance with SCTP-instance name in current association */
         temporary.sctpInstanceName = currentAssociation->sctpInstance->sctpInstanceName;
-        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", currentAssociation->sctpInstance->sctpInstanceName);
-        result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
-        if (result == NULL) {
+        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", 
+currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary, 
+&CompareInstanceNames);        if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance with name %u in List, FIXME !",
                 currentAssociation->sctpInstance->sctpInstanceName);
         }
@@ -4317,9 +4330,9 @@ unsigned short mdi_readLocalOutStreams(void)
     } else {
         /* retrieve SCTP-instance with SCTP-instance name in current association */
         temporary.sctpInstanceName = currentAssociation->sctpInstance->sctpInstanceName;
-        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", currentAssociation->sctpInstance->sctpInstanceName);
-        result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
-        if (result == NULL) {
+        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", 
+currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary, 
+&CompareInstanceNames);        if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance with name %u in List, FIXME !",
                 currentAssociation->sctpInstance->sctpInstanceName);
         }
@@ -4405,8 +4418,8 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                 default: break;
             }
         }
-        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from INADDR_ANY (from %u)", count,myNumberOfAddresses );
-    } else if (sctpInstance->has_IN6ADDR_ANY_set == TRUE) {
+        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from INADDR_ANY (from %u)", 
+count,myNumberOfAddresses );    } else if (sctpInstance->has_IN6ADDR_ANY_set == TRUE) {
         for (tmp = 0; tmp < myNumberOfAddresses; tmp++) {
             switch(sockunion_family( &(myAddressList[tmp]))) {
                 case AF_INET :
@@ -4430,8 +4443,8 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                 default: break;
             }
         }
-        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from IN6ADDR_ANY (from %u)", count, myNumberOfAddresses);
-
+        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from IN6ADDR_ANY (from %u)", count, 
+myNumberOfAddresses);
     } else {
         for (tmp = 0; tmp < sctpInstance->noOfLocalAddresses; tmp++) {
             switch(sockunion_family( &(sctpInstance->localAddressList[tmp]))) {
@@ -4654,9 +4667,8 @@ mdi_newAssociation(void*  sInstance,
 
     if (sInstance == NULL) {
         if (sctpInstance == NULL) {
-            error_logi(ERROR_FATAL, "SCTP Instance for Port %u were all NULL, call sctp_registerInstance FIRST !",local_port);
-            return 1;
-        } else {
+            error_logi(ERROR_FATAL, "SCTP Instance for Port %u were all NULL, call sctp_registerInstance FIRST !",local_port);     
+       return 1;        } else {
             instance = sctpInstance;
         }
     } else {
@@ -4729,9 +4741,8 @@ mdi_newAssociation(void*  sInstance,
                 currentAssociation->noOfLocalAddresses++;
             }
         }
-        event_logi(VERBOSE," mdi_newAssociation: Assoc has has_INADDR_ANY_set, and %d addresses",currentAssociation->noOfLocalAddresses);
-    } else {
-        /* get all specified addresses */
+        event_logi(VERBOSE," mdi_newAssociation: Assoc has has_INADDR_ANY_set, and %d addresses",currentAssociation->noOfLocalAddresses);    
+    } else {        /* get all specified addresses */
         currentAssociation->noOfLocalAddresses = instance->noOfLocalAddresses;
         currentAssociation->localAddresses =
             (union sockunion *) malloc(instance->noOfLocalAddresses * sizeof(union sockunion));
