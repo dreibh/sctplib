@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.h,v 1.2 2003/06/01 19:44:55 ajung Exp $
+ *  $Id: distribution.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -29,7 +29,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * Purpose: This header-file defines the SCTP-internal interface of message
@@ -184,7 +184,7 @@ void mdi_communicationUpNotif(unsigned short status);
 void mdi_queueStatusChangeNotif(int queueType, int queueId, int queueLen);
 
 
-int mdi_addressChange(union sockunion* address, gboolean added);
+int mdi_updateMyAddressList(void);
 
 
 /*------------------- Functions called by the SCTP to get current association data----------------*/
@@ -261,7 +261,7 @@ void *mdi_readBundling(void);
  */
 void *mdi_readSCTP_control(void);
 
-void *mdi_readASCONF(void);
+
 
 /* 
  * returns: association-ID of the curent association

@@ -11,7 +11,7 @@ dnl AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
-AM_INIT_AUTOMAKE(sctplib,1.0.0-a20)
+AM_INIT_AUTOMAKE(sctplib,1.0.0-a22)
 
 AC_PREFIX_DEFAULT(/usr/local)
 if test "x$prefix" = "xNONE"; then

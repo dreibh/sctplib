@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.5 2003/06/24 08:53:31 ajung Exp $
+ *  $Id: distribution.c,v 1.6 2003/07/01 13:58:27 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -30,7 +30,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * Purpose: This modules implements the interface defined distribution.h and sctp.h
@@ -71,7 +71,6 @@
 #include  "flowcontrol.h"       /* interfaces to flowcontrol */
 #include  "recvctrl.h"          /* interfaces to receive-controller */
 #include  "chunkHandler.h"
-#include  "sctp_asconf.h"
 
 #include  <sys/types.h>
 // #include  <stdio.h>
@@ -181,8 +180,6 @@ typedef struct ASSOCIATION
     void *bundling;
     /** pointer to SCTP-control */
     void *sctp_control;
-    /** pointer to module for deleting/adding addresses and per stream based flow control */
-    void *sctp_asconf;
     /** marks an association for deletion */
     boolean deleted;
     /** transparent pointer to some upper layer data */
@@ -660,7 +657,6 @@ static void mdi_removeAssociationData(Association * assoc)
             rtx_delete_reltransfer(assoc->reliableTransfer);
             rxc_delete_recvctrl(assoc->rx_control);
             se_delete_stream_engine(assoc->streamengine);
-            asc_delete(assoc->sctp_asconf);
         }
 
         pm_deletePathman(assoc->pathMan);
@@ -1136,14 +1132,6 @@ lastFromPort,lastDestPort);*/                     /* } */
                 currentAssociation = NULL;
                 return;
             }
-        } else if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_ASCONF) == TRUE) {
-            /* get address from ASCONF chunk */
-            /* currentAssociation = retrieveAssociationByTransportAddress(NEWADRRESS, lastFromPort,lastDestPort);*/
-            if (currentAssociation == NULL) {
-            event_log(INTERNAL_EVENT_0,
-                      "mdi_receiveMsg: got an ASCONF chunk as OOTB -> message ignored (OOTB - see section 8.4.8) ");
-                sendAbort = TRUE;
-            }
         } else {
             /* section 8.4.8) send an ABORT with peers veri-tag, set T-Bit */
                 event_log(INTERNAL_EVENT_0,
@@ -1444,8 +1432,7 @@ int sctp_initLibrary(void)
 }
 
 
-
-int mdi_addressChange(union sockunion* address, gboolean added)
+int mdi_updateMyAddressList(void)
 {
     int sfd;
     int maxMTU;
@@ -1457,9 +1444,6 @@ int mdi_addressChange(union sockunion* address, gboolean added)
     if (adl_gatherLocalAddresses(&myAddressList, &myNumberOfAddresses,sfd,TRUE,&maxMTU,flag_Default) == FALSE) {
         return SCTP_SPECIFIC_FUNCTION_ERROR;
     }
-    /* now also extend this change to all associations */
-
-    /* and perform ADD/DELETE IP ADDRESS for each assoc, or terminate them if that is not supported ! */
 
     return SCTP_SUCCESS;
 }
@@ -1636,6 +1620,14 @@ sctp_registerInstance(unsigned short port,
             return SCTP_PARAMETER_PROBLEM;
     }
 
+    i = mdi_updateMyAddressList();
+    if (i != SCTP_SUCCESS) {
+            error_log(ERROR_MAJOR, "Could not update my local addresses...");
+            sctpInstance = old_Instance;
+            currentAssociation = old_assoc;
+            LEAVE_LIBRARY("sctp_registerInstance");
+            return SCTP_UNSPECIFIED_ERROR;
+    }
 
     sctpInstance = (SCTP_instance *) malloc(sizeof(SCTP_instance));
     if (!sctpInstance) {
@@ -3232,114 +3224,6 @@ int sctp_extendedEventLoop(void (*lock)(void* data), void (*unlock)(void* data),
     LEAVE_LIBRARY("sctp_extendedEventLoop");
     return result;
 }
-/* ------------------------------------ HELPER FUNCTIONS from adaptation ------------------*/
-
-/* ----------------------------------------------------------------------------------------*/
-/* ------------------------------------ ASCONF functions  -------------- ------------------*/
-/* ----------------------------------------------------------------------------------------*/
-
-int sctp_addIPAddress(unsigned int associationID,unsigned char address[SCTP_MAX_IP_LEN],
-                   unsigned int *correlationId)
-{
-    int result;
-    union sockunion new_su;
-    SCTP_instance *old_Instance = sctpInstance;
-    Association *old_assoc = currentAssociation;
-
-    ENTER_LIBRARY("sctp_addIPAddress");
-    CHECK_LIBRARY;
-
-    currentAssociation = retrieveAssociation(associationID);
-
-    if (currentAssociation != NULL) {
-        sctpInstance = currentAssociation->sctpInstance;
-        event_logi(VERBOSE, "sctp_asc_addIP: Association %u", associationID);
-        result = adl_str2sockunion(address, &new_su);
-        if (result == 0) {
-            result = asc_addIP(&new_su, correlationId);
-        } else {
-            result = SCTP_PARAMETER_PROBLEM;
-        }
-    }else{
-        error_logi(ERROR_MAJOR, "sctp_asc_addIP : association %u not found", associationID);
-        result = SCTP_ASSOC_NOT_FOUND;
-    }
-
-    sctpInstance = old_Instance;
-    currentAssociation = old_assoc;
-    LEAVE_LIBRARY("sctp_addIPAddress");
-    return result;
-}
-
-int sctp_deleteIPAddress(unsigned int associationID, unsigned char address[SCTP_MAX_IP_LEN],
-                      unsigned int* correlationId)
-{
-    int result;
-    union sockunion del_su;
-    SCTP_instance *old_Instance = sctpInstance;
-    Association *old_assoc = currentAssociation;
-
-    ENTER_LIBRARY("sctp_deleteIPAddress");
-    CHECK_LIBRARY;
-
-    currentAssociation = retrieveAssociation(associationID);
-
-    if (currentAssociation != NULL) {
-        sctpInstance = currentAssociation->sctpInstance;
-        event_logi(VERBOSE, "sctp_asc_deleteIP: Association %u", associationID);
-        result = adl_str2sockunion(address, &del_su);
-        if (result == 0) {
-            result = asc_deleteIP(&del_su, correlationId);
-        } else {
-            result = SCTP_PARAMETER_PROBLEM;
-        }
-    }else{
-        error_logi(ERROR_MAJOR, "sctp_asc_deleteIP : association %u does not exist", associationID);
-        sctpInstance = old_Instance;
-        currentAssociation = old_assoc;
-        LEAVE_LIBRARY("sctp_deleteIPAddress");
-        return SCTP_ASSOC_NOT_FOUND;
-    }
-
-    sctpInstance = old_Instance;
-    currentAssociation = old_assoc;
-    LEAVE_LIBRARY("sctp_deleteIPAddress");
-    return result;
-}
-
-int sctp_setRemotePrimary(unsigned int associationID, unsigned char address[SCTP_MAX_IP_LEN])
-{
-    int result;
-    union sockunion su;
-    SCTP_instance *old_Instance = sctpInstance;
-    Association *old_assoc = currentAssociation;
-
-    ENTER_LIBRARY("sctp_setRemotePrimary");
-    CHECK_LIBRARY;
-
-    currentAssociation = retrieveAssociation(associationID);
-
-    if (currentAssociation != NULL) {
-        sctpInstance = currentAssociation->sctpInstance;
-        result = adl_str2sockunion(address, &su);
-        if (result == 0) {
-            event_logi(VERBOSE, "sctp_setRemotePrimary: Association %u", associationID);
-            result = asc_setRemotePrimary(&su);
-        } else {
-            result = SCTP_PARAMETER_PROBLEM;
-        }
-    }else{
-        error_logi(ERROR_MAJOR, "sctp_asc_setRemotePrimary : association %u does not exist", associationID);
-        result =  SCTP_ASSOC_NOT_FOUND;
-    }
-    sctpInstance = old_Instance;
-    currentAssociation = old_assoc;
-    LEAVE_LIBRARY("sctp_setRemotePrimary");
-    return result;
-}
-
-
-/* ------------------------------------ ASCONF functions  -------------- ------------------*/
 
 
 #ifdef BAKEOFF
@@ -3833,35 +3717,6 @@ void mdi_queueStatusChangeNotif(int queueType, int queueId, int queueLen)
     currentAssociation = old_assoc;
 }                               /* end: mdi_queueStatusChangeNotif */
 
-/**
- * This function notifies trhe ULP of each and every one result
- * @param  result   Result of the ASCONF call with correlation ID from the ULP
- */
-void mdi_asconfResultNotif(unsigned int correlationId, int result, void* resultPtr)
-{
-    SCTP_instance *old_Instance = sctpInstance;
-    Association *old_assoc = currentAssociation;
-
-    if (currentAssociation != NULL) {
-
-        event_logiii(INTERNAL_EVENT_0, "mdi_asconfStatusNotif(assoc %u, result %d, correlation id %u",
-            currentAssociation->assocId, result, correlationId);
-
-        if(sctpInstance->ULPcallbackFunctions.asconfStatusNotif) {
-            ENTER_CALLBACK("asconfStatusNotif");
-            sctpInstance->ULPcallbackFunctions.asconfStatusNotif(currentAssociation->assocId,
-                                                                 correlationId, result, resultPtr,
-                                                                 currentAssociation->ulp_dataptr);
-            LEAVE_CALLBACK("asconfStatusNotif");
-        }
-
-    } else {
-        error_log(ERROR_MAJOR, "mdi_communicationLostNotif: association not set");
-    }
-    sctpInstance = old_Instance;
-    currentAssociation = old_assoc;
-}                               /* end: mdi_communicationLostNotif */
-
 
 /*------------------- Functions called by the SCTP to get current association data----------------*/
 
@@ -3991,18 +3846,6 @@ void *mdi_readSCTP_control(void)
     return currentAssociation->sctp_control;
 }
 
-/**
- * function to return a pointer to the ASCONF moddule of this association
- * @return pointer to the ASCONF data structure, null in case of error.
- */
-void *mdi_readASCONF(void)
-{
-    if (currentAssociation == NULL) {
-        error_log(ERROR_MINOR, "mdi_readASCONF: association not set");
-        return NULL;
-    }
-    return currentAssociation->sctp_asconf;
-}
 
 /**
  * function to read the association id of the current association
@@ -4663,12 +4506,13 @@ mdi_newAssociation(void*  sInstance,
                    union sockunion *destinationAddressList)
 {
     SCTP_instance*  instance = NULL;
-    int ii;
+    int ii, result;
 
     if (sInstance == NULL) {
         if (sctpInstance == NULL) {
             error_logi(ERROR_FATAL, "SCTP Instance for Port %u were all NULL, call sctp_registerInstance FIRST !",local_port);     
-       return 1;        } else {
+            return 1;
+       } else {
             instance = sctpInstance;
         }
     } else {
@@ -4715,6 +4559,12 @@ mdi_newAssociation(void*  sInstance,
     currentAssociation->ipTos = instance->default_ipTos;
     currentAssociation->maxSendQueue = instance->default_maxSendQueue;
 
+    result = mdi_updateMyAddressList();
+    if (result != SCTP_SUCCESS) {
+        error_log(ERROR_MAJOR, "Could not update my address list. Unable to initiate new association.");
+        return 1;
+    }        
+    
     if (instance->has_IN6ADDR_ANY_set) {
         /* get ALL addresses */
         currentAssociation->noOfLocalAddresses =  myNumberOfAddresses;
@@ -4775,7 +4625,6 @@ mdi_newAssociation(void*  sInstance,
     currentAssociation->reliableTransfer = NULL;
     currentAssociation->rx_control = NULL;
     currentAssociation->streamengine = NULL;
-    currentAssociation->sctp_asconf = NULL;
 
     /* only pathman, bundling and sctp-control are created at this point, the rest is created
        with mdi_initAssociation */
@@ -4850,7 +4699,6 @@ mdi_initAssociation(unsigned int remoteSideReceiverWindow,
         rtx_delete_reltransfer(currentAssociation->reliableTransfer);
         rxc_delete_recvctrl(currentAssociation->rx_control);
         se_delete_stream_engine(currentAssociation->streamengine);
-        asc_delete(currentAssociation->sctp_asconf);
     }
 
     /* TODO : check number of input and output streams (although that should be fixed now) */
@@ -4872,8 +4720,6 @@ mdi_initAssociation(unsigned int remoteSideReceiverWindow,
     currentAssociation->streamengine = (void *) se_new_stream_engine(noOfInStreams,
                                                                      noOfOutStreams,
                                                                      withPRSCTP);
-
-    currentAssociation->sctp_asconf = (void *) asc_new(remoteInitialTSN,localInitialTSN);
 
     event_logii(INTERNAL_EVENT_1, "second step of association initialisation performed ID=%08x, local tag=%08x",
                currentAssociation->assocId, currentAssociation->tagLocal);
@@ -4928,9 +4774,6 @@ mdi_restartAssociation(unsigned short noOfInStreams,
     currentAssociation->streamengine = (void *) se_new_stream_engine(noOfInStreams,
                                                                      noOfOutStreams,withPRSCTP);
 
-    asc_delete(currentAssociation->sctp_asconf);
-    currentAssociation->sctp_asconf = (void *) asc_new(remoteInitialTSN, localInitialTSN);
-
     pm_deletePathman(currentAssociation->pathMan);
     currentAssociation->pathMan = NULL;
 
@@ -4943,10 +4786,6 @@ mdi_restartAssociation(unsigned short noOfInStreams,
         error_log(ERROR_FATAL, "Error 1 in RESTART --> Fix implementation");
         return -1;
     }
-
-    result = asc_delete(currentAssociation->sctp_asconf);
-    currentAssociation->sctp_asconf = (void *) asc_new(remoteInitialTSN,localInitialTSN);
-
 
     event_logii(VERBOSE, "ASSOCIATION RESTART: calling pm_setPaths(%u, %u)",noOfPaths,primaryAddress);
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.2 2003/06/01 19:44:55 ajung Exp $
+ *  $Id: sctp.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -30,7 +30,7 @@
  * any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * Purpose: This header-file defines the API to the SCTP library, and contains
@@ -718,18 +718,10 @@ int sctp_eventLoop(void);
 
 int sctp_extendedEventLoop(void (*lock)(void* data), void (*unlock)(void* data), void* data);
 
-/* ------------------------------------- AS_CONF --------------------------------------------*/
-
-int sctp_addIPAddress(unsigned int associationID,unsigned char address[SCTP_MAX_IP_LEN],
-                   unsigned int *correlationId);
-
-int sctp_deleteIPAddress(unsigned int associationID, unsigned char address[SCTP_MAX_IP_LEN],
-                      unsigned int* correlationId);
-
-int sctp_setRemotePrimary(unsigned int associationID, unsigned char address[SCTP_MAX_IP_LEN]);
-
-/* ------------------------------------- AS_CONF --------------------------------------------*/
-
+/**
+ *  these next funtions are unused. They should either be implemented, or removed :-)
+ *  Maybe we should ask Thomas...
+ */
 int sctp_getNumberOfLocalAddresses(unsigned int associationID);
 
 unsigned char* sctp_getLocalAddress(unsigned int associationID, int index);

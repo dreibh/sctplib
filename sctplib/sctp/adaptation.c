@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.7 2003/07/01 09:36:21 tuexen Exp $
+ *  $Id: adaptation.c,v 1.8 2003/07/01 13:58:27 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -324,7 +324,6 @@ static struct extendedpollfd poll_fds[NUM_FDS];
 static int num_of_fds = 0;
 
 static int sctp_sfd = -1;       /* socket fd for standard SCTP port....      */
-static int rsfd = -1;           /* socket file descriptor for routing socket */
 
 #ifdef HAVE_IPV6
 static int sctpv6_sfd = -1;
@@ -422,238 +421,6 @@ int adl_setReceiveBufferSize(int sfd,int new_size)
         return -1;
     }
     event_logi(INTERNAL_EVENT_0, "set receive buffer size to : %d bytes",ch);
-    return 0;
-}
-
-gint adl_open_routing_socket()
-{
-    int sfd;
-#if defined (LINUX)
-    int res;
-    struct sockaddr_nl snl;
-
-    if ((sfd = socket(AF_NETLINK, SOCK_RAW, NETLINK_ROUTE))<0) {
-        error_log(ERROR_FATAL, "Opening of the routing socket failed !");
-        return -1;
-    } else
-        event_logi(INTERNAL_EVENT_0, "got routing socket %d ",sfd);
-
-    memset (&snl, 0, sizeof snl);
-    snl.nl_family = AF_NETLINK;
-    snl.nl_groups = RTMGRP_IPV4_IFADDR|RTMGRP_IPV6_IFADDR;
-
-    /* Bind the socket to the netlink structure for anything. */
-    res = bind (sfd, (struct sockaddr *) &snl, sizeof(snl));
-    if (res < 0)
-    {
-        close (sfd);
-        error_log(ERROR_FATAL, "Binding of the routing socket failed !");
-        return -1;
-   }
-#else
-    if ((sfd = socket(AF_ROUTE, SOCK_RAW, 0))<0) {
-        error_log(ERROR_FATAL, "Opening of the routing socket failed !");
-    }
-#endif
-    return sfd;
-
-}
-
-#if defined (LINUX)
- /* ----------------------------------------------------------------------------------*/
- /* Utility function for parse rtattr. */
- static void
- netlink_parse_rtattr (struct rtattr **tb, int max, struct rtattr *rta, int len)
- {
-   while (RTA_OK(rta, len))
-     {
-       if (rta->rta_type <= max)
-         tb[rta->rta_type] = rta;
-       rta = RTA_NEXT(rta,len);
-     }
- }
-/* ----------------------------------------------------------------------------------*/
-/* Lookup interface IPv4/IPv6 address. */
-int
-netlink_interface_addr (struct nlmsghdr *h, struct sockaddr* sa)
-{
-    int len;
-    struct ifaddrmsg *ifa;
-    struct rtattr *tb [IFA_MAX + 1];
-    void *addr = NULL;
-    void *broad = NULL;
-    char *label = NULL;
-    struct sockaddr_in* si = (struct sockaddr_in*)sa;
-#ifdef HAVE_IPV6
-    unsigned char buf[111];
-    struct sockaddr_in6* si6 = (struct sockaddr_in6*)sa;
-#endif /* HAVE_IPV6 */
-
-    ifa = NLMSG_DATA (h);
-    memset (si, 0, sizeof(struct sockaddr_in));
-
-    if (ifa->ifa_family != AF_INET
-#ifdef HAVE_IPV6
-          && ifa->ifa_family != AF_INET6
-#endif /* HAVE_IPV6 */
-      )
-        return -1;
-
-    if (h->nlmsg_type != RTM_NEWADDR && h->nlmsg_type != RTM_DELADDR)
-        return -1;
-
-    len = h->nlmsg_len - NLMSG_LENGTH(sizeof (struct ifaddrmsg));
-    if (len < 0)
-        return -1;
-
-    memset (tb, 0, sizeof tb);
-    netlink_parse_rtattr (tb, IFA_MAX, IFA_RTA (ifa), len);
-
-    if (tb[IFA_ADDRESS] == NULL)
-        tb[IFA_ADDRESS] = tb[IFA_LOCAL];
-
-    if (tb[IFA_ADDRESS])
-        addr = RTA_DATA (tb[IFA_ADDRESS]);
-    else
-        addr = NULL;
-
-    if (tb[IFA_BROADCAST])
-        broad = RTA_DATA(tb[IFA_BROADCAST]);
-    else
-        broad = NULL;
-
-    /* Flags. */
-    if (ifa->ifa_flags & IFA_F_SECONDARY)
-        event_log(VERBOSE, "netlink_interface_addr: Secondary Flag set - Maybe ignore ?");
-
-    /* Label */
-    if (tb[IFA_LABEL]) {
-        label = (char *) RTA_DATA (tb[IFA_LABEL]);
-        event_logi(VERBOSE, "netlink_interface_addr: Label %s set",label);
-    }
-
-    /* Register interface address to the interface. */
-    if (ifa->ifa_family == AF_INET)
-    {
-        si->sin_family = AF_INET;
-        /* port, socklen ? */
-        si->sin_addr = *((struct in_addr *) addr);
-        event_logi(VERBOSE, "Changed Address: %s",inet_ntoa( * ((struct in_addr*)addr) ));
-        event_logi(VERBOSE, "Prefixlen set to: %d",ifa->ifa_prefixlen);
-        event_logi(VERBOSE, "Broadcast-Address: %s",inet_ntoa( * ((struct in_addr*)broad) ));
-        return 0;
-    }
-#ifdef HAVE_IPV6
-    if (ifa->ifa_family == AF_INET6)
-    {
-      sa->sa_family = AF_INET6;
-      /* si6->sin6_port = ???; */
-      /* si6->sin6_flowinfo = ???; */
-      memcpy(&si6->sin6_addr, addr, sizeof(struct in6_addr));
-      inet_ntop(AF_INET6, &si6->sin6_addr, buf, 100);
-      event_logi(VERBOSE, "Address that changed: %s",buf);
-      event_logi(VERBOSE, "Prefixlen set to: %d",ifa->ifa_prefixlen);
-    }
-#endif /* HAVE_IPV6*/
-
-  return 0;
-}
-
-#else   /* not LINUX */
-
- void
- adl_get_rtaddrs(int addrs, struct sockaddr *sa, struct sockaddr **rti_info)
- {
-     int     i;
-
-     for (i = 0; i < RTAX_MAX; i++) {
-         if (addrs & (1 << i)) {
-             rti_info[i] = sa;
-             NEXT_SA(sa);
-         } else {
-             rti_info[i] = NULL;
-         }
-     }
- }
-#endif  /* if defined (LINUX) */
-
-
-
-void routing_socket_cb() /* a dummy function */
-{
-    return;
-}
-
-
-int adl_read_socket_event(int rsock)
-{
-    unsigned char buffer[IFA_BUFFER_LENGTH];
-
-#if defined (LINUX)
-    struct nlmsghdr*  nlhd;
-    struct sockaddr sa;
-    int res = 0;
-#else
-    struct sockaddr*  sa, *rti_info[RTAX_MAX];
-    struct ifa_msghdr* ifa;
-    ifa = (struct ifa_msghdr *) buffer;
-#endif
-
-    read(rsock, buffer, IFA_BUFFER_LENGTH);
-
-#if defined (LINUX)
-    for (nlhd = (struct nlmsghdr *) buffer; NLMSG_OK (nlhd, res); nlhd = NLMSG_NEXT (nlhd, res))
-    {
-        /* Finish of reading. */
-        if (nlhd->nlmsg_type == NLMSG_DONE) {
-            /* Got NLMSG_DONE - read all */
-            break;
-        }
-        /* Error handling. */
-        if (nlhd->nlmsg_type == NLMSG_ERROR) {
-            /* NL message: ERROR */
-            break;
-        }
-        switch (nlhd->nlmsg_type)
-        {
-            case RTM_NEWADDR:
-                event_log (VVERBOSE, "NetLink: ADDD ADDRESS");
-                res = netlink_interface_addr (nlhd, &sa);
-                mdi_addressChange((union sockunion*)&sa, TRUE);
-                break;
-            case RTM_DELADDR:
-                event_log (VVERBOSE, "NetLink: DELETE ADDRESS");
-                res = netlink_interface_addr (nlhd, &sa);
-                mdi_addressChange((union sockunion*)&sa, FALSE);
-                break;
-            case RTM_NEWROUTE:
-            case RTM_DELROUTE:
-            case RTM_NEWLINK:
-            case RTM_DELLINK:
-            default:
-                event_logi (VVERBOSE, "Other netlink nlmsg_type %d", nlhd->nlmsg_type);
-                break;
-        }
-    }
-#else
-
-    sa = (struct sockaddr *) (ifa + 1);
-
-    adl_get_rtaddrs(ifa->ifam_addrs, sa, rti_info);
-
-    switch(ifa->ifam_type) {
-        case RTM_NEWADDR:
-            event_logi(VERBOSE, "Address %s added.", inet_ntoa(((struct sockaddr_in *)rti_info[RTAX_IFA])->sin_addr));
-            mdi_addressChange((union sockunion*)rti_info[RTAX_IFA], TRUE);
-            break;
-        case RTM_DELADDR:
-            event_logi(VERBOSE, "Address %s deleted.", inet_ntoa(((struct sockaddr_in *)rti_info[RTAX_IFA])->sin_addr));
-            mdi_addressChange((union sockunion*)rti_info[RTAX_IFA], FALSE);
-            break;
-        default:
-            break;
-    }
-#endif
     return 0;
 }
 
@@ -1375,9 +1142,7 @@ void dispatch_event(int num_of_events)
                     break;
 
                 }
-            } else if (event_callbacks[i]->eventcb_type == EVENTCB_TYPE_ROUTING) {
-                adl_read_socket_event(poll_fds[i].fd);
-            }
+            } 
         }
         poll_fds[i].revents = 0;
     }                       /*   for(i = 0; i < num_of_fds; i++) */
@@ -1620,18 +1385,6 @@ int adl_init_adaptation_layer(int * myRwnd)
     /* set a safe default */
     if (myRwnd6 == -1) *myRwnd = 8192;
 #endif
-
-    rsfd = adl_open_routing_socket();
-    if (rsfd < 0) {
-        error_log(ERROR_MAJOR, "Could not open routing socket ! Did you exec <modprobe af_packet> under linux ?!");
-        close (sctp_sfd);
-#ifdef HAVE_IPV6
-        close (sctpv6_sfd);
-#endif
-        return rsfd;
-    }
-
-    adl_register_fd_cb(rsfd, EVENTCB_TYPE_ROUTING, POLLIN | POLLPRI, routing_socket_cb, NULL);
 
     /* icmp_sfd = int adl_open_icmp_socket(); */
     /* adl_register_socket_cb(icmp_sfd, adl_icmp_cb); */

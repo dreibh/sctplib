@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
+ *  $Id: recvctrl.c,v 1.3 2003/07/01 13:58:27 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -30,7 +30,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * This module creates SACK data structures, that may be used to

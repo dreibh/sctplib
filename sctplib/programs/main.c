@@ -1,5 +1,5 @@
 /*
- *  $Id: main.c,v 1.2 2003/06/01 19:44:55 ajung Exp $
+ *  $Id: main.c,v 1.3 2003/07/01 13:58:26 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -25,7 +25,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * main.c  - main program module

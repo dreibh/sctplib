@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
+ *  $Id: rbundling.c,v 1.3 2003/07/01 13:58:27 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -30,7 +30,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * Purpose: This module treats the received chunks, gets the SCTP data from SCTP message-distribution,
@@ -44,7 +44,6 @@
 #include "recvctrl.h"
 #include "reltransfer.h"
 #include "errorhandler.h"
-#include "sctp_asconf.h"
 #include "streamengine.h"
 #include "distribution.h"
 
