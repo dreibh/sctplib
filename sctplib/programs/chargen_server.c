@@ -1,5 +1,5 @@
 /*
- *  $Id: chargen_server.c,v 1.8 2004/01/07 19:47:55 tuexen Exp $
+ *  $Id: chargen_server.c,v 1.9 2004/01/08 17:04:28 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -52,13 +52,12 @@
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS         1
 #define BUFFER_LENGTH                      8192
 #define SEND_QUEUE_SIZE                     100
+#define MAX_RANDOM_LENGTH                  1000
 
 static unsigned char  localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
 static unsigned short noOfLocalAddresses = 0;
 static unsigned char  destinationAddress[SCTP_MAX_IP_LEN];
-static unsigned short remotePort              = 9;
 
-static int startAssociation     = 0;
 static int verbose              = 0;
 static int vverbose             = 0;
 static int unknownCommand       = 0;
@@ -102,11 +101,9 @@ void printUsage(void)
 {
     printf("Usage:   chargen_server [options]\n");
     printf("options:\n");
-    printf("-d destination_addr     establish a association with the specified address\n");   
     printf("-i       ignore OOTB packets\n");
     printf("-l       length of chunks (default random)\n");
     printf("-n number    number of packets after which to stop and shutdown\n");   
-    printf("-r port  connect to this remote port\n");
     printf("-s       source address\n");
     printf("-t       time to live in ms\n");
     printf("-v       verbose mode\n");
@@ -124,17 +121,6 @@ void getArgs(int argc, char **argv)
 				case 'h':
 					printUsage();
 					exit(0);
-				case 'd':
-					if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
-					if (strlen(opt) < SCTP_MAX_IP_LEN) {
-						strcpy((char *)destinationAddress, opt);
-						startAssociation = 1;
-					}
-					break;
 				case 'l':
 					if (i+1 >= argc) {
                         printUsage();
@@ -142,14 +128,6 @@ void getArgs(int argc, char **argv)
 				    }
 				    opt = argv[++i];
 					givenLength =  atoi(opt);
-					break;
-				case 'r':
-					if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
-					remotePort =  atoi(opt);
 					break;
 				case 's':
 					if (i+1 >= argc) {
@@ -300,7 +278,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
     if (givenLength > 0)
         length = givenLength;
     else
-        length = 1 + (rand() % (BUFFER_LENGTH - 1));
+        length = 1 + (rand() % (MAX_RANDOM_LENGTH - 1));
     memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
 
@@ -314,7 +292,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
         if (givenLength > 0)
             length = givenLength;
         else
-            length = 1 + (rand() % (BUFFER_LENGTH - 1));
+            length = 1 + (rand() % (MAX_RANDOM_LENGTH - 1));
         memset((void *)buffer, 'A', length);
         buffer[length-1] = '\n';
     }
@@ -355,7 +333,7 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
     if (givenLength > 0)
         length = givenLength;
     else
-        length = 1 + (rand() % (BUFFER_LENGTH - 1));
+        length = 1 + (rand() % (MAX_RANDOM_LENGTH - 1));
     memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
     
@@ -370,7 +348,7 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
       if (givenLength > 0)
           length = givenLength;
       else
-          length = 1 + (rand() % (BUFFER_LENGTH - 1));
+          length = 1 + (rand() % (MAX_RANDOM_LENGTH - 1));
       memset(buffer, 'A', length);
       buffer[length-1] = '\n';
     }
@@ -404,7 +382,7 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
       if (givenLength > 0)
         length = givenLength;
       else
-        length = 1 + (rand() % (BUFFER_LENGTH - 1));
+        length = 1 + (rand() % (MAX_RANDOM_LENGTH - 1));
       memset((void *)buffer, 'A', length);
       buffer[length-1] = '\n';
       
@@ -420,7 +398,7 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
         if (givenLength > 0)
           length = givenLength;
         else
-          length = 1 + (rand() % (BUFFER_LENGTH - 1));
+          length = 1 + (rand() % (MAX_RANDOM_LENGTH - 1));
         memset((void *)buffer, 'A', length);
         buffer[length-1] = '\n';
       }
@@ -476,9 +454,6 @@ int main(int argc, char **argv)
     instanceParameters.maxSendQueue = SEND_QUEUE_SIZE;
     SCTP_setAssocDefaults(sctpInstance, &instanceParameters);
 
-    if (startAssociation) {
-        SCTP_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
-    }
     /* run the event handler forever */
     while (1) {
         SCTP_eventLoop();
