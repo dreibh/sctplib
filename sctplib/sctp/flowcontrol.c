@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.11 2003/11/17 23:35:33 ajung Exp $
+ * $Id: flowcontrol.c,v 1.12 2004/01/06 08:50:01 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -532,12 +532,14 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
     else
         fc->outstanding_bytes = 0;
 
+
     /* insert chunks to be retransmitted at the beginning of the list */
     /* make sure, that they are unique in this list ! */
-
     for (count = num_of_chunks - 1; count >= 0; count--) {
         if (g_list_find(fc->chunk_list, chunks[count]) == NULL){
             fc->chunk_list = g_list_insert_sorted(fc->chunk_list, chunks[count], (GCompareFunc) sort_tsn);
+            /* these chunks will not be counted, until they are actually sent again */
+            chunks[count]->hasBeenRequeued = TRUE;
             fc->list_length++;
         } else {
             event_logi(VERBOSE, "Chunk number %u already in list, skipped adding it", chunks[count]->chunk_tsn);
@@ -596,7 +598,8 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
 
     /* this time we will send dat to destination */
     dat->last_destination = destination;
-
+    /* this chunk must be counted as outstanding */
+    dat->hasBeenRequeued = FALSE;
 
     /* section 6.2.1.B */
     /* leave peers arwnd untouched for retransmitted data !!!!!!!!! */
@@ -978,6 +981,7 @@ int fc_send_data_chunk(chunk_data * chunkd,
     chunkd->hasBeenAcked= FALSE;
     chunkd->hasBeenDropped = FALSE;
     chunkd->hasBeenFastRetransmitted = FALSE;
+    chunkd->hasBeenRequeued = FALSE;
     chunkd->last_destination = 0;
 
     if (destAddressIndex >= 0) chunkd->initial_destination = destAddressIndex;

@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.11 2003/11/06 09:59:14 ajung Exp $
+ *  $Id: recvctrl.c,v 1.12 2004/01/06 08:50:01 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -463,7 +463,7 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
     }
 
     /* do SWS prevention */
-    if (current_rwnd >= 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 0;
+    if (current_rwnd > 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 1;
 
     /*
      * if any received data chunks have not been acked, sender
@@ -485,10 +485,10 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
 
     /* TODO :  Duplicates : see Note in section 6.2 :  */
     /*  Note: When a datagram arrives with duplicate DATA chunk(s) and no new
-       DATA chunk(s), the receiver MUST immediately send a SACK with no
-       delay. Normally this will occur when the original SACK was lost, and
-       the peers RTO has expired. The duplicate TSN number(s) SHOULD be
-       reported in the SACK as duplicate.
+        DATA chunk(s), the receiver MUST immediately send a SACK with no
+        delay. Normally this will occur when the original SACK was lost, and
+        the peers RTO has expired. The duplicate TSN number(s) SHOULD be
+        reported in the SACK as duplicate.
      */
     event_logii(VERBOSE, "rxc_data_chunk_rx : chunk_tsn==%u, chunk_len=%u", chunk_tsn, chunk_len);
     if (rxc_update_lowest(rxc, chunk_tsn) == TRUE) {
@@ -697,7 +697,7 @@ void rxc_all_chunks_processed(boolean new_data_received)
         current_rwnd = rxc->my_rwnd - bytesQueued;
     }
     /* do SWS prevention */
-    if (current_rwnd >= 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 0;
+    if (current_rwnd > 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 1;
 
 
     sack = rxc->sack_chunk;

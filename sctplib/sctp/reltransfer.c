@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.7 2003/10/28 20:44:55 tuexen Exp $
+ *  $Id: reltransfer.c,v 1.8 2004/01/06 08:50:01 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -460,7 +460,9 @@ int rtx_get_obpa(unsigned int adIndex, unsigned int *totalInFlight)
     for (count = 0; count < len; count++) {
         dat = g_list_nth_data(rtx->chunk_list, count);
         if (dat == NULL) break;
-        if (!dat->hasBeenDropped && !dat->hasBeenAcked) {
+        /* do not count chunks that were retransmitted by T3 timer              */
+        /* dat->hasBeenRequeued will be set to FALSE when these are sent again  */
+        if (!dat->hasBeenDropped && !dat->hasBeenAcked && !dat->hasBeenRequeued) {
             if (dat->last_destination == adIndex) {
                 numBytesPerAddress+= dat->chunk_len;
             }
@@ -630,6 +632,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         if (dat->hasBeenAcked == FALSE && dat->hasBeenDropped == FALSE) {
                             rtx->newly_acked_bytes += dat->chunk_len;
                             dat->hasBeenAcked = TRUE;
+                            dat->gap_reports = 0;
                             if (dat->num_of_transmissions == 1 && adr_index == dat->last_destination) {
                                 rtx->saved_send_time = dat->transmission_time;
                                 rtx->save_num_of_txm = 1;

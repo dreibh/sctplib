@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.9 2003/11/25 20:23:51 tuexen Exp $
+ *  $Id: globals.h,v 1.10 2004/01/06 08:50:01 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -171,6 +171,7 @@ typedef struct chunk_data_struct
     gboolean hasBeenAcked;
     gboolean hasBeenDropped;
     gboolean hasBeenFastRetransmitted;
+    gboolean hasBeenRequeued;
     gpointer context;
 } chunk_data;
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.9 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: sctp.h,v 1.10 2004/01/06 08:50:01 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -358,7 +358,7 @@ struct SCTP_Instance_Parameters {
     unsigned int delay;
     /** per instance: for the IP type of service field. */
     unsigned char ipTos;
-    /** currently unused, will limit the number of chunks queued in the send queue later */
+    /** limit the number of chunks queued in the send queue */
     unsigned int maxSendQueue;
     /** currently unused, may limit the number of chunks queued in the receive queue later.
      *  Is this really needed ? The protocol limits the receive queue with
@@ -434,7 +434,7 @@ struct SCTP_Association_Status
     unsigned int delay;
     /** (get/set) per instance: for the IP type of service field. */
     unsigned char ipTos;
-    /** currently unused, will limit the number of chunks queued in the send queue later */
+    /**  limit the number of chunks queued in the send queue */
     unsigned int maxSendQueue;
     /** currently unused, may limit the number of chunks queued in the receive queue later.
      *  Is this really needed ? The protocol limits the receive queue with
