@@ -1,5 +1,5 @@
 /*
- *  $Id: messages.h,v 1.5 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: messages.h,v 1.6 2004/07/05 12:36:33 rohde Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -486,6 +486,7 @@ typedef struct SCTP_ERROR_CAUSE
 #define ECC_RESTART_WITH_NEW_ADDRESSES          11
 
 #define ECC_USER_INITIATED_ABORT                12
+#define ECC_PROTOCOL_VIOLATION                  13
 
 
 #define ECC_DELETE_LAST_IP_FAILED       0xC

@@ -1,5 +1,5 @@
 /*
- *  $Id: streamengine.h,v 1.3 2003/07/14 08:42:11 ajung Exp $
+ *  $Id: streamengine.h,v 1.4 2004/07/05 12:36:33 rohde Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -106,6 +106,9 @@ int se_ulpsend(unsigned short streamId,
 
 
 
+
+
+
 /* after all chunks in a SCTP pdu have been given to the
    Stream Engine module, we start reassembly and notifications */
 int se_doNotifications(void);
@@ -113,11 +116,9 @@ int se_doNotifications(void);
 
 /* This function is called from ULP to receive a chunk.
 */
-short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount, 
+short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
                         unsigned short streamId, unsigned short* streamSN,
                         unsigned int * tsn, unsigned int* addressIndex, unsigned int flags);
-
-
 
 
 /*
@@ -144,7 +145,9 @@ guint16 se_numOfSendStreams(void);
  */
 guint16 se_numOfRecvStreams(void);
 
-int se_deliver_unreliably(unsigned int up_to_tsn, SCTP_forward_tsn_chunk* fw_tsn_chk);
+
+int se_deliver_unreliably(unsigned int up_to_tsn, SCTP_forward_tsn_chunk* chk);
+
 
 int se_getQueuedBytes(void);
 
