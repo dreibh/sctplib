@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.1 2003/05/16 13:47:50 ajung Exp $
+ *  $Id: terminal.c,v 1.2 2003/06/06 18:10:35 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -331,7 +331,7 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
     /* delete the association, instance and terminate */
     SCTP_deleteAssociation(assocID);
     SCTP_unregisterInstance(sctpInstance);
-    exit(0);
+    exit(0); 
 }
 
 void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)

@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.3 2003/06/02 19:52:41 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.4 2003/06/06 18:10:35 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1962,7 +1962,8 @@ int scr_shutdownComplete()
             error_log(ERROR_FATAL,
                       "scr_shutdownComplete : Timer not running - problem in Program Logic!");
         }
-
+        pm_disableAllHB();
+        
         bu_unlock_sender(&lastFromPath);
         /* delete all data of this association */
         mdi_deleteCurrentAssociation();
