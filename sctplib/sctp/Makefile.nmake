@@ -5,7 +5,7 @@
 
 include ..\..\config.nmake
 
-CFLAGS=/Od /I$(GLIB_DIR)\include
+CFLAGS=/Od /I$(GLIB_DIR)\vc7\include
 
 CVARSDLL=-DWIN32 -DMBCS
 
