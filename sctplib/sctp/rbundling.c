@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.7 2003/10/28 20:44:55 tuexen Exp $
+ *  $Id: rbundling.c,v 1.8 2004/07/28 10:35:19 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -460,7 +460,7 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             if ((chunk->chunk_header.chunk_id & 0xC0) == 0x0) {            /* 00 */
                 processed_len = len;
                 event_logi(EXTERNAL_EVENT_X, "00: Unknown chunktype %u in rbundling.c", chunk->chunk_header.chunk_id);
-            } else if ((chunk->chunk_header.chunk_id & 0xC0) == 0x20) {    /* 01 */
+            } else if ((chunk->chunk_header.chunk_id & 0xC0) == 0x40) {    /* 01 */
                 processed_len = len;
                 result = eh_send_unrecognized_chunktype((unsigned char*)chunk,chunk_len);
                 event_logi(EXTERNAL_EVENT_X, "01: Unknown chunktype %u in rbundling.c",chunk->chunk_header.chunk_id);
@@ -478,9 +478,9 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
         pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
         processed_len += pad_bytes;
         current_position += (chunk_len + pad_bytes) * sizeof(unsigned char);
-				
-		if (association_state != STATE_OK) processed_len = len;
-				
+
+        if (association_state != STATE_OK) processed_len = len;
+
         event_logiiii(VVERBOSE, "processed_len=%u, pad_bytes=%u, current_position=%u, chunk_len=%u",
             processed_len, pad_bytes, current_position,chunk_len);
     }
@@ -493,10 +493,10 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
         } else {
             /* update SACK structure and datagram counter */
             rxc_all_chunks_processed(FALSE);   
-		}
-		/* optionally also add a SACK chunk, at least for every second datagram
+        }
+        /* optionally also add a SACK chunk, at least for every second datagram
          * see section 6.2, second paragraph
-		 */
+         */
         if (data_chunk_received == TRUE){
             send_it = rxc_create_sack(&address_index, FALSE);
             se_doNotifications();
