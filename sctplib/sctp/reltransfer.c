@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.3 2003/05/28 13:34:02 ajung Exp $
+ *  $Id: reltransfer.c,v 1.4 2003/06/04 18:33:31 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1142,6 +1142,7 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
 {
     rtx_buffer *rtx;
     int result;
+    int rtx_queue_len = 0;
     gboolean all_acked = FALSE, new_acked = FALSE;
 
     event_logi(INTERNAL_EVENT_0, "rtx_rcv_shutdown_ctsna(ctsna==%u)", ctsna);
@@ -1154,8 +1155,7 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
     rxc_send_sack_everytime();
 
     if (after(ctsna, rtx->lowest_tsn) || (ctsna == rtx->lowest_tsn)) {
-        event_logiii(VVERBOSE,
-                     "after(%u, %u) == true, call rtx_dequeue_up_to(%u)",
+        event_logiii(VVERBOSE, "after(%u, %u) == true, call rtx_dequeue_up_to(%u)",
                      ctsna, rtx->lowest_tsn, ctsna);
         result = rtx_dequeue_up_to(ctsna , 0);
         if (result < 0) {
@@ -1163,21 +1163,24 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
         }
         rtx->lowest_tsn = ctsna;
         event_logi(VVERBOSE, "Updated rtx->lowest_tsn==ctsna==%u", ctsna);
-
+        rtx_queue_len =  g_list_length(rtx->chunk_list);
+        
         if (rtx->newly_acked_bytes != 0) new_acked = TRUE;
-        if (g_list_length(rtx->chunk_list) == 0) all_acked = TRUE;
+        if (rtx_queue_len == 0) all_acked = TRUE;
         fc_sack_info(0, rtx->peer_arwnd, ctsna, all_acked, new_acked,
                      rtx->newly_acked_bytes, rtx->num_of_addresses);
         rtx_reset_bytecounters(rtx);
+    } else {
+        rtx_queue_len =  g_list_length(rtx->chunk_list);
     }
 
 
     if (rtx->shutdown_received == TRUE) {
-        if (fc_readNumberOfQueuedChunks() == 0) {
+        if (fc_readNumberOfQueuedChunks() == 0 && rtx_queue_len == 0) {
             sci_allChunksAcked();
         }
     }
-    return (g_list_length(rtx->chunk_list));
+    return (rtx_queue_len);
 }
 
 
