@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.10 2004/07/05 12:36:33 rohde Exp $
+ * $Id: streamengine.c,v 1.11 2004/07/05 13:07:43 rohde Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -101,6 +101,7 @@ typedef struct _delivery_data
     guint16 stream_id;
     guint16 stream_sn;
     guint32 protocolId;
+    guint32  fromAddressIndex;
     guchar data[MAX_DATACHUNK_PDU_LENGTH];
 }
 delivery_data;
@@ -512,7 +513,7 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
 
             *streamSN   = d_pdu->ddata[d_pdu->read_chunk]->stream_sn;
             *tsn        = d_pdu->ddata[d_pdu->read_chunk]->tsn;
-//            *addressIndex = d_pdu->fromAddressIndex;
+            *addressIndex = d_pdu->ddata[d_pdu->read_chunk]->fromAddressIndex;
 
             event_logiiii (VVERBOSE, "SE_ULPRECEIVE (read_position: %u, read_chunk: %u, chunk_position: %u, total_length: %u)",
                     r_pos,  r_chunk, chunk_pos, d_pdu->total_length);
@@ -657,7 +658,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
     d_chunk->chunk_flags = dataChunk->chunk_flags;
     d_chunk->stream_sn =    ntohs (dataChunk->stream_sn);
     d_chunk->protocolId =   ntohl (dataChunk->protocolId);
-//    d_chunk->fromAddressIndex =  address_index;
+    d_chunk->fromAddressIndex =  address_index;
     
 
 
