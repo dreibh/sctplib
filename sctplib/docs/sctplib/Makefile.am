@@ -6,6 +6,3 @@ EXTRA_DIST = doc.txt rfc1321.txt rfc2960.txt sctp-modules.fig sctp-modules.png r
 
 ####### kdevelop will overwrite this part!!! (end)############
 
-realclean:
-	        rm -rf latex rtf html
-

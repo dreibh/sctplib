@@ -1,7 +1,7 @@
 Begin
 Title:          sctplib 
-Version:        1.0.1
-Entered-date:   01. November 2003
+Version:        1.0.2
+Entered-date:   10. August 2004
 Description:    The sctplib library is a prototype implementation of the Stream
                 Control Transmission Protocol (SCTP), a message-oriented reliable
                 transport protocol that supports multi-homing, and multiple message
