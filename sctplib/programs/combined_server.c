@@ -1,5 +1,5 @@
 /*
- *  $Id: combined_server.c,v 1.4 2003/11/20 10:00:46 tuexen Exp $
+ *  $Id: combined_server.c,v 1.5 2003/11/20 13:05:41 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -37,7 +37,6 @@
 #include <stdio.h>
 #include <stdlib.h>         /* for atoi() under Linux */
 #include <time.h>
-#include <ctype.h>
 #include "sctp_wrapper.h"
 
 #ifdef HAVE_CONFIG_H
@@ -93,7 +92,7 @@ void getArgs(int argc, char **argv)
     
     for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
-            switch (tolower(argv[i][1])) {
+            switch (argv[i][1]) {
                 case 'h':
 				    printUsage();
 				    exit(0);  

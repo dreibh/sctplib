@@ -1,5 +1,5 @@
 /*
- *  $Id: daytime_server.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: daytime_server.c,v 1.4 2003/11/20 13:05:41 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -32,7 +32,9 @@
  *
  */
 
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -43,7 +45,7 @@
 #include <config.h>
 #endif
 
-#include <sctp_wrapper.h>
+#include "sctp_wrapper.h"
 
 #define DAYTIME_PORT                         13
 #define MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES    10
@@ -73,40 +75,51 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
-
-    while ((c = getopt(argc, argv, "his:t:vV")) != -1)
-    {
-        switch (c) {
-        case 'h':
-            printUsage();
-            exit(0);
-        case 'i':
-            sendOOTBAborts = 0;
-            break;
-        case 's':
-            if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
-                noOfLocalAddresses++;
-            };
-            break;  
-        case 't':
-            timeToLive = atoi(optarg);
-            break;
-        case 'v':
-            verbose = 1;
-            break;
-        case 'V':
-            verbose = 1;
-            vverbose = 1;
-            break;
-        default:
-            unknownCommand = 1;
-            break;
-       }
+    int i;
+    char *opt;
+    
+    for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+                case 'h':
+                    printUsage();
+                    exit(0);
+                case 'i':
+                    sendOOTBAborts = 0;
+                    break;
+                case 's':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+                        (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+                        strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+                        noOfLocalAddresses++;
+                    };
+                    break;  
+                case 't':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    timeToLive = atoi(opt);
+                    break;
+                case 'v':
+                    verbose = 1;
+                    break;
+                case 'V':
+                    verbose = 1;
+                    vverbose = 1;
+                    break;
+                default:
+                    unknownCommand = 1;
+                    break;
+            }
+        } else
+			unknownCommand = 1;
     }
 }
 

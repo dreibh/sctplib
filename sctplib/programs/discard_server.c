@@ -1,5 +1,5 @@
 /*
- *  $Id: discard_server.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: discard_server.c,v 1.5 2003/11/20 13:05:41 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -33,43 +33,19 @@
  */
 
 
-
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <sys/time.h>
 
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifdef SOLARIS
-#define timeradd(a, b, result) \
-  do {                                                                        \
-    (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;                             \
-    (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;                          \
-    if ((result)->tv_usec >= 1000000)                                         \
-      {                                                                       \
-        ++(result)->tv_sec;                                                   \
-        (result)->tv_usec -= 1000000;                                         \
-      }                                                                       \
-  } while (0)
-
-#define timersub(a, b, result)                                                \
-  do {                                                                        \
-    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                             \
-    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;                          \
-    if ((result)->tv_usec < 0) {                                              \
-      --(result)->tv_sec;                                                     \
-      (result)->tv_usec += 1000000;                                           \
-    }                                                                         \
-  } while (0)
-
-#endif
-
-#include <sctp_wrapper.h>
+#include "sctp_wrapper.h"
 
 #define DISCARD_PORT                          9
 #define MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES    10
@@ -87,8 +63,6 @@ struct ulp_data {
     unsigned long   nrOfReceivedChunks;
     unsigned long   nrOfReceivedBytes;
     int             ShutdownReceived;
-    struct timeval  start_time;
-    struct timeval  end_time;
 };
 
 static struct ulp_data ulpData[MAXIMUM_NUMBER_OF_ASSOCIATIONS];
@@ -98,19 +72,12 @@ static unsigned short noOfLocalAddresses = 0;
 
 static int verbose         = 0;
 static int vverbose        = 0;
-static unsigned int doMeasurements            = 0;
-static unsigned int doAllMeasurements         = 0;
-static unsigned int deltaT                    = 1000;
 static int unknownCommand  = 0;
 static int sendOOTBAborts  = 1;
 static int delayReading    = 0;
 static int period          = 1000;
 static unsigned int myRwnd = 0;
 static int myRwndSpecified = 0;
-
-/* function prototype */
-void measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void *parameter2);
-
 
 void printUsage(void)
 {
@@ -119,64 +86,71 @@ void printUsage(void)
     printf("-i        ignore OOTB packets\n");
     printf("-p        period time between sucessive reads.\n");
     printf("-r        delay reading for a period of time. See the -p option.\n");
-    printf("-m        print number of received bytes and chunks per period (see -p)\n");
-    printf("-M        print number of received bytes, chunks per period (see -p) and flow control info\n");
     printf("-s        source address\n");
     printf("-v        verbose mode\n");
     printf("-V        very verbose mode\n");  
     printf("-w        receiver Window\n");    
 }
 
-void getArgs(int argc, char **argv)
+void getArgs(int argc, char **argv)  /* Irene */
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
-
-    while ((c = getopt(argc, argv, "hp:rs:imMvVw:")) != -1)
-    {
-        switch (c) {
-        case 'h':
-            printUsage();
-            exit(0);
-        case 'p':
-            period = atoi(optarg);
-            break;
-        case 'r':
-            delayReading = 1;
-            break;
-        case 's':
-            if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
-                noOfLocalAddresses++;
-            }; 
-            break;
-        case 'i':
-            sendOOTBAborts = 0;
-            break;
-        case 'm':
-            doMeasurements = 1;
-            break;
-        case 'M':
-            doMeasurements = 1;
-            doAllMeasurements = 1;
-            break;
-        case 'v':
-            verbose = 1;
-            break;
-        case 'V':
-            verbose = 1;
-            vverbose = 1;
-            break;
-        case 'w':
-            myRwnd = atoi(optarg);
-            myRwndSpecified = 1;
-            break;
-        default:
-            unknownCommand = 1;
-            break;
-        }
+    int i;
+    char *opt;
+    
+    for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+                case 'h':
+                    printUsage();
+                    exit(0);
+                case 'p':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    period = atoi(opt);
+                    break;
+                case 'r':
+                    delayReading = 1;
+                    break;
+                case 's':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+                        (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+                        strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+                        noOfLocalAddresses++;
+                    }; 
+                    break;
+                case 'i':
+                    sendOOTBAborts = 0;
+                    break;
+                case 'v':
+                    verbose = 1;
+                    break;
+                case 'V':
+                    verbose = 1;
+                    vverbose = 1;
+                    break;
+                case 'w':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    myRwnd = atoi(opt);
+                    myRwndSpecified = 1;
+                    break;
+                default:
+                    unknownCommand = 1;
+                    break;
+            }
+        } else
+			unknownCommand = 1;
     }
 }
 
@@ -322,11 +296,6 @@ void* communicationUpNotif(unsigned int assocID, int status,
             return NULL;
         }
     }
-    if (doMeasurements) {
-        ulpData[index].printTimerID = SCTP_startTimer(deltaT, &measurementTimerRunOffFunction, NULL, NULL);
-    }
-
-    gettimeofday(&(ulpData[index].start_time), NULL);
 
     if (index < MAXIMUM_NUMBER_OF_ASSOCIATIONS) {
             return &ulpData[index];
@@ -346,10 +315,6 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         sctp_stopTimer(((struct ulp_data *)ulpDataPtr)->readTimerID);
         ((struct ulp_data *)ulpDataPtr)->maximumStreamID = -1;
     }
-    if (doMeasurements) {
-        sctp_stopTimer(((struct ulp_data *)ulpDataPtr)->printTimerID);
-    }
-
     SCTP_deleteAssociation(assocID);
 }
 
@@ -371,30 +336,13 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    struct timeval diff_time;
-    double kbits_per_second, duration, chunks_per_second;
-
-    gettimeofday(&((struct ulp_data *)ulpDataPtr)->end_time, NULL);
-
-    timersub(&((struct ulp_data *)ulpDataPtr)->end_time, &((struct ulp_data *)ulpDataPtr)->start_time, &diff_time);
-    duration = (double)diff_time.tv_sec + (double)diff_time.tv_usec/1000000.0;
-    kbits_per_second = (double)(((struct ulp_data *)ulpDataPtr)->nrOfReceivedBytes * 8.0) / (duration * 1000.0);
-    chunks_per_second = (double)(((struct ulp_data *)ulpDataPtr)->nrOfReceivedChunks) / duration;
-
     if (verbose) {  
         fprintf(stdout, "%-8x: Shutdown complete\n", assocID);
-        fprintf(stdout, "%-8x: Bytes received: %lu, Chunks received: %lu\n",
-            assocID, ((struct ulp_data *)ulpDataPtr)->nrOfReceivedBytes, ((struct ulp_data *)ulpDataPtr)->nrOfReceivedChunks);
-        fprintf(stdout, "%-8x: Duration: %f secs, %f kbits/sec, %f chunks/sec\n",
-                assocID, duration, kbits_per_second, chunks_per_second);
         fflush(stdout);
     }
     if (delayReading) {
         sctp_stopTimer(((struct ulp_data *)ulpDataPtr)->readTimerID);
         ((struct ulp_data *)ulpDataPtr)->maximumStreamID = -1;
-    }
-    if (doMeasurements) {
-        sctp_stopTimer(((struct ulp_data *)ulpDataPtr)->printTimerID);
     }
     SCTP_deleteAssociation(assocID);
 }
@@ -407,45 +355,6 @@ void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
     }
     ((struct ulp_data *)ulpDataPtr)->ShutdownReceived = 1;
 }
-
-
-void
-measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void *parameter2)
-{
-    int index;
-    SCTP_AssociationStatus assocStatus;
-    SCTP_PathStatus pathStatus;
-    unsigned short pathID;
-
-    for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
-        if (ulpData[index].maximumStreamID >= 0){
-            if (doAllMeasurements) {
-                SCTP_getAssocStatus(ulpData[index].assocID, &assocStatus);
-                for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
-                    SCTP_getPathStatus(ulpData[index].assocID, pathID, &pathStatus);
-                    fprintf(stdout, "Asoc:%-8x Path:%-2u Ch:%-8lu By:%-8lu rto:%-8u srtt:%-8u qu:%-6u osb:%-8u cwnd:%-8u ssthresh:%-8u\n",
-                        ulpData[index].assocID,
-                        pathID,
-                        ulpData[index].nrOfReceivedChunks,
-                        ulpData[index].nrOfReceivedBytes,
-                        pathStatus.rto,
-                        pathStatus.srtt,
-                        assocStatus.noOfChunksInSendQueue,
-                        assocStatus.outstandingBytes,
-                        pathStatus.cwnd,
-                        pathStatus.ssthresh);
-                }
-            } else {
-                fprintf(stdout, "%-8x: %-6lu Chunks, %-8lu Bytes received\n",
-                        ulpData[index].assocID, ulpData[index].nrOfReceivedChunks, ulpData[index].nrOfReceivedBytes);
-            }
-            ulpData[index].nrOfReceivedChunks = 0;
-            ulpData[index].nrOfReceivedBytes  = 0;
-        }
-    }
-    ulpData[index].printTimerID = SCTP_startTimer(deltaT, measurementTimerRunOffFunction, NULL, NULL);
-}
-
 
 int main(int argc, char **argv)
 {

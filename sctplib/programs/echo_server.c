@@ -1,5 +1,5 @@
     /*
- *  $Id: echo_server.c,v 1.5 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: echo_server.c,v 1.6 2003/11/20 13:05:41 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -34,8 +34,9 @@
 
 #include "sctp_wrapper.h"
 
-
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -80,42 +81,54 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
-
-    while ((c = getopt(argc, argv, "hs:t:ivV")) != -1)
-    {
-        switch (c) {
-        case 'h':
-            printUsage();
-            exit(0);
-        case 's':
-            if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
-                noOfLocalAddresses++;
-            };
-            break;
-        case 'i':
-            sendOOTBAborts = 0;
-            break;
-        case 't':
-            timeToLive = atoi(optarg);
-            break;
-        case 'v':
-            verbose = 1;
-            break;
-        case 'V':
-            verbose = 1;
-            vverbose = 1;
-            break;
-        default:
-            unknownCommand = 1;
-            break;
-        }
+    int i;
+    char *opt;
+    
+    for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+                case 'h':
+                printUsage();
+                exit(0);
+                case 's':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+                        (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+                        strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+                        noOfLocalAddresses++;
+                    };
+                    break;
+                case 'i':
+                    sendOOTBAborts = 0;
+                    break;
+                case 't':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    timeToLive = atoi(opt);
+                    break;
+                case 'v':
+                    verbose = 1;
+                    break;
+                case 'V':
+                    verbose = 1;
+                    vverbose = 1;
+                    break;
+                default:
+                    unknownCommand = 1;
+                    break;
+            }
+        } else
+			unknownCommand = 1;
     }
 }
+
 void checkArgs(void)
 {
     int abortProgram;
@@ -162,7 +175,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
     SCTP_receive(assocID, streamID, chunk, &length,&ssn, &tsn, SCTP_MSG_DEFAULT);
     /* and send it */
     SCTP_send(assocID,
-              min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
+              min(streamID, (unsigned int)(((struct ulp_data *) ulpDataPtr)->maximumStreamID)),
               chunk, length, 
               protoID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);

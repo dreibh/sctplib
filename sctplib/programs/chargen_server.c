@@ -1,5 +1,5 @@
 /*
- *  $Id: chargen_server.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: chargen_server.c,v 1.5 2003/11/20 13:05:41 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -33,42 +33,17 @@
  */
 
 
-
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <sys/time.h>
-
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#ifdef SOLARIS
-#define timeradd(a, b, result) \
-  do {                                                                        \
-    (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;                             \
-    (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;                          \
-    if ((result)->tv_usec >= 1000000)                                         \
-      {                                                                       \
-        ++(result)->tv_sec;                                                   \
-        (result)->tv_usec -= 1000000;                                         \
-      }                                                                       \
-  } while (0)
-
-#define timersub(a, b, result)                                                \
-  do {                                                                        \
-    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                             \
-    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;                          \
-    if ((result)->tv_usec < 0) {                                              \
-      --(result)->tv_sec;                                                     \
-      (result)->tv_usec += 1000000;                                           \
-    }                                                                         \
-  } while (0)
-
-#endif
-
-#include <sctp_wrapper.h>
+#include "sctp_wrapper.h"
 
 #define CHARGEN_PORT                         19
 #define MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES    10
@@ -82,12 +57,6 @@ static unsigned char  localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_M
 static unsigned short noOfLocalAddresses = 0;
 static unsigned char  destinationAddress[SCTP_MAX_IP_LEN];
 static unsigned short remotePort              = 9;
-
-static unsigned int numberOfPacketsToSend  = 0; /* i.e. unlimited */
-static unsigned int numberOfPacketsSent    = 0;
-static unsigned long int numberOfBytesSent      = 0;
-
-static struct timeval start_time, end_time, diff_time;
 
 static int startAssociation = 0;
 static int verbose          = 0;
@@ -116,53 +85,72 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
-
-    while ((c = getopt(argc, argv, "hr:s:d:n:it:vV")) != -1)
-    {
-        switch (c) {
-        case 'h':
-            printUsage();
-            exit(0);
-        case 'd':
-            if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy((char *)destinationAddress, optarg);
-                startAssociation = 1;
-            }
-            break;
-        case 'r':
-            remotePort =  atoi(optarg);
-            break;
-        case 's':
-            if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
-                noOfLocalAddresses++;
-            }; 
-            break;
-        case 'i':
-            sendOOTBAborts = 0;
-            break;
-        case 'n':
-            numberOfPacketsToSend =  atoi(optarg);
-            break;
-        case 't':
-            timeToLive = atoi(optarg);
-            break;
-        case 'v':
-            verbose = 1;
-            break;
-        case 'V':
-            verbose = 1;
-            vverbose = 1;
-            break;
-        default:
-            unknownCommand = 1;
-            break;
-        }
-    }
+    int i;
+    char *opt;
+    
+    for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+				case 'h':
+					printUsage();
+					exit(0);
+				case 'd':
+					if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+					if (strlen(opt) < SCTP_MAX_IP_LEN) {
+						strcpy((char *)destinationAddress, opt);
+						startAssociation = 1;
+					}
+					break;
+				case 'r':
+					if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+					remotePort =  atoi(opt);
+					break;
+				case 's':
+					if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+					if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+						(strlen(opt) < SCTP_MAX_IP_LEN  )) {
+						strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+						noOfLocalAddresses++;
+					}; 
+					break;
+				case 'i':
+					sendOOTBAborts = 0;
+					break;
+				case 't':
+					if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+					timeToLive = atoi(opt);
+					break;
+				case 'v':
+					verbose = 1;
+					break;
+				case 'V':
+					verbose = 1;
+					vverbose = 1;
+					break;
+				default:
+					unknownCommand = 1;
+					break;
+			}
+		}
+		else
+			unknownCommand = 1;
+	}
 }
 
 void checkArgs(void)
@@ -275,8 +263,6 @@ void* communicationUpNotif(unsigned int assocID, int status,
     memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
 
-    gettimeofday(&start_time, NULL);
-
     while(SCTP_send(assocID, 0, buffer, length, SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                     SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, 
                     SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED) == SCTP_SUCCESS) {
@@ -284,21 +270,8 @@ void* communicationUpNotif(unsigned int assocID, int status,
             fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
             fflush(stdout);
         }
-        numberOfPacketsSent    += 1;
-        numberOfBytesSent      += length;
-
-        if (numberOfPacketsToSend != 0) {
-            if (numberOfPacketsSent > numberOfPacketsToSend) {
-                  if (verbose) {
-                      fprintf(stdout, "%-8x: %lu bytes sent in %u packets -> shutting down !!!\n", assocID, numberOfBytesSent, numberOfPacketsSent);
-                      fflush(stdout);
-                  }
-                  SCTP_shutdown(assocID);
-                  break;
-            }
-        }
         length = 1 + (rand() % 1024);
-        memset(buffer, 'A', length);
+        memset((void *)buffer, 'A', length);
         buffer[length-1] = '\n';
     }
 
@@ -355,23 +328,10 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    double seconds;
-    double bytes_per_second;
-    double packets_per_second;
 
     if (verbose) {  
         fprintf(stdout, "%-8x: Shutdown complete\n", assocID);
         fflush(stdout);
-    }
-    gettimeofday(&end_time, NULL);
-    timersub(&end_time, &start_time, &diff_time);
-    seconds = diff_time.tv_sec + (diff_time.tv_usec/1000000);
-    bytes_per_second = numberOfBytesSent/seconds;
-    packets_per_second = numberOfPacketsSent/seconds;
-
-    if (verbose) {
-          fprintf(stdout, "%-8x: %f bytes/sec -- %f packets/sec were sent. Shutting down\n", assocID, bytes_per_second,packets_per_second);
-          fflush(stdout);
     }
 
     free((struct ulp_data *) ulpDataPtr);
@@ -403,20 +363,9 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
             fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
             fflush(stdout);
         }
-        numberOfPacketsSent    += 1;
-        numberOfBytesSent      += length;
-        if (numberOfPacketsToSend != 0) {
-            if (numberOfPacketsSent > numberOfPacketsToSend) {
-                  if (verbose) {
-                      fprintf(stdout, "%-8x: %lu bytes sent in %u packets -> shutting down !!!\n", assocID, numberOfBytesSent, numberOfPacketsSent);
-                      fflush(stdout);
-                  }
-                  SCTP_shutdown(assocID);
-                  break;
-            }
-        }
+
         length = 1 + (rand() % 1024);
-        memset(buffer, 'A', length);
+        memset((void *)buffer, 'A', length);
         buffer[length-1] = '\n';
       }
     }
