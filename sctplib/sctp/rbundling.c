@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.8 2004/07/28 10:35:19 ajung Exp $
+ *  $Id: rbundling.c,v 1.9 2004/07/29 15:20:45 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -361,9 +361,11 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
         event_logiiii(INTERNAL_EVENT_0,
                      "rbu_rcvDatagram(address=%u) : len==%u, processed_len = %u, chunk_len=%u",
                      address_index, len, processed_len, chunk_len);
-        if (chunk_len > len) {
-            error_logii(ERROR_MINOR, "Faulty chunklen=%u, total len=%u --> dropping rest of data !",
-                                    chunk_len,len);
+        if ((processed_len+chunk_len) > len || chunk_len < 4) {
+            error_logiii(ERROR_MINOR, "Faulty chunklen=%u, total len=%u,processed_len=%u --> dropping packet  !",
+                                    chunk_len,len,processed_len);
+            /* if the association has already been removed, we cannot unlock it anymore */
+            bu_unlock_sender(&address_index);
             return 1;
         }
         /*

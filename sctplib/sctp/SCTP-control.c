@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.11 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.12 2004/07/29 15:20:45 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -795,10 +795,10 @@ int scr_init(SCTP_init * init)
         process_further = ch_enterUnrecognizedParameters(initCID, initAckCID, supportedTypes);
 
         if (process_further == -1) {
-            ch_deleteChunk(initAckCID);
-            ch_forgetChunk(initCID);
+         /*   ch_deleteChunk(initAckCID);
+            ch_forgetChunk(initCID); */
             return_state = STATE_STOP_PARSING; /* to stop parsing without actually removing it */
-            return return_state;
+            /* return return_state; */
         } else if (process_further == 1) {
             return_state = STATE_STOP_PARSING; /* to stop parsing without actually removing it */
         }
@@ -2090,7 +2090,7 @@ int scr_abort()
     case SHUTDOWNSENT:
         event_logi(EXTERNAL_EVENT, "event: scr_abort in state %2d", state);
 
-        /* stop init timer */
+        /* stop possible timer */
         if (localData->initTimer != 0) {
             sctp_stopTimer(localData->initTimer);
             localData->initTimer = 0;
