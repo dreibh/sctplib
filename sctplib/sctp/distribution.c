@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.15 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: distribution.c,v 1.16 2003/11/18 13:03:36 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1223,7 +1223,7 @@ mdi_receiveMessage(gint socket_fd,
         if (sourceAddressExists) lastFromPath = i;
 
         /* check for verification tag rules --> see section 8.5 */
-        if (rbu_datagramContains(CHUNK_INIT, chunkArray) == TRUE) {
+        if ((initPtr = rbu_findChunk(message->sctp_pdu, len, CHUNK_INIT)) != NULL) {
             /* check that there is ONLY init */
             initFound = TRUE;
             if (lastInitiateTag != 0) {
