@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.8 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: globals.h,v 1.9 2003/11/25 20:23:51 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -37,8 +37,6 @@
  *          modules of the SCTP-project. With new socket API (RFC 2292bis)
  *          for Solaris 8 and FreeBSD 4.2
  */
-
-#define __EXTENSIONS__
 
 #ifndef GLOBALS_H
 #define GLOBALS_H
