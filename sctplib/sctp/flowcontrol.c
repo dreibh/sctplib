@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.9 2003/10/28 18:28:47 tuexen Exp $
+ * $Id: flowcontrol.c,v 1.10 2003/11/06 09:59:14 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -635,8 +635,8 @@ gboolean fc_send_okay(fc_data* fc,
     if ((totalSize + obpa < (fc->cparams[destination].cwnd+fc->cparams[destination].mtu-1)) &&
         (
          ((nextChunk->num_of_transmissions==0)&&(rtx_read_remote_receiver_window() > nextChunk->chunk_len)) ||
-          (rtx_read_remote_receiver_window() <= nextChunk->chunk_len && fc->one_packet_inflight == FALSE) ||
-          (nextChunk->num_of_transmissions > 0)) ) {
+         (fc->one_packet_inflight == FALSE) ||
+         (nextChunk->num_of_transmissions > 0)) ) {
         event_logii(VERBOSE, "fc_send_okay --> TRUE (totalSize == %u, obpa == %u)",totalSize, obpa);
         return TRUE;
     }

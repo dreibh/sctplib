@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.10 2003/10/28 20:44:55 tuexen Exp $
+ *  $Id: recvctrl.c,v 1.11 2003/11/06 09:59:14 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -437,6 +437,7 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
     rxc_buffer *rxc;
     unsigned int chunk_tsn;
     unsigned int chunk_len;
+    unsigned int assoc_state;
     boolean result = FALSE;
     int bytesQueued = 0;
     unsigned current_rwnd = 0;
@@ -472,9 +473,11 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
 
     chunk_tsn = ntohl(se_chk->tsn);
     chunk_len = ntohs(se_chk->chunk_length);
+    assoc_state = sci_getState();
 
     if ( (after(chunk_tsn, rxc->highest) && current_rwnd == 0) ||
-         (sci_getState() >= SHUTDOWNRECEIVED) ) {
+         (assoc_state == SHUTDOWNRECEIVED) ||
+         (assoc_state == SHUTDOWNACKSENT) ) {
         /* drop chunk, if either: our rwnd is 0, or we are already shutting down */
         rxc->new_chunk_received = FALSE;
         return 1;
