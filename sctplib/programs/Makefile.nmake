@@ -9,9 +9,8 @@ CFLAGS=/Od /I..\sctp
 
 CVARSDLL=-DWIN32 -DMBCS
 
-LINKFLAGS=sctp_wrapper.obj /INCREMENTAL /NOLOGO /NODEFAULTLIB:"LIBCMTD.lib" /DEBUG /ASSEMBLYDEBUG /FIXED:No \
+LINKFLAGS=sctp_wrapper.obj /NOLOGO /NODEFAULTLIB:"LIBCMTD.lib" /DEBUG /FIXED:No \
  /LIBPATH:..\sctp /LIBPATH:$(GLIB_DIR)\vc7\lib ws2_32.lib sctp.lib glib-1.2.lib gmodule-1.2.lib gthread-1.2.lib  kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
-
 
 .c.obj::
    $(CC) $(CVARSDLL) $(CFLAGS) -Fd.\ -c $<

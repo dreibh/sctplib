@@ -1,5 +1,5 @@
     /*
- *  $Id: echo_server.c,v 1.9 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: echo_server.c,v 1.10 2004/11/19 20:11:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -203,7 +203,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     SCTP_receive(assocID, streamID, chunk, &length,&ssn, &tsn, SCTP_MSG_DEFAULT);
     /* and send it */
     SCTP_send(assocID,
-              min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
+              (unsigned short)min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
               chunk, length, 
               protoID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);

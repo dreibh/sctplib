@@ -1,5 +1,5 @@
 /*
- *  $Id: echo_tool.c,v 1.8 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: echo_tool.c,v 1.9 2004/11/19 20:11:47 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -316,7 +316,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
             if ((ulpData[index].maximumStreamID != -1)&&
                 (!(ulpData[index].ShutdownReceived))) {
                 result = SCTP_send(ulpData[index].assocID,
-                                   min(streamID, (unsigned int)(ulpData[index].maximumStreamID)),
+                                   (unsigned short)min(streamID, (unsigned int)(ulpData[index].maximumStreamID)),
                                    chunk, length,
                                    protoID,
                                    SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
@@ -330,7 +330,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
         }
     } else {
         result = SCTP_send(assocID,
-                           min(streamID, (unsigned int)(((struct ulp_data *) ulpDataPtr)->maximumStreamID)),
+                           (unsigned short)min(streamID, (unsigned int)(((struct ulp_data *) ulpDataPtr)->maximumStreamID)),
                            chunk, length,
                            protoID,
                            SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
