@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.25 2004/07/27 07:56:35 ajung Exp $
+ *  $Id: distribution.c,v 1.26 2004/08/13 14:21:28 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1821,6 +1821,7 @@ sctp_registerInstance(unsigned short port,
     sctpInstance->default_rtoMin = RTO_MIN;
     sctpInstance->default_rtoMax = RTO_MAX;
     sctpInstance->default_maxSendQueue = DEFAULT_MAX_SENDQUEUE;
+    sctpInstance->default_maxRecvQueue = DEFAULT_MAX_RECVQUEUE;
     sctpInstance->default_maxBurst = DEFAULT_MAX_BURST;
 
     InstanceList = g_list_insert_sorted(InstanceList, sctpInstance, &CompareInstanceNames);

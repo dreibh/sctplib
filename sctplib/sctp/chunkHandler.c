@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.14 2004/08/13 12:15:15 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.15 2004/08/13 14:21:28 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1444,7 +1444,7 @@ unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
                                                   chunks[chunkID])->variableParams[0], vl_param_total_length);
 
         if (vl_param_curs >= 0) {
-            /* found cookie preservative */
+            /* found supported address types parameter */
             param = (SCTP_supported_addresstypes*)
                         &((SCTP_init *)chunks[chunkID])->variableParams[vl_param_curs];
                         

@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.h,v 1.5 2004/07/26 15:53:38 ajung Exp $
+ *  $Id: distribution.h,v 1.6 2004/08/13 14:21:28 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -68,7 +68,8 @@
 #define IPTOS_DEFAULT           0x10    /* IPTOS_LOWDELAY */
 #define RTO_MIN                 1000
 #define DEFAULT_MAX_SENDQUEUE   0       /* unlimited send queue */
-#define DEFAULT_MAX_BURST       4       /* unlimited send queue */
+#define DEFAULT_MAX_RECVQUEUE   0       /* unlimited recv queue - unused really */
+#define DEFAULT_MAX_BURST       4       /* maximum burst parameter */
 #define RTO_MAX                 60000
 
 
