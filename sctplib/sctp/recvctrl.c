@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.5 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: recvctrl.c,v 1.6 2003/09/25 11:01:04 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -182,7 +182,7 @@ boolean rxc_chunk_is_duplicate(rxc_buffer * rbuf, unsigned int chunk_tsn)
         if (between(frag->start_tsn, chunk_tsn, frag->stop_tsn))
             return TRUE;
         /* assuming an ordered list of fragments */
-        if (frag->stop_tsn > chunk_tsn)
+        if (after(frag->stop_tsn, chunk_tsn))
            return FALSE;
         temp = g_list_next(temp);
     }
