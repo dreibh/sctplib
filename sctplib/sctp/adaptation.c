@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: adaptation.c,v 1.2 2003/05/16 13:55:42 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -197,9 +197,6 @@ int extendedPoll(struct extendedpollfd* fdlist,
    int               n;
    int               ret;
    unsigned int i;
-   struct timeval testTime;
-   
-
 
    if(time < 0) {
       to = NULL;
@@ -257,15 +254,8 @@ int extendedPoll(struct extendedpollfd* fdlist,
       if(unlock) {
          unlock(data);
       }
-      event_logii(VERBOSE, "Calling select for %u secs, %u msecs, pid", timeout.tv_sec, timeout.tv_usec/1000);
-      gettimeofday(&testTime, NULL);
-      event_logiii(VERBOSE, "Test time %u secs, %u msecs, pid: %d", testTime.tv_sec, testTime.tv_usec/1000, getpid());
-		  
-      ret = select(n + 1, &readfdset, &writefdset, &exceptfdset, to);
 
-      gettimeofday(&testTime, NULL);
-      event_logiii(VERBOSE, "Test time %u secs, %u msecs, pid: %d", testTime.tv_sec, testTime.tv_usec/1000, getpid());
-	    
+      ret = select(n + 1, &readfdset, &writefdset, &exceptfdset, to);
       
       if(lock) {
          lock(data);
