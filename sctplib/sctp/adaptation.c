@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.14 2003/11/19 16:02:09 tuexen Exp $
+ *  $Id: adaptation.c,v 1.15 2003/11/20 09:59:23 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -45,8 +45,38 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <netinet/in_systm.h>
-#include <netinet/ip.h>
+#include <errno.h>
+
+#ifndef WIN32
+	#include <netinet/in_systm.h>
+	#include <netinet/ip.h>
+	#include <netdb.h>
+	#include <arpa/inet.h>      /* for inet_ntoa() under both SOLARIS/LINUX */
+	#include <sys/errno.h>
+	#include <sys/uio.h>        /* for struct iovec */
+	#include <sys/param.h>
+	#include <sys/ioctl.h>
+	#include <netinet/tcp.h>
+	#include <net/if.h>
+#else
+    #include <winsock2.h>
+    #include <WS2tcpip.h>
+    #include <sys/timeb.h>
+    #define ADDRESS_LIST_BUFFER_SIZE        4096
+    struct ip
+    {
+        unsigned char ip_verlen;
+	    unsigned char ip_tos;			/* type of service */
+        u_short ip_len;					/* total length */
+        u_short ip_id;					/* identification */
+        u_short ip_off;					/* fragment offset field */
+        unsigned char ip_ttl;			/* time to live */
+        unsigned char ip_p;				/* protocol */
+        u_short ip_sum;					/* checksum */
+        struct in_addr ip_src, ip_dst;	/* source and dest address */
+    };
+#endif
+
 #ifdef HAVE_IPV6
     #if defined (LINUX)
         #include <netinet/ip6.h>
@@ -54,23 +84,13 @@
         /* include files for IPv6 header structs */
     #endif
 #endif
-#include <netdb.h>
-#include <arpa/inet.h>      /* for inet_ntoa() under both SOLARIS/LINUX */
-#include <sys/errno.h>
-
-#include <errno.h>
-#include <sys/uio.h>        /* for struct iovec */
-#include <sys/param.h>
-#include <sys/ioctl.h>
-
-#include <netinet/tcp.h>
-#include <net/if.h>
 
 #if defined (LINUX)
     #define LINUX_PROC_IPV6_FILE "/proc/net/if_inet6"
     #include <asm/types.h>
     #include <linux/rtnetlink.h>
 #else /* this may not be okay for SOLARIS !!! */
+#ifndef WIN32
     #define USES_BSD_4_4_SOCKET
     #include <net/if.h>
     #include <net/if_dl.h>
@@ -89,11 +109,18 @@
 	#define RTAX_IFA 5
 	#define _NO_SIOCGIFMTU_
 #endif
-
+#endif
 #endif
 
 #define     IFA_BUFFER_LENGTH   1024
 
+#ifndef IN_EXPERIMENTAL
+#define	IN_EXPERIMENTAL(a)	((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#endif
+
+#ifndef IN_BADCLASS
+#define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
+#endif
 
 #ifdef HAVE_SYS_POLL_H
     #include <sys/poll.h>
@@ -196,7 +223,7 @@ int extendedPoll(struct extendedpollfd* fdlist,
    int               fdcount;
    int               n;
    int               ret;
-   unsigned int i;
+   int i;
 
    if(time < 0) {
       to = NULL;
@@ -333,7 +360,15 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
 
     memset((void*)su, 0, sizeof(union sockunion));
 
-    ret = inet_aton((const char *)str, &su->sin.sin_addr);
+#ifndef WIN32 
+	ret = inet_aton((const char *)str, &su->sin.sin_addr);
+#else		
+	if ((su->sin.sin_addr.s_addr = inet_addr(str)) == INADDR_NONE)
+		ret=0;
+	else {
+		ret=1;
+	}
+#endif
     if (ret > 0) {              /* Valid IPv4 address format. */
         su->sin.sin_family = AF_INET;
 #ifdef HAVE_SIN_LEN
@@ -417,11 +452,25 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
 {
     int sfd, ch;
     int opt_size;
-  
+#ifdef WIN32
+    struct sockaddr_in me;
+#endif
+
     if ((sfd = socket(af, SOCK_RAW, IPPROTO_SCTP)) < 0) {
         return sfd;
     }
     
+#ifdef WIN32
+    /* binding to INADDR_ANY to make Windows happy... */
+    memset((void *)&me, 0, sizeof(me));
+	me.sin_family      = AF_INET;
+#ifdef HAVE_SIN_LEN
+    me.sin_len         = sizeof(me);
+#endif
+	me.sin_addr.s_addr = INADDR_ANY;
+	bind(sfd, (const struct sockaddr *)&me, sizeof(me));
+#endif
+
     switch (af) {
         case AF_INET:
             *myRwnd = 0;
@@ -958,12 +1007,15 @@ void dispatch_event(int num_of_events)
                     src_in = (struct sockaddr_in *) &src;
                     event_logi(VERBOSE, "IPv4/SCTP-Message from %s -> activating callback",
                                inet_ntoa(src_in->sin_addr));
-#if !defined (LINUX)
-                    iph = (struct ip *) rbuf;
-                    hlen = iph->ip_hl << 2;
-#else
+#if defined (LINUX)
                     iph = (struct iphdr *) rbuf;
                     hlen = iph->ihl << 2;
+#elif defined (WIN32)
+                    iph = (struct ip *) rbuf;
+                    hlen = (iph->ip_verlen & 0x0F) << 2;
+#else
+                    iph = (struct ip *) rbuf;
+                    hlen = iph->ip_hl << 2;
 #endif
                     if (length < hlen) {
                         error_logii(ERROR_MINOR,
@@ -1051,7 +1103,15 @@ void adl_add_msecs_totime(struct timeval *t, unsigned int msecs)
  */
 int adl_gettime(struct timeval *tv)
 {
-    return (gettimeofday(tv, (struct timezone *) NULL));
+#ifdef WIN32
+		struct timeb tb;
+		ftime(&tb);
+		tv->tv_sec=tb.time;
+		tv->tv_usec=tb.millitm*1000;
+	return 0;
+#else
+	return (gettimeofday(tv, (struct timezone *) NULL));
+#endif
 }
 
 /**
@@ -1205,9 +1265,22 @@ int adl_getEvents(void)
 
 int adl_init_adaptation_layer(int * myRwnd)
 {
+#ifdef WIN32
+	WSADATA					wsaData;
+    int Ret;
+#endif
 #ifdef HAVE_IPV6
     int myRwnd6 = 32767;
 #endif
+
+#ifdef WIN32
+    if ((Ret = WSAStartup(MAKEWORD(2,2), &wsaData)) != 0)
+    {
+        error_log(ERROR_FATAL, "WSAStartup failed.");
+        return SCTP_SPECIFIC_FUNCTION_ERROR;
+    }
+#endif
+
     init_poll_fds();
     init_timer_list();
     /*  print_debug_list(INTERNAL_EVENT_0); */
@@ -1442,7 +1515,11 @@ unsigned int adl_restartMicroTimer(unsigned int timer_id, unsigned int seconds, 
 int adl_remove_cb(int sfd)
 {
     int result;
+#ifdef WIN32
+	result = closesocket(sfd);
+#else
     result = close(sfd);
+#endif
     if (result < 0)
         error_log(ERROR_FATAL, "Close Socket resulted in an error");
     adl_remove_poll_fd(sfd);
@@ -1538,6 +1615,113 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
      const AddressScopingFlags  flags)
 
 {
+#ifdef WIN32
+	union sockunion *localAddresses=NULL;
+
+	SOCKET           s[MAXIMUM_WAIT_OBJECTS];
+    WSAEVENT         hEvent[MAXIMUM_WAIT_OBJECTS];
+    WSAOVERLAPPED    ol[MAXIMUM_WAIT_OBJECTS];
+    struct addrinfo *local=NULL,hints,
+                    *ptr=NULL;
+    SOCKET_ADDRESS_LIST *slist=NULL;
+    DWORD            bytes;
+    char             addrbuf[ADDRESS_LIST_BUFFER_SIZE],host[NI_MAXHOST],serv[NI_MAXSERV];
+    int              socketcount=0,
+                     addrbuflen=ADDRESS_LIST_BUFFER_SIZE,
+                     rc,i, j,hostlen = NI_MAXHOST,servlen = NI_MAXSERV;  
+	struct sockaddr_in Addr;
+
+   
+    /* Enumerate the local bind addresses - to wait for changes we only need
+        one socket but to enumerate the addresses for a particular address
+      family, we need a socket of that type	*/
+
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_flags  = AI_PASSIVE;
+    hints.ai_family = AF_INET;
+    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_protocol = IPPROTO_UDP;
+
+    if ((rc = getaddrinfo(NULL,"0",&hints,&local))!=0)    
+    {
+        local=NULL;
+		fprintf(stderr, "Unable to resolve the bind address!\n");
+        return -1;
+    }
+  
+     /* Create a socket and event for each address returned*/
+    ptr = local;
+    while (ptr)
+    {
+        s[socketcount] = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+        if (s[socketcount] == INVALID_SOCKET)
+        {
+            fprintf(stderr, "socket failed: %d\n", WSAGetLastError());
+            return -1;
+        }
+
+        hEvent[socketcount] = WSACreateEvent();
+        if (hEvent == NULL)
+        {
+            fprintf(stderr, "WSACreateEvent failed: %d\n", WSAGetLastError());
+            return -1;
+        }
+
+        socketcount++;
+
+        ptr = ptr->ai_next;
+
+        if (ptr && (socketcount > MAXIMUM_WAIT_OBJECTS))
+        {
+            printf("Too many address families returned!\n");
+            break;
+        }
+    }
+
+        for(i=0; i < socketcount ;i++)
+        {
+            memset(&ol[i], 0, sizeof(WSAOVERLAPPED));
+            ol[i].hEvent = hEvent[i];
+            if ((rc = WSAIoctl(s[i],SIO_ADDRESS_LIST_QUERY,NULL,0,addrbuf,addrbuflen,
+                   &bytes,NULL, NULL))== SOCKET_ERROR)           
+            {
+                fprintf(stderr, "WSAIoctl: SIO_ADDRESS_LIST_QUERY failed: %d\n", WSAGetLastError());
+                return -1;
+            }
+
+            slist = (SOCKET_ADDRESS_LIST *)addrbuf;
+			localAddresses = calloc(slist->iAddressCount,sizeof(union sockunion));
+            for(j=0; j < slist->iAddressCount ;j++)
+            {       
+				if ((rc = getnameinfo(slist->Address[j].lpSockaddr, slist->Address[j].iSockaddrLength,
+					host,hostlen,serv,servlen,NI_NUMERICHOST | NI_NUMERICSERV))!=0)
+					fprintf(stderr, "%s: getnameinfo failed: %d\n", __FILE__, rc);
+				Addr.sin_family=slist->Address[j].lpSockaddr->sa_family;
+				Addr.sin_addr.s_addr=inet_addr(host);             
+				memcpy(&((localAddresses)[j]),&Addr,sizeof(Addr));		
+            }
+		
+            /* Register for change notification*/
+           if ((rc = WSAIoctl(s[i],SIO_ADDRESS_LIST_CHANGE,NULL,0,NULL,0,&bytes,&ol[i],NULL))== SOCKET_ERROR)          
+            {
+                if (WSAGetLastError() != WSA_IO_PENDING)
+                {
+                    fprintf(stderr, "WSAIoctl: SIO_ADDRESS_LIST_CHANGE failed: %d\n", WSAGetLastError());
+                    return -1;
+                }
+            }
+        }
+
+       freeaddrinfo(local);
+
+    for(i=0; i < socketcount ;i++)
+        closesocket(s[i]);
+
+	*addresses = localAddresses;
+	 *numberOfNets=slist->iAddressCount;
+	*max_mtu=1500;
+	return TRUE;
+#else 
 #if defined (LINUX)
     int addedNets;
     char addrBuffer[256];
@@ -1810,5 +1994,6 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     }
     *addresses = localAddresses;
     return(TRUE);
+#endif
 }
 
