@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.20 2003/11/21 14:41:21 tuexen Exp $
+ *  $Id: adaptation.c,v 1.21 2004/11/17 21:21:04 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -61,6 +61,7 @@
 #else
     #include <winsock2.h>
     #include <WS2tcpip.h>
+	
     #include <sys/timeb.h>
     #define ADDRESS_LIST_BUFFER_SIZE        4096
     struct ip
@@ -75,6 +76,7 @@
         u_short ip_sum;					/* checksum */
         struct in_addr ip_src, ip_dst;	/* source and dest address */
     };
+
 #endif
 
 #ifdef HAVE_IPV6
@@ -170,8 +172,31 @@ struct event_cb
     void* userData;
 };
 
+struct data {
+	char*	dat;
+	int	len;
+	void (*cb)();
+};
+
 #ifdef HAVE_RANDOM
 static long rstate[2];
+#endif
+
+#ifdef WIN32
+struct input_data {
+    DWORD len;
+    char buffer[1024];
+    HANDLE event, eventback;
+};
+
+
+
+static int fds[NUM_FDS];
+static int fdnum;
+HANDLE				hEvent, handles[2];
+static HANDLE	stdin_thread_handle;
+WSAEVENT			stdinevent;
+static struct input_data	idata;
 #endif
 
 unsigned int
@@ -211,13 +236,13 @@ adl_random(void)
  *      fails.
  */
 
-static long long revision = 0;
+static long revision = 0;
 
 struct extendedpollfd {
    int       fd;
    short int events;
    short int revents;
-   long long revision;
+   long revision;
 };
 
 int extendedPoll(struct extendedpollfd* fdlist,
@@ -782,6 +807,17 @@ int adl_remove_poll_fd(gint sfd)
             counter++;
             num_of_fds -= 1;
         }
+		#ifdef WIN32
+		for (i = 0; i < NUM_FDS; i++)
+	{
+		if (fds[i]==sfd)
+		{
+			fds[i]=-1;
+			fdnum--;
+			break;
+		}
+	}
+#endif
     }
     return (counter);
 }
@@ -796,16 +832,42 @@ int
 adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
                    void (*action) (void *, void *) , void* userData)
 {
-     if (num_of_fds < NUM_FDS && sfd >= 0) {
+	#ifdef WIN32
+
+int ret, i;
+if (sfd!=0)
+{
+	
+	ret = WSAEventSelect(sfd, hEvent, FD_READ | FD_WRITE | 
+	FD_ACCEPT | FD_CLOSE | FD_CONNECT);
+    if (ret == SOCKET_ERROR)
+    {
+        error_log(ERROR_FATAL, "WSAEventSelect() failed\n");	
+        return (-1);
+    }
+	for (i=0; i<NUM_FDS;i++)
+	{
+		if (fds[i]==-1)
+		{
+			fds[i]=sfd;
+			fdnum++;
+			break;
+		}
+	}
+}
+#endif
+
+	 if (num_of_fds < NUM_FDS && sfd >= 0) {
         assign_poll_fd(num_of_fds, sfd, event_mask);
         event_callbacks[num_of_fds] = malloc(sizeof(struct event_cb));
         if (!event_callbacks[num_of_fds])
             error_log(ERROR_FATAL, "Could not allocate memory in  register_fd_cb \n");
         event_callbacks[num_of_fds]->sfd = sfd;
         event_callbacks[num_of_fds]->eventcb_type = eventcb_type;
+	
         event_callbacks[num_of_fds]->action = (void (*) (void))action;
         event_callbacks[num_of_fds]->userData = userData;
-        num_of_fds++;
+        num_of_fds++;		
         return num_of_fds;
     } else
         return (-1);
@@ -1152,8 +1214,14 @@ int init_poll_fds(void)
     int i;
     for (i = 0; i < NUM_FDS; i++) {
         assign_poll_fd(i, POLL_FD_UNUSED, 0);
+		#ifdef WIN32
+		fds[i]=-1;
+#endif
     }
     num_of_fds = 0;
+#ifdef WIN32
+	fdnum=0;
+#endif    
     return (0);
 }
 
@@ -1172,6 +1240,8 @@ int adl_extendedEventLoop(void (*lock)(void* data), void (*unlock)(void* data), 
     int result;
     unsigned int u_res;
     int msecs;
+
+
 
     if(lock != NULL) {
        lock(data);
@@ -1225,7 +1295,80 @@ int adl_extendedEventLoop(void (*lock)(void* data), void (*unlock)(void* data), 
  */
 int adl_eventLoop()
 {
+#ifdef WIN32
+
+	int n, ret,i, j;
+	WSANETWORKEVENTS	ne;
+	int length=0, hlen=0;
+    union sockunion src, dest;
+	struct ip *iph;
+	struct sockaddr_in *src_in;
+	unsigned short portnum;
+
+n = MsgWaitForMultipleObjects(2, handles, FALSE, INFINITE, QS_KEY);
+		if (n==1 && idata.len>0)
+		{
+			for (i=0; i< NUM_FDS; i++)
+			{	
+
+				if (event_callbacks[i]->sfd==0)
+				{
+		
+					(*(event_callbacks[i]->action))(idata.buffer,idata.len);				
+					SetEvent(idata.eventback);
+					memset(idata.buffer, 0, sizeof(idata.buffer));
+					idata.len=0;
+					break;
+				}
+			}
+		}
+		else if (n==0)
+		{	
+			for (i=0; i<fdnum; i++)
+			{				
+			ret = WSAEnumNetworkEvents(fds[i], hEvent, &ne);
+				if (ret == SOCKET_ERROR)
+				{
+					error_log(ERROR_FATAL, "WSAEnumNetworkEvents() failed!");					
+					return (-1);
+				}
+				if (ne.lNetworkEvents & (FD_READ | FD_ACCEPT | FD_CLOSE))
+				{
+					for (j=0; j<NUM_FDS; j++)
+						if (event_callbacks[i]->sfd==fds[i])
+						{							
+						length = adl_receive_message(fds[i], rbuf, MAX_MTU_SIZE, &src, &dest);	
+						portnum = ntohs(src.sin.sin_port);
+						if(length < 0) break;
+						event_logiiii(VERBOSE, "SCTP-Message on socket %u , len=%d, portnum=%d, sockunion family %u",
+                     fds[i], length, portnum, sockunion_family(&src));
+                
+                    src_in = (struct sockaddr_in *) &src;
+                    event_logi(VERBOSE, "IPv4/SCTP-Message from %s -> activating callback",
+                               inet_ntoa(src_in->sin_addr));
+						iph = (struct ip *) rbuf;
+                    hlen = (iph->ip_verlen & 0x0F) << 2;
+					if (length < hlen) 
+					{
+                        error_logii(ERROR_MINOR,
+                                    "dispatch_event : packet too short (%d bytes) from %s",
+                                    length, inet_ntoa(src_in->sin_addr));
+                    } else 
+					{
+                        length -= hlen;
+                        mdi_receiveMessage(fds[i], &rbuf[hlen], length, &src, &dest);
+                    }
+                    break;
+						}
+					
+				}							
+			}
+		}
+		return 1;
+#else
+
    return(adl_extendedEventLoop(NULL, NULL, NULL));
+#endif
 }
 
 
@@ -1275,6 +1418,33 @@ int adl_getEvents(void)
    return(adl_extendedGetEvents(NULL, NULL, NULL));
 }
 
+
+#ifdef WIN32
+
+static DWORD WINAPI stdin_read_thread(void *param)
+{
+    struct input_data *indata = (struct input_data *) param;
+	
+    HANDLE inhandle;
+
+    inhandle = GetStdHandle(STD_INPUT_HANDLE);
+
+	while (ReadFile(inhandle, indata->buffer, sizeof(indata->buffer),
+		    &indata->len, NULL) && indata->len > 0)
+	{
+	SetEvent(indata->event);
+	
+	WaitForSingleObject(indata->eventback, INFINITE);
+	memset(indata->buffer, 0, sizeof(indata->buffer));
+    }
+    indata->len = 0;
+	memset(indata->buffer, 0, sizeof(indata->buffer));
+    SetEvent(indata->event);
+	
+	return 0;
+}
+#endif
+
 int adl_init_adaptation_layer(int * myRwnd)
 {
     struct timeval curTime;
@@ -1292,6 +1462,22 @@ int adl_init_adaptation_layer(int * myRwnd)
         error_log(ERROR_FATAL, "WSAStartup failed.");
         return SCTP_SPECIFIC_FUNCTION_ERROR;
     }
+	hEvent = WSACreateEvent();
+    if (hEvent == NULL)
+    {
+        error_log(ERROR_FATAL, "WSACreateEvent() of hEvent failed!");		
+        return -1;
+    }
+
+	stdinevent = WSACreateEvent();
+    if (stdinevent == NULL)
+    {
+        error_log(ERROR_FATAL, "WSACreateEvent() of stdinevent failed!");		
+        return -1;
+    }
+    	
+	handles[0]=hEvent;
+	handles[1]=stdinevent;
 #endif
 
     /* initialize random number generator */
@@ -1310,7 +1496,6 @@ int adl_init_adaptation_layer(int * myRwnd)
     init_timer_list();
     /*  print_debug_list(INTERNAL_EVENT_0); */
     sctp_sfd = adl_open_sctp_socket(AF_INET, myRwnd);
-
     /* set a safe default */
     if (*myRwnd == -1) *myRwnd = 8192;
 
@@ -1357,7 +1542,11 @@ int adl_registerUdpCallback(unsigned char me[],
     int result, new_sfd;
     union sockunion my_address;
 
-    if (ntohs(my_port) == 0) {
+#ifdef WIN32
+	error_log(ERROR_MAJOR, "WIN32: Registering ULP-Callbacks for UDP not installed !");
+        return -1;
+#endif
+	if (ntohs(my_port) == 0) {
         error_log(ERROR_MAJOR, "Port 0 is not allowed ! Fix your program !");
         return -1;
     }
@@ -1415,12 +1604,70 @@ int adl_unregisterUdpCallback(int udp_sfd)
 int adl_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, short int eventMask)
 {
     int result;
+	#ifdef WIN32
+	error_log(ERROR_MAJOR, "WIN32: Registering User Callbacks not installed !");
+        return -1;
+#endif
     /* 0 is the standard input ! */
     result = adl_register_fd_cb(fd, EVENTCB_TYPE_USER, eventMask, (void (*) (void *,void *))sdf, userData);
     if (result != -1) {
         event_logii(EXTERNAL_EVENT,"----------> Registered User Callback: fd=%d result=%d -------\n", fd, result);
     }
     return result;
+}
+
+#ifndef WIN32
+void readCallback(int fd, short int revents, short int* events, void* userData)
+{
+	int n;
+
+	struct data *udata=(struct data *)userData;
+
+	n=read(0,(char *)udata->dat, udata->len);
+	((sctp_StdinCallback )udata->cb)(udata->dat, n);
+}
+#endif
+
+int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
+{
+    int result;
+
+	
+	#ifdef WIN32
+	unsigned long	in_threadid;
+	idata.event = stdinevent;
+	idata.eventback = CreateEvent(NULL, FALSE, FALSE, NULL);
+	
+	if (!(stdin_thread_handle=CreateThread(NULL, 0, stdin_read_thread,
+			      &idata, 0, &in_threadid))) {
+		fprintf(stderr, "Unable to create input thread\n");
+		exit(1);
+	 }
+
+    result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, 0, (void (*) (void *,void *))sdf, NULL);
+#else
+	struct data *userData;
+	userData = malloc(sizeof (struct data));
+    memset(userData, 0, sizeof(struct data));
+	userData->dat=buffer;
+	userData->len=length;
+	userData->cb=(void (*) (void))sdf;	
+	result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, POLLIN | POLLPRI, (void (*) (void *,void *))readCallback,userData);
+#endif
+	if (result != -1) {
+        event_logii(EXTERNAL_EVENT,"----------> Registered Stdin Callback: fd=%d result=%d -------\n", 0, result);
+    }
+    return result;
+}
+
+
+int adl_unregisterStdinCallback()
+{
+    #ifdef WIN32	 
+	TerminateThread(stdin_thread_handle,0);
+	#endif
+	adl_remove_poll_fd(0);
+    return 0;
 }
 
 
@@ -1617,6 +1864,782 @@ gboolean adl_filterInetAddress(union sockunion* newAddress, AddressScopingFlags 
 }
 
 
+#ifdef WIN32
+
+#define WspiapiMalloc(tSize)    calloc(1, (tSize))
+#define WspiapiFree(p)          free(p)
+#define WspiapiSwap(a, b, c)    { (c) = (a); (a) = (b); (b) = (c); }
+#define getaddrinfo             WspiapiGetAddrInfo
+#define getnameinfo             WspiapiGetNameInfo
+#define freeaddrinfo            WspiapiFreeAddrInfo
+#define socklen_t				unsigned int
+#define size_t					unsigned int
+#define NI_MAXHOST  1025  /* Max size of a fully-qualified domain name */
+#define NI_MAXSERV    32  /* Max size of a service name */
+
+#define NI_NOFQDN       0x01  /* Only return nodename portion for local hosts */
+#define NI_NUMERICHOST  0x02  /* Return numeric form of the host's address */
+#define NI_NAMEREQD     0x04  /* Error if the host's name not in DNS */
+#define NI_NUMERICSERV  0x08  /* Return numeric form of the service (port #) */
+#define NI_DGRAM        0x10  /* Service is a datagram service */
+
+#define EAI_AGAIN       WSATRY_AGAIN
+#define EAI_BADFLAGS    WSAEINVAL
+#define EAI_FAIL        WSANO_RECOVERY
+#define EAI_FAMILY      WSAEAFNOSUPPORT
+#define EAI_MEMORY      WSA_NOT_ENOUGH_MEMORY
+
+#define EAI_NONAME      WSAHOST_NOT_FOUND
+#define EAI_SERVICE     WSATYPE_NOT_FOUND
+#define EAI_SOCKTYPE    WSAESOCKTNOSUPPORT
+#define EAI_NODATA      EAI_NONAME
+
+#define AI_PASSIVE     0x1  /* Socket address will be used in bind() call */
+#define AI_CANONNAME   0x2  /* Return canonical name in first ai_canonname */
+#define AI_NUMERICHOST 0x4  /* Nodename must be a numeric address string */
+
+typedef struct addrinfo
+{
+    int                 ai_flags;       // AI_PASSIVE, AI_CANONNAME, AI_NUMERICHOST
+    int                 ai_family;      // PF_xxx
+    int                 ai_socktype;    // SOCK_xxx
+    int                 ai_protocol;    // 0 or IPPROTO_xxx for IPv4 and IPv6
+    size_t              ai_addrlen;     // Length of ai_addr
+    char *              ai_canonname;   // Canonical name for nodename
+    struct sockaddr *   ai_addr;        // Binary address
+    struct addrinfo *   ai_next;        // Next structure in linked list
+};
+
+typedef int (WINAPI *WSPIAPI_PGETADDRINFO) (
+      const char                      *nodename,
+      const char                      *servname,
+      const struct addrinfo           *hints,
+     struct addrinfo                 **res);
+
+typedef int (WINAPI *WSPIAPI_PGETNAMEINFO) (
+      const struct sockaddr           *sa,
+      socklen_t                       salen,
+     char                            *host,
+      size_t                          hostlen,
+     char                            *serv,
+      size_t                          servlen,
+      int                             flags);
+
+typedef void (WINAPI *WSPIAPI_PFREEADDRINFO) (
+      struct addrinfo                 *ai);
+
+
+char *
+WspiapiStrdup (
+  const char *                    pszString) 
+{
+    char    *pszMemory;
+
+    if (!pszString)
+        return(NULL);
+
+    pszMemory = (char *) WspiapiMalloc(strlen(pszString) + 1);
+    if (!pszMemory)
+        return(NULL);
+
+    return(strcpy(pszMemory, pszString));
+}
+
+    
+BOOL
+WspiapiParseV4Address (
+      const char *                    pszAddress,
+     PDWORD                          pdwAddress)
+
+{
+    DWORD       dwAddress   = 0;
+    const char  *pcNext     = NULL;
+    int         iCount      = 0;
+
+    for (pcNext = pszAddress; *pcNext != '\0'; pcNext++)
+        if (*pcNext == '.')
+            iCount++;
+    if (iCount != 3)
+        return FALSE;
+
+    dwAddress = inet_addr(pszAddress);
+    if (dwAddress == INADDR_NONE)
+        return FALSE;
+
+    *pdwAddress = dwAddress;
+    return TRUE;
+}
+
+
+struct addrinfo *
+WspiapiNewAddrInfo (
+      int                             iSocketType,
+      int                             iProtocol,
+      WORD                            wPort,
+      DWORD                           dwAddress)
+{
+    struct addrinfo     *ptNew;
+    struct sockaddr_in  *ptAddress;
+
+    ptNew       =
+        (struct addrinfo *) WspiapiMalloc(sizeof(struct addrinfo));
+    if (!ptNew)
+        return NULL;
+
+    ptAddress   =
+        (struct sockaddr_in *) WspiapiMalloc(sizeof(struct sockaddr_in));
+    if (!ptAddress)
+    {
+        WspiapiFree(ptNew);
+        return NULL;
+    }
+    ptAddress->sin_family       = AF_INET;
+    ptAddress->sin_port         = wPort;
+    ptAddress->sin_addr.s_addr  = dwAddress;
+    
+    ptNew->ai_family            = PF_INET;
+    ptNew->ai_socktype          = iSocketType;
+    ptNew->ai_protocol          = iProtocol;
+    ptNew->ai_addrlen           = sizeof(struct sockaddr_in);
+    ptNew->ai_addr              = (struct sockaddr *) ptAddress;
+
+    return ptNew;
+}
+
+
+int
+WspiapiQueryDNS(
+      const char                      *pszNodeName,
+      int                             iSocketType,
+      int                             iProtocol,  
+      WORD                            wPort,      
+     char                            pszAlias[NI_MAXHOST],
+    struct addrinfo                 **pptResult)
+
+{
+    struct addrinfo **pptNext   = pptResult;
+    struct hostent  *ptHost     = NULL;
+    char            **ppAddresses;
+
+    *pptNext    = NULL;
+    pszAlias[0] = '\0';
+
+    ptHost = gethostbyname(pszNodeName);
+    if (ptHost)
+    {
+        if ((ptHost->h_addrtype == AF_INET)     &&
+            (ptHost->h_length   == sizeof(struct in_addr)))
+        {
+            for (ppAddresses    = ptHost->h_addr_list;
+                 *ppAddresses   != NULL;
+                 ppAddresses++)
+            {
+                *pptNext = WspiapiNewAddrInfo(
+                    iSocketType,
+                    iProtocol,
+                    wPort,
+                    ((struct in_addr *) *ppAddresses)->s_addr);
+                if (!*pptNext)
+                    return EAI_MEMORY;
+
+                pptNext = &((*pptNext)->ai_next);
+            }
+        }
+
+        strncpy(pszAlias, ptHost->h_name, NI_MAXHOST - 1);
+        pszAlias[NI_MAXHOST - 1] = '\0';
+        
+        return 0;
+    }
+    
+    switch (WSAGetLastError())
+    {
+        case WSAHOST_NOT_FOUND: return EAI_NONAME;
+        case WSATRY_AGAIN:      return EAI_AGAIN;
+        case WSANO_RECOVERY:    return EAI_FAIL;
+        case WSANO_DATA:        return EAI_NODATA;
+        default:                return EAI_NONAME;
+    }
+}
+
+
+int
+WspiapiLookupNode(
+      const char                      *pszNodeName,
+      int                             iSocketType,
+      int                             iProtocol,  
+      WORD                            wPort,      
+      BOOL                            bAI_CANONNAME,
+     struct addrinfo                 **pptResult)
+{
+    int     iError              = 0;
+    int     iAliasCount         = 0;
+
+    char    szFQDN1[NI_MAXHOST] = "";
+    char    szFQDN2[NI_MAXHOST] = "";
+    char    *pszName            = szFQDN1;
+    char    *pszAlias           = szFQDN2;
+    char    *pszScratch         = NULL;
+    strncpy(pszName, pszNodeName, NI_MAXHOST - 1);
+    pszName[NI_MAXHOST - 1] = '\0';
+    
+    for (;;)
+    {
+        iError = WspiapiQueryDNS(pszNodeName,
+                                 iSocketType,
+                                 iProtocol,
+                                 wPort,
+                                 pszAlias,
+                                 pptResult);
+        if (iError)
+            break;
+
+        if (*pptResult)
+            break;
+
+        if ((!strlen(pszAlias))             ||
+            (!strcmp(pszName, pszAlias))    ||
+            (++iAliasCount == 16))
+        {
+            iError = EAI_FAIL;
+            break;
+        }
+
+        WspiapiSwap(pszName, pszAlias, pszScratch);
+    }
+
+    if (!iError && bAI_CANONNAME)
+    {
+        (*pptResult)->ai_canonname = WspiapiStrdup(pszAlias);
+        if (!(*pptResult)->ai_canonname)
+            iError = EAI_MEMORY;
+    }
+
+    return iError;
+}
+
+
+int
+WspiapiClone (
+      WORD                            wPort,      
+      struct addrinfo                 *ptResult)
+{
+    struct addrinfo *ptNext = NULL;
+    struct addrinfo *ptNew  = NULL;
+
+    for (ptNext = ptResult; ptNext != NULL; )
+    {     
+        ptNew = WspiapiNewAddrInfo(
+            SOCK_DGRAM,
+            ptNext->ai_protocol,
+            wPort,
+            ((struct sockaddr_in *) ptNext->ai_addr)->sin_addr.s_addr);
+        if (!ptNew)
+            break;
+
+      
+        ptNew->ai_next  = ptNext->ai_next;
+        ptNext->ai_next = ptNew;
+        ptNext          = ptNew->ai_next;
+    }
+
+    if (ptNext != NULL)
+        return EAI_MEMORY;
+    
+    return 0;
+}
+
+
+void
+WspiapiLegacyFreeAddrInfo (
+    IN  struct addrinfo                 *ptHead)
+{
+    struct addrinfo *ptNext;    // next strcture to free
+
+    for (ptNext = ptHead; ptNext != NULL; ptNext = ptHead)
+    {
+        if (ptNext->ai_canonname)
+            WspiapiFree(ptNext->ai_canonname);
+        
+        if (ptNext->ai_addr)
+            WspiapiFree(ptNext->ai_addr);
+
+        ptHead = ptNext->ai_next;
+        WspiapiFree(ptNext);
+    }
+}
+
+
+
+int
+WspiapiLegacyGetAddrInfo(
+     const char                       *pszNodeName,
+     const char                       *pszServiceName,
+     const struct addrinfo            *ptHints,
+     struct addrinfo                 **pptResult)
+ 
+{
+    int                 iError      = 0;
+    int                 iFlags      = 0;
+    int                 iFamily     = PF_UNSPEC;
+    int                 iSocketType = 0;
+    int                 iProtocol   = 0;
+    WORD                wPort       = 0;
+    DWORD               dwAddress   = 0;
+
+    struct servent      *ptService  = NULL;
+    char                *pc         = NULL;
+    BOOL                bClone      = FALSE;
+    WORD                wTcpPort    = 0;
+    WORD                wUdpPort    = 0;
+    
+    
+    *pptResult  = NULL;
+
+  
+    if ((!pszNodeName) && (!pszServiceName))
+        return EAI_NONAME;
+
+    if (ptHints)
+    {
+       
+        if ((ptHints->ai_addrlen    != 0)       ||
+            (ptHints->ai_canonname  != NULL)    ||
+            (ptHints->ai_addr       != NULL)    ||
+            (ptHints->ai_next       != NULL))
+        {
+            return EAI_FAIL;
+        }
+        
+       
+        iFlags      = ptHints->ai_flags;
+        if ((iFlags & AI_CANONNAME) && !pszNodeName)
+            return EAI_BADFLAGS;
+
+       
+        iFamily     = ptHints->ai_family;
+        if ((iFamily != PF_UNSPEC) && (iFamily != PF_INET))
+            return EAI_FAMILY;
+       
+        iSocketType = ptHints->ai_socktype;
+        if ((iSocketType != 0)                  &&
+            (iSocketType != SOCK_STREAM)        &&
+            (iSocketType != SOCK_DGRAM)         &&
+            (iSocketType != SOCK_RAW))
+            return EAI_SOCKTYPE;
+       
+        iProtocol   = ptHints->ai_protocol;
+    }
+
+
+   
+    if (pszServiceName)
+    {
+        wPort = (WORD) strtoul(pszServiceName, &pc, 10);
+        if (*pc == '\0')        // numeric port string
+        {
+            wPort = wTcpPort = wUdpPort = htons(wPort);
+            if (iSocketType == 0)
+            {
+                bClone      = TRUE;
+                iSocketType = SOCK_STREAM;
+            }
+        }
+        else                    // non numeric port string
+        {
+            if ((iSocketType == 0) || (iSocketType == SOCK_DGRAM))
+            {
+                ptService = getservbyname(pszServiceName, "udp");
+                if (ptService)
+                    wPort = wUdpPort = ptService->s_port;
+            }
+
+            if ((iSocketType == 0) || (iSocketType == SOCK_STREAM))
+            {
+                ptService = getservbyname(pszServiceName, "tcp");
+                if (ptService)
+                    wPort = wTcpPort = ptService->s_port;
+            }
+            
+            // assumes 0 is an invalid service port...
+            if (wPort == 0)     // no service exists
+                return (iSocketType ? EAI_SERVICE : EAI_NONAME);
+
+            if (iSocketType == 0)
+            {
+                // if both tcp and udp, process tcp now & clone udp later.
+                iSocketType = (wTcpPort) ? SOCK_STREAM : SOCK_DGRAM;
+                bClone      = (wTcpPort && wUdpPort); 
+            }
+        }
+    }
+    
+
+    if ((!pszNodeName) || (WspiapiParseV4Address(pszNodeName, &dwAddress)))
+    {
+        if (!pszNodeName)
+        {
+            dwAddress = htonl((iFlags & AI_PASSIVE)
+                              ? INADDR_ANY
+                              : INADDR_LOOPBACK);
+        }
+        
+        // create an addrinfo structure...
+        *pptResult =
+            WspiapiNewAddrInfo(iSocketType, iProtocol, wPort, dwAddress);
+        if (!(*pptResult))
+            iError = EAI_MEMORY;
+        
+        if (!iError && pszNodeName)
+        {
+           
+            (*pptResult)->ai_flags |= AI_NUMERICHOST;
+            
+            // return the numeric address string as the canonical name
+            if (iFlags & AI_CANONNAME)
+            {
+                (*pptResult)->ai_canonname =
+                    WspiapiStrdup(inet_ntoa(*((struct in_addr *) &dwAddress)));
+                if (!(*pptResult)->ai_canonname)        
+                    iError = EAI_MEMORY;
+            }
+        }
+    }
+
+
+   
+    else if (iFlags & AI_NUMERICHOST)
+    {
+        iError = EAI_NONAME;
+    }
+    
+
+    
+    else
+    {
+        iError = WspiapiLookupNode(pszNodeName,
+                                   iSocketType,
+                                   iProtocol,
+                                   wPort,
+                                   (iFlags & AI_CANONNAME),
+                                   pptResult);
+    }
+
+    if (!iError && bClone)
+    {
+        iError = WspiapiClone(wUdpPort, *pptResult);
+    }
+
+    if (iError)
+    {
+        WspiapiLegacyFreeAddrInfo(*pptResult);
+        *pptResult  = NULL;        
+    }
+
+    return (iError);
+}
+
+
+
+int
+WspiapiLegacyGetNameInfo(
+      const struct sockaddr           *ptSocketAddress,
+      socklen_t                       tSocketLength,
+     char                            *pszNodeName,
+      size_t                          tNodeLength,
+     char                            *pszServiceName,
+      size_t                          tServiceLength,
+      int                             iFlags)
+
+{
+    struct servent  *ptService;
+    WORD            wPort;    
+    char            szBuffer[]  = "65535";
+    char            *pszService = szBuffer;
+
+    struct hostent  *ptHost;
+    struct in_addr  tAddress;
+    char            *pszNode    = NULL;
+    char            *pc         = NULL;
+    
+
+    // sanity check ptSocketAddress and tSocketLength.
+    if ((!ptSocketAddress) || (tSocketLength < sizeof(struct sockaddr)))
+        return EAI_FAIL;
+    
+    if (ptSocketAddress->sa_family != AF_INET)
+        return EAI_FAMILY;
+
+    if (tSocketLength < sizeof(struct sockaddr_in))
+        return EAI_FAIL;
+    
+    if (!(pszNodeName && tNodeLength) &&
+        !(pszServiceName && tServiceLength))
+    {
+        return EAI_NONAME;    
+    }
+
+    
+    if ((iFlags & NI_NUMERICHOST) && (iFlags & NI_NAMEREQD))
+    {                                                                       
+        return EAI_BADFLAGS;
+    }
+        
+    // translate the port to a service name (if requested).
+    if (pszServiceName && tServiceLength)
+    {
+        wPort = ((struct sockaddr_in *) ptSocketAddress)->sin_port;
+        
+        if (iFlags & NI_NUMERICSERV)
+        {
+            // return numeric form of the address.
+            sprintf(szBuffer, "%u", ntohs(wPort));
+        }
+        else
+        {
+            // return service name corresponding to port.
+            ptService = getservbyport(wPort,
+                                      (iFlags & NI_DGRAM) ? "udp" : NULL);
+            if (ptService && ptService->s_name)
+            {
+                // lookup successful.
+                pszService = ptService->s_name;
+            }
+            else
+            {
+                // DRAFT: return numeric form of the port!
+                sprintf(szBuffer, "%u", ntohs(wPort));
+            }
+        }
+        
+        
+        if (tServiceLength > strlen(pszService))
+            strcpy(pszServiceName, pszService);
+        else
+            return EAI_FAIL;
+    }
+
+    
+    // translate the address to a node name (if requested).
+    if (pszNodeName && tNodeLength)
+    {    
+        // this is the IPv4-only version, so we have an IPv4 address.
+        tAddress = ((struct sockaddr_in *) ptSocketAddress)->sin_addr;
+
+        if (iFlags & NI_NUMERICHOST)
+        {
+            // return numeric form of the address.
+            pszNode  = inet_ntoa(tAddress);
+        }
+        else
+        {
+            // return node name corresponding to address.
+            ptHost = gethostbyaddr((char *) &tAddress,
+                                   sizeof(struct in_addr),
+                                   AF_INET);
+            if (ptHost && ptHost->h_name)
+            {
+                // DNS lookup successful.
+                // stop copying at a "." if NI_NOFQDN is specified.
+                pszNode = ptHost->h_name;
+                if ((iFlags & NI_NOFQDN) && (pc = strchr(pszNode, '.')))
+                    *pc = '\0';
+            }
+            else
+            {
+                // DNS lookup failed.  return numeric form of the address.
+                if (iFlags & NI_NAMEREQD)
+                {
+                    switch (WSAGetLastError())
+                    {
+                        case WSAHOST_NOT_FOUND: return EAI_NONAME;
+                        case WSATRY_AGAIN:      return EAI_AGAIN;
+                        case WSANO_RECOVERY:    return EAI_FAIL;
+                        default:                return EAI_NONAME;
+                    }
+                }
+                else
+                    pszNode  = inet_ntoa(tAddress);
+            }
+        }
+
+        if (tNodeLength > strlen(pszNode))
+            strcpy(pszNodeName, pszNode);
+        else
+            return EAI_FAIL;
+    }
+
+    return 0;
+}
+
+
+
+typedef struct 
+{
+    char const          *pszName;
+    FARPROC             pfAddress;
+} WSPIAPI_FUNCTION;
+
+#define WSPIAPI_FUNCTION_ARRAY                                  \
+{                                                               \
+    "getaddrinfo",      (FARPROC) WspiapiLegacyGetAddrInfo,     \
+    "getnameinfo",      (FARPROC) WspiapiLegacyGetNameInfo,     \
+    "freeaddrinfo",     (FARPROC) WspiapiLegacyFreeAddrInfo,    \
+}
+
+
+
+FARPROC
+WspiapiLoad(
+      WORD                            wFunction)
+
+{
+    HMODULE                 hLibrary        = NULL;
+
+    // these static variables store state across calls, across threads.
+    static BOOL             bInitialized    = FALSE;
+    static WSPIAPI_FUNCTION rgtGlobal[]     = WSPIAPI_FUNCTION_ARRAY;
+    static const int        iNumGlobal      = (sizeof(rgtGlobal) /
+                                               sizeof(WSPIAPI_FUNCTION));
+    
+    // we overwrite rgtGlobal only if all routines exist in library.
+    WSPIAPI_FUNCTION        rgtLocal[]      = WSPIAPI_FUNCTION_ARRAY;
+    FARPROC                 fScratch        = NULL;
+    int                     i               = 0;
+    
+    
+    if (bInitialized)           // WspiapiLoad has already been called once
+        return (rgtGlobal[wFunction].pfAddress);
+
+    do                          // breakout loop
+    {
+        CHAR SystemDir[MAX_PATH + 1];
+        CHAR Path[MAX_PATH + 8];
+
+        if (GetSystemDirectoryA(SystemDir, MAX_PATH) == 0) 
+        {
+            break;
+        }
+
+        // in Whistler and beyond...
+        // the routines are present in the WinSock 2 library (ws2_32.dll).
+        // printf("Looking in ws2_32 for getaddrinfo...\n");
+        strcpy(Path, SystemDir);
+        strcat(Path, "\\ws2_32");
+        hLibrary = LoadLibraryA(Path);
+        if (hLibrary != NULL)
+        {
+            fScratch = GetProcAddress(hLibrary, "getaddrinfo");
+            if (fScratch == NULL)
+            {
+                FreeLibrary(hLibrary);
+                hLibrary = NULL;
+            }
+        }
+        if (hLibrary != NULL)
+            break;
+        
+
+        // in the IPv6 Technology Preview...        
+        // the routines are present in the IPv6 WinSock library (wship6.dll).
+        // printf("Looking in wship6 for getaddrinfo...\n");
+        strcpy(Path, SystemDir);
+        strcat(Path, "\\wship6");
+        hLibrary = LoadLibraryA(Path);
+        if (hLibrary != NULL)
+        {
+            fScratch = GetProcAddress(hLibrary, "getaddrinfo");
+            if (fScratch == NULL)
+            {
+                FreeLibrary(hLibrary);
+                hLibrary = NULL;
+            }
+        }
+    } while (FALSE);
+
+
+    if (hLibrary != NULL)
+    {
+        // use routines from this library...
+        // since getaddrinfo is here, we expect all routines to be here,
+        // but will fall back to IPv4-only if any of them is missing.
+        for (i = 0; i < iNumGlobal; i++)
+        {
+            rgtLocal[i].pfAddress
+                = GetProcAddress(hLibrary, rgtLocal[i].pszName);
+            if (rgtLocal[i].pfAddress == NULL)
+            {
+                FreeLibrary(hLibrary);
+                hLibrary = NULL;
+                break;
+            }
+        }
+
+        if (hLibrary != NULL)
+        {
+            // printf("found!\n");
+            for (i = 0; i < iNumGlobal; i++)
+                rgtGlobal[i].pfAddress = rgtLocal[i].pfAddress;
+        }
+    }
+    
+    bInitialized = TRUE;
+    return (rgtGlobal[wFunction].pfAddress);
+}
+
+
+
+int
+WspiapiGetAddrInfo(
+     const char                       *nodename,
+     const char                       *servname,
+     const struct addrinfo            *hints,
+     struct addrinfo                 **res)
+{
+    static WSPIAPI_PGETADDRINFO     pfGetAddrInfo   = NULL;
+
+    if (!pfGetAddrInfo)
+        pfGetAddrInfo   = (WSPIAPI_PGETADDRINFO) WspiapiLoad(0);
+    return ((*pfGetAddrInfo)
+            (nodename, servname, hints, res));
+}
+
+
+
+int
+WspiapiGetNameInfo (
+      const struct sockaddr           *sa,
+      socklen_t                       salen,
+     char                            *host,
+      size_t                          hostlen,
+     char                            *serv,
+      size_t                          servlen,
+      int                             flags)
+{
+    static WSPIAPI_PGETNAMEINFO     pfGetNameInfo   = NULL;
+    
+    if (!pfGetNameInfo)
+        pfGetNameInfo   = (WSPIAPI_PGETNAMEINFO) WspiapiLoad(1);
+    return ((*pfGetNameInfo)
+            (sa, salen, host, hostlen, serv, servlen, flags));
+}
+
+
+
+void
+WspiapiFreeAddrInfo (
+     struct addrinfo                 *ai)
+{
+    static WSPIAPI_PFREEADDRINFO    pfFreeAddrInfo   = NULL;
+
+    if (!pfFreeAddrInfo)
+        pfFreeAddrInfo  = (WSPIAPI_PFREEADDRINFO) WspiapiLoad(2);
+    (*pfFreeAddrInfo)(ai);
+}
+
+
+#endif
+
 /*
  * this is an ugly part to code, so it was taken an adapted from the
  * SCTP reference implementation by Randy Stewart
@@ -1640,6 +2663,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
      const AddressScopingFlags  flags)
 
 {
+
 #ifdef WIN32
 	union sockunion *localAddresses=NULL;
 
@@ -1667,7 +2691,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     hints.ai_socktype = SOCK_DGRAM;
     hints.ai_protocol = IPPROTO_UDP;
 
-    if ((rc = getaddrinfo(NULL,"0",&hints,&local))!=0)    
+    if ((rc = WspiapiLegacyGetAddrInfo(NULL,"0",&hints,&local))!=0)    
     {
         local=NULL;
 		fprintf(stderr, "Unable to resolve the bind address!\n");
