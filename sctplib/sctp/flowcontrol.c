@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.6 2003/09/10 21:34:40 tuexen Exp $
+ * $Id: flowcontrol.c,v 1.7 2003/09/25 09:25:38 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -496,7 +496,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
     if (num_of_chunks <= 0) {
         event_log(VERBOSE, "Number of Chunks was 0 BEFORE calling rtx_t3_timeout - returning");
         if (fc->shutdown_received == TRUE) {
-            error_log(ERROR_FATAL,
+            error_log(ERROR_MAJOR,
                       "T3 Timeout with 0 chunks in rtx-queue,  sci_allChunksAcked() should have been called !");
         }
         mdi_clearAssociationData();
