@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.13 2004/11/23 10:16:14 dreibh Exp $
+ *  $Id: globals.h,v 1.14 2004/12/08 14:53:16 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -90,7 +90,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #endif
-  
+
 #include "messages.h"
 
 /* timer granularity in millliseconds..... */
@@ -124,7 +124,7 @@
 #define EXTERNAL_EVENT_X   1    /* for unexpected external events from ULP, peer or Timers */
 
 
-#define Current_event_log_ 1    /* Defines the level up to which the events are printed.
+#define Current_event_log_ 0    /* Defines the level up to which the events are printed.
                                    VVERBOSE (6) means all events are printed.
                                    This parameter could also come from a command line option */
 
@@ -135,7 +135,7 @@
                                    for instance abort of an association. */
 #define ERROR_FATAL        1    /* recovery from error was not possible, the program exits. */
 
-#define Current_error_log_ 2    /* Defines the level up to which the errors are printed.
+#define Current_error_log_ 0    /* Defines the level up to which the errors are printed.
                                    ERROR_WARNING (4) means all events are printed.
                                    This parameter could also come from a command line option */
 
@@ -206,7 +206,7 @@ typedef struct chunk_data_struct
    module1.c errorTraceLevel eventTraceLevel
    module2.c errorTraceLevel eventTraceLevel
    ....
-   
+
    The file must be terminated by a null line.
 */
 void read_tracelevels(void);
@@ -255,7 +255,7 @@ void error_log1(short error_log_level, char *module_name, int line_no, char *log
    @param error_log_level : ERROR_MINOR ERROR_MAJOR ERROR_FATAL
    @param module_name :     the name of the module that received the event.
    @param line_no :         the line number within above module.
-   @param errnumber :       the errno from systemlibrary.  
+   @param errnumber :       the errno from systemlibrary.
    @param log_info :        the info that is printed with the modulename and error text.
    @author     Hölzlwimmer
 */
