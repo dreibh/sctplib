@@ -1,5 +1,5 @@
 /*
- *  $Id: chargen_server.c,v 1.7 2003/11/20 19:23:00 tuexen Exp $
+ *  $Id: chargen_server.c,v 1.8 2004/01/07 19:47:55 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -50,7 +50,7 @@
 #define MAXIMUM_PAYLOAD_LENGTH             8192
 #define MAXIMUM_NUMBER_OF_IN_STREAMS         17
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS         1
-#define BUFFER_LENGTH                      1030
+#define BUFFER_LENGTH                      8192
 #define SEND_QUEUE_SIZE                     100
 
 static unsigned char  localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
@@ -58,13 +58,14 @@ static unsigned short noOfLocalAddresses = 0;
 static unsigned char  destinationAddress[SCTP_MAX_IP_LEN];
 static unsigned short remotePort              = 9;
 
-static int startAssociation = 0;
-static int verbose          = 0;
-static int vverbose         = 0;
-static int unknownCommand   = 0;
-static int sendOOTBAborts   = 1;
-static int timeToLive       = SCTP_INFINITE_LIFETIME;
-
+static int startAssociation     = 0;
+static int verbose              = 0;
+static int vverbose             = 0;
+static int unknownCommand       = 0;
+static int sendOOTBAborts       = 1;
+static int timeToLive           = SCTP_INFINITE_LIFETIME;
+static unsigned int givenLength = 0;
+ 
 struct ulp_data {
     int ShutdownReceived;
 };
@@ -103,6 +104,7 @@ void printUsage(void)
     printf("options:\n");
     printf("-d destination_addr     establish a association with the specified address\n");   
     printf("-i       ignore OOTB packets\n");
+    printf("-l       length of chunks (default random)\n");
     printf("-n number    number of packets after which to stop and shutdown\n");   
     printf("-r port  connect to this remote port\n");
     printf("-s       source address\n");
@@ -132,6 +134,14 @@ void getArgs(int argc, char **argv)
 						strcpy((char *)destinationAddress, opt);
 						startAssociation = 1;
 					}
+					break;
+				case 'l':
+					if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+					givenLength =  atoi(opt);
 					break;
 				case 'r':
 					if (i+1 >= argc) {
@@ -287,7 +297,10 @@ void* communicationUpNotif(unsigned int assocID, int status,
         fflush(stdout);
     }
     
-    length = 1 + (rand() % (BUFFER_LENGTH - 1));
+    if (givenLength > 0)
+        length = givenLength;
+    else
+        length = 1 + (rand() % (BUFFER_LENGTH - 1));
     memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
 
@@ -298,7 +311,10 @@ void* communicationUpNotif(unsigned int assocID, int status,
             fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
             fflush(stdout);
         }
-        length = 1 + (rand() % 1024);
+        if (givenLength > 0)
+            length = givenLength;
+        else
+            length = 1 + (rand() % (BUFFER_LENGTH - 1));
         memset((void *)buffer, 'A', length);
         buffer[length-1] = '\n';
     }
@@ -336,7 +352,10 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
         fflush(stdout);
     }
     
-    length = 1 + (rand() % (BUFFER_LENGTH - 1));
+    if (givenLength > 0)
+        length = givenLength;
+    else
+        length = 1 + (rand() % (BUFFER_LENGTH - 1));
     memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
     
@@ -348,7 +367,10 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
           fprintf(stdout, "%-8x: %u bytes sent.\n", assocID, length);
           fflush(stdout);
       }
-      length = 1 + (rand() % 1024);
+      if (givenLength > 0)
+          length = givenLength;
+      else
+          length = 1 + (rand() % (BUFFER_LENGTH - 1));
       memset(buffer, 'A', length);
       buffer[length-1] = '\n';
     }
@@ -379,7 +401,10 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
     
     /* if (queueType == SCTP_SEND_QUEUE) { */
     if (queueType == SCTP_SEND_QUEUE && queueLength <= SEND_QUEUE_SIZE) { 
-      length = 1 + (rand() % (BUFFER_LENGTH - 1));
+      if (givenLength > 0)
+        length = givenLength;
+      else
+        length = 1 + (rand() % (BUFFER_LENGTH - 1));
       memset((void *)buffer, 'A', length);
       buffer[length-1] = '\n';
       
@@ -392,7 +417,10 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
             fflush(stdout);
         }
 
-        length = 1 + (rand() % 1024);
+        if (givenLength > 0)
+          length = givenLength;
+        else
+          length = 1 + (rand() % (BUFFER_LENGTH - 1));
         memset((void *)buffer, 'A', length);
         buffer[length-1] = '\n';
       }
