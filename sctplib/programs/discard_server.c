@@ -1,5 +1,5 @@
 /*
- *  $Id: discard_server.c,v 1.1 2003/05/16 13:47:50 ajung Exp $
+ *  $Id: discard_server.c,v 1.2 2003/07/01 09:37:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -43,6 +43,30 @@
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
+
+#ifdef SOLARIS
+#define timeradd(a, b, result) \
+  do {                                                                        \
+    (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;                             \
+    (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;                          \
+    if ((result)->tv_usec >= 1000000)                                         \
+      {                                                                       \
+        ++(result)->tv_sec;                                                   \
+        (result)->tv_usec -= 1000000;                                         \
+      }                                                                       \
+  } while (0)
+
+#define timersub(a, b, result)                                                \
+  do {                                                                        \
+    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;                             \
+    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;                          \
+    if ((result)->tv_usec < 0) {                                              \
+      --(result)->tv_sec;                                                     \
+      (result)->tv_usec += 1000000;                                           \
+    }                                                                         \
+  } while (0)
+
 #endif
 
 #include <sctp_wrapper.h>
