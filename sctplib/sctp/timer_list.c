@@ -1,5 +1,5 @@
 /*
- *  $Id: timer_list.c,v 1.3 2003/10/28 22:00:15 tuexen Exp $
+ *  $Id: timer_list.c,v 1.4 2003/11/07 20:29:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -289,7 +289,7 @@ unsigned int micro_update_item(unsigned int id, unsigned int seconds, unsigned i
 
 void print_item_info(short event_log_level, AlarmTimer * item)
 {
-    unsigned char* ttype;
+    char* ttype;
 
     switch(item->timer_type) {
         case TIMER_TYPE_INIT: ttype = "Init Timer";

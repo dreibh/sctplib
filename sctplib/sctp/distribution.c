@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.13 2003/10/28 22:00:15 tuexen Exp $
+ *  $Id: distribution.c,v 1.14 2003/11/07 20:29:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -92,7 +92,7 @@
 
 static int      myRWND                      = 0x7FFF;
 static union    sockunion *myAddressList    = NULL;
-static unsigned int myNumberOfAddresses     = 0;
+static          int myNumberOfAddresses     = 0;
 static gboolean sendAbortForOOTB            = TRUE;
 static int      checksumAlgorithm           = SCTP_CHECKSUM_ALGORITHM_CRC32C;
 static gboolean librarySupportsPRSCTP         = TRUE;
