@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: recvctrl.c,v 1.4 2003/07/14 08:42:11 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -495,7 +495,7 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
 
     event_logi(VVERBOSE, "rxc_data_chunk_rx: after rxc_bubbleup_ctsna, rxc->ctsna=%u", rxc->ctsna);
 
-    if (rxc->new_chunk_received == TRUE) se_recvDataChunk(se_chk, chunk_len);
+    if (rxc->new_chunk_received == TRUE) se_recvDataChunk(se_chk, chunk_len, ad_idx);
     /* resetting it */
     rxc->new_chunk_received = FALSE;
     return 1;

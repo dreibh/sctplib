@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ * $Id: streamengine.c,v 1.3 2003/07/14 08:42:11 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -98,6 +98,7 @@ typedef struct _delivery_data
     guint16 stream_id;
     guint16 stream_sn;
     guint32 protocolId;
+    guint32 fromAddressIndex;
     guchar data[MAX_DATACHUNK_PDU_LENGTH];
 }
 delivery_data;
@@ -110,6 +111,7 @@ typedef struct _delivery_pdu
     guint32  read_chunk;
     guint32  chunk_position;
     guint32  total_length;
+    guint32  fromAddressIndex;
     /* one chunk pointer or array of these */
     delivery_data** ddata;
 }delivery_pdu;
@@ -458,9 +460,9 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
 /**
  * This function is called from distribution layer to receive a chunk.
  */
-short se_ulpreceive(unsigned char *buffer, unsigned int *byteCount,
-                    unsigned short streamId, unsigned short* streamSN,
-                    unsigned int * tsn, unsigned int flags)
+short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
+                        unsigned short streamId, unsigned short* streamSN,
+                        unsigned int * tsn, unsigned int* addressIndex, unsigned int flags)
 {
 
   delivery_pdu  *d_pdu = NULL;
@@ -507,6 +509,7 @@ short se_ulpreceive(unsigned char *buffer, unsigned int *byteCount,
 
             *streamSN   = d_pdu->ddata[d_pdu->read_chunk]->stream_sn;
             *tsn        = d_pdu->ddata[d_pdu->read_chunk]->tsn;
+            *addressIndex = d_pdu->fromAddressIndex;
 
             event_logiiii (VVERBOSE, "SE_ULPRECEIVE (read_position: %u, read_chunk: %u, chunk_position: %u, total_length: %u)",
                     r_pos,  r_chunk, chunk_pos, d_pdu->total_length);
@@ -610,7 +613,7 @@ int se_doNotifications(void){
  * send error chunk, when maximum stream id is exceeded !
  */
 int
-se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount)
+se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount, unsigned int address_index)
 {
     guint16 datalength;
     delivery_data* d_chunk;
@@ -635,7 +638,8 @@ se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount)
     d_chunk->stream_id =    ntohs (dataChunk->stream_id);
     d_chunk->stream_sn =    ntohs (dataChunk->stream_sn);
     d_chunk->protocolId =   ntohl (dataChunk->protocolId);
-
+    d_chunk->fromAddressIndex =  address_index;
+    
     if (d_chunk->stream_id >= se->numReceiveStreams) {
         /* FIXME : Return error, when numReceiveStreams is exceeded */
         eh_send_invalid_streamid(d_chunk->stream_id);
@@ -741,7 +745,8 @@ int se_deliverOrderedPDUs(StreamEngine* se, unsigned short sid)
                 total_length += d_pdu->ddata[i]->data_length;
             }
             tmp_tsn =  d_pdu->ddata[0]->tsn;
-            d_pdu->total_length = total_length;
+            d_pdu->fromAddressIndex = d_pdu->ddata[0]->fromAddressIndex;
+            d_pdu->total_length = total_length;                        
             /* assemble delivery_pdu, and Notify */
             se->RecvStreams[sid].pduList = g_list_append(se->RecvStreams[sid].pduList, d_pdu);
             mdi_dataArriveNotif(sid, total_length, tmp_ssn, tmp_tsn, d_pdu->ddata[0]->protocolId, 0);
@@ -834,7 +839,8 @@ int se_deliverUnorderedPDUs(StreamEngine* se, unsigned short sid)
                 }
                 d_pdu->total_length = total_length;
                 del_tsn = d_pdu->ddata[0]->tsn;
-
+                d_pdu->fromAddressIndex = d_pdu->ddata[0]->fromAddressIndex;
+                
                 /* remove chunks from the list */
                 for (i = 0; i < chunksToDeliver; i++) {
                      se->RecvStreams[sid].unorderedList = g_list_remove(se->RecvStreams[sid].unorderedList,
@@ -1041,6 +1047,8 @@ gboolean se_deliver_stream_unreliably_ordered(StreamEngine* se, int sid, unsigne
                 }
                 d_pdu->total_length = total_length;
                 del_tsn = d_pdu->ddata[0]->tsn;
+                d_pdu->fromAddressIndex = d_pdu->ddata[0]->fromAddressIndex;
+                
                 /* assemble delivery_pdu, and Notify */
                 se->RecvStreams[sid].pduList = g_list_append(se->RecvStreams[sid].pduList, d_pdu);
 
@@ -1197,6 +1205,7 @@ unsigned short se_deliver_stream_unreliably_unordered(StreamEngine* se, int sid,
                     total_length += d_pdu->ddata[i]->data_length;
                 }
                 d_pdu->total_length = total_length;
+                d_pdu->fromAddressIndex = d_pdu->ddata[0]->fromAddressIndex;
                 del_tsn =  d_pdu->ddata[0]->tsn;
                 /* assemble delivery_pdu, and Notify */
                 se->RecvStreams[sid].pduList = g_list_append(se->RecvStreams[sid].pduList, d_pdu);

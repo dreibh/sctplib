@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.6 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: distribution.c,v 1.7 2003/07/14 08:42:11 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -2242,9 +2242,6 @@ short sctp_setPrimary(unsigned int associationID, short path_id)
 
 }                               /* end: sctp_setPrimary */
 
-
-
-
 /**
  * sctp_receive is called in response to the dataArriveNotification to
  * get the received data.
@@ -2270,6 +2267,31 @@ int sctp_receive(unsigned int associationID,
                  unsigned int * tsn,
                  unsigned int flags)
 {
+    unsigned int addressIndex;
+    return (sctp_receivefrom(associationID,streamID, buffer, length,
+                                streamSN, tsn, &addressIndex, flags));
+    
+}
+
+
+/**
+ * sctp_receivefrom does the same thing as sctp_receive(), and additionally returns the
+ * addressIndex, indicating where the chunks was received from.
+ *  @param   associationID  ID of association.
+ *  @param   streamID       the stream on which the data chunk is received.
+ *  @param   buffer         pointer to where payload data of arrived chunk will be copied
+ *  @param   length         length of chunk data.
+ *  @return  SCTP_SUCCESS if okay, 1==SCTP_SPECIFIC_FUNCTION_ERROR if there was no data
+*/
+int sctp_receivefrom(unsigned int associationID,
+                    unsigned short streamID,
+                    unsigned char  *buffer,
+                    unsigned int *length,
+                    unsigned short *streamSN,
+                    unsigned int * tsn,
+                    unsigned int *addressIndex, 
+                    unsigned int flags)
+{
     int result;
     SCTP_instance *old_Instance = sctpInstance;
     Association *old_assoc = currentAssociation;
@@ -2293,7 +2315,7 @@ int sctp_receive(unsigned int associationID,
         sctpInstance = currentAssociation->sctpInstance;
 
         /* retrieve data from streamengine instance */
-        result = se_ulpreceive(buffer, length, streamID, streamSN, tsn, flags);
+        result = se_ulpreceivefrom(buffer, length, streamID, streamSN, tsn, addressIndex, flags);
     } else {
         error_log(ERROR_MAJOR, "sctp_receive: addressed association does not exist");
         sctpInstance = old_Instance;

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: sctp.h,v 1.4 2003/07/14 08:42:11 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -555,6 +555,9 @@ int sctp_receive(unsigned int associationID, unsigned short streamID, unsigned c
                  unsigned int *length, unsigned short *streamSN, unsigned int * tsn, unsigned int flags);
 
 
+int sctp_receivefrom(unsigned int associationID, unsigned short streamID, unsigned char  *buffer,
+                     unsigned int *length, unsigned short *streamSN, unsigned int * tsn,
+                     unsigned int *addressIndex, unsigned int flags);
 
 
 

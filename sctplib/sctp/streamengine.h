@@ -1,5 +1,5 @@
 /*
- *  $Id: streamengine.h,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: streamengine.h,v 1.3 2003/07/14 08:42:11 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -57,7 +57,7 @@
 
 
 /**
-* return values for se_ulpreceive
+* return values for se_ulpreceivefrom
 */
 #define  RECEIVE_DATA           0 /* received data ok in streamengine */
 #define  STREAM_ID_OVERFLOW     1 /* wrong stream Id from ulp */
@@ -113,9 +113,9 @@ int se_doNotifications(void);
 
 /* This function is called from ULP to receive a chunk.
 */
-short se_ulpreceive(unsigned char *buffer, unsigned int *byteCount, 
-                    unsigned short streamId, unsigned short* streamSN,
-                    unsigned int * tsn, unsigned int flags);
+short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount, 
+                        unsigned short streamId, unsigned short* streamSN,
+                        unsigned int * tsn, unsigned int* addressIndex, unsigned int flags);
 
 
 
@@ -123,7 +123,7 @@ short se_ulpreceive(unsigned char *buffer, unsigned int *byteCount,
 /*
  * This function is called from RX_Control to receive a chunk.
  */
-int se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount);
+int se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount, unsigned int address_index);
 
 
 /**
