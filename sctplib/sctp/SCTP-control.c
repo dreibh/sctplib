@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.17 2004/11/17 21:08:50 tuexen Exp $
+ *  $Id: SCTP-control.c,v 1.18 2004/11/17 23:04:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -41,7 +41,7 @@
  *          an association.
  *
  * function prefixes: scu_ for  primitives originating from the ULP
- *                    scr_ for primitives originating from the peer
+ *                    sctlr_ for primitives originating from the peer
  *                    sci_ for SCTP-internal calls
  *
  * Remarks: Host and network byte order (HBO and NBO):
@@ -87,7 +87,7 @@
    Used function prefixes:
    \begin{itemize}
     \item scu_ for  primitives originating from the ULP
-    \item scr_ for primitives originating from the peer
+    \item sctlr_ for primitives originating from the peer
     \item sci_ for SCTP-internal calls
     \end{itemize}
  */
@@ -667,13 +667,13 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
 /*------------------- Functions called by the (de-)bundling for received control chunks ----------*/
 
 /**
- * scr_init is called by bundling when a init message is received from the peer.
+ * sctlr_init is called by bundling when a init message is received from the peer.
  * an InitAck may be returned, alongside with a cookie chunk variable parameter.
  * The following data are created and included in the init acknowledgement:
  * a COOKIE parameter.
  * @param init  pointer to the received init-chunk (including optional parameters)
  */
-int scr_init(SCTP_init * init)
+int sctlr_init(SCTP_init * init)
 {
     /*  this function does not expect any data allocated for the new association,
        but if there are, implementation will act according to section 5.2.1 (simultaneous
@@ -699,14 +699,14 @@ int scr_init(SCTP_init * init)
 
     guint primary;
 
-    event_log(EXTERNAL_EVENT, "scr_init() is executed");
+    event_log(EXTERNAL_EVENT, "sctlr_init() is executed");
 
     initCID = ch_makeChunk((SCTP_simple_chunk *) init);
 
     if (ch_chunkType(initCID) != CHUNK_INIT) {
         /* error logging */
         ch_forgetChunk(initCID);
-        error_log(ERROR_MAJOR, "scr_init: wrong chunk type");
+        error_log(ERROR_MAJOR, "sctlr_init: wrong chunk type");
         return return_state;
     }
 
@@ -777,7 +777,7 @@ int scr_init(SCTP_init * init)
 
 
         if ((supportedTypes & peerSupportedTypes) == 0)
-            error_log(ERROR_FATAL, "BAKEOFF: Program error, no common address types in scr_init()");
+            error_log(ERROR_FATAL, "BAKEOFF: Program error, no common address types in sctlr_init()");
 
         /* enter variable length params initAck */
         mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, 1, peerSupportedTypes,TRUE);
@@ -817,7 +817,7 @@ int scr_init(SCTP_init * init)
            mdi_writeLastInitiateTag(ch_initiateTag(initCID)); */
 
         state = localData->association_state;
-        event_logi(EXTERNAL_EVENT, "scr_init: received INIT chunk in state %02u", state);
+        event_logi(EXTERNAL_EVENT, "sctlr_init: received INIT chunk in state %02u", state);
         primary = pm_readPrimaryPath();
         supportedTypes = mdi_getSupportedAddressTypes();
 
@@ -983,7 +983,7 @@ int scr_init(SCTP_init * init)
 
 
 /**
- * scr_initAck is called by bundling when a init acknowledgement was received from the peer.
+ * sctlr_initAck is called by bundling when a init acknowledgement was received from the peer.
  * The following data are retrieved from the init-data and saved for this association:
  * \begin{itemize}
  * \item remote tag from the initiate tag field
@@ -995,7 +995,7 @@ int scr_init(SCTP_init * init)
  * The initAck must contain a cookie which is returned to the peer with the cookie acknowledgement.
  * @param initAck  pointer to received initAck-chunk including optional parameters without chunk header
  */
-gboolean scr_initAck(SCTP_init * initAck)
+gboolean sctlr_initAck(SCTP_init * initAck)
 {
     guint32 state;
     int result;
@@ -1028,13 +1028,13 @@ gboolean scr_initAck(SCTP_init * initAck)
     if (ch_chunkType(initAckCID) != CHUNK_INIT_ACK) {
         /* error logging */
         ch_forgetChunk(initAckCID);
-        error_log(ERROR_MAJOR, "scr_initAck: wrong chunk type");
+        error_log(ERROR_MAJOR, "sctlr_initAck: wrong chunk type");
         return return_state;
     }
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
         ch_forgetChunk(initAckCID);
-        error_log(ERROR_MAJOR, "scr_initAck: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_initAck: read SCTP-control failed");
         return return_state;
     }
 
@@ -1107,7 +1107,7 @@ gboolean scr_initAck(SCTP_init * initAck)
                             peerSupportsPRSCTP,
                             FALSE);
 
-       event_logii(VERBOSE, "scr_InitAck(): called mdi_initAssociation(in-streams=%u, out-streams=%u)",
+       event_logii(VERBOSE, "sctlr_InitAck(): called mdi_initAssociation(in-streams=%u, out-streams=%u)",
                     inbound_streams,outbound_streams);
 
 
@@ -1216,7 +1216,7 @@ gboolean scr_initAck(SCTP_init * initAck)
 
     case COOKIE_ECHOED:
         /* Duplicated initAck, ignore */
-        event_log(EXTERNAL_EVENT, "event: duplicatied scr_initAck in state COOKIE_ECHOED");
+        event_log(EXTERNAL_EVENT, "event: duplicatied sctlr_initAck in state COOKIE_ECHOED");
         break;
     case CLOSED:
     case ESTABLISHED:
@@ -1224,11 +1224,11 @@ gboolean scr_initAck(SCTP_init * initAck)
     case SHUTDOWNRECEIVED:
     case SHUTDOWNSENT:
         /* In this states the initAck is unexpected event. */
-        event_logi(EXTERNAL_EVENT, "discarding event: scr_initAck in state %02d", state);
+        event_logi(EXTERNAL_EVENT, "discarding event: sctlr_initAck in state %02d", state);
         break;
     default:
         /* error logging: unknown event */
-        event_logi(EXTERNAL_EVENT, "scr_initAck: unknown state %02d", state);
+        event_logi(EXTERNAL_EVENT, "sctlr_initAck: unknown state %02d", state);
         break;
     }
 
@@ -1239,7 +1239,7 @@ gboolean scr_initAck(SCTP_init * initAck)
 
 
 /**
-  scr_cookie_echo is called by bundling when a cookie echo chunk was received from  the peer.
+  sctlr_cookie_echo is called by bundling when a cookie echo chunk was received from  the peer.
   The following data is retrieved from the cookie and saved for this association:
     \begin{itemize}
     \item  from the init chunk:
@@ -1257,7 +1257,7 @@ gboolean scr_initAck(SCTP_init * initAck)
     \end{itemiz}
    @param  cookie_echo pointer to the received cookie echo chunk
  */
-void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
+void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 {
     union sockunion destAddress;
     union sockunion dAddresses[MAX_NUM_ADDRESSES];
@@ -1283,14 +1283,14 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
     int SendCommUpNotification = -1;
 
-    event_log(INTERNAL_EVENT_0, "scr_cookie_echo() is being executed");
+    event_log(INTERNAL_EVENT_0, "sctlr_cookie_echo() is being executed");
 
     cookieCID = ch_makeChunk((SCTP_simple_chunk *) cookie_echo);
 
     if (ch_chunkType(cookieCID) != CHUNK_COOKIE_ECHO) {
         /* error logging */
         ch_forgetChunk(cookieCID);
-        error_log(ERROR_MAJOR, "scr_cookie_echo: wrong chunk type");
+        error_log(ERROR_MAJOR, "sctlr_cookie_echo: wrong chunk type");
         return;
     }
     /* section 5.2.4. 1) and 2.) */
@@ -1348,7 +1348,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
     result = mdi_readLastFromAddress(&destAddress);
     if (result != 0) {
-       error_log(ERROR_MAJOR, "scr_cookie_echo: mdi_readLastFromAddress failed !");
+       error_log(ERROR_MAJOR, "sctlr_cookie_echo: mdi_readLastFromAddress failed !");
        ch_deleteChunk(initCID);
        ch_deleteChunk(initAckCID);
        ch_forgetChunk(cookieCID);
@@ -1368,7 +1368,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
         if (noSuccess) {
             /* new association could not be entered in the list of associations */
-            error_log(ERROR_MAJOR, "scr_cookie_echo: Creation of association failed");
+            error_log(ERROR_MAJOR, "sctlr_cookie_echo: Creation of association failed");
             ch_deleteChunk(initCID);
             ch_deleteChunk(initAckCID);
             ch_forgetChunk(cookieCID);
@@ -1377,7 +1377,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
     }
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
-        error_log(ERROR_MAJOR, "scr_cookie-echo: program error: SCTP-control NULL");
+        error_log(ERROR_MAJOR, "sctlr_cookie-echo: program error: SCTP-control NULL");
         ch_deleteChunk(initCID);
         ch_deleteChunk(initAckCID);
         ch_forgetChunk(cookieCID);
@@ -1393,7 +1393,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
     switch (state) {
     case CLOSED:
         /*----------------- Normal association setup -----------------------------------------*/
-        event_log(EXTERNAL_EVENT, "event: scr_cookie_echo in state CLOSED");
+        event_log(EXTERNAL_EVENT, "event: sctlr_cookie_echo in state CLOSED");
         mySupportedTypes = mdi_getSupportedAddressTypes();
         /* retrieve destination addresses from cookie */
         ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
@@ -1636,7 +1636,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         break;
     default:
         /* error logging: unknown event */
-        error_logi(EXTERNAL_EVENT_X, "scr_cookie_echo : unknown state %02u", state);
+        error_logi(EXTERNAL_EVENT_X, "sctlr_cookie_echo : unknown state %02u", state);
         break;
     }
 
@@ -1659,13 +1659,13 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
 
 /**
-  scr_cookieAck is called by bundling when a cookieAck chunk was received from  the peer.
+  sctlr_cookieAck is called by bundling when a cookieAck chunk was received from  the peer.
   The only purpose is to inform the active side that peer has received the cookie chunk.
   The association is in established state after this function is called.
   Communication up is signalled to the upper layer in this case.
   @param cookieAck pointer to the received cookie ack chunk
 */
-void scr_cookieAck(SCTP_simple_chunk * cookieAck)
+void sctlr_cookieAck(SCTP_simple_chunk * cookieAck)
 {
     guint32 state;
     ChunkID cookieAckCID;
@@ -1675,14 +1675,14 @@ void scr_cookieAck(SCTP_simple_chunk * cookieAck)
 
     if (ch_chunkType(cookieAckCID) != CHUNK_COOKIE_ACK) {
         /* error logging */
-        error_log(ERROR_MAJOR, "scr_cookieAck: wrong chunk type");
+        error_log(ERROR_MAJOR, "sctlr_cookieAck: wrong chunk type");
         return;
     }
     ch_forgetChunk(cookieAckCID);
 
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
-        error_log(ERROR_MAJOR, "scr_cookieAck: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_cookieAck: read SCTP-control failed");
         return;
     }
 
@@ -1691,7 +1691,7 @@ void scr_cookieAck(SCTP_simple_chunk * cookieAck)
     switch (state) {
     case COOKIE_ECHOED:
 
-        event_logi(EXTERNAL_EVENT_X, "event: scr_cookieAck in state %02d", state);
+        event_logi(EXTERNAL_EVENT_X, "event: sctlr_cookieAck in state %02d", state);
         /* stop init timer */
         if (localData->initTimer != 0) {
             sctp_stopTimer(localData->initTimer);
@@ -1718,7 +1718,7 @@ void scr_cookieAck(SCTP_simple_chunk * cookieAck)
     case SHUTDOWNSENT:
         /* In this states the cookie is unexpected event.
            Do error logging  */
-        event_logi(EXTERNAL_EVENT_X, "unexpected event: scr_cookieAck in state %02d", state);
+        event_logi(EXTERNAL_EVENT_X, "unexpected event: sctlr_cookieAck in state %02d", state);
         break;
     default:
         /* error logging: unknown event */
@@ -1734,11 +1734,11 @@ void scr_cookieAck(SCTP_simple_chunk * cookieAck)
 
 
 /**
-  scr_shutdown is called by bundling when a shutdown chunk was received from the peer.
+  sctlr_shutdown is called by bundling when a shutdown chunk was received from the peer.
   This function initiates a graceful shutdown of the association.
   @param  shutdown_chunk pointer to the received shutdown chunk
 */
-int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
+int sctlr_shutdown(SCTP_simple_chunk * shutdown_chunk)
 {
     guint32 state, new_state;
     boolean readyForShutdown;
@@ -1753,14 +1753,14 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
 
     if (ch_chunkType(shutdownCID) != CHUNK_SHUTDOWN) {
         /* error logging */
-        error_log(ERROR_MAJOR, "scr_cookieAck: wrong chunk type");
+        error_log(ERROR_MAJOR, "sctlr_cookieAck: wrong chunk type");
         ch_forgetChunk(shutdownCID);
         return return_state;
     }
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
         /* error log */
-        error_log(ERROR_MAJOR, "scr_shutdown: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_shutdown: read SCTP-control failed");
         ch_forgetChunk(shutdownCID);
         return return_state;
     }
@@ -1772,7 +1772,7 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
 
     switch (state) {
     case CLOSED:
-        event_log(EXTERNAL_EVENT, "event: scr_shutdown in state CLOSED, send ABORT ! ");
+        event_log(EXTERNAL_EVENT, "event: sctlr_shutdown in state CLOSED, send ABORT ! ");
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NO_TCB);
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),&lastFromPath);
         bu_sendAllChunks(&lastFromPath);
@@ -1787,18 +1787,18 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
     case COOKIE_WAIT:
     case COOKIE_ECHOED:
     case SHUTDOWNPENDING:
-        event_logi(EXTERNAL_EVENT, "event: scr_shutdown in state %2u -> discarding !", state);
+        event_logi(EXTERNAL_EVENT, "event: sctlr_shutdown in state %2u -> discarding !", state);
         ch_forgetChunk(shutdownCID);
         break;
 
     case SHUTDOWNRECEIVED:
     case SHUTDOWNACKSENT:
-        event_log(EXTERNAL_EVENT, "scr_shutdown in state SHUTDOWN_RECEIVED/SHUTDOWN_ACK_SENT -> acking CTSNA !");
+        event_log(EXTERNAL_EVENT, "sctlr_shutdown in state SHUTDOWN_RECEIVED/SHUTDOWN_ACK_SENT -> acking CTSNA !");
         rtx_rcv_shutdown_ctsna(ch_cummulativeTSNacked(shutdownCID));
         break;
 
     case ESTABLISHED:
-        event_log(EXTERNAL_EVENT, "event: scr_shutdown in state ESTABLISHED");
+        event_log(EXTERNAL_EVENT, "event: sctlr_shutdown in state ESTABLISHED");
 
         new_state = SHUTDOWNRECEIVED;
 
@@ -1861,7 +1861,7 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
 
     default:
         /* error logging */
-        event_logi(EXTERNAL_EVENT_X, "scr_shutdown in state %02d: unexpected event", state);
+        event_logi(EXTERNAL_EVENT_X, "sctlr_shutdown in state %02d: unexpected event", state);
         break;
     }
     ch_forgetChunk(shutdownCID);
@@ -1882,11 +1882,11 @@ int scr_shutdown(SCTP_simple_chunk * shutdown_chunk)
 
 
 /**
-  scr_shutdownAck is called by bundling when a shutdownAck chunk was received from the peer.
+  sctlr_shutdownAck is called by bundling when a shutdownAck chunk was received from the peer.
   Depending on the current state of the association, COMMUNICATION LOST is signaled to the
   Upper Layer Protocol, and the association marked for removal.
 */
-int scr_shutdownAck()
+int sctlr_shutdownAck()
 {
     guint32 state, new_state;
     unsigned int lastFromPath, lastTag;
@@ -1897,7 +1897,7 @@ int scr_shutdownAck()
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
         /* error log */
-        error_log(ERROR_MAJOR, "scr_shutdownAck: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_shutdownAck: read SCTP-control failed");
         return return_state;
     }
 
@@ -1908,13 +1908,13 @@ int scr_shutdownAck()
     switch (state) {
     case CLOSED:
         error_log(ERROR_FATAL,
-                  "scr_shutdownAck in state CLOSED, should have been handled before ! ");
+                  "sctlr_shutdownAck in state CLOSED, should have been handled before ! ");
         break;
     case COOKIE_WAIT:
     case COOKIE_ECHOED:
         /* see also section 8.5.E.) treat this like OOTB packet, leave T1 timer run ! */
         event_logi(EXTERNAL_EVENT,
-                   "event: scr_shutdownAck in state %u, send SHUTDOWN_COMPLETE ! ", state);
+                   "event: sctlr_shutdownAck in state %u, send SHUTDOWN_COMPLETE ! ", state);
         shdcCID = ch_makeSimpleChunk(CHUNK_SHUTDOWN_COMPLETE, FLAG_NO_TCB);
 
         /* make sure the shutdown_complete is written to the peer with his tag */
@@ -1936,15 +1936,15 @@ int scr_shutdownAck()
         break;
     case ESTABLISHED:
         error_log(ERROR_FATAL,
-                  "scr_shutdownAck in state ESTABLISHED, peer not standard conform ! ");
+                  "sctlr_shutdownAck in state ESTABLISHED, peer not standard conform ! ");
         break;
     case SHUTDOWNPENDING:
         error_log(ERROR_FATAL,
-                  "scr_shutdownAck in state SHUTDOWNPENDING, peer not standard conform ! ");
+                  "sctlr_shutdownAck in state SHUTDOWNPENDING, peer not standard conform ! ");
         break;
     case SHUTDOWNRECEIVED:
         error_log(ERROR_FATAL,
-                  "scr_shutdownAck in state SHUTDOWNRECEIVED, peer not standard conform ! ");
+                  "sctlr_shutdownAck in state SHUTDOWNRECEIVED, peer not standard conform ! ");
         break;
 
     case SHUTDOWNSENT:
@@ -1975,7 +1975,7 @@ int scr_shutdownAck()
 
     default:
         /* error logging */
-        event_logi(EXTERNAL_EVENT_X, "scr_shutdownAck in state %02d: unexpected event", state);
+        event_logi(EXTERNAL_EVENT_X, "sctlr_shutdownAck in state %02d: unexpected event", state);
         break;
     }
 
@@ -1994,10 +1994,10 @@ int scr_shutdownAck()
 }
 
 /**
-  scr_shutdownComplete is called by bundling when a SHUTDOWN COMPLETE chunk was received from the peer.
+  sctlr_shutdownComplete is called by bundling when a SHUTDOWN COMPLETE chunk was received from the peer.
   COMMUNICATION LOST is signaled to the ULP, timers stopped, and the association is marked for removal.
 */
-int scr_shutdownComplete()
+int sctlr_shutdownComplete()
 {
     guint32 state, new_state;
     unsigned int lastFromPath;
@@ -2005,7 +2005,7 @@ int scr_shutdownComplete()
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
         /* error log */
-        error_log(ERROR_MAJOR, "scr_shutdownComplete: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_shutdownComplete: read SCTP-control failed");
         return return_state;
     }
 
@@ -2022,7 +2022,7 @@ int scr_shutdownComplete()
     case SHUTDOWNPENDING:
     case SHUTDOWNRECEIVED:
     case SHUTDOWNSENT:
-        error_logi(EXTERNAL_EVENT, "scr_shutdownComplete in state %u -> discarding ! ", state);
+        error_logi(EXTERNAL_EVENT, "sctlr_shutdownComplete in state %u -> discarding ! ", state);
         break;
 
     case SHUTDOWNACKSENT:
@@ -2031,7 +2031,7 @@ int scr_shutdownComplete()
             localData->initTimer = 0;
         } else {
             error_log(ERROR_FATAL,
-                      "scr_shutdownComplete : Timer not running - problem in Program Logic!");
+                      "sctlr_shutdownComplete : Timer not running - problem in Program Logic!");
         }
         pm_disableAllHB();
         
@@ -2053,7 +2053,7 @@ int scr_shutdownComplete()
 
     default:
         /* error logging */
-        event_logi(EXTERNAL_EVENT_X, "scr_shutdownComplete in state %02d: unexpected event", state);
+        event_logi(EXTERNAL_EVENT_X, "sctlr_shutdownComplete in state %02d: unexpected event", state);
         break;
     }
     localData->association_state = new_state;
@@ -2062,11 +2062,11 @@ int scr_shutdownComplete()
 }
 
 /**
-  scr_abort is called by bundling when an ABORT chunk was received from  the peer.
+  sctlr_abort is called by bundling when an ABORT chunk was received from  the peer.
   COMMUNICATION LOST is signalled to the ULP, timers are stopped, and the association
   is marked for removal.
  */
-int scr_abort()
+int sctlr_abort()
 {
     guint32 state;
     unsigned int lastFromPath;
@@ -2074,7 +2074,7 @@ int scr_abort()
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
         /* error log */
-        error_log(ERROR_MAJOR, "scr_abort: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_abort: read SCTP-control failed");
         return return_state;
     }
 
@@ -2084,13 +2084,13 @@ int scr_abort()
 
     switch (state) {
     case CLOSED:
-        event_log(EXTERNAL_EVENT, "event: scr_abort in state CLOSED -> discard chunk");
+        event_log(EXTERNAL_EVENT, "event: sctlr_abort in state CLOSED -> discard chunk");
         /* discard chunk */
         break;
     case COOKIE_WAIT:
     case COOKIE_ECHOED:
     case SHUTDOWNSENT:
-        event_logi(EXTERNAL_EVENT, "event: scr_abort in state %2d", state);
+        event_logi(EXTERNAL_EVENT, "event: sctlr_abort in state %2d", state);
 
         /* stop possible timer */
         if (localData->initTimer != 0) {
@@ -2112,7 +2112,7 @@ int scr_abort()
     case SHUTDOWNPENDING:
     case SHUTDOWNRECEIVED:
     case SHUTDOWNACKSENT:
-        event_logi(EXTERNAL_EVENT, "event: scr_abort in state %02d", state);
+        event_logi(EXTERNAL_EVENT, "event: sctlr_abort in state %02d", state);
         /* delete all data of this association */
         return_state = STATE_STOP_PARSING_REMOVED;
 
@@ -2132,7 +2132,7 @@ int scr_abort()
         break;
     default:
         /* error logging */
-        event_logi(EXTERNAL_EVENT_X, "scr_abort in state %02d: unexpected event", state);
+        event_logi(EXTERNAL_EVENT_X, "sctlr_abort in state %02d: unexpected event", state);
         break;
     }
     localData = NULL;
@@ -2141,10 +2141,10 @@ int scr_abort()
 
 
 /**
-   scr_staleCookie is called by bundling when a 'stale cookie' error chunk was received.
+   sctlr_staleCookie is called by bundling when a 'stale cookie' error chunk was received.
    @param error_chunk pointer to the received error chunk
 */
-void scr_staleCookie(SCTP_simple_chunk * error_chunk)
+void sctlr_staleCookie(SCTP_simple_chunk * error_chunk)
 {
     guint32 state;
     ChunkID errorCID;
@@ -2155,13 +2155,13 @@ void scr_staleCookie(SCTP_simple_chunk * error_chunk)
     if (ch_chunkType(errorCID) != CHUNK_ERROR) {
         /* error logging */
         ch_forgetChunk(errorCID);
-        error_log(ERROR_MAJOR, "scr_staleCookie: wrong chunk type");
+        error_log(ERROR_MAJOR, "sctlr_staleCookie: wrong chunk type");
         return;
     }
 
     if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) == NULL) {
         /* error log */
-        error_log(ERROR_MAJOR, "scr_staleCookie: read SCTP-control failed");
+        error_log(ERROR_MAJOR, "sctlr_staleCookie: read SCTP-control failed");
         return;
     }
 
@@ -2186,7 +2186,7 @@ void scr_staleCookie(SCTP_simple_chunk * error_chunk)
 
     default:
         /* error logging */
-        event_logi(EXTERNAL_EVENT_X, "scr_staleCookie in state %02d: unexpected event", state);
+        event_logi(EXTERNAL_EVENT_X, "sctlr_staleCookie in state %02d: unexpected event", state);
         break;
     }
     localData->association_state = state;

@@ -15,49 +15,49 @@ noinst_PROGRAMS = combined_server daytime_server discard_server echo_server echo
 EXTRA_PROGRAMS = monitor chat echo_monitor 
 
 combined_server_SOURCES = combined_server.c sctp_wrapper.c
-combined_server_LDADD =  ../sctp/libsctp.la @glib_LIBS@
+combined_server_LDADD =  ../sctp/libsctplib.la @glib_LIBS@
 
 daytime_server_SOURCES = daytime_server.c sctp_wrapper.c
-daytime_server_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+daytime_server_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 discard_server_SOURCES = discard_server.c sctp_wrapper.c
-discard_server_LDADD = ../sctp/libsctp.la  @glib_LIBS@
+discard_server_LDADD = ../sctp/libsctplib.la  @glib_LIBS@
 
 chargen_server_SOURCES = chargen_server.c sctp_wrapper.c
-chargen_server_LDADD = ../sctp/libsctp.la  @glib_LIBS@
+chargen_server_LDADD = ../sctp/libsctplib.la  @glib_LIBS@
 
 echo_server_SOURCES = echo_server.c sctp_wrapper.c
-echo_server_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+echo_server_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 echo_tool_SOURCES = echo_tool.c sctp_wrapper.c
-echo_tool_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+echo_tool_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 terminal_SOURCES = terminal.c sctp_wrapper.c
-terminal_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+terminal_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 test_tool_SOURCES = parser.c test_tool.c testengine.c
-test_tool_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+test_tool_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 mulp_SOURCES = main.c mini-ulp.c
-mulp_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+mulp_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 localcom_SOURCES = localcom.c sctp_wrapper.c
-localcom_LDADD =  ../sctp/libsctp.la  @glib_LIBS@
+localcom_LDADD =  ../sctp/libsctplib.la  @glib_LIBS@
 
 #traffic_tool1_SOURCES = traffic_tool1.c sctp_wrapper.c
-#traffic_tool1_LDADD =  ../sctp/libsctp.la  -lm @glib_LIBS@
+#traffic_tool1_LDADD =  ../sctp/libsctplib.la  -lm @glib_LIBS@
 
 #traffic_tool2_SOURCES = traffic_tool2.c sctp_wrapper.c
-#traffic_tool2_LDADD =  ../sctp/libsctp.la  -lm @glib_LIBS@
+#traffic_tool2_LDADD =  ../sctp/libsctplib.la  -lm @glib_LIBS@
 
 monitor_SOURCES = monitor.c
-monitor_LDADD = @curses_LIBS@ ../sctp/libsctp.la  @glib_LIBS@
+monitor_LDADD = @curses_LIBS@ ../sctp/libsctplib.la  @glib_LIBS@
 
 echo_monitor_SOURCES = echo_monitor.c
-echo_monitor_LDADD = @curses_LIBS@ ../sctp/libsctp.la  @glib_LIBS@
+echo_monitor_LDADD = @curses_LIBS@ ../sctp/libsctplib.la  @glib_LIBS@
 
 chat_SOURCES = chat.c
-chat_LDADD = @curses_LIBS@ ../sctp/libsctp.la  @glib_LIBS@
+chat_LDADD = @curses_LIBS@ ../sctp/libsctplib.la  @glib_LIBS@
 
 
 # set the include path found by configure

@@ -1,5 +1,5 @@
 /*
- *  $Id: errorhandler.c,v 1.3 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: errorhandler.c,v 1.4 2004/11/17 23:04:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -98,7 +98,7 @@ int eh_recv_chunk(SCTP_simple_chunk * errchunk)
         break;
     case ECC_STALE_COOKIE_ERROR:
         event_logi(EXTERNAL_EVENT, "Stale Cookie Error, Len %u ", cause_len);
-        scr_staleCookie((SCTP_simple_chunk *) errchunk);
+        sctlr_staleCookie((SCTP_simple_chunk *) errchunk);
         result = 0;
         break;
     case ECC_OUT_OF_RESOURCE_ERROR:

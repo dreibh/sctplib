@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.10 2004/07/29 17:01:13 ajung Exp $
+ *  $Id: rbundling.c,v 1.11 2004/11/17 23:04:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -410,11 +410,11 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             break;
         case CHUNK_INIT:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received INIT chunk");
-            association_state = scr_init((SCTP_init *) chunk);
+            association_state = sctlr_init((SCTP_init *) chunk);
             break;
         case CHUNK_INIT_ACK:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received INIT ACK chunk");
-            association_state = scr_initAck((SCTP_init *) chunk);
+            association_state = sctlr_initAck((SCTP_init *) chunk);
             break;
         case CHUNK_SACK:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received SACK chunk");
@@ -430,15 +430,15 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             break;
         case CHUNK_ABORT:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received ABORT chunk");
-            association_state = scr_abort();
+            association_state = sctlr_abort();
             break;
         case CHUNK_SHUTDOWN:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received SHUTDOWN chunk");
-            association_state = scr_shutdown((SCTP_simple_chunk *) chunk);
+            association_state = sctlr_shutdown((SCTP_simple_chunk *) chunk);
             break;
         case CHUNK_SHUTDOWN_ACK:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received SHUTDOWN ACK chunk");
-            association_state = scr_shutdownAck();
+            association_state = sctlr_shutdownAck();
             break;
         case CHUNK_ERROR:
             event_log(INTERNAL_EVENT_0, "Error Chunk");
@@ -446,11 +446,11 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             break;
         case CHUNK_COOKIE_ECHO:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received COOKIE ECHO chunk");
-            scr_cookie_echo((SCTP_cookie_echo *) chunk);
+            sctlr_cookie_echo((SCTP_cookie_echo *) chunk);
             break;
         case CHUNK_COOKIE_ACK:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received COOKIE ACK chunk");
-            scr_cookieAck((SCTP_simple_chunk *) chunk);
+            sctlr_cookieAck((SCTP_simple_chunk *) chunk);
             break;
      /* case CHUNK_ECNE:
         case CHUNK_CWR:
@@ -459,7 +459,7 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             break;*/
         case CHUNK_SHUTDOWN_COMPLETE:
             event_log(INTERNAL_EVENT_0, "*******************  Bundling received SHUTDOWN_COMPLETE chunk");
-            association_state = scr_shutdownComplete();
+            association_state = sctlr_shutdownComplete();
             break;
         case CHUNK_FORWARD_TSN:
             if (mdi_supportsPRSCTP() == TRUE) {

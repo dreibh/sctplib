@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.h,v 1.5 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: SCTP-control.h,v 1.6 2004/11/17 23:04:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -41,7 +41,7 @@
  *          an association.
  *
  * function prefixes: scu_ for  primitives originating from the ULP
- *                    scr_ for primitives originating from the peer
+ *                    sctlr_ for primitives originating from the peer
  *                    sci_ for SCTP-internal calls
  *
  * Remarks: Host and network byte order (HBO and NBO):
@@ -119,7 +119,7 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
 
 /*------------------- Functions called by the (de-)bundling for recieved control chunks ----------*/
 
-/* scr_init is called by bundling when a init message is received from the peer.
+/* sctlr_init is called by bundling when a init message is received from the peer.
    New data must not be allocated for this new association.
    The following data are created and included in the init acknowledgement:
    - cookie: contains init-data, local tag, initial TSN, # of send streams, # of receive streams
@@ -130,11 +130,11 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
                     init acknowledgement.
    Params: init:    data of init-chunk including optional parameters without chunk header
 */
-int scr_init(SCTP_init * init);
+int sctlr_init(SCTP_init * init);
 
 
 
-/* scr_initAck is called by bundling when a init acknowledgement was received from the peer.
+/* sctlr_initAck is called by bundling when a init acknowledgement was received from the peer.
    The following data are retrieved from the init-data and saved for this association:
    - remote tag from the initiate tag field
    - receiver window credit of the peer
@@ -146,11 +146,11 @@ int scr_init(SCTP_init * init);
 
    Params: initAck: data of initAck-chunk including optional parameters without chunk header
 */
-int scr_initAck(SCTP_init * initAck);
+int sctlr_initAck(SCTP_init * initAck);
 
 
 
-/* scr_cookie_echo is called by bundling when a cookie chunk was received from  the peer.
+/* sctlr_cookie_echo is called by bundling when a cookie chunk was received from  the peer.
    The following data are retrieved from the cookie and saved for this association:
    - from the init chunk: + peers tag.
                           + peers receiver window credit.
@@ -163,49 +163,49 @@ int scr_initAck(SCTP_init * initAck);
    - # of receive streams this side uses, can be lower than peers # of send streams the requested in
      the init chunk.
 */
-void scr_cookie_echo(SCTP_cookie_echo * cookie);
+void sctlr_cookie_echo(SCTP_cookie_echo * cookie);
 
 
 
-/* scr_cookieAck is called by bundling when a cookieAck chunk was received from  the peer.
+/* sctlr_cookieAck is called by bundling when a cookieAck chunk was received from  the peer.
    The only purpose is to inform the active side that peer has received the cookie chunk.
    The association is established after this function is called.
    StartOfDataTX is called at Flowcontrol to start transmission of data chunks.
    The ULP is informed by the communication up notification.
 */
-void scr_cookieAck(SCTP_simple_chunk * cookieAck);
+void sctlr_cookieAck(SCTP_simple_chunk * cookieAck);
 
 
 
-/* scr_shutdown is called by bundling when a shutdown chunk was received from  the peer.
+/* sctlr_shutdown is called by bundling when a shutdown chunk was received from  the peer.
    The function initiates a gracefull shutdown of the association.
    Params: cumulativeTSN_ack: highest consecutive TSN acked.
 */
-int scr_shutdown(SCTP_simple_chunk * shutdown_chunk);
+int sctlr_shutdown(SCTP_simple_chunk * shutdown_chunk);
 
 
 
-/* scr_shutdownAck is called by bundling when a shutdownAck chunk was received from  the peer.
+/* sctlr_shutdownAck is called by bundling when a shutdownAck chunk was received from  the peer.
    The function initiates a gracefull shutdown of the association.
 */
-int scr_shutdownAck(void);
+int sctlr_shutdownAck(void);
 
-/* scr_shutdownComplete is called by bundling when a shutdownComplete chunk was received from the peer.
+/* sctlr_shutdownComplete is called by bundling when a shutdownComplete chunk was received from the peer.
 */
-int scr_shutdownComplete(void);
+int sctlr_shutdownComplete(void);
 
-/* scr_abort is called by bundling when a abort chunk was received from  the peer.
+/* sctlr_abort is called by bundling when a abort chunk was received from  the peer.
    The association is terminated imediately.
 */
-int scr_abort(void);
+int sctlr_abort(void);
 
 
 
-/* scr_staleCookie is called by bundling when a error chunk with cause 'stale cookie'
+/* sctlr_staleCookie is called by bundling when a error chunk with cause 'stale cookie'
    was received from  the peer.
    Params: staleness: microseconds the cookie life time was exceeded.
 */
-void scr_staleCookie(SCTP_simple_chunk * error_chunk);
+void sctlr_staleCookie(SCTP_simple_chunk * error_chunk);
 
 
 
