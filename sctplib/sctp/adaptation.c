@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.6 2003/06/27 10:16:57 ajung Exp $
+ *  $Id: adaptation.c,v 1.7 2003/07/01 09:36:21 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -7,8 +7,8 @@
  * Realized in co-operation between Siemens AG
  * and University of Essen, Institute of Computer Networking Technology.
  * Acknowledgement
- * This work was partially funded by the Bundesministerium für Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * This work was partially funded by the Bundesministerium fuer Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany (Foerderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -29,7 +29,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
- *          Michael.Tuexen@icn.siemens.de
+ *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
  * Purpose: The adaption-module encapsulates the socket-interface.
@@ -85,15 +85,23 @@
 #else /* this may not be okay for SOLARIS !!! */
     #define USES_BSD_4_4_SOCKET
     #include <net/if.h>
-    #include <net/if_var.h>
     #include <net/if_dl.h>
     #include <net/if_types.h>
     #include <net/route.h>
+#ifndef SOLARIS
+    #include <net/if_var.h>
     #include <machine/param.h>
-
     #define ROUNDUP(a, size) (((a) & ((size)-1)) ? (1 + ((a) | ((size)-1))) : (a))
     #define NEXT_SA(ap) ap = (struct sockaddr *) \
         ((caddr_t) ap + (ap->sa_len ? ROUNDUP(ap->sa_len, sizeof (u_long)) : sizeof(u_long)))
+#else
+	#include <sys/sockio.h>
+	#define NEXT_SA(ap) ap = (struct sockaddr *) ((caddr_t) ap + sizeof(struct sockaddr))
+	#define RTAX_MAX RTA_NUMBITS
+	#define RTAX_IFA 5
+	#define _NO_SIOCGIFMTU_
+#endif
+
 #endif
 
 #define     IFA_BUFFER_LENGTH   1024
@@ -1968,13 +1976,18 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 #ifdef USES_BSD_4_4_SOCKET
     for (pos = 0; pos < cf.ifc_len; ) {
         ifrequest = (struct ifreq *)&buffer[pos];
+#ifdef SOLARIS
+		pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
+#else
         pos += (ifrequest->ifr_addr.sa_len + sizeof(ifrequest->ifr_name));
+
         if (ifrequest->ifr_addr.sa_len == 0) {
             /* if the interface has no address then you must
              * skip at a minium a sockaddr structure
              */
             pos += sizeof(struct sockaddr);
         }
+#endif
         numAlocAddr++;
     }
 #else
@@ -2063,6 +2076,9 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 #endif
 #ifdef USES_BSD_4_4_SOCKET
         /* use the sa_len to calculate where the next one will be */
+#ifdef SOLARIS
+		pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
+#else
         pos += (ifrequest->ifr_addr.sa_len + sizeof(ifrequest->ifr_name));
 
         if (ifrequest->ifr_addr.sa_len == 0){
@@ -2071,6 +2087,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
              */
             pos += sizeof(struct sockaddr);
         }
+#endif
         nextif = (struct ifreq *)&buffer[pos];
 #else
         nextif = ifrequest + 1;
@@ -2178,8 +2195,10 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
         (&(localAddresses[*numberOfNets]))->sa.sa_family = toUse->sa_family;
 
 #ifdef USES_BSD_4_4_SOCKET
+#ifndef SOLARIS
         /* copy the length */
         (&(localAddresses[*numberOfNets]))->sa.sa_len = toUse->sa_len;
+#endif
 #endif
         (*numberOfNets)++;
         event_logii(VERBOSE, "Interface %d, Number of Nets: %d",ii, *numberOfNets);
