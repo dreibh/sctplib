@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.10 2003/11/24 13:30:40 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.11 2004/07/23 14:37:38 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -187,7 +187,9 @@ static gboolean handleChunksRetransmitted(short pathID)
 
     if (pmData->pathData[pathID].state == PM_ACTIVE) {
         pmData->pathData[pathID].pathRetranscount++;
-        pmData->peerRetranscount++;
+	if (pmData->pathData[pathID].confirmationState == PM_PATH_CONFIRMED) {
+	        pmData->peerRetranscount++;
+	}
     } else {
         event_log(INTERNAL_EVENT_0,
                   "handleChunksRetransmitted: ignored, because already inactive");
