@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.3 2003/05/28 13:34:02 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -238,11 +238,11 @@ static gboolean handleChunksRetransmitted(short pathID)
 
 
 /**
- Function is used to update RTT, SRTT, RTO values after chunks have been acked.
- CHECKME : this function is called too often with RTO == 0;
- Is there one update per RTT ?
- @param  pathID index of the path where data was acked
- @param  newRTT new RTT measured, when data was acked, or zero if it was retransmitted
+ * Function is used to update RTT, SRTT, RTO values after chunks have been acked.
+ * CHECKME : this function is called too often with RTO == 0;
+ * Is there one update per RTT ?
+ * @param  pathID index of the path where data was acked
+ * @param  newRTT new RTT measured, when data was acked, or zero if it was retransmitted
 */
 static void handleChunksAcked(short pathID, unsigned int newRTT)
 {
@@ -458,10 +458,10 @@ int pm_doHB(gshort pathID)
 
 
 /**
-  pm_heartbeatAck is called when a heartbeat acknowledgement was received from the peer.
-  checks RTTs, normally resets error counters, may set path back to ACTIVE state
-  @param heartbeatChunk pointer to the received heartbeat ack chunk
-*/
+ * pm_heartbeatAck is called when a heartbeat acknowledgement was received from the peer.
+ * checks RTTs, normally resets error counters, may set path back to ACTIVE state
+ * @param heartbeatChunk pointer to the received heartbeat ack chunk
+ */
 void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
 {
     unsigned int roundtripTime;
@@ -508,8 +508,7 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
         /* restart timer with new RTO */
         sctp_stopTimer(pmData->pathData[pathID].hearbeatTimer);
         pmData->pathData[pathID].hearbeatTimer =
-            adl_startTimer( (pmData->pathData[pathID].heartbeatIntervall +
-                               pmData->pathData[pathID].rto) ,
+            adl_startTimer( (pmData->pathData[pathID].heartbeatIntervall + pmData->pathData[pathID].rto),
                             &pm_heartbeatTimer,
                             TIMER_TYPE_HEARTBEAT,
                             (void *) &pmData->associationID,
@@ -525,10 +524,10 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
 /*------------------- Signals from SCTP internal modules -----------------------------------------*/
 
 /**
-  pm_chunksAcked is called by reliable transfer whenever chunks have been acknowledged.
-  @param pathID   last path-ID where chunks were sent to (and thus probably acked from)
-  @param newRTT   the newly determined RTT in milliseconds, null if chunks had been retransmitted
-*/
+ * pm_chunksAcked is called by reliable transfer whenever chunks have been acknowledged.
+ * @param pathID   last path-ID where chunks were sent to (and thus probably acked from)
+ * @param newRTT   the newly determined RTT in milliseconds, and 0 if retransmitted chunks had been acked
+ */
 void pm_chunksAcked(short pathID, unsigned int newRTT)
 {
     struct timeval now;
@@ -556,7 +555,7 @@ void pm_chunksAcked(short pathID, unsigned int newRTT)
     newRTT = min(newRTT, pmData->rto_max);
 
     if (pmData->pathData[pathID].state == PM_ACTIVE) {
-        /* Update RTO only if is the first data chunk acknowldged in this RTO intervall. */
+        /* Update RTO only if is the first data chunk acknowldged in this RTT intervall. */
         adl_gettime(&now);
         if (timercmp(&now, &(pmData->pathData[pathID].rto_update), < )) {
             event_logiiii(VERBOSE, "pm_chunksAcked: now %lu sec, %lu usec - no update before %lu sec, %lu usec",

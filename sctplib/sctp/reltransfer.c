@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
+ *  $Id: reltransfer.c,v 1.3 2003/05/28 13:34:02 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -80,7 +80,7 @@ typedef struct rtx_buffer_struct
     ///
     struct timeval sack_arrival_time;
     ///
-    struct timeval save_send_time;
+    struct timeval saved_send_time;
     /** this val stores 0 if retransmitted chunks have been acked, else 1 */
     unsigned int save_num_of_txm;
     ///
@@ -197,10 +197,10 @@ void rtx_rtt_update(unsigned int adr_idx, rtx_buffer * rtx)
     event_logi(INTERNAL_EVENT_0, "rtx_update_rtt(address=%u... ", adr_idx);
     if (rtx->save_num_of_txm == 1) {
         rtx->save_num_of_txm = 0;
-        rtt = adl_timediff_to_msecs(&(rtx->sack_arrival_time), &(rtx->save_send_time));
+        rtt = adl_timediff_to_msecs(&(rtx->sack_arrival_time), &(rtx->saved_send_time));
         if (rtt != -1) {
             event_logii(ERROR_MINOR, "Calling pm_chunksAcked(%u, %d)...", adr_idx, rtt);
-            pm_chunksAcked(adr_idx, rtt);
+            pm_chunksAcked(adr_idx, (unsigned int)rtt);
         }
     } else {
         event_logi(VERBOSE, "Calling pm_chunksAcked(%u, 0)...", adr_idx);
@@ -316,15 +316,14 @@ int rtx_dequeue_up_to(unsigned int ctsna, unsigned int addr_index)
             if (dat->hasBeenAcked == FALSE && dat->hasBeenDropped == FALSE) {
                 rtx->newly_acked_bytes += dat->chunk_len;
                 dat->hasBeenAcked = TRUE;
-            }
-
-            if (dat->num_of_transmissions == 1 && addr_index == dat->last_destination) {
-                rtx->save_num_of_txm = 1;
-                rtx->save_send_time = dat->transmission_time;
-                event_logiii(VERBOSE,
-                             "Saving Time (after dequeue) : %lu secs, %06lu usecs for tsn=%u",
-                             dat->transmission_time.tv_sec,
-                             dat->transmission_time.tv_usec, dat->chunk_tsn);
+                if (dat->num_of_transmissions == 1 && addr_index == dat->last_destination) {
+                    rtx->save_num_of_txm = 1;
+                    rtx->saved_send_time = dat->transmission_time;
+                    event_logiii(VERBOSE,
+                                 "Saving Time (after dequeue) : %lu secs, %06lu usecs for tsn=%u",
+                                 dat->transmission_time.tv_sec,
+                                 dat->transmission_time.tv_usec, dat->chunk_tsn);
+                }
             }
 
             event_logi(INTERNAL_EVENT_0, "Now delete chunk with tsn...%u", chunk_tsn);
@@ -631,19 +630,19 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         if (dat->hasBeenAcked == FALSE && dat->hasBeenDropped == FALSE) {
                             rtx->newly_acked_bytes += dat->chunk_len;
                             dat->hasBeenAcked = TRUE;
+                            if (dat->num_of_transmissions == 1 && adr_index == dat->last_destination) {
+                                rtx->saved_send_time = dat->transmission_time;
+                                rtx->save_num_of_txm = 1;
+                                event_logiii(VERBOSE, "Saving Time (chunk in gap) : %lu secs, %06lu usecs for tsn=%u",
+                                                     dat->transmission_time.tv_sec,
+                                                     dat->transmission_time.tv_usec, dat->chunk_tsn);
+
+                            }
                         }
+
                         if (dat->num_of_transmissions < 1) {
                             error_log(ERROR_FATAL, "Somehow dat->num_of_transmissions is less than 1 !");
                             break;
-                        }
-
-                        if (dat->num_of_transmissions == 1 && adr_index == dat->last_destination) {
-                            rtx->save_send_time = dat->transmission_time;
-                            rtx->save_num_of_txm = 1;
-                            event_logiii(VERBOSE, "Saving Time (chunk in gap) : %lu secs, %06lu usecs for tsn=%u",
-                                                 dat->transmission_time.tv_sec,
-                                                 dat->transmission_time.tv_usec, dat->chunk_tsn);
-
                         }
                         /* reset number of gap reports so it does not get fast retransmitted */
                         dat->gap_reports = 0;
@@ -688,8 +687,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
         /* section 6.2.1.D.ii) */
         rtx->peer_arwnd = advertised_rwnd;
         rtx->lowest_tsn = rtx->highest_tsn;
-        if (after(rtx->lowest_tsn, old_own_ctsna))
-            new_acked = TRUE;
+        if (after(rtx->lowest_tsn, old_own_ctsna)) new_acked = TRUE;
 
         /* in the case where shutdown was requested by the ULP, and all is acked (i.e. ALL queues are empty) ! */
         if (rtx->shutdown_received == TRUE) {
@@ -707,9 +705,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
         }
         rtx->lowest_tsn = dat->chunk_tsn;
         /* new_acked is true, when own  ctsna advances... */
-        if (rtx->lowest_tsn > old_own_ctsna) {
-            new_acked = TRUE;
-        }
+        if (after(rtx->lowest_tsn, old_own_ctsna)) new_acked = TRUE;
     }
 
     if (rtx->shutdown_received == TRUE) rxc_send_sack_everytime();

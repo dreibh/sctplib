@@ -3,30 +3,5 @@
 <KDevPrjSession>
  <LastCompileConfig>(Default)</LastCompileConfig>
  <Mainframe MaximizeMode="1" />
- <DocsAndViews NumberOfDocuments="8" >
-  <Doc0 CursorPosLine="288" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="91" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/flowcontrol.c" >
-   <View0 Top="0" Width="749" Attach="1" Height="407" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc0>
-  <Doc1 CursorPosLine="462" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="31" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/reltransfer.c" >
-   <View0 Top="0" Width="749" Attach="1" Height="407" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc1>
-  <Doc2 CursorPosLine="885" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/recvctrl.c" >
-   <View0 Top="0" Width="749" Attach="1" Height="582" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc2>
-  <Doc3 CursorPosLine="102" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/recvctrl.h" >
-   <View0 Top="0" Width="749" Attach="1" Height="582" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc3>
-  <Doc4 CursorPosLine="119" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="0" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/flowcontrol.h" >
-   <View0 Top="0" Width="749" Attach="1" Height="407" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc4>
-  <Doc5 CursorPosLine="2495" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="100" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/distribution.c" >
-   <View0 Top="0" Width="759" Attach="1" Height="407" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc5>
-  <Doc6 CursorPosLine="968" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="10" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/adaptation.c" >
-   <View0 Top="0" Width="759" Attach="1" Height="407" Left="0" Focus="0" Type="KWriteView" MinMaxMode="0" />
-  </Doc6>
-  <Doc7 CursorPosLine="137" Type="KWriteDoc" NumberOfViews="1" CursorPosCol="28" FileName="/home/ajung/sctp/src/16052003/sctplib1/sctplib/sctp/globals.h" >
-   <View0 Top="0" Width="759" Attach="1" Height="407" Left="0" Focus="1" Type="KWriteView" MinMaxMode="0" />
-  </Doc7>
- </DocsAndViews>
+ <DocsAndViews NumberOfDocuments="0" />
 </KDevPrjSession>

@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
+ * $Id: flowcontrol.c,v 1.3 2003/05/28 13:34:02 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -43,7 +43,16 @@
 
 /**
  *  TODO:
- *
+ *  -> IDEA: choose secondary path with highest CWND to do retransmission
+ *  -> IDEA: shouldn't it be one fast retransmission per destination path ???
+ *     (that way, if secondary is unreachable, first one gets at least one fast rtx, too
+ *      otherwise, secondary get fast rtx, primary gets slow timer based rtx
+ *  -> BUG: RTO never collapses back down <-
+ *  Asoc:1        Path:0  Ch:0        By:0        rto:1000     srtt:157      qu:1853   osb:2032     cwnd:2936     ssthresh:2936
+ *  Asoc:1        Path:1  Ch:0        By:0        rto:48000    srtt:3000     qu:1853   osb:2032     cwnd:1468     ssthresh:2936
+ *  1       : Network status change: path 1 (towards 192.168.1.216) is now INACTIVE
+ *  Asoc:1        Path:0  Ch:1        By:1000     rto:45088    srtt:5800     qu:1816   osb:1016     cwnd:3000     ssthresh:2936
+ *  Asoc:1        Path:1  Ch:1        By:1000     rto:48000    srtt:3000     qu:1816   osb:1016     cwnd:1468     ssthresh:2936
  */
 
 #include "flowcontrol.h"
@@ -582,7 +591,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
  */
 void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destination)
 {
-    unsigned int rwnd, last_destination;
+    unsigned int rwnd;
 
     rwnd = rtx_read_remote_receiver_window();
     dat->num_of_transmissions++;
@@ -602,7 +611,6 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
     }
 
     /* this time we will send dat to destination */
-    last_destination =  dat->last_destination;
     dat->last_destination = destination;
 
 

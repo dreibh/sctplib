@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.3 2003/05/23 10:40:53 ajung Exp $
+ *  $Id: adaptation.c,v 1.4 2003/05/28 13:34:02 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -957,16 +957,17 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
         dest_len = sizeof(struct sockaddr_in);
 
         /* test -- start */
-        // if ((number_of_sendevents % 10) != 0)
+        if ((number_of_sendevents % 30) != 0)  {
         /* test -- stop */
 
         txmt_len = sendto(sfd, sendbuf, len, 0, (struct sockaddr *) &(dest->sin), dest_len);
         
         /* test -- start */
-        // else {
-        //   event_log(VERBOSE, "XYZ : Dropping packet instead of sending it");
-        //   txmt_len = len;
-        //}
+        } else {
+           event_log(VERBOSE, "XYZ : Dropping packet instead of sending it");
+           // printf(".");  fflush(stdout);
+           txmt_len = len;
+        }
         /* test -- stop */
 
         if (txmt_len < 0) {
