@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.8 2003/10/27 20:57:10 ajung Exp $
+ *  $Id: recvctrl.c,v 1.9 2003/10/28 11:48:26 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -762,7 +762,7 @@ void rxc_all_chunks_processed(boolean new_data_received)
 int rxc_start_sack_timer(unsigned int oldQueueLen)
 {
     rxc_buffer *rxc;
-    int bytesQueued = 0;
+    int bytesQueued = 0, send_result;
 
     rxc = (rxc_buffer *) mdi_readRX_control();
     if (!rxc) {
