@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.35 2005/03/11 10:58:54 dreibh Exp $
+ *  $Id: distribution.c,v 1.36 2005/03/11 12:32:39 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -5069,9 +5069,13 @@ void* my_malloc(size_t size)
 
 void my_free(void* p)
 {
-   size_t* ptr = &((size_t*)p)[-1];
-   size_t  l   = ptr[0];
-   memset(ptr, 0xba, l);
-   free(ptr);
+   size_t* ptr;
+   size_t  l;
+   if(p != NULL) {
+      ptr = &((size_t*)p)[-1];
+      l   = ptr[0];
+      memset(ptr, 0xba, l);
+      free(ptr);
+   }
 }
 #endif
