@@ -77,9 +77,3 @@ NICE TO HAVE (we are working on this - slowly :-) :
 ->  pm_chunksAcked() könnte gefixed werden, um schneller festzustellen,
     ob ein Path wieder ACTIVE ist.
 
-
-======================================================================
- PR-SCTP
-======================================================================
-- check that T3 is stopped, when all chunks are dropped, or acked
--
