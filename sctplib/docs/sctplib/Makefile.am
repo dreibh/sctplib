@@ -1,6 +1,11 @@
 ####### kdevelop will overwrite this part!!! (begin)##########
 
 
-EXTRA_DIST = doc.txt rfc1321.txt rfc2960.txt sctp-modules.fig sctp-modules.png draft-stewart-tsvwg-prsctp-02.txt
+EXTRA_DIST = doc.txt rfc1321.txt rfc2960.txt sctp-modules.fig sctp-modules.png rfc3286.txt rfc3309.txt draft-ietf-tsvwg-sctpimpguide-10.txt rfc3758.txt rfc3257.txt 
+
 
 ####### kdevelop will overwrite this part!!! (end)############
+
+realclean:
+	        rm -rf latex rtf html
+
