@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.13 2004/07/30 13:04:19 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.14 2004/08/13 12:15:15 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1024,7 +1024,6 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
             pType == VLPARAM_SUPPORTED_ADDR_TYPES ||
             pType == VLPARAM_IPV4_ADDRESS ||
             pType == VLPARAM_IPV6_ADDRESS ||
-            pType == VLPARAM_HOST_NAME_ADDR ||
             pType == VLPARAM_PRSCTP) {
             
             curs += pLen;
