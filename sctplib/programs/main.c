@@ -1,5 +1,5 @@
 /*
- *  $Id: main.c,v 1.1 2003/05/16 13:47:50 ajung Exp $
+ *  $Id: main.c,v 1.2 2003/06/01 19:44:55 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -79,7 +79,7 @@ gboolean unordered = FALSE;
 
 /* this one is global, as we want to know, whether to enable ipv6 calls, even if it may be compiled in */
 gboolean support_ipv6;
-gushort sctp_instance,sctp_instance2,sctp_instance3;
+short sctp_instance,sctp_instance2,sctp_instance3;
 unsigned short ulpPort = 0;
 
 

@@ -37,7 +37,7 @@ int receiveMode = RECEIVE_DISCARD;
 unsigned int unreceivedChunks = 0;
 
 // instance and association IDs (0 indicates that no instance is registered / no association is established)
-unsigned short instanceID = 0;
+short instanceID = 0;
 unsigned int assocID = 0;
 
 // association parameters

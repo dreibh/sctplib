@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.2 2003/05/23 10:40:53 ajung Exp $
+ *  $Id: distribution.c,v 1.3 2003/06/01 19:44:55 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1950,16 +1950,18 @@ int sctp_deleteAssociation(unsigned int associationID)
  *  @param ulp_data             pointer to an ULP data structure, will be passed with callbacks !
  *  @return association ID of this association, 0 in case of failures
  */
-unsigned int
-sctp_associate(unsigned short SCTP_InstanceName,
-               unsigned short noOfOutStreams,
-               unsigned char destinationAddress[],
-               unsigned short destinationPort,
-               void* ulp_data)
+unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
+                             unsigned short noOfOutStreams,
+                             unsigned char  destinationAddresses[SCTP_MAX_NUM_ADDRESSES][SCTP_MAX_IP_LEN],
+                             unsigned int   noOfDestinationAddresses,
+                             unsigned int   maxSimultaneousInits,
+                             unsigned short destinationPort,
+                             void* ulp_data)
+ 
 {
-    unsigned int assocID;
+    unsigned int assocID, count;
     unsigned short zlocalPort;
-    union sockunion dest_su;
+    union sockunion dest_su[SCTP_MAX_NUM_ADDRESSES];
     gboolean withPRSCTP;
     SCTP_instance temporary;
     GList* result = NULL;
@@ -1967,19 +1969,21 @@ sctp_associate(unsigned short SCTP_InstanceName,
     SCTP_instance *old_Instance = sctpInstance;
     Association *old_assoc = currentAssociation;
 
-    ENTER_LIBRARY("sctp_associate");
+    ENTER_LIBRARY("sctp_associatex");
 
     ZERO_CHECK_LIBRARY;
 
-    if (adl_str2sockunion(destinationAddress, &dest_su) < 0) {
-        error_log(ERROR_MAJOR, "sctp_associate: could not convert destination adress");
-        sctpInstance = old_Instance;
-        currentAssociation = old_assoc;
-        LEAVE_LIBRARY("sctp_associate");
-        return 0;
+    for (count = 0; count <  noOfDestinationAddresses; count++) {
+        if (adl_str2sockunion(destinationAddresses[count], &dest_su[count]) < 0) {
+            error_log(ERROR_MAJOR, "sctp_associate: could not convert destination adress");
+            sctpInstance = old_Instance;
+            currentAssociation = old_assoc;
+            LEAVE_LIBRARY("sctp_associate");
+            return 0;
+        }
     }
 
-    event_log(EXTERNAL_EVENT, "sctp_associate called");
+    event_log(EXTERNAL_EVENT, "sctp_associatex called");
     event_logi(VERBOSE, "Looking for SCTP Instance %u in the list", SCTP_InstanceName);
 
     temporary.sctpInstanceName =  SCTP_InstanceName;
@@ -2003,9 +2007,13 @@ sctp_associate(unsigned short SCTP_InstanceName,
     withPRSCTP = librarySupportsPRSCTP;
 
     /* Create new association */
-    if (mdi_newAssociation(sctpInstance, zlocalPort, /* local client port */
+    if (mdi_newAssociation(sctpInstance,
+                           zlocalPort, /* local client port */
                            destinationPort, /* remote server port */
-                           mdi_generateTag(), 0, 1, &dest_su)) {
+                           mdi_generateTag(),
+                           0,
+                           noOfDestinationAddresses,
+                           dest_su)) {
         error_log(ERROR_MAJOR, "Creation of association failed");
         sctpInstance = old_Instance;
         currentAssociation = old_assoc;
@@ -2015,7 +2023,11 @@ sctp_associate(unsigned short SCTP_InstanceName,
     currentAssociation->ulp_dataptr = ulp_data;
 
     /* call associate at SCTP-control */
-    scu_associate(noOfOutStreams, ((SCTP_instance*)result->data)->noOfInStreams, &dest_su, withPRSCTP);
+    scu_associate(noOfOutStreams,
+                  ((SCTP_instance*)result->data)->noOfInStreams,
+                  dest_su,
+                  noOfDestinationAddresses,
+                  withPRSCTP);
 
     assocID = currentAssociation->assocId;
 
@@ -2024,8 +2036,31 @@ sctp_associate(unsigned short SCTP_InstanceName,
     LEAVE_LIBRARY("sctp_associate");
     return assocID;
 
-}                               /* end: sctp_associate */
+}                               /* end: sctp_associatex */
 
+
+unsigned int
+sctp_associate(unsigned int SCTP_InstanceName,
+               unsigned short noOfOutStreams,
+               unsigned char destinationAddress[SCTP_MAX_IP_LEN],
+               unsigned short destinationPort,
+               void* ulp_data)
+{
+    unsigned char dAddress[1][SCTP_MAX_IP_LEN];
+
+    event_log(EXTERNAL_EVENT, "sctp_associate called");
+    memcpy(dAddress, destinationAddress, SCTP_MAX_IP_LEN);
+
+    return   sctp_associatex(SCTP_InstanceName,
+                             noOfOutStreams,
+                             dAddress,
+                             1,
+                             1,
+                             destinationPort,
+                             ulp_data);
+
+
+}
 
 /**
  * sctp_shutdown initiates the shutdown of the specified association.
@@ -4305,6 +4340,7 @@ unsigned short mdi_readLocalOutStreams(void)
 void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                             guint16 * noOfAddresses,
                             union sockunion *peerAddress,
+                            unsigned int numPeerAddresses,
                             unsigned int addressTypes,
                             gboolean receivedFromPeer)
 {
@@ -4324,9 +4360,11 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
         sctpInstance = currentAssociation->sctpInstance;
     }
 
-    localHostFound = mdi_addressListContainsLocalhost(1, peerAddress);
-    linkLocalFound = !( adl_filterInetAddress(peerAddress, flag_HideLinkLocal));
-    siteLocalFound = !( adl_filterInetAddress(peerAddress, flag_HideSiteLocal));
+    for (count = 0; count <  numPeerAddresses; count++)  {
+        localHostFound |= mdi_addressListContainsLocalhost(1, &peerAddress[count]);
+        linkLocalFound |= !( adl_filterInetAddress(&peerAddress[count], flag_HideLinkLocal));
+        siteLocalFound |= !( adl_filterInetAddress(&peerAddress[count], flag_HideSiteLocal));
+    }
 
     /* if (receivedFromPeer == FALSE) I send an INIT with my addresses to the peer */
     if ((receivedFromPeer == FALSE) && (localHostFound == TRUE)) {

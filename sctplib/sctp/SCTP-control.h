@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: SCTP-control.h,v 1.2 2003/06/01 19:44:55 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -98,8 +98,11 @@
            noOfDestinationAddresses:    # of destination addresses if multihoming is used
            DestinationAddressList:      list destination addresses if multihoming is used
 */
-void scu_associate(unsigned short noOfOutStreams, unsigned short noOfInStreams,
-                   union sockunion* dst, gboolean withPRSCTP);
+void scu_associate(unsigned short noOfOutStreams,
+                   unsigned short noOfInStreams,
+                   union sockunion* destinationList,
+                   unsigned int numDestAddresses,
+                   gboolean withPRSCTP);
 
 
 

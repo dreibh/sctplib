@@ -1118,7 +1118,7 @@ static void resize(int sig)
 
 int main(int argc, char **argv)
 {
-  unsigned short sctpInstance;
+  short sctpInstance;
   SCTP_ulpCallbacks echoUlp;
   SCTP_InstanceParameters instanceParameters;
   unsigned int index;

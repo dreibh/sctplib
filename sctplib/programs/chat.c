@@ -489,7 +489,7 @@ static void finish(int sig)
 
 int main(int argc, char **argv)
 {
-    unsigned short sctpInstance;
+    short sctpInstance;
     SCTP_ulpCallbacks terminalUlp;
     SCTP_InstanceParameters instanceParameters;
 

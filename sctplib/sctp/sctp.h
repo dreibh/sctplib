@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: sctp.h,v 1.2 2003/06/01 19:44:55 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -505,7 +505,7 @@ short sctp_registerInstance(unsigned short localPort,
                             unsigned short noOfInStreams,
                             unsigned short noOfOutStreams,
                             unsigned int   noOfLocalAddresses,
-                            unsigned char  localAddressList[][SCTP_MAX_IP_LEN],
+                            unsigned char  localAddressList[SCTP_MAX_NUM_ADDRESSES][SCTP_MAX_IP_LEN],
                             SCTP_ulpCallbacks ULPcallbackFunctions);
 
 int sctp_unregisterInstance(unsigned short instance_name);
@@ -513,13 +513,22 @@ int sctp_unregisterInstance(unsigned short instance_name);
 
 
 
-unsigned int sctp_associate(unsigned short SCTP_InstanceName,
+unsigned int sctp_associate(unsigned int SCTP_InstanceName,
                             unsigned short noOfOutStreams,
-                            unsigned char  destinationAddress[],
+                            unsigned char  destinationAddress[SCTP_MAX_IP_LEN],
                             unsigned short destinationPort,
                             void* ulp_data);
 
 
+unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
+                             unsigned short noOfOutStreams,
+                             unsigned char  destinationAddresses[][SCTP_MAX_IP_LEN],
+                             unsigned int   noOfDestinationAddresses,
+                             unsigned int   maxSimultaneousInits,
+                             unsigned short destinationPort,
+                             void* ulp_data);
+
+                            
 int sctp_shutdown(unsigned int associationID);
 
 int sctp_abort(unsigned int associationID);

@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: distribution.h,v 1.2 2003/06/01 19:44:55 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -368,7 +368,8 @@ void mdi_writeDestinationAddresses(union sockunion addresses[MAX_NUM_ADDRESSES],
 
 void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                             guint16 * noOfAddresses,
-                            union sockunion *paddress,
+                            union sockunion *peerAddress,
+                            unsigned int numPeerAddresses,
                             unsigned int addressTypes,
                             gboolean receivedFromPeer);
 

@@ -59,7 +59,7 @@ static unsigned char localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MA
 static unsigned char destinationAddress[SCTP_MAX_IP_LEN];
 static unsigned short noOfLocalAddresses = 0;
 static unsigned int associationID;
-static unsigned short sctpInstance;
+static short sctpInstance;
 
 static unsigned short remotePort    = DISCARD_PORT;
 static unsigned short localPort     = 1000;

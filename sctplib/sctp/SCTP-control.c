@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.2 2003/06/01 19:44:55 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -349,14 +349,17 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
  * @param noOfOutStreams        number of send streams.
  * @param noOfInStreams         number of receive streams.
  */
-void scu_associate(unsigned short noOfOutStreams, unsigned short noOfInStreams,
-                   union sockunion* dst, gboolean withPRSCTP)
+void scu_associate(unsigned short noOfOutStreams,
+                   unsigned short noOfInStreams,
+                   union sockunion* destinationList,
+                   unsigned int numDestAddresses,
+                   gboolean withPRSCTP)
 {
     guint32 state;
     guint16 nlAddresses;
     union sockunion lAddresses[MAX_NUM_ADDRESSES];
     ChunkID initCID;
-    unsigned int supportedTypes = 0;
+    unsigned int supportedTypes = 0, count;
 
     /* ULP has called sctp_associate at distribution.
        Distribution has allready allocated the association data and partially initialized */
@@ -385,7 +388,12 @@ void scu_associate(unsigned short noOfOutStreams, unsigned short noOfInStreams,
         /* enter enter local addresses to message. I send an Init here, so
          * I will include all of my addresses !
          */
-        mdi_readLocalAddresses(lAddresses, &nlAddresses, dst, supportedTypes, FALSE);
+        mdi_readLocalAddresses(lAddresses,
+                               &nlAddresses,
+                               destinationList,
+                               numDestAddresses,
+                               supportedTypes,
+                               FALSE);
 
         event_logi(VERBOSE, "1: supportedTypes : %u", supportedTypes);
 
@@ -421,9 +429,12 @@ void scu_associate(unsigned short noOfOutStreams, unsigned short noOfInStreams,
 
         localData->initChunk = (SCTP_init *) ch_chunkString(initCID);
         ch_forgetChunk(initCID);
+        
         /* send init chunk */
-        bu_put_Ctrl_Chunk((SCTP_simple_chunk *) localData->initChunk,NULL);
-        bu_sendAllChunks(NULL);
+        for (count = 0; count < numDestAddresses; count++) {
+            bu_put_Ctrl_Chunk((SCTP_simple_chunk *) localData->initChunk, &count);
+            bu_sendAllChunks(&count);
+        }
 
         localData->cookieChunk = NULL;
         localData->local_tie_tag = 0;
@@ -736,7 +747,7 @@ int scr_init(SCTP_init * init)
             error_log(ERROR_FATAL, "BAKEOFF: Program error, no common address types");
 
         /* enter variable length params initAck */
-        mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, peerSupportedTypes,TRUE);
+        mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, 1, peerSupportedTypes,TRUE);
         /* enter local addresses into initAck */
         if (nlAddresses > 1)
             ch_enterIPaddresses(initAckCID, lAddresses, nlAddresses);
@@ -824,7 +835,7 @@ int scr_init(SCTP_init * init)
 
             /* the initAck (and consequently the Cookie) will contain my assocID as my local
                tag, and the peers tag from the init we got here */
-            mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, peerSupportedTypes, TRUE);
+            mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, 1, peerSupportedTypes, TRUE);
             /* enter local addresses into initAck */
             if (nlAddresses > 1)
                 ch_enterIPaddresses(initAckCID, lAddresses, nlAddresses);
@@ -879,7 +890,7 @@ int scr_init(SCTP_init * init)
             /* retreive remote source addresses from message */
             nrAddresses = ch_IPaddresses(initCID, supportedTypes, rAddresses, &peerSupportedTypes, &last_source);
 
-            mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, peerSupportedTypes, TRUE);
+            mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, 1, peerSupportedTypes, TRUE);
 
             /* enter local addresses into initAck */
             if (nlAddresses > 1)
