@@ -1,5 +1,5 @@
 /*
- *  $Id: messages.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: messages.h,v 1.4 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -479,6 +479,7 @@ typedef struct SCTP_ERROR_CAUSE
 #define ECC_NO_USER_DATA                        9
 #define ECC_COOKIE_RECEIVED_DURING_SHUTDWN      10
 #define ECC_RESTART_WITH_NEW_ADDRESSES          11
+
 #define ECC_USER_INITIATED_ABORT                12
 
 
@@ -499,7 +500,6 @@ SCTP_staleCookieError;
 
 typedef struct SCTP_INVALID_STREAMID_ERROR
 {
-    SCTP_vlparam_header vlparam_header;
     guint16 stream_id;
     guint16 reserved;
 }
@@ -522,9 +522,8 @@ SCTP_UnrecognizedParams;
 
 typedef struct SCTP_MISSING_PARAMS_ERROR
 {
-    SCTP_vlparam_header vlparam_header;
     unsigned int numberOfParams;
-    guchar params[MAX_SCTP_PDU];
+    unsigned short params[20];
 }
 SCTP_MissingParams;
 

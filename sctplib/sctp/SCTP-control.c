@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.6 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: SCTP-control.c,v 1.7 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -531,7 +531,7 @@ void scu_shutdown()
     case COOKIE_ECHOED:        /* Siemens convention: ULP can not send datachunks
                                    until it has received the communication up. */
         event_logi(EXTERNAL_EVENT, "event: scu_shutdown in state %02d --> aborting", state);
-        scu_abort();
+        scu_abort(ECC_USER_INITIATED_ABORT, 0, NULL);
         break;
     case SHUTDOWNSENT:
     case SHUTDOWNRECEIVED:
@@ -550,11 +550,38 @@ void scu_shutdown()
 }
 
 
+void sci_add_abort_error_cause(ChunkID abortChunk,
+                                unsigned short etype,
+                                unsigned short eplen,
+                                unsigned char* epdata)
+{
+
+    switch (etype) {
+
+        case ECC_INVALID_STREAM_ID:
+        case ECC_MISSING_MANDATORY_PARAM:
+        case ECC_STALE_COOKIE_ERROR:
+        case ECC_OUT_OF_RESOURCE_ERROR:
+        case ECC_UNRESOLVABLE_ADDRESS:
+        case ECC_UNRECOGNIZED_CHUNKTYPE:
+        case ECC_INVALID_MANDATORY_PARAM:
+        case ECC_UNRECOGNIZED_PARAMS:
+        case ECC_NO_USER_DATA:
+        case ECC_COOKIE_RECEIVED_DURING_SHUTDWN:
+        case ECC_RESTART_WITH_NEW_ADDRESSES:
+        case ECC_USER_INITIATED_ABORT:
+            ch_enterErrorCauseData(abortChunk, etype, eplen, epdata);
+            break;
+        default:
+            break;
+    }
+    return;
+}                                                                    
 
 /**
  * this function aborts this association.
  */
-void scu_abort()
+void scu_abort(short error_type, unsigned short error_param_length, unsigned char* error_param_data)
 {
     guint32 state;
     ChunkID abortCID;
@@ -585,11 +612,13 @@ void scu_abort()
 
         /* make and send abort message */
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
-        ch_enterErrorCauseData(abortCID, ECC_USER_INITIATED_ABORT, 0, NULL);
 
+        if (error_type >= 0) {
+            sci_add_abort_error_cause(abortCID,  (unsigned int)error_type, error_param_length,error_param_data);
+        }
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
         bu_sendAllChunks(NULL);
-		bu_unlock_sender(NULL);
+        bu_unlock_sender(NULL);
         /* free abort chunk */
         ch_deleteChunk(abortCID);
         /* stop init timer */
@@ -610,11 +639,14 @@ void scu_abort()
 
         /* make and send abort message */
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
-        ch_enterErrorCauseData(abortCID, ECC_USER_INITIATED_ABORT, 0, NULL);
+
+        if (error_type >= 0) {
+            sci_add_abort_error_cause(abortCID,  (unsigned int)error_type, error_param_length,error_param_data);
+        }
 
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
         bu_sendAllChunks(NULL);
-		bu_unlock_sender(NULL);
+        bu_unlock_sender(NULL);
         /* free abort chunk */
         ch_deleteChunk(abortCID);
         /* delete all data of this association */
@@ -681,11 +713,13 @@ int scr_init(SCTP_init * init)
         return return_state;
     }
 
-    if (ch_noOutStreams(initCID) == 0 || ch_noInStreams(initCID) == 0) {
-        event_log(EXTERNAL_EVENT, "event: received init with zero number of streams");
+    if (ch_noOutStreams(initCID) == 0 || ch_noInStreams(initCID) == 0 || ch_initiateTag(initCID) == 0) {
+        event_log(EXTERNAL_EVENT, "event: received init with zero number of streams, or zero TAG");
 
         /* make and send abort message */
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
+        ch_enterErrorCauseData(abortCID, ECC_INVALID_MANDATORY_PARAM, 0, NULL);
+
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
         bu_sendAllChunks(NULL);
         /* free abort chunk */
@@ -694,7 +728,7 @@ int scr_init(SCTP_init * init)
         if ((localData = (SCTP_controlData *) mdi_readSCTP_control()) != NULL) {
             bu_unlock_sender(NULL);
             mdi_deleteCurrentAssociation();
-            mdi_communicationLostNotif(SCTP_COMM_LOST_ZERO_STREAMS);
+            mdi_communicationLostNotif(SCTP_COMM_LOST_INVALID_PARAMETER);
             mdi_clearAssociationData();
 
             return_state = STATE_STOP_PARSING_REMOVED;
@@ -971,7 +1005,8 @@ gboolean scr_initAck(SCTP_init * initAck)
     ChunkID cookieCID;
     ChunkID initCID;
     ChunkID initAckCID;
-    ChunkID errorCID;
+    ChunkID errorCID, abortCID;
+    SCTP_MissingParams missing_params;
     int return_state = STATE_OK;
 
     union sockunion preferredPrimary;
@@ -1007,12 +1042,20 @@ gboolean scr_initAck(SCTP_init * initAck)
         /* Set length of chunk to HBO !! */
         initCID = ch_makeChunk((SCTP_simple_chunk *) localData->initChunk);
 
-        if (ch_noOutStreams(initAckCID) == 0 || ch_noInStreams(initAckCID) == 0) {
+        /* FIXME: check also the noPeerOutStreams <= noLocalInStreams */
+        if (ch_noOutStreams(initAckCID) == 0 || ch_noInStreams(initAckCID) == 0 || ch_initiateTag(initAckCID) == 0) {
             if (localData->initTimer != 0) {
                 sctp_stopTimer(localData->initTimer);
                 localData->initTimer = 0;
             }
+           /* make and send abort message */
+            abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
+            ch_enterErrorCauseData(abortCID, ECC_INVALID_MANDATORY_PARAM, 0, NULL);
+            bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
+            ch_deleteChunk(abortCID);
+            
             bu_unlock_sender(NULL);
+            bu_sendAllChunks(NULL);
             /* delete all data of this association */
             mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(0);
@@ -1077,11 +1120,12 @@ gboolean scr_initAck(SCTP_init * initAck)
                 sctp_stopTimer(localData->initTimer);
                 localData->initTimer = 0;
             }
+            missing_params.numberOfParams = htonl(1);
+            missing_params.params[0] = htons(VLPARAM_COOKIE);
+            
+            scu_abort(ECC_MISSING_MANDATORY_PARAM, 6, (unsigned char*)&missing_params);
             bu_unlock_sender(NULL);
             /* delete this association */
-            mdi_deleteCurrentAssociation();
-            mdi_communicationLostNotif(0);
-            mdi_clearAssociationData();
 
             return_state = STATE_STOP_PARSING_REMOVED;
             localData->association_state = CLOSED;
@@ -1255,8 +1299,15 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
     cookie_remote_tag = ch_initiateTag(initCID);
     cookie_local_tag = ch_initiateTag(initAckCID);
 
+    /* these two will be zero, if association is not up yet */
     local_tag = mdi_readLocalTag();
     remote_tag = mdi_readTagRemote();
+
+    if (mdi_readLastInitiateTag() != cookie_local_tag) {
+        ch_forgetChunk(cookieCID);
+        event_log(EXTERNAL_EVENT, "event: good cookie echo received, but with incorrect verification tag");
+        return;
+    }
 
     /* section 5.2.4. 3.) */
     if ((cookieLifetime = ch_staleCookie(cookieCID)) > 0) {

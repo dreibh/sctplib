@@ -1,5 +1,5 @@
 /*
- *  $Id: errorhandler.c,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: errorhandler.c,v 1.3 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -137,15 +137,24 @@ int eh_recv_chunk(SCTP_simple_chunk * errchunk)
  * function to trigger sending of error chunk, after receiving an invalid stream id
  * @return error value, 0 on success, -1 on error
  */
-int eh_send_invalid_streamid(unsigned short streamid)
+int eh_make_invalid_streamid_error(unsigned short streamid)
 {
-    return -1;
-}
+    ChunkID errorCID;
+    SCTP_InvalidStreamIdError error_info;
+    
+    /* build chunk */
+    errorCID = ch_makeErrorChunk();
 
+    error_info.stream_id = htons(streamid);
+    error_info.reserved = htons(0);
 
-int eh_send_invalid_chunk(void)
-{
-    return -1;
+    /* add parameters */
+    ch_enterErrorCauseData(errorCID, ECC_INVALID_STREAM_ID, 4, (unsigned char*)&error_info);
+
+    bu_put_Ctrl_Chunk(ch_chunkString(errorCID),NULL);
+    ch_deleteChunk(errorCID);
+    
+    return 0;
 }
 
 
@@ -160,9 +169,11 @@ int eh_send_unrecognized_chunktype(unsigned char* faulty_chunk, unsigned short l
     /* build chunk */
     errorCID = ch_makeErrorChunk();
     /* add parameters */
-    ch_enterErrorCauseData(errorCID, ECC_UNRECOGNIZED_CHUNKTYPE, length, faulty_chunk);
+    ch_enterErrorCauseData(errorCID, ECC_UNRECOGNIZED_CHUNKTYPE, length, (unsigned char*)faulty_chunk);
 
     bu_put_Ctrl_Chunk(ch_chunkString(errorCID),NULL);
+    ch_deleteChunk(errorCID);
+    
     return bu_sendAllChunks(NULL);
 }
 
@@ -170,7 +181,7 @@ int eh_send_unrecognized_chunktype(unsigned char* faulty_chunk, unsigned short l
  * function to trigger sending of error chunk, after mandatory parameter(s) was(were) missing
  * @return error value, 0 on success, -1 on error
  */
-int eh_send_missing_mandatory_param(unsigned int number, unsigned short *param_types)
+int eh_make_missing_mandatory_param(unsigned int number, unsigned short *param_types)
 {
     return -1;
 }
@@ -185,3 +196,26 @@ int eh_send_unresolvable_address(unsigned int number, unsigned char *addresses)
 {
     return -1;
 }
+
+
+/**
+ * function to add an error chunk, after empty data chunk was received
+ * @return error value, 0 on success, -1 on error
+ */
+int eh_make_empty_data_chunk_error(unsigned int tsn)
+{
+    ChunkID errorCID;
+
+    /* build chunk */
+    errorCID = ch_makeErrorChunk();
+
+    /* add parameters */
+    ch_enterErrorCauseData(errorCID, ECC_NO_USER_DATA, sizeof(unsigned int), (unsigned char*)&tsn);
+
+    bu_put_Ctrl_Chunk(ch_chunkString(errorCID),NULL);
+    ch_deleteChunk(errorCID);
+
+    return 0;
+}
+
+

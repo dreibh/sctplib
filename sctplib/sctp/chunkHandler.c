@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.4 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: chunkHandler.c,v 1.5 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1548,6 +1548,11 @@ ChunkID ch_makeCookie(SCTP_cookie_param * cookieParam)
 
     if (cookieChunk == NULL) {
         error_log(ERROR_MAJOR, "Malloc Failed in ch_makeCookie, returning -1 !");
+        return -1;
+    }
+    if (cookieParam == NULL) {
+        error_log(ERROR_MAJOR, "ch_makeCookie: NULL parameter passed (InitAck without Cookie ???");
+        free(cookieChunk);
         return -1;
     }
 

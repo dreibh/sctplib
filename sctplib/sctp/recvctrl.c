@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.6 2003/09/25 11:01:04 ajung Exp $
+ *  $Id: recvctrl.c,v 1.7 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -43,6 +43,7 @@
 #include "bundling.h"
 #include "distribution.h"
 #include "streamengine.h"
+#include "SCTP-control.h"
 
 #include <glib.h>
 #include <string.h>
@@ -447,6 +448,7 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
         return (-1);
     }
 
+    
     /* resetting it */
     rxc->new_chunk_received = FALSE;
     rxc->last_address = ad_idx;
@@ -468,7 +470,9 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
     chunk_tsn = ntohl(se_chk->tsn);
     chunk_len = ntohs(se_chk->chunk_length);
 
-    if (after(chunk_tsn, rxc->highest) && current_rwnd == 0) {
+    if ( (after(chunk_tsn, rxc->highest) && current_rwnd == 0) ||
+         (sci_getState() >= SHUTDOWNRECEIVED) ) {
+        /* drop chunk, if either: our rwnd is 0, or we are already shutting down */
         rxc->new_chunk_received = FALSE;
         return 1;
     }

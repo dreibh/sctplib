@@ -1,5 +1,5 @@
     /*
- *  $Id: echo_server.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: echo_server.c,v 1.3 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -161,7 +161,8 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
     /* and send it */
     SCTP_send(assocID,
               min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
-              chunk, length,
+/*              chunk, length, */
+              chunk, 2000,
               protoID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
 }

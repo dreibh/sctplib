@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.9 2003/09/25 10:52:46 ajung Exp $
+ *  $Id: distribution.c,v 1.10 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -790,12 +790,13 @@ mdi_receiveMessage(gint socket_fd,
     SCTP_message *message;
     SCTP_simple_chunk *chunk = NULL;
     SCTP_init_fixed *initChunk = NULL;
-    guchar* initPtr;
+    guchar* initPtr = NULL;
     guchar source_addr_string[SCTP_MAX_IP_LEN];
     guchar dest_addr_string[SCTP_MAX_IP_LEN];
+    SCTP_vlparam_header* vlptr = NULL;
 
     union sockunion alternateFromAddress;
-    unsigned int i=0, len, state;
+    unsigned int i=0, len, state, chunkArray = 0;
     boolean sourceAddressExists = FALSE;
     boolean sendAbort = FALSE;
     boolean discard = FALSE;
@@ -968,6 +969,10 @@ mdi_receiveMessage(gint socket_fd,
 
     chunk = (SCTP_simple_chunk *) & message->sctp_pdu[0];
 
+    chunkArray = rbu_scanPDU(message->sctp_pdu, len);
+
+
+    
     if (currentAssociation == NULL) {
         if ((initPtr = rbu_findChunk(message->sctp_pdu, len, CHUNK_INIT)) != NULL) {
             event_log(VERBOSE, "mdi_receiveMsg: Looking for source address in INIT CHUNK");
@@ -1001,11 +1006,29 @@ mdi_receiveMessage(gint socket_fd,
         }
     }
 
+    /* check whether chunk is illegal or not (see section 3.1 of RFC 2960) */
+    if ( ((rbu_datagramContains(CHUNK_INIT, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_INIT))) ||
+         ((rbu_datagramContains(CHUNK_INIT_ACK, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_INIT_ACK))) ||
+         ((rbu_datagramContains(CHUNK_SHUTDOWN_COMPLETE, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_SHUTDOWN_COMPLETE))) 
+       ){
+
+        error_log(ERROR_MINOR, "mdi_receiveMsg: discarding illegal packet....... :-)");
+           
+        /* silently discard */
+         lastFromAddress = NULL;
+         lastDestAddress = NULL;
+         lastFromPort = 0;
+         lastDestPort = 0;
+         sctpInstance = NULL;
+         currentAssociation = NULL;
+         return;
+    }
+    
     /* check if sctp-message belongs to an existing association */
     if (currentAssociation == NULL) {
          event_log(VVERBOSE, "mdi_receiveMsg: currentAssociation==NULL, start scanning !");
          /* This is not very elegant, but....only used when assoc is being build up, so :-D */
-         if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_ABORT) == TRUE) {
+         if (rbu_datagramContains(CHUNK_ABORT, chunkArray) == TRUE) {
             event_log(INTERNAL_EVENT_0, "mdi_receiveMsg: Found ABORT chunk, discarding it !");
             lastFromAddress = NULL;
             lastDestAddress = NULL;
@@ -1015,7 +1038,7 @@ mdi_receiveMessage(gint socket_fd,
             currentAssociation = NULL;
             return;
          }
-         if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_SHUTDOWN_ACK) == TRUE) {
+         if (rbu_datagramContains(CHUNK_SHUTDOWN_ACK, chunkArray) == TRUE) {
             event_log(INTERNAL_EVENT_0,
                         "mdi_receiveMsg: Found SHUTDOWN_ACK chunk, send SHUTDOWN_COMPLETE !");
             /* section 8.4.5 : return SHUTDOWN_COMPLETE with peers veri-tag and T-Bit set */
@@ -1037,7 +1060,7 @@ mdi_receiveMessage(gint socket_fd,
             currentAssociation = NULL;
             return;
         }
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_SHUTDOWN_COMPLETE) == TRUE) {
+        if (rbu_datagramContains(CHUNK_SHUTDOWN_COMPLETE, chunkArray) == TRUE) {
             event_log(INTERNAL_EVENT_0,
                      "mdi_receiveMsg: Found SHUTDOWN_COMPLETE chunk, discarding it !");
             lastFromPort = 0;
@@ -1048,7 +1071,7 @@ mdi_receiveMessage(gint socket_fd,
             currentAssociation = NULL;
             return;
         }
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_COOKIE_ACK) == TRUE) {
+        if (rbu_datagramContains(CHUNK_COOKIE_ACK, chunkArray) == TRUE) {
             event_log(INTERNAL_EVENT_0, "mdi_receiveMsg: Found COOKIE_ACK chunk, discarding it !");
             lastFromPort = 0;
             lastDestPort = 0;
@@ -1091,7 +1114,7 @@ mdi_receiveMessage(gint socket_fd,
                 lastInitiateTag = ntohl(initChunk->init_tag);
                 event_logi(VERBOSE, "setting lastInitiateTag to %x ", lastInitiateTag);
 
-                if (rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR) == TRUE) {
+                if ((vlptr = (SCTP_vlparam_header*)rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR)) != NULL) {
                     sendAbort = TRUE;
                 }
 
@@ -1105,7 +1128,7 @@ mdi_receiveMessage(gint socket_fd,
                 event_logi(VERBOSE, "setting lastInitiateTag to %x ", lastInitiateTag);
             }
 
-        } else if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_COOKIE_ECHO) == TRUE) {
+        } else if (rbu_datagramContains(CHUNK_COOKIE_ECHO, chunkArray) == TRUE) {
             if (sctpInstance != NULL) {
                 if (lastDestPort != sctpInstance->localPort || sctpInstance->localPort == 0) {
                     /* destination port is not the listening port of this this SCTP-instance. */
@@ -1141,11 +1164,10 @@ mdi_receiveMessage(gint socket_fd,
            of the association and the source address must be in the addresslist of the peer
            of this association */
         /* check src- and dest-port and source address */
-        if (lastFromPort != currentAssociation->remotePort
-            || lastDestPort != currentAssociation->localPort) {
+        if (lastFromPort != currentAssociation->remotePort || lastDestPort != currentAssociation->localPort) {
             error_logiiii(ERROR_FATAL,
                           "port mismatch in received DG (lastFromPort=%u, assoc->remotePort=%u, lastDestPort=%u, assoc->localPort=%u ",   lastFromPort, currentAssociation->remotePort,                          lastDestPort, currentAssociation->localPort);
-	    currentAssociation = NULL;
+            currentAssociation = NULL;
             sctpInstance = NULL;
             lastFromAddress = NULL;
             lastDestAddress = NULL;
@@ -1188,7 +1210,7 @@ mdi_receiveMessage(gint socket_fd,
         if (sourceAddressExists) lastFromPath = i;
 
         /* check for verification tag rules --> see section 8.5 */
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_INIT) == TRUE) {
+        if (rbu_datagramContains(CHUNK_INIT, chunkArray) == TRUE) {
             /* check that there is ONLY init */
             initFound = TRUE;
             if (lastInitiateTag != 0) {
@@ -1207,11 +1229,11 @@ mdi_receiveMessage(gint socket_fd,
             lastInitiateTag = ntohl(initChunk->init_tag);
             event_logi(VVERBOSE, "Got an INIT CHUNK with initiation-tag %u", lastInitiateTag);
 
-            if (rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR) == TRUE) {
+            if ((vlptr = (SCTP_vlparam_header*)rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR)) != NULL) {
                 sendAbort = TRUE;
             }
         }
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_ABORT) == TRUE) {
+        if (rbu_datagramContains(CHUNK_ABORT, chunkArray) == TRUE) {
             /* accept my-tag or peers tag, else drop packet */
             if ((lastInitiateTag != currentAssociation->tagLocal &&
                  lastInitiateTag != currentAssociation->tagRemote) || initFound == TRUE) {
@@ -1225,7 +1247,7 @@ mdi_receiveMessage(gint socket_fd,
             }
             abortFound = TRUE;
         }
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_SHUTDOWN_COMPLETE) == TRUE) {
+        if (rbu_datagramContains(CHUNK_SHUTDOWN_COMPLETE, chunkArray) == TRUE) {
             /* accept my-tag or peers tag, else drop packet */
             /* TODO : make sure that if it is the peer's tag also T-Bit is set */
             if ((lastInitiateTag != currentAssociation->tagLocal &&
@@ -1239,7 +1261,7 @@ mdi_receiveMessage(gint socket_fd,
                 return;
             }
         }
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_SHUTDOWN_ACK) == TRUE) {
+        if (rbu_datagramContains(CHUNK_SHUTDOWN_ACK, chunkArray) == TRUE) {
             if (initFound == TRUE) {
                 currentAssociation = NULL;
                 sctpInstance = NULL;
@@ -1268,15 +1290,15 @@ mdi_receiveMessage(gint socket_fd,
                 return;
             }
         }
-        if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_COOKIE_ECHO) == TRUE) {
+        if (rbu_datagramContains(CHUNK_COOKIE_ECHO, chunkArray) == TRUE) {
                cookieEchoFound = TRUE;
         }
 
         if ((initPtr = rbu_findChunk(message->sctp_pdu, len, CHUNK_INIT_ACK)) != NULL) {
 
-            if (rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR) == TRUE) {
+            if ((vlptr = (SCTP_vlparam_header*)rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR)) != NULL) {
                     /* actually, this does not make sense...anyway: kill assoc, and notify user */
-                    scu_abort();
+                    scu_abort(ECC_UNRECOGNIZED_PARAMS, ntohs(vlptr->param_length), (guchar*)vlptr);
                     currentAssociation = NULL;
                     sctpInstance = NULL;
                     lastFromPort = 0;
@@ -2139,7 +2161,7 @@ int sctp_abort(unsigned int associationID)
     if (currentAssociation != NULL) {
         sctpInstance = currentAssociation->sctpInstance;
         /* Forward shutdown to the addressed association */
-        scu_abort();
+        scu_abort(ECC_USER_INITIATED_ABORT, 0, NULL);
     } else {
         error_log(ERROR_MAJOR, "sctp_abort: addressed association does not exist");
         sctpInstance = old_Instance;
@@ -3779,8 +3801,6 @@ void *mdi_readFlowControl(void)
         error_log(ERROR_MINOR, "mdi_readFlowControl: association not set");
         return NULL;
     } else {
-        event_logii(VVERBOSE, "setting FlowControl MemoryAddress %x, for association %u",
-              currentAssociation->flowControl, currentAssociation->assocId);
         return currentAssociation->flowControl;
     }
 }
@@ -3797,8 +3817,8 @@ void *mdi_readReliableTransfer(void)
         error_log(ERROR_MINOR, "mdi_readReliableTransfer: association not set");
         return NULL;
     } else {
-        event_logii(VVERBOSE, "setting RelTransfer MemoryAddress %x, for association %u",
-              currentAssociation->reliableTransfer, currentAssociation->assocId);
+/*        event_logii(VVERBOSE, "setting RelTransfer MemoryAddress %x, for association %u",
+              currentAssociation->reliableTransfer, currentAssociation->assocId); */
         return currentAssociation->reliableTransfer;
     }
 }

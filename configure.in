@@ -8,7 +8,7 @@ AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AC_CONFIG_SRCDIR([sctplib/programs/discard_server.c])
 AM_CONFIG_HEADER([config.h])
 
-AM_INIT_AUTOMAKE(sctplib,1.0.0-rc2)
+AM_INIT_AUTOMAKE(sctplib,1.0.0-rc3)
 
 AC_CANONICAL_HOST
 

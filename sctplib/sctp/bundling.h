@@ -1,5 +1,5 @@
 /*
- * $Id: bundling.h,v 1.3 2003/09/25 10:52:46 ajung Exp $
+ * $Id: bundling.h,v 1.4 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -67,18 +67,21 @@ gpointer bu_new(void);
  */
 void bu_delete(gpointer instancePtr);
 
+/**
+ * returns a value indicating which chunks are in the packet.
+ */
+unsigned int rbu_scanPDU(guchar * pdu, guint len);
 
 /*
- * rbu_scanDatagram: looks for chunk_type in a newly received datagram
- *
- * All chunks within the datagram are lookes at, until one is found
- * that equals the parameter chunk_type.
- * @return true is chunk_type exists in SCTP datagram, false if it is not in there
+ * rbu_datagramContains: looks for chunk_type in a newly received datagram
+ * Should be called after rbu_scanPDU().
+ * The chunkArray parameter is inspected. This only really checks for chunks
+ * with an ID <= 30. For all other chunks, it just guesses...
+ * @return true is chunk_type exists in chunkArray, false if it is not in there
  */
-gboolean rbu_scanDatagram(guchar * datagram, guint len, gushort chunk_type);
+gboolean rbu_datagramContains(gushort chunk_type, unsigned int chunkArray);
 
-
-gboolean rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType);
+guchar* rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType);
 
 /*
  * rbu_findChunk: looks for chunk_type in a newly received datagram

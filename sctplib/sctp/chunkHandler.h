@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.h,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: chunkHandler.h,v 1.3 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -108,7 +108,7 @@ int ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
 int ch_enterUnrecognizedParameters(ChunkID initCID,ChunkID AckCID, unsigned int supportedAddressTypes);
 
 /*
- * ch_enterUnrecognizedErrors enters unrecognized params from InitAck into ann Error chunk
+ * ch_enterUnrecognizedErrors enters unrecognized params from InitAck into an Error chunk
  * that will be appended to an CookieEcho. Iff an error chunk was created, error not will be
  * zero, else will be a new chunk id.
  * Returns -1 if unrecognized chunk forces termination of chunk parsing

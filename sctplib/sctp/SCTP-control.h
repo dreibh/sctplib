@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: SCTP-control.h,v 1.4 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -116,7 +116,7 @@ void scu_shutdown(void);
 
 /* aborts this association.
 */
-void scu_abort(void);
+void scu_abort(short error_type, unsigned short error_param_length, unsigned char* error_param_data);
 
 
 
@@ -257,4 +257,5 @@ int sci_setCookieLifeTime(int new_max);
  */
 
 gboolean sci_shutdown_procedure_started(void);
+
 #endif

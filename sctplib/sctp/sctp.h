@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.5 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: sctp.h,v 1.6 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -147,7 +147,7 @@ extern "C" {
 #define SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS  3
 #define SCTP_COMM_LOST_NO_TCB                    4
 /* maybe some others............. */
-#define SCTP_COMM_LOST_ZERO_STREAMS              8
+#define SCTP_COMM_LOST_INVALID_PARAMETER         8
 /* called if peer does not recognize some of our parameters */
 #define SCTP_COMM_LOST_FAILURE                   9
 #define SCTP_SHUTDOWN_COMPLETE                  10

@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.7 2003/09/25 09:25:38 ajung Exp $
+ * $Id: flowcontrol.c,v 1.8 2003/10/06 09:44:56 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -386,7 +386,7 @@ int fc_reset_cwnd(unsigned int pathId)
     resetTime = fc->cparams[pathId].last_send_time;
     adl_add_msecs_totime(&resetTime, rto);
     if (timercmp(&now, &resetTime, > )) {
-        event_logi(INTERNAL_EVENT_0, "----------------> fc_reset_cwnd: resetting CWND for idle path %u <------------------", pathId);
+        event_logi(INTERNAL_EVENT_0, "----- fc_reset_cwnd(): resetting CWND for idle path %u ------", pathId);
         /* path has been idle for at least on RTO */
         fc->cparams[pathId].cwnd = 2 * MAX_MTU_SIZE;
         adl_gettime(&(fc->cparams[pathId].last_send_time));
@@ -638,11 +638,12 @@ gboolean fc_send_okay(fc_data* fc,
     if ((totalSize + obpa < (fc->cparams[destination].cwnd+fc->cparams[destination].mtu-1)) &&
         (
          ((nextChunk->num_of_transmissions==0)&&(rtx_read_remote_receiver_window() > nextChunk->chunk_len)) ||
-          (rtx_read_remote_receiver_window()==0 && fc->one_packet_inflight == FALSE) ||
+          (rtx_read_remote_receiver_window() <= nextChunk->chunk_len && fc->one_packet_inflight == FALSE) ||
           (nextChunk->num_of_transmissions > 0)) ) {
+        event_logii(VERBOSE, "fc_send_okay --> TRUE (totalSize == %u, obpa == %u)",totalSize, obpa);
         return TRUE;
     }
-
+    event_logii(VERBOSE, "fc_send_okay --> FALSE (totalSize == %u, obpa == %u)",totalSize, obpa);
     return FALSE;
 }
 

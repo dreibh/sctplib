@@ -17,3 +17,4 @@ terminal
 test_tool
 .DS_Store
 .gdb_history
+tracelevels.in

@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.4 2003/09/25 10:52:46 ajung Exp $
+ *  $Id: rbundling.c,v 1.5 2003/10/06 09:44:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -53,46 +53,55 @@
 
 
 
-/**
- * looks for chunk_type in a newly received datagram
- *
- * All chunks within the datagram are lookes at, until one is found
- * that equals the parameter chunk_type.
- * @param  datagram     pointer to the newly received data
- * @param  chunk_type   chunk type to look for
- * @return true is chunk_type exists in SCTP datagram, false if it is not in there
- */
-gboolean rbu_scanDatagram(guchar * datagram, guint len, gushort chunk_type)
+unsigned int rbu_scanPDU(guchar * pdu, guint len)
 {
     gushort processed_len = 0;
+    unsigned int result = 0;
     guchar *current_position;
     guint pad_bytes;
     SCTP_simple_chunk *chunk;
 
-    current_position = datagram; /* points to the first chunk in this pdu */
+    current_position = pdu; /* points to the first chunk in this pdu */
+
     while (processed_len < len) {
 
-        event_logii(INTERNAL_EVENT_0,
-                    "rbu_scanDatagram : len==%u, processed_len == %u", len, processed_len);
+        event_logii(VERBOSE, "rbu_scanPDU : len==%u, processed_len == %u", len, processed_len);
 
         chunk = (SCTP_simple_chunk *) current_position;
-        switch (chunk->chunk_header.chunk_id == chunk_type) {
-        case TRUE:
-            return TRUE;
-            break;
-        default:
-            processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
-            pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
-            processed_len += pad_bytes;
-            current_position +=
+        if (chunk->chunk_header.chunk_id <= 30) {
+            result = result | (1 << chunk->chunk_header.chunk_id);
+            event_logii(VERBOSE, "rbu_scanPDU : Chunk type==%u, result == %x", chunk->chunk_header.chunk_id, result);
+        } else {
+            result = result | (1 << 31);
+            event_logii(VERBOSE, "rbu_scanPDU : Chunk type==%u setting bit 31 --> result == %x", chunk->chunk_header.chunk_id, result);
+        }    
+        processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+        pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
+        processed_len += pad_bytes;
+        current_position +=
                 (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
-            break;
-        }
     }
-    return FALSE;
+    return result;
 }
 
-gboolean rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
+gboolean rbu_datagramContains(gushort chunk_type, unsigned int chunkArray)
+{
+    unsigned int val = 0;
+
+    if (chunk_type >= 31) {
+        val = (1 << 31);
+        if ((val & chunkArray) == 0) return FALSE;
+        else return TRUE;    /* meaning: it could be true */
+    }
+
+    val = (1 << chunk_type);
+    if ((val & chunkArray) != 0) return TRUE;
+    else return FALSE;
+
+}    
+        
+
+guchar* rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
 {
     gushort processed_len;
     guint len = 0, parameterLength = 0;
@@ -118,14 +127,14 @@ gboolean rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
         parameterLength = ntohs(vlp->param_length);
 
         if (ntohs(vlp->param_type) == paramType) {
-            return TRUE;
+            return current_position;
         }
         processed_len += parameterLength;
         pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
         processed_len += pad_bytes;
         current_position += (parameterLength + pad_bytes * sizeof(unsigned char));
     }
-    return FALSE;
+    return NULL;
 
 }
 

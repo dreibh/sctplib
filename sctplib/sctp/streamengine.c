@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.4 2003/09/10 21:34:40 tuexen Exp $
+ * $Id: streamengine.c,v 1.5 2003/10/06 09:44:56 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -50,6 +50,7 @@
 #include "distribution.h"
 #include "bundling.h"
 #include "errorhandler.h"
+#include "SCTP-control.h"
 
 #include "recvctrl.h"
 
@@ -617,6 +618,7 @@ se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount, unsigned i
 {
     guint16 datalength;
     delivery_data* d_chunk;
+    SCTP_InvalidStreamIdError error_info;
     StreamEngine* se = (StreamEngine *) mdi_readStreamEngine ();
 
     if (se == NULL) {
@@ -628,24 +630,34 @@ se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount, unsigned i
 
     d_chunk = malloc (sizeof (delivery_data));
     if (d_chunk == NULL) return SCTP_OUT_OF_RESOURCES;
-
+    d_chunk->stream_id =    ntohs (dataChunk->stream_id);
     datalength =  byteCount - FIXED_DATA_CHUNK_SIZE;
+    
+    if (d_chunk->stream_id >= se->numReceiveStreams) {
+        /* return error, when numReceiveStreams is exceeded */
+        error_info.stream_id = htons(d_chunk->stream_id);
+        error_info.reserved = htons(0);
+        scu_abort(ECC_INVALID_STREAM_ID, sizeof(error_info), (void*)&error_info);
+        free(d_chunk);
+        return SCTP_UNSPECIFIED_ERROR;
+    }
+
+    d_chunk->tsn = ntohl (dataChunk->tsn);     /* for efficiency */
+
+    if (datalength <= 0) {
+        scu_abort(ECC_NO_USER_DATA, sizeof(unsigned int), (void*)&(dataChunk->tsn));
+        free(d_chunk);
+        return SCTP_UNSPECIFIED_ERROR;
+    }
 
     memcpy (d_chunk->data, dataChunk->data, datalength);
     d_chunk->data_length = datalength;
     d_chunk->tsn = ntohl (dataChunk->tsn);     /* for efficiency */
     d_chunk->chunk_flags = dataChunk->chunk_flags;
-    d_chunk->stream_id =    ntohs (dataChunk->stream_id);
     d_chunk->stream_sn =    ntohs (dataChunk->stream_sn);
     d_chunk->protocolId =   ntohl (dataChunk->protocolId);
     d_chunk->fromAddressIndex =  address_index;
     
-    if (d_chunk->stream_id >= se->numReceiveStreams) {
-        /* FIXME : Return error, when numReceiveStreams is exceeded */
-        eh_send_invalid_streamid(d_chunk->stream_id);
-        free(d_chunk);
-        return SCTP_UNSPECIFIED_ERROR;
-    }
 
     if ((d_chunk->chunk_flags >= 0x04) && (d_chunk->chunk_flags < 0x08)) {
         event_logii (EXTERNAL_EVENT, "se_recvDataChunk: UNORDERED chunk, tsn: %u, sid: %u", d_chunk->tsn, d_chunk->stream_id);
@@ -659,7 +671,7 @@ se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount, unsigned i
             g_list_insert_sorted (se->RecvStreams[d_chunk->stream_id].orderedList, d_chunk, (GCompareFunc) sort_tsn_se);
     } else {
         /* FIXME : Return error, when Flags are invalid */
-        eh_send_invalid_chunk();
+        scu_abort(ECC_OUT_OF_RESOURCE_ERROR, 0, NULL);
         free(d_chunk);
         return SCTP_UNSPECIFIED_ERROR;
     }
