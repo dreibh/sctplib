@@ -2,7 +2,7 @@
 
 EXTRA_DIST = combined_server.c daytime_server.c discard_server.c echo_server.c echo_tool.c \
             terminal.c parser.c script1 script2 sctptest.h test_tool.c testengine.c main.c mini-ulp.c mini-ulp.h \
-            sctp_wrapper.h sctp_wrapper.c monitor.c chat.c echo_monitor.c localcom.c chargen_server.c
+            sctp_wrapper.h sctp_wrapper.c monitor.c chat.c echo_monitor.c localcom.c chargen_server.c Makefile.nmake
            # traffic_tool1.c traffic_tool2.c  sctp_params.h
 
 
@@ -13,7 +13,6 @@ EXTRA_DIST = combined_server.c daytime_server.c discard_server.c echo_server.c e
 
 noinst_PROGRAMS = combined_server daytime_server discard_server echo_server echo_tool terminal test_tool mulp localcom @cursesprogs_BIN@ chargen_server
 EXTRA_PROGRAMS = monitor chat echo_monitor 
-EXTRA_DIST = Makefile.nmake
 
 combined_server_SOURCES = combined_server.c sctp_wrapper.c
 combined_server_LDADD =  ../sctp/libsctp.la @glib_LIBS@
