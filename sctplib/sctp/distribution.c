@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.3 2003/06/01 19:44:55 ajung Exp $
+ *  $Id: distribution.c,v 1.4 2003/06/06 13:07:14 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -4388,6 +4388,8 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
         /* this is from a loopback, get all loopbacks */
         filterFlags = flag_Default;
     }
+     
+    count = 0;
 
     if (sctpInstance->has_INADDR_ANY_set == TRUE) {
         for (tmp = 0; tmp < myNumberOfAddresses; tmp++) {
