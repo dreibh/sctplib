@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.8 2003/10/28 22:00:15 tuexen Exp $
+ * $Id: streamengine.c,v 1.9 2003/10/30 16:24:42 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -643,8 +643,6 @@ se_recvDataChunk(SCTP_data_chunk * dataChunk, unsigned int byteCount, unsigned i
         free(d_chunk);
         return SCTP_UNSPECIFIED_ERROR;
     }
-
-    d_chunk->tsn = ntohl (dataChunk->tsn);     /* for efficiency */
 
     if (datalength <= 0) {
         scu_abort(ECC_NO_USER_DATA, sizeof(unsigned int), (void*)&(dataChunk->tsn));
