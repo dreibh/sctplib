@@ -96,6 +96,34 @@ typedef struct SCTP_Monitor_ToolStatus
 
 SCTP_MonitorToolStatus statusUpdate;
 
+char *
+pathStateName(unsigned int state)
+{
+    switch (state) {
+        case SCTP_PATH_OK:
+            return "OK";
+            break;
+        case SCTP_PATH_UNREACHABLE:
+            return "UNRECHABLE";
+            break;
+        case SCTP_PATH_ADDED:
+            return "ADDED";
+            break;
+        case SCTP_PATH_REMOVED:
+            return "REMOVED";
+            break;
+        case SCTP_PATH_CONFIRMED:
+            return "CONFIRMED";
+            break;
+        case SCTP_PATH_UNCONFIRMED:
+            return "UNCONFIRMED";
+            break;
+        default:
+            return "UNKNOWN";
+            break;
+    }
+}
+
 void printUsage(void)
 {
     printf("usage: monitor [options] -s source_addr_1 -d destination_addr ...\n");
@@ -384,14 +412,14 @@ void ncurses_display_PathStatus(unsigned int assocID)
 	    if (pathID == sctp_getPrimary(assocID))
 	      {
 		sprintf(pathInfo," Primary Path ID : %d, state of path : %s\n",
-			pathID,(State[pathID]==SCTP_PATH_OK)?"ACTIVE":"INACTIVE"); 
+			pathID, pathStateName(State[pathID])); 
 		waddstr(pathWin,pathInfo);
 		wrefresh(pathWin);
 	      }  
 	    else 
 	      {
 		sprintf(pathInfo," Path ID : %d, state of path : %s\n",
-			pathID,(State[pathID]==SCTP_PATH_OK)?"ACTIVE":"INACTIVE"); 
+			pathID, pathStateName(State[pathID])); 
 		waddstr(pathWin,pathInfo);
 		wrefresh(pathWin);
 	      }
@@ -405,7 +433,7 @@ void ncurses_display_PathStatus(unsigned int assocID)
 	    if (pathID == chosenPath)
 	      {
 		sprintf(pathInfo,"\n Path ID : %d, State of path : %s\t\t Destination address : %s\n Heartbeat Interval : %-8u\t\t Retransmisson time(msecs) : %-8d\n Smooth Round Trip time(msecs) : %-8d\t Round Trip time Variations(msecs) : %-8d\n Slow start threshold : %-8d\t\t Congestion Window Size : %-8d\n Outstanding Bytes per Address : %-8d\t Congestion Window Size 2 : %-8d\n Partial bytes acknowledge : %-8d\t\t IP type of service : %x\n MTU : %d bytes\n\n", 
-			pathID,(State[pathID]==SCTP_PATH_OK)?"ACTIVE":"INACTIVE",
+			pathID, pathStateName(State[pathID]),
 			destaddr[pathID],HB_Interval[pathID],Rto[pathID],
 			SRTT[pathID],RTTVar[pathID],SlowStThres[pathID],CongestWin[pathID],
 			OutBytesPerAddr[pathID], CongestWin2[pathID],PartBytesAck[pathID],
@@ -567,7 +595,7 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
 
     sctp_getPathStatus(assocID, destAddrIndex , &pathStatus);
     sprintf(statusInfo, " Association ID =%-8x: Network status change: path %u (towards %s) is now %s\n", 
-	    assocID, destAddrIndex, pathStatus.destinationAddress,((newState == SCTP_PATH_OK) ? "ACTIVE" : "INACTIVE"));
+	    assocID, destAddrIndex, pathStatus.destinationAddress, pathStateName(newState));
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
     

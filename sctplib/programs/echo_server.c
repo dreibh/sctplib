@@ -1,5 +1,5 @@
     /*
- *  $Id: echo_server.c,v 1.6 2003/11/20 13:05:41 tuexen Exp $
+ *  $Id: echo_server.c,v 1.7 2003/11/20 18:34:07 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -67,6 +67,34 @@ static int vverbose         = 0;
 static int unknownCommand   = 0;
 static int sendOOTBAborts   = 1;
 static int timeToLive       = SCTP_INFINITE_LIFETIME;
+
+char *
+pathStateName(unsigned int state)
+{
+    switch (state) {
+        case SCTP_PATH_OK:
+            return "OK";
+            break;
+        case SCTP_PATH_UNREACHABLE:
+            return "UNRECHABLE";
+            break;
+        case SCTP_PATH_ADDED:
+            return "ADDED";
+            break;
+        case SCTP_PATH_REMOVED:
+            return "REMOVED";
+            break;
+        case SCTP_PATH_CONFIRMED:
+            return "CONFIRMED";
+            break;
+        case SCTP_PATH_UNCONFIRMED:
+            return "UNCONFIRMED";
+            break;
+        default:
+            return "UNKNOWN";
+            break;
+    }
+}
 
 void printUsage(void)
 {
@@ -198,7 +226,7 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
     
     if (verbose) {  
         fprintf(stdout, "%-8x: Network status change: path %u is now %s\n", 
-                        assocID, destAddrIndex, ((newState == SCTP_PATH_OK) ? "ACTIVE" : "INACTIVE"));
+                        assocID, destAddrIndex, pathStateName(newState));
         fflush(stdout);
     }
     

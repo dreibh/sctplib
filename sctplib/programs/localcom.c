@@ -1,5 +1,5 @@
 /*
- *  $Id: localcom.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: localcom.c,v 1.4 2003/11/20 18:34:07 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -72,6 +72,34 @@ static unsigned int chunkCount                = 0;
 static int useDumpFile                        = 0;
 
 FILE* fptr;
+
+char *
+pathStateName(unsigned int state)
+{
+    switch (state) {
+        case SCTP_PATH_OK:
+            return "OK";
+            break;
+        case SCTP_PATH_UNREACHABLE:
+            return "UNRECHABLE";
+            break;
+        case SCTP_PATH_ADDED:
+            return "ADDED";
+            break;
+        case SCTP_PATH_REMOVED:
+            return "REMOVED";
+            break;
+        case SCTP_PATH_CONFIRMED:
+            return "CONFIRMED";
+            break;
+        case SCTP_PATH_UNCONFIRMED:
+            return "UNCONFIRMED";
+            break;
+        default:
+            return "UNKNOWN";
+            break;
+    }
+}
 
 void printUsage(void)
 {
@@ -194,7 +222,7 @@ void networkStatusChangeNotif(unsigned int assocID, short affectedPathID, unsign
     fprintf(fptr, "%-8x: Network status change: path %u (towards %s) is now %s\n",
                     assocID, affectedPathID,
                     pathStatus.destinationAddress,
-                    ((newState == SCTP_PATH_OK) ? "ACTIVE" : "INACTIVE"));
+                    pathStateName(newState));
     fflush(fptr);
     
     /* if the primary path has become inactive */
