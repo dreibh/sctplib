@@ -1,5 +1,5 @@
 /*
- *  $Id: echo_tool.c,v 1.3 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: echo_tool.c,v 1.4 2003/11/20 17:21:26 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -34,7 +34,9 @@
 
 #include "sctp_wrapper.h"
 
+#ifndef WIN32
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>         /* for atoi() under Linux */
@@ -109,79 +111,126 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
-
-    while ((c = getopt(argc, argv, "abd:l:mMn:p:q:r:s:t:o:iuvV")) != -1)
-    {
-        switch (c) {
-        case 'a':
-            rotateStreams = 1;
-            break;  
-        case 'b':
-            sendToAll = 1;
-            break;
-        case 'd':
-            if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy((char *)destinationAddress, optarg);
-                startAssociation = 1;
+    int i;
+    char *opt;
+    
+    for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+                case 'a':
+                    rotateStreams = 1;
+                    break;  
+                case 'b':
+                    sendToAll = 1;
+                    break;
+                case 'd':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    if (strlen(opt) < SCTP_MAX_IP_LEN) {
+                        strcpy((char *)destinationAddress, opt);
+                        startAssociation = 1;
+                    }
+                    break;
+                case 'l':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    chunkLength = min(atoi(opt),MAXIMUM_PAYLOAD_LENGTH);
+                    break;
+                case 'm':
+                    doMeasurements = 1;
+                    break;
+                case 'M':
+                    doMeasurements = 1;
+                    doAllMeasurements = 1;
+                    break;
+                case 'n':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    numberOfInitialPackets = atoi(opt);
+                    break;
+                case 'o':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    localPort = (unsigned short)atoi(opt);
+                    break;
+                case 'p':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    deltaT = atoi(opt);
+                    break;
+                case 'q':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    tosByte = (unsigned char) atoi(opt);
+                    break;
+                case 'r':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    remotePort =  atoi(opt);
+                    break;
+                case 's':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+                        (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+                        strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+                        noOfLocalAddresses++;
+                    }
+                    break;  
+                case 't':
+                    if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+				    opt = argv[++i];
+                    timeToLive = atoi(opt);
+                    break;
+                case 'i':
+                    sendOOTBAborts = 0;
+                    break;
+                case 'u':
+                    sendUnordered = 1;
+                    break;
+                case 'v':
+                    verbose = 1;
+                    break;
+                case 'V':
+                    verbose = 1;
+                    vverbose = 1;
+                    break;
+                default:
+                    unknownCommand = 1;
+                    break;
             }
-            break;
-        case 'l':
-            chunkLength = min(atoi(optarg),MAXIMUM_PAYLOAD_LENGTH);
-            break;
-        case 'm':
-            doMeasurements = 1;
-            break;
-        case 'M':
-            doMeasurements = 1;
-            doAllMeasurements = 1;
-            break;
-        case 'n':
-            numberOfInitialPackets = atoi(optarg);
-            break;
-        case 'o':
-            localPort = (unsigned short)atoi(optarg);
-            break;
-        case 'p':
-            deltaT = atoi(optarg);
-            break;
-        case 'q':
-            tosByte = (unsigned char) atoi(optarg);
-            break;
-        case 'r':
-            remotePort =  atoi(optarg);
-            break;
-        case 's':
-            if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
-                noOfLocalAddresses++;
-            }
-            break;  
-        case 't':
-            timeToLive = atoi(optarg);
-            break;
-        case 'i':
-            sendOOTBAborts = 0;
-            break;
-        case 'u':
-            sendUnordered = 1;
-            break;
-        case 'v':
-            verbose = 1;
-            break;
-        case 'V':
-            verbose = 1;
-            vverbose = 1;
-            break;
-        default:
-            unknownCommand = 1;
-            break;
-        }
-    }
+        } else
+		  unknownCommand = 1;
+	}
 }
+
 void checkArgs(void)
 {
     int abortProgram;
@@ -239,7 +288,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
             if ((ulpData[index].maximumStreamID != -1)&&
                 (!(ulpData[index].ShutdownReceived))) {
                 result = SCTP_send(ulpData[index].assocID,
-                                   min(streamID, ulpData[index].maximumStreamID),
+                                   min(streamID, (unsigned int)(ulpData[index].maximumStreamID)),
                                    chunk, length,
                                    protoID,
                                    SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
@@ -253,13 +302,13 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
         }
     } else {
         result = SCTP_send(assocID,
-                           min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
+                           min(streamID, (unsigned int)(((struct ulp_data *) ulpDataPtr)->maximumStreamID)),
                            chunk, length,
                            protoID,
                            SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
         if (vverbose) {
             fprintf(stdout, "%-8x: Data sent (%u bytes on stream %u, %s) Result: %d\n",
-                            ulpData[index].assocID, len, min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
+                            ulpData[index].assocID, len, min(streamID, (unsigned int)(((struct ulp_data *) ulpDataPtr)->maximumStreamID)),
                             (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered", result);
             fflush(stdout);
         }
