@@ -13,12 +13,12 @@ AM_INIT_AUTOMAKE(sctplib,1.0.0-rc3)
 AC_CANONICAL_HOST
 
 dnl create only shared libtool-libraries (add --enable-shared)
-AC_ENABLE_SHARED(no)
+dnl AC_ENABLE_SHARED(no)
 dnl AM_DISABLE_SHARED
 
 dnl set the following to yes, if you want to create static
 dnl libtool-libraries, else no
-AC_ENABLE_STATIC(yes)
+dnl AC_ENABLE_STATIC(yes)
 
 # -----------------------------------------------------------------------
 # Checks for programs.
