@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.12 2004/07/26 15:53:38 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.13 2004/08/13 15:04:56 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1227,7 +1227,7 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
                                         (void *) &pmData->pathData[i].pathID);
                 } else {
                     pmData->pathData[i].hearbeatTimer =
-                        adl_startTimer(pmData->pathData[i].rto * (j-b),    /* send HB more slowly on other paths */
+                        adl_startTimer(pmData->pathData[i].rto * (b-j),    /* send HB more slowly on other paths */
                                        &pm_heartbeatTimer,
                                        TIMER_TYPE_HEARTBEAT,
                                        (void *) &pmData->associationID,
