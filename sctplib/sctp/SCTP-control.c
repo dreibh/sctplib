@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.12 2004/07/29 15:20:45 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.13 2004/07/29 18:01:47 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -164,7 +164,6 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
     ChunkID shutdownAckCID;
     guint primary;
 
-/* had a core dump here after assoc was removed (timed out) */
     if (mdi_setAssociationData(*((unsigned int *) associationIDvoid))) {
         /* error log: expired timer refers to a non existent association. */
         error_logi(ERROR_MAJOR,
