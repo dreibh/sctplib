@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.5 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id: globals.h,v 1.6 2003/10/28 22:00:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,6 +64,10 @@
  #ifdef  HAVE_UNISTD_H
   #include <unistd.h>
  #endif
+#endif
+
+#ifdef WIN32
+#include <winsock2.h>
 #endif
 
 #ifdef FreeBSD
@@ -213,7 +217,7 @@ void read_tracelevels(void);
 void debug_print(FILE * fd, char *f, ...);
 
 /**
- * function to output the result of the gettimeofday-call, i.e. the time now
+ * function to output the result of the adl_gettime-call, i.e. the time now
  */
 void print_time(short level);
 

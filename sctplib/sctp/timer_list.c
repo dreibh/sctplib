@@ -1,5 +1,5 @@
 /*
- *  $Id: timer_list.c,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: timer_list.c,v 1.3 2003/10/28 22:00:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -43,10 +43,10 @@
  */
 
 #include "timer_list.h"
+#include "adaptation.h"
 
 #include <stdio.h>
 #include <glib.h>
-
 
 static unsigned int tid = 1;
 static GList* timer_list = NULL;
@@ -243,9 +243,7 @@ unsigned int update_item(unsigned int id, unsigned int msecs)
     timer_list = g_list_remove(timer_list, tmp->data);
 
     /* update action time, and  write back to the list */
-#ifdef HAVE_GETTIMEOFDAY
-    gettimeofday(&(tmp_item->action_time), NULL);
-#endif
+    adl_gettime(&(tmp_item->action_time));
     adl_add_msecs_totime(&(tmp_item->action_time), msecs);
 
     /* print_debug_list(VERBOSE); */
@@ -280,9 +278,7 @@ unsigned int micro_update_item(unsigned int id, unsigned int seconds, unsigned i
     delta.tv_usec = (microseconds % 1000000); /* usually == microseconds */
 
     /* update action time, and  write back to the list */
-#ifdef HAVE_GETTIMEOFDAY
-    gettimeofday(&now, NULL);
-#endif
+    adl_gettime(&now);
     timeradd(&now, &delta, &(tmp_item->action_time));
 
     /* print_debug_list(VERBOSE); */
@@ -368,9 +364,7 @@ int get_msecs_to_nexttimer()
 
     if (result == NULL) return -1;
 
-#ifdef HAVE_GETTIMEOFDAY
-    gettimeofday(&now, NULL);
-#endif
+    adl_gettime(&now);
     next = result->data;
 
     secs = next->action_time.tv_sec - now.tv_sec;

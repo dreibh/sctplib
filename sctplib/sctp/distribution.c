@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.12 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id: distribution.c,v 1.13 2003/10/28 22:00:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1449,7 +1449,7 @@ int sctp_initLibrary(void)
     numberOfSeizedPorts = 0x00000000;
 
     /* initialize random number generator */
-    gettimeofday(&curTime, NULL);
+    adl_gettime(&curTime);
 #ifdef HAVE_RANDOM
     rstate[0] = curTime.tv_sec;
     rstate[1] = curTime.tv_usec;

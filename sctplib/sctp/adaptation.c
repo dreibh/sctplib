@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.11 2003/10/23 16:37:53 tuexen Exp $
+ *  $Id: adaptation.c,v 1.12 2003/10/28 22:00:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1484,7 +1484,6 @@ unsigned int adl_startMicroTimer(unsigned int seconds, unsigned int microseconds
                             sctp_timerCallback timer_cb, int ttype, void *param1, void *param2)
 {
     unsigned int result = 0;
-    int res = 0;
     AlarmTimer* item;
     struct timeval talarm, delta, now;
 
@@ -1493,9 +1492,7 @@ unsigned int adl_startMicroTimer(unsigned int seconds, unsigned int microseconds
     delta.tv_sec += (microseconds / 1000000);  /* usually 0 */
     delta.tv_usec = (microseconds % 1000000);
 
-#ifdef HAVE_GETTIMEOFDAY
-    res = gettimeofday(&now, NULL);
-#endif
+    adl_gettime(&now);
     item = malloc(sizeof(AlarmTimer));
     if (item == NULL) return 0;
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.c,v 1.4 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id: globals.c,v 1.5 2003/10/28 22:00:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -43,23 +43,16 @@
  */
 
 #include "globals.h"
+#include "adaptation.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
-
-#ifdef   HAVE_SYS_TIME_H
-#include <sys/time.h>
-#ifdef  TIME_WITH_SYS_TIME
-#include <time.h>
-#endif
-#endif
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
 #ifdef WIN32
-#include <time.h>
 #include <process.h>
 #endif
 
@@ -193,7 +186,7 @@ int debug_vwrite(FILE * fd, char *format, va_list ap)
     struct timeval tv;
     struct tm *the_time;
 
-    gettimeofday(&tv, NULL);
+    adl_gettime(&tv);
     the_time = localtime((time_t *) & (tv.tv_sec));
 
     if (fprintf(fd, "%02d:%02d:%02d.%03d - ",
@@ -228,9 +221,8 @@ void perr_exit(const char *infostring)
 void print_time(short level)
 {
     struct timeval now;
-#ifdef HAVE_GETTIMEOFDAY
-    gettimeofday(&now, NULL);
-#endif
+
+    adl_gettime(&now);
     event_logii(level, "Time now: %ld sec, %ld usec \n", now.tv_sec, now.tv_usec);
 }
 
@@ -265,7 +257,7 @@ void event_log1(short event_log_level, char *module_name, char *log_info, ...)
                 debug_print(stdout, "Event in Module: %s............\n", module_name);
             }
         }
-        gettimeofday(&tv, NULL);
+        adl_gettime(&tv);
         the_time = localtime((time_t *) & (tv.tv_sec));
         if (fileTrace == TRUE) {
             fprintf(logfile, "%02d:%02d:%02d.%03d - ",

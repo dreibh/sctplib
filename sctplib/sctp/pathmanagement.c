@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.6 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id: pathmanagement.c,v 1.7 2003/10/28 22:00:15 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -152,7 +152,7 @@ unsigned int pm_getTime(void)
     unsigned int curTimeMilli;
     struct timeval curTime;
 
-    gettimeofday(&curTime, NULL);
+    adl_gettime(&curTime);
 
     /* modulo operation overlfows every 20 days */
     curTimeMilli = (curTime.tv_sec % 1728000) * 1000 + curTime.tv_usec / 1000;
