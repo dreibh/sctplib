@@ -15,5 +15,5 @@ libsctp_la_SOURCES = sbundling.c rbundling.c timer_list.c streamengine.c reltran
 
 include_HEADERS = sctp.h
 
-#libsctp_la_LDFLAGS = -version-info 3:12:1
-libsctp_la_LDFLAGS = -version-info 2:0:1
+libsctp_la_LDFLAGS = -release 1.0.1
+#libsctp_la_LDFLAGS = -version-info 2:2:2
