@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.15 2004/07/30 12:06:52 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.16 2004/07/30 13:04:19 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.

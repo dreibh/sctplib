@@ -1,3 +1,12 @@
+2004-07-30  <>
+	In the case of a hostname parameter sent to us in an INIT, we now send an ABORT 
+	with a error parameter back. 
+	 
+
+2004-07-30  <>
+	In the case of a hostname parameter sent to us in an INIT, we now send an ABORT  
+	with a error parameter back. 
+
 2004-07-09 19:53  tuexen
 
 	* sctplib/sctp/streamengine.c: Get rid of a C++ style comment.

@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.12 2004/07/30 12:05:28 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.13 2004/07/30 13:04:19 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
