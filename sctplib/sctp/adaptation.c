@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.13 2003/11/19 14:03:24 tuexen Exp $
+ *  $Id: adaptation.c,v 1.14 2003/11/19 16:02:09 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -415,27 +415,13 @@ int adl_setReceiveBufferSize(int sfd,int new_size)
 
 gint adl_open_sctp_socket(int af, int* myRwnd)
 {
-    int sfd, protoid = 0, ch;
+    int sfd, ch;
     int opt_size;
-
-#if defined (LINUX)
-    int result;
-    struct protoent *proto;
-
-    if (!(proto = getprotobyname("sctp"))) {
-        error_log(ERROR_MINOR, "SCTP: unknown protocol sctp - using 132");
-        protoid = IPPROTO_SCTP;
-    }
-
-    if (!protoid)
-        protoid = proto->p_proto;
-#else
-    protoid = IPPROTO_SCTP;
-#endif  
-
-    if ((sfd = socket(af, SOCK_RAW, protoid)) < 0) {
+  
+    if ((sfd = socket(af, SOCK_RAW, IPPROTO_SCTP)) < 0) {
         return sfd;
     }
+    
     switch (af) {
         case AF_INET:
             *myRwnd = 0;
@@ -444,47 +430,21 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
                 error_log(ERROR_FATAL, "getsockopt: SO_RCVBUF failed !");
                 *myRwnd = -1;
             }
-            event_logi(INTERNAL_EVENT_0, "receive buffer size is : %d",*myRwnd);
+            event_logi(INTERNAL_EVENT_0, "receive buffer size initially is : %d", *myRwnd);
 
 #if defined (LINUX)
-            result = adl_setReceiveBufferSize(sfd, 10*0xFFFF);
-            if (result == -1) exit(1);
-
-            ch = 0;
-            if (setsockopt(sfd, IPPROTO_IP, IP_HDRINCL, (char *) &ch, sizeof(ch))< 0) {
-                error_log(ERROR_FATAL, "setsockopt: IP_HDRINCL failed !");
-            }
-            ch = 1;
-            if (setsockopt (sfd, IPPROTO_IP, IP_PKTINFO, (char*)&ch, sizeof (ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IP_PKTINFO failed !");
-            }
+            adl_setReceiveBufferSize(sfd, 10*0xFFFF);
 
             ch = IP_PMTUDISC_DO;
             if (setsockopt(sfd, IPPROTO_IP, IP_MTU_DISCOVER, (char *) &ch, sizeof(ch)) < 0) {
                 error_log(ERROR_FATAL, "setsockopt: IP_PMTU_DISCOVER failed !");
             }
-#else
-    #if defined (USE_RFC2292BIS)
-            ch = 1;
-        /* Assemble IP header myself for setting IP TOS field */
-        if (setsockopt(sfd, IPPROTO_IP, IP_HDRINCL, (char *) &ch, sizeof(ch))< 0) {
-                error_log(ERROR_FATAL, "setsockopt: IP_HDRINCL failed !");
-        }
-        /* Once we have found out how it works, it should be listed here */
-    #else
-            ch = 1;
-            /* Assemble IP header myself for setting IP TOS field */
-            if (setsockopt(sfd, IPPROTO_IP, IP_HDRINCL, (char *) &ch, sizeof(ch))< 0) {
-                error_log(ERROR_FATAL, "setsockopt: IP_HDRINCL failed !");
+            opt_size=sizeof(*myRwnd);
+            if (getsockopt (sfd, SOL_SOCKET, SO_RCVBUF, (void*)myRwnd, &opt_size) < 0) {
+                error_log(ERROR_FATAL, "getsockopt: SO_RCVBUF failed !");
+                *myRwnd = -1;
             }
-            /*
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IP, IP_RECVDSTADDR, (char *) &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IP_RECVDSTADDR failed !");
-            }
-            */
-            error_log(ERROR_MINOR, "TODO : PATH MTU Discovery Disabled For Now !!!");
-    #endif /* USE_RFC2292BIS */
+            event_logi(INTERNAL_EVENT_0, "receive buffer size finally is : %d", *myRwnd);
 #endif
             break;
 #ifdef HAVE_IPV6
@@ -497,42 +457,14 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
             }
             event_logi(INTERNAL_EVENT_0, "receive buffer size is : %d",*myRwnd);
             /* also receive packetinfo on IPv6 sockets, for getting dest address */
-#if defined (USE_RFC2292BIS)
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVPKTINFO,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVPKTINFO failed");
-            }
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVHOPLIMIT,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVHOPLIMIT failed");
-            }
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVRTHDR,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVRTHDR failed");
-            }
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVHOPOPTS,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVHOPOPTS failed");
-            }
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVDSTOPTS,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVDESTOPTS failed");
-            }
-            ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVRTHDRDSTOPTS,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVRTHDRDSTOPTS failed");
-            }
-#else
             ch = 1;
             if (setsockopt(sfd, IPPROTO_IPV6, IPV6_PKTINFO,  &ch, sizeof(ch)) < 0) {
                 error_log(ERROR_FATAL, "setsockopt: IPV6_PKTINFO failed");
             }
-            /* break; */
-#endif /* USE_RFC2292BIS */
-
+            break;
 #endif
         default:
-            error_log(ERROR_MINOR, "TODO : PATH MTU Discovery Disabled For Now !!!");
+            error_log(ERROR_MINOR, "Unknown address family.");
             break;
     }
     event_logi(INTERNAL_EVENT_0, "Created raw socket %d with options\n", sfd);
@@ -677,16 +609,10 @@ int adl_sendUdpData(int sfd, unsigned char* buf, int length,
  */
 int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigned char tos)
 {
-    int txmt_len = 0, dest_len;
+    int txmt_len = 0;
 
-#if !defined (LINUX)
-    unsigned char sendbuf[2000];
-    struct ip *iph = (struct ip*)sendbuf;
-#else
     unsigned char old_tos;
     int opt_len, tmp;
-    unsigned char* sendbuf = buf;
-#endif
 
 #ifdef HAVE_IPV6
     guchar hostname[MAX_MTU_SIZE];
@@ -696,57 +622,22 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
 
     case AF_INET:
         number_of_sendevents++;
-#if defined (LINUX)
         opt_len = sizeof(old_tos);
         tmp = getsockopt(sfd, IPPROTO_IP, IP_TOS, &old_tos, &opt_len);
         tmp = setsockopt(sfd, IPPROTO_IP, IP_TOS, &tos, sizeof(unsigned char));
         event_logii(VVERBOSE, "adl_send_message: set IP_TOS %u, result=%d", tos,tmp);
-#else
-        memset(sendbuf, 0, 2000);
-        iph->ip_hl = (sizeof(struct ip)/4);
-        iph->ip_v = IPVERSION;
-        iph->ip_tos = tos;
-        iph->ip_len = sizeof(struct ip) + len;
-        iph->ip_id = 0;
-        iph->ip_off = 0;
-        iph->ip_ttl = 0xff;
-        iph->ip_p = IPPROTO_SCTP;
-        iph->ip_dst.s_addr = dest->sin.sin_addr.s_addr;
-        iph->ip_src.s_addr = INADDR_ANY;
-        iph->ip_sum = 0;
-        /* this is ugly, but it should work */
-        memcpy(&(sendbuf[sizeof(struct ip)]), buf, len);
-        len += sizeof(struct ip); 
-        iph->ip_sum = in_check(sendbuf, len);
-#endif
+
         event_logiiii(VERBOSE,
                      "AF_INET : adl_send_message : sfd : %d, len %d, destination : %s, send_events %u",
                      sfd, len, inet_ntoa(dest->sin.sin_addr), number_of_sendevents);
-        dest_len = sizeof(struct sockaddr_in);
 
-        /* test -- start */
-        /* if ((number_of_sendevents % 30) != 0)  { */
-        /* test -- stop */
-
-        txmt_len = sendto(sfd, sendbuf, len, 0, (struct sockaddr *) &(dest->sin), dest_len);
+        txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *) &(dest->sin), sizeof(struct sockaddr_in));
         
-        /* test -- start */
-        /* } else {
-           event_log(VERBOSE, "XYZ : Dropping packet instead of sending it");
-           txmt_len = len;
-        } */
-        /* test -- stop */
-
         if (txmt_len < 0) {
-            /* perror("AF_INET : Sendto returned error : "); */
             error_logi(ERROR_MAJOR, "AF_INET : sendto()=%d !", txmt_len);
-            /* txmt_len = sendto(sfd, sendbuf, len, 0, (struct sockaddr *) &(dest->sin), dest_len); */
-            /* error_logi(ERROR_MAJOR, "AF_INET : Second sendto() returned %d !", txmt_len); */
         }
-#if defined (LINUX)
         tmp = setsockopt(sfd, IPPROTO_IP, IP_TOS, &old_tos, sizeof(unsigned char));
-#endif
-        break;
+    break;
 #ifdef HAVE_IPV6
     case AF_INET6:
         number_of_sendevents++;
@@ -756,21 +647,9 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
                      "AF_INET6: adl_send_message : sfd : %d, len %d, destination : %s, send_events: %u",
                         sfd, len, hostname, number_of_sendevents);
 
-        dest_len = sizeof(struct sockaddr_in6);
-        txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), dest_len);
-        if (txmt_len < 0) {
-            /* 
-            perror("AF_INET6 : Sendto returned error: ");
-            */
-            error_logi(ERROR_MAJOR, "AF_INET6 : sendto()=%d, retrying !", txmt_len);
-            txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), dest_len);
-            error_logi(ERROR_MAJOR, "AF_INET6 : Second sendto() returned %d !", txmt_len);
-        }
-
+        txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), sizeof(struct sockaddr_in6));
         break;
-
 #endif
-
     default:
         error_logi(ERROR_MAJOR,
                    "adl_send_message : Adress Family %d not supported here",
@@ -854,7 +733,7 @@ int adl_remove_poll_fd(gint sfd)
  
 int
 adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
-                   void (*action) (), void* userData)
+                   sctp_socketCallback action, void* userData)
 {
      if (num_of_fds < NUM_FDS && sfd >= 0) {
         assign_poll_fd(num_of_fds, sfd, event_mask);
