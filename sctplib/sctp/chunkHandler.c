@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.6 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id: chunkHandler.c,v 1.7 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -54,7 +54,7 @@
  *
  * function prefix: ch_
  */
-#ifdef HAVE_CONFIG_H
+#ifdef HAVE_CONpm_heartbeatFIG_H
 #include <config.h>
 #endif
 
@@ -362,6 +362,8 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
 #ifdef HAVE_SIN6_SCOPE_ID
                         addresses[nAddresses].sin6.sin6_scope_id = htonl(0);
 #endif
+
+
                         memcpy(addresses[nAddresses].sin6.sin6_addr.s6_addr,
                                address->dest_addr.sctp_ipv6, sizeof(struct in6_addr));
                         nAddresses++; v6found++;
@@ -562,6 +564,7 @@ void ch_enterCookiePreservative(ChunkID chunkID, unsigned int lifespanIncrement)
 
     if (chunks[chunkID] == NULL) {
         error_log(ERROR_MAJOR, "Invalid chunk ID");
+
     }
 
     if (chunkCompleted[chunkID]) {
@@ -645,7 +648,7 @@ int ch_enterIPaddresses(ChunkID chunkID, union sockunion sock_addresses[], int n
                 length += 8;
                 break;
 #ifdef HAVE_IPV6
-            case AF_INET6:
+            cpm_heartbeatase AF_INET6:
                 address->vlparam_header.param_type = htons(VLPARAM_IPV6_ADDRESS);
                 address->vlparam_header.param_length = htons(20);
                 memcpy(address->dest_addr.sctp_ipv6,
@@ -802,6 +805,8 @@ int ch_enterADDIP(ChunkID initAckID, ChunkID initCID)
     return 0;
 }
 
+
+
 int ch_enterSetPrimary(ChunkID initAckID, ChunkID initCID)
 {
     return 0;
@@ -845,6 +850,7 @@ ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
         cookie = (SCTP_cookie_param *)
             & ((SCTP_init *) chunks[initAckID])->variableParams[writeCursor[initAckID]];
         cookie->vlparam_header.param_type = htons(VLPARAM_COOKIE);
+
         /* these contain the CURRENT tags ! */
         cookie->ck.z_side_initAck = *initAck_fixed;
         cookie->ck.a_side_init = *init_fixed;
@@ -852,10 +858,14 @@ ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
         cookie->ck.local_tie_tag = htonl(local_tie_tag);
         cookie->ck.peer_tie_tag  = htonl(peer_tie_tag);
 
+        cookie->ck.src_port = mdi_readLastFromPort();
+        cookie->ck.dest_port = mdi_readLastDestPort();
+        
         for (count = 0; count <  num_local_Addresses; count++) {
             switch(sockunion_family(&(local_Addresses[count]))) {
                 case AF_INET :
                     no_local_ipv4_addresses++;
+
                     break;
 #ifdef HAVE_IPV6
                 case AF_INET6 :
@@ -871,6 +881,7 @@ ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
             switch(sockunion_family(&(peer_Addresses[count]))) {
                 case AF_INET :
                     no_remote_ipv4_addresses++;
+
                     break;
 #ifdef HAVE_IPV6
                 case AF_INET6 :
@@ -969,6 +980,7 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
     if ((supportedAddressTypes & SUPPORT_ADDRESS_TYPE_IPV4) == 0)
         with_ipv4 = FALSE;
     else
+
         with_ipv4 = TRUE;
 
     if ((supportedAddressTypes & SUPPORT_ADDRESS_TYPE_IPV6) == 0)
@@ -1040,6 +1052,7 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
                 /* take care of padding */
                 while ((curs % 4) != 0) curs++;
             } else /* plen == 0 ! */
+
                 return -1;
         }
     }
@@ -1115,6 +1128,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
             pType == VLPARAM_SUPPORTED_ADDR_TYPES) {
 
             curs += pLen;
+
             /* take care of padding */
             while ((curs % 4) != 0) curs++;
 
@@ -1159,6 +1173,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
             }
             curs += pLen;
             /* take care of padding */
+
             while ((curs % 4) != 0) curs++;
         } else if (pType == VLPARAM_IPV6_ADDRESS) {
             if (with_ipv6 != TRUE) {
@@ -1274,6 +1289,7 @@ unsigned int ch_initiateTag(ChunkID chunkID)
 {
     if (chunks[chunkID] == NULL) {
         error_log(ERROR_MAJOR, "Invalid chunk ID");
+
         return 0;
     }
 
@@ -1373,7 +1389,9 @@ unsigned int ch_cookieLifeTime(ChunkID chunkID)
     guint16 vl_param_total_length;
     SCTP_cookie_preservative *preserv;
 
+
     if (chunks[chunkID] == NULL) {
+
         error_log(ERROR_MAJOR, "Invalid chunk ID");
         return 0;
     }
@@ -1410,6 +1428,7 @@ unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
     gint32 vl_param_curs;
     guint16 vl_param_total_length, pos=0, num=0;
     SCTP_supported_addresstypes *param = NULL;
+
     guint32 result=0;
 
     if (chunks[chunkID] == NULL) {
@@ -1458,6 +1477,7 @@ int ch_IPaddresses(ChunkID chunkID, unsigned int mySupportedTypes, union sockuni
                     unsigned int *supportedTypes, union sockunion* lastSource)
 {
     int noOfAddresses;
+
     short vl_param_total_length;
 
     if (chunks[chunkID] == NULL) {
@@ -1545,8 +1565,9 @@ SCTP_init_fixed *ch_initFixed(ChunkID chunkID)
 
 /****** create and read from cookie chunk *********************************************************/
 
-/* ch_makeCookie creates a cookie chunk.
-*/
+/**
+ * ch_makeCookie creates a cookie chunk.
+ */
 ChunkID ch_makeCookie(SCTP_cookie_param * cookieParam)
 {
     SCTP_cookie_echo *cookieChunk;
@@ -1571,6 +1592,7 @@ ChunkID ch_makeCookie(SCTP_cookie_param * cookieParam)
     cookieChunk->chunk_header.chunk_length = ntohs(cookieParam->vlparam_header.param_length);
 
     enterChunk((SCTP_simple_chunk *) cookieChunk, "created cookieChunk %u ");
+
 
     /*  copy cookie parameter EXcluding param-header into chunk            */
     /*  z_side_initAck is the first struct/data part in our cookie         */
@@ -1786,6 +1808,43 @@ guint32 ch_CookiePeerTieTag(ChunkID chunkID)
     }
 }
 
+/**
+ * function reads local port from a received cookie echo chunk
+ */
+guint16 ch_CookieSrcPort(ChunkID chunkID)
+{
+    if (chunks[chunkID] == NULL) {
+        error_log(ERROR_MAJOR, "Invalid chunk ID");
+        return 0;
+    }
+
+    if (chunks[chunkID]->chunk_header.chunk_id == CHUNK_COOKIE_ECHO) {
+        return (ntohs(((SCTP_cookie_echo *) chunks[chunkID])->cookie.src_port));
+    } else {
+        error_log(ERROR_MAJOR, "ch_CookieLocalPort : Not a CookieEcho chunk !");
+        return 0;
+    }
+}
+
+/**
+ * function reads local port from a received cookie echo chunk
+ */
+guint16 ch_CookieDestPort(ChunkID chunkID)
+{
+    if (chunks[chunkID] == NULL) {
+        error_log(ERROR_MAJOR, "Invalid chunk ID");
+        return 0;
+    }
+
+    if (chunks[chunkID]->chunk_header.chunk_id == CHUNK_COOKIE_ECHO) {
+        return (ntohs(((SCTP_cookie_echo *) chunks[chunkID])->cookie.dest_port));
+    } else {
+        error_log(ERROR_MAJOR, "ch_CookieLocalPort : Not a CookieEcho chunk !");
+        return 0;
+    }
+}
+
+
 
 /**
  *    check if this is a good cookie, i.e. verify HMAC signature
@@ -1836,11 +1895,16 @@ boolean ch_goodCookie(ChunkID chunkID)
 
 /****** create and read from heartbeat chunk ******************************************************/
 
-/* ch_makeHeartbeat creates a heartbeatchunk.
-*/
+/**
+ * ch_makeHeartbeat creates a heartbeatchunk.
+ */
 ChunkID ch_makeHeartbeat(unsigned int sendingTime, unsigned int pathID)
 {
+
     SCTP_heartbeat *heartbeatChunk;
+    unsigned char * key;
+    int i;
+    MD5_CTX ctx;
 
     /* creat Heartbeat chunk */
     heartbeatChunk = (SCTP_heartbeat *) malloc(sizeof(SCTP_simple_chunk));
@@ -1857,11 +1921,86 @@ ChunkID ch_makeHeartbeat(unsigned int sendingTime, unsigned int pathID)
     heartbeatChunk->pathID = htonl((unsigned int) pathID);
     heartbeatChunk->sendingTime = htonl(sendingTime);
 
+    key =  key_operation(KEY_READ);
+    if (key == NULL) exit(-111);
+    memset(heartbeatChunk->hmac, 0, HMAC_LEN);
+
+    MD5Init(&ctx);
+    MD5Update(&ctx,(unsigned char*)(&heartbeatChunk->HB_Info) , sizeof(SCTP_heartbeat)-sizeof(SCTP_chunk_header));
+    MD5Update(&ctx, key, SECRET_KEYSIZE);
+    MD5Final(heartbeatChunk->hmac, &ctx);
+
+    for (i = 0; i < 4; i++) {
+        event_logiiii(VERBOSE, "%2.2x %2.2x %2.2x %2.2x",
+                      heartbeatChunk->hmac[i * 4], heartbeatChunk->hmac[i * 4 + 1],
+                      heartbeatChunk->hmac[i * 4 + 2], heartbeatChunk->hmac[i * 4 + 3]);
+    }
+    
     enterChunk((SCTP_simple_chunk *) heartbeatChunk, "created heartbeatChunk %u ");
 
     return freeChunkID;
 }
 
+/**
+ * ch_verifyHeartbeat checks the signature of the received heartbeat.
+ * @return TRUE, if HB signature was okay, else FALSE
+ */
+gboolean ch_verifyHeartbeat(ChunkID chunkID)
+{
+    guchar hbSignature[HMAC_LEN];
+    gboolean res = FALSE;
+    int i;
+
+    SCTP_heartbeat *heartbeatChunk;
+    unsigned char * key;
+
+    MD5_CTX ctx;
+
+    
+    if (chunks[chunkID] == NULL) {
+        error_log(ERROR_MAJOR, "Invalid chunk ID");
+        return FALSE;
+    }
+
+    if (chunks[chunkID]->chunk_header.chunk_id == CHUNK_HBACK) {
+        heartbeatChunk =  (SCTP_heartbeat *)chunks[chunkID];
+        key =  key_operation(KEY_READ);
+        if (key == NULL) exit(-111);
+        /* store HMAC */
+        memcpy(hbSignature, heartbeatChunk->hmac, HMAC_LEN);
+
+        event_log(VERBOSE, "Got signature: ");
+        
+        for (i = 0; i < 4; i++) {
+            event_logiiii(VERBOSE, "%2.2x %2.2x %2.2x %2.2x",
+                      heartbeatChunk->hmac[i * 4], heartbeatChunk->hmac[i * 4 + 1],
+                      heartbeatChunk->hmac[i * 4 + 2], heartbeatChunk->hmac[i * 4 + 3]);
+        }
+       
+        memset(heartbeatChunk->hmac, 0, HMAC_LEN);
+
+        MD5Init(&ctx);
+        MD5Update(&ctx,(unsigned char*)(&heartbeatChunk->HB_Info), sizeof(SCTP_heartbeat)-sizeof(SCTP_chunk_header));
+        MD5Update(&ctx, key, SECRET_KEYSIZE);
+        MD5Final(heartbeatChunk->hmac, &ctx);
+
+        event_log(VERBOSE, "Computed signature: ");
+
+        for (i = 0; i < 4; i++) {
+            event_logiiii(VERBOSE, "%2.2x %2.2x %2.2x %2.2x",
+                      heartbeatChunk->hmac[i * 4], heartbeatChunk->hmac[i * 4 + 1],
+                      heartbeatChunk->hmac[i * 4 + 2], heartbeatChunk->hmac[i * 4 + 3]);
+        }
+        if (memcmp(hbSignature, heartbeatChunk->hmac, HMAC_LEN) == 0) res = TRUE;
+        else res = FALSE;
+        return res;
+        
+    } else {
+        error_log(ERROR_MINOR, "ch_verifyHeartbeat: chunk type not okay");
+        return FALSE;
+    }
+
+}
 
 /* ch_HBsendingTime reads the sending time of a heartbeat.
 */
@@ -1958,6 +2097,7 @@ ch_makeErrorChunk(void)
 void
 ch_addUnrecognizedParameter(unsigned char* pos, ChunkID cid,
                  unsigned short length, unsigned char* data)
+
 {
     SCTP_error_cause * ec;
 
@@ -2048,6 +2188,7 @@ void ch_enterStaleCookieError(ChunkID chunkID, unsigned int staleness)
             return;
         }
 
+
         staleCE =
             (SCTP_staleCookieError *) & chunks[chunkID]->simple_chunk_data[writeCursor[chunkID]];
 
@@ -2066,6 +2207,7 @@ void ch_enterStaleCookieError(ChunkID chunkID, unsigned int staleness)
 
     return;
 }
+
 
 
 
@@ -2089,6 +2231,7 @@ unsigned int ch_stalenessOfCookieError(ChunkID chunkID)
         vl_param_curs = retrieveVLParamFromString(ECC_STALE_COOKIE_ERROR, &((SCTP_simple_chunk *)
                                                                             chunks
                                                                             [chunkID])->
+
                                                   simple_chunk_data[0], vl_param_total_length);
 
         if (vl_param_curs >= 0) {
@@ -2135,6 +2278,7 @@ ChunkID ch_makeShutdown(unsigned int _cummTSNacked)
 
     return freeChunkID;
 }
+
 
 
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.10 2003/10/30 17:21:15 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.11 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -822,30 +822,28 @@ int scr_init(SCTP_init * init)
         switch (state) {
             /* see section 5.2.1 */
         case COOKIE_WAIT:
-            if ((localData->local_tie_tag != 0)
-                || (localData->peer_tie_tag != 0))
-                error_logii(ERROR_MAJOR,
-                            "Tie tags NOT zero in COOKIE_WAIT, but %u and %u",
+            if ((localData->local_tie_tag != 0) || (localData->peer_tie_tag != 0)) {
+                error_logii(ERROR_FATAL, "Tie tags NOT zero in COOKIE_WAIT, but %u and %u",
                             localData->local_tie_tag, localData->peer_tie_tag);
+            }
             localData->local_tie_tag = 0;
             localData->peer_tie_tag = 0;
 
         case COOKIE_ECHOED:
-            if ((state == COOKIE_ECHOED)
-                && ((localData->local_tie_tag == 0) || (localData->peer_tie_tag == 0))
-                )
-                error_logii(ERROR_MAJOR,
-                            "Tie tags zero in COOKIE_ECHOED, local: %u, peer: %u",
+            if ((state == COOKIE_ECHOED) &&
+                ((localData->local_tie_tag == 0) || (localData->peer_tie_tag == 0))) {
+                error_logii(ERROR_FATAL, "Tie tags zero in COOKIE_ECHOED, local: %u, peer: %u",
                             localData->local_tie_tag, localData->peer_tie_tag);
+            }
 
             if (state == COOKIE_ECHOED) {
                 /*
-                 For an endpoint that is in the COOKIE-ECHOED state it MUST populate
-                 its Tie-Tags with the Tag information of itself and its peer (see
-                 section 5.2.2 for a description of the Tie-Tags).
-                */
-                localData->local_tie_tag = mdi_readLocalTag();
-                localData->peer_tie_tag = mdi_readTagRemote();
+                 * For an endpoint that is in the COOKIE-ECHOED state it MUST populate
+                 * its Tie-Tags with random values so that possible attackers cannot guess
+                 * real tag values of the association (see Implementer's Guide > version 10)
+                 */
+                localData->local_tie_tag = mdi_generateTag();
+                localData->peer_tie_tag = mdi_generateTag();
             }
 
             /* save remote  tag ?
@@ -856,8 +854,10 @@ int scr_init(SCTP_init * init)
             initCID_local = ch_makeChunk((SCTP_simple_chunk *) localData->initChunk);
             /* section 5.2.1 : take original parameters from first INIT chunk */
             initAckCID = ch_makeInitAck(ch_initiateTag(initCID_local),
-                                        ch_receiverWindow(initCID_local), ch_noInStreams(initCID), /* peers inbound are MY outbound */
-                                        inbound_streams, ch_initialTSN(initCID_local));
+                                        ch_receiverWindow(initCID_local),
+                                        ch_noInStreams(initCID), /* peers inbound are MY outbound */
+                                        inbound_streams,
+                                        ch_initialTSN(initCID_local));
 
             /* reset length field again to NBO...and remove reference */
             ch_chunkString(initCID_local);
@@ -875,8 +875,11 @@ int scr_init(SCTP_init * init)
 
             ch_enterCookieVLP(initCID, initAckCID,
                               ch_initFixed(initCID),
-                              ch_initFixed(initAckCID), ch_cookieLifeTime(initCID), localData->local_tie_tag, /* tie tags may be zero OR populated here */
-                              localData->peer_tie_tag, lAddresses, nlAddresses,
+                              ch_initFixed(initAckCID),
+                              ch_cookieLifeTime(initCID),
+                              localData->local_tie_tag, /* tie tags may be zero OR populated here */
+                              localData->peer_tie_tag,
+                              lAddresses, nlAddresses,
                               rAddresses, nrAddresses);
 
             process_further = ch_enterUnrecognizedParameters(initCID, initAckCID, supportedTypes);
@@ -903,11 +906,10 @@ int scr_init(SCTP_init * init)
         case SHUTDOWNPENDING:
         case SHUTDOWNRECEIVED:
         case SHUTDOWNSENT:
-            if ((localData->local_tie_tag == 0)
-                || (localData->peer_tie_tag == 0))
-                error_logiii(ERROR_MAJOR,
-                             "Tie tags zero in state %u, local: %u, peer: %u",
+            if ((localData->local_tie_tag == 0) || (localData->peer_tie_tag == 0)) {
+                error_logiii(ERROR_MINOR, "Tie tags zero in state %u, local: %u, peer: %u --> Restart ?",
                              state, localData->local_tie_tag, localData->peer_tie_tag);
+            }                             
 
             inbound_streams = min(ch_noOutStreams(initCID), mdi_readLocalInStreams());
 
@@ -917,8 +919,10 @@ int scr_init(SCTP_init * init)
                                         /* TODO : check whether we take NEW TSN or leave an old one */
                                         mdi_generateStartTSN());
 
-            localData->local_tie_tag = mdi_readLocalTag();
-            localData->peer_tie_tag = mdi_readTagRemote();
+            /*
+               localData->local_tie_tag = mdi_generateTag();
+               localData->peer_tie_tag = mdi_generateTag();
+             */  
 
             /* retreive remote source addresses from message */
             nrAddresses = ch_IPaddresses(initCID, supportedTypes, rAddresses, &peerSupportedTypes, &last_source);
@@ -931,8 +935,11 @@ int scr_init(SCTP_init * init)
 
             ch_enterCookieVLP(initCID, initAckCID,
                               ch_initFixed(initCID),
-                              ch_initFixed(initAckCID), ch_cookieLifeTime(initCID), localData->local_tie_tag, /* this should be different from that in Init_Ack now */
-                              localData->peer_tie_tag, lAddresses, nlAddresses,
+                              ch_initFixed(initAckCID),
+                              ch_cookieLifeTime(initCID),
+                              localData->local_tie_tag, /* this should be different from that in Init_Ack now */
+                              localData->peer_tie_tag,
+                              lAddresses, nlAddresses,
                               rAddresses, nrAddresses);
 
             process_further = ch_enterUnrecognizedParameters(initCID, initAckCID, supportedTypes);
@@ -1290,21 +1297,29 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         event_log(EXTERNAL_EVENT, "event: invalidCookie received");
         return;
     }
-    initCID = ch_cookieInitFixed(cookieCID);
+    initCID    = ch_cookieInitFixed(cookieCID);
     initAckCID = ch_cookieInitAckFixed(cookieCID);
 
     cookie_remote_tag = ch_initiateTag(initCID);
-    cookie_local_tag = ch_initiateTag(initAckCID);
+    cookie_local_tag  = ch_initiateTag(initAckCID);
 
     /* these two will be zero, if association is not up yet */
-    local_tag = mdi_readLocalTag();
+    local_tag  = mdi_readLocalTag();
     remote_tag = mdi_readTagRemote();
 
-    if (mdi_readLastInitiateTag() != cookie_local_tag) {
+    if ((mdi_readLastInitiateTag()   != cookie_local_tag) &&
+        (mdi_readLastFromPort()      != ch_CookieSrcPort(cookieCID)) && 
+        (mdi_readLastDestPort()      != ch_CookieDestPort(cookieCID)))  {
+            
         ch_forgetChunk(cookieCID);
         ch_deleteChunk(initCID);
         ch_deleteChunk(initAckCID);
         event_log(EXTERNAL_EVENT, "event: good cookie echo received, but with incorrect verification tag");
+
+        /* for test purposes */
+        exit(-1);
+        /* for test purposes */
+
         return;
     }
 
@@ -1312,8 +1327,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
     if ((cookieLifetime = ch_staleCookie(cookieCID)) > 0) {
         event_logi(EXTERNAL_EVENT, "event: staleCookie received, lifetime = %d", cookieLifetime);
 
-        if ((cookie_local_tag != local_tag)
-            || (cookie_remote_tag != remote_tag)) {
+        if ((cookie_local_tag != local_tag) || (cookie_remote_tag != remote_tag)) {
 
             mdi_writeLastInitiateTag(cookie_remote_tag);
             /* make and send stale cookie error */
@@ -1347,8 +1361,8 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         noSuccess = mdi_newAssociation(NULL, mdi_readLastDestPort(),
                                         mdi_readLastFromPort(),
                                         cookie_local_tag, /* this is MY tag */
-                                       primaryDestinationAddress,
-                                       noOfDestinationAddresses, &destAddress);
+                                        primaryDestinationAddress,
+                                        noOfDestinationAddresses, &destAddress);
 
         if (noSuccess) {
             /* new association could not be entered in the list of associations */
@@ -1370,9 +1384,8 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
     state = localData->association_state;
 
-    event_logiii(VERBOSE,
-                 "State : %u, cookie_remote_tag : %x , cookie_local_tag : %x ",
-                 state, cookie_remote_tag, cookie_local_tag);
+    event_logiii(VERBOSE, "State : %u, cookie_remote_tag : %x , cookie_local_tag : %x ",
+                            state, cookie_remote_tag, cookie_local_tag);
     event_logii(VERBOSE, "remote_tag ; %x , local_tag : %x ", remote_tag, local_tag);
 
     switch (state) {
@@ -1432,11 +1445,10 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
     case SHUTDOWNSENT:
     case SHUTDOWNRECEIVED:
     case SHUTDOWNACKSENT:
-        cookie_local_tietag = ch_CookieLocalTieTag(cookieCID);
+        cookie_local_tietag  = ch_CookieLocalTieTag(cookieCID);
         cookie_remote_tietag = ch_CookiePeerTieTag(cookieCID);
 
-        event_logii(VERBOSE,
-                    "cookie_remote_tietag ; %x , cookie_local_tietag : %x ",
+        event_logii(VERBOSE, "cookie_remote_tietag ; %x , cookie_local_tietag : %x ",
                     cookie_remote_tietag, cookie_local_tietag);
         /* cookie_local_tag, cookie_remote_tag are set */
         /* local_tag, remote_tag are also set from the TCB */
@@ -1469,7 +1481,9 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     mdi_initAssociation(ch_receiverWindow(initCID),
                                         ch_noInStreams(initAckCID),
                                         ch_noOutStreams(initAckCID),
-                                        ch_initialTSN(initCID), cookie_remote_tag, ch_initialTSN(initAckCID),
+                                        ch_initialTSN(initCID),
+                                        cookie_remote_tag,
+                                        ch_initialTSN(initAckCID),
                                         peerSupportsPRSCTP, FALSE);
 
                     localData->NumberOfOutStreams = ch_noOutStreams(initAckCID);
@@ -1499,6 +1513,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     localData->initTimer = 0;
                 }
                 new_state = ESTABLISHED;
+                
                 if (state == COOKIE_WAIT || state==COOKIE_ECHOED) {
                     mySupportedTypes = mdi_getSupportedAddressTypes();
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
@@ -1514,7 +1529,9 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     mdi_initAssociation(ch_receiverWindow(initCID),
                                         ch_noInStreams(initAckCID),
                                         ch_noOutStreams(initAckCID),
-                                        ch_initialTSN(initCID), cookie_remote_tag, ch_initialTSN(initAckCID),
+                                        ch_initialTSN(initCID),
+                                        cookie_remote_tag,
+                                        ch_initialTSN(initAckCID),
                                         peerSupportsPRSCTP, FALSE);
 
                     localData->NumberOfOutStreams = ch_noOutStreams(initAckCID);
@@ -1536,9 +1553,9 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                 ch_deleteChunk(cookieAckCID);
             }
         } else {                                    /* cases A or C */
-            if ((cookie_remote_tag == remote_tag) &&
-                (cookie_local_tietag == 0) &&
-                    (cookie_remote_tietag == 0)) {  /* is case C */
+            if ((cookie_remote_tag      == remote_tag)  &&
+                (cookie_local_tietag    == 0)           &&
+                (cookie_remote_tietag   == 0)) {  /* is case C */
                     /* section 5.2.4. action C : silently discard cookie */
                     event_log(VERBOSE, "Dupl. CookieEcho, case 5.2.4.C) --> Silently discard !");
                     ch_forgetChunk(cookieCID);
@@ -1547,8 +1564,8 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     localData = NULL;
                     return;         /* process data as usual ? */
             }  else if ((cookie_remote_tag != remote_tag) &&
-                        (cookie_local_tietag == local_tag) &&
-                        (cookie_remote_tietag == remote_tag)) {     /* case A */
+                        (cookie_local_tietag == localData->local_tie_tag) &&
+                        (cookie_remote_tietag == localData->peer_tie_tag)) {     /* case A */
                 /* section 5.2.4. action A : Possible Peer Restart  */
                 if (state != SHUTDOWNACKSENT) {
                     event_logi(VERBOSE, "Peer Restart, case 5.2.4.A, state == %u", state);

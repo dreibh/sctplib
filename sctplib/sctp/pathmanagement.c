@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.8 2003/10/30 12:41:38 tuexen Exp $
+ *  $Id: pathmanagement.c,v 1.9 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,6 +64,8 @@ typedef struct PATHDATA
     /*@{ */
     /** operational state of pathmanagement for one path */
     short state;
+    /** ==1 if path has been confirmed, else == 0*/
+    int confirmationState;    
     /** true if heartbeat is enabled */
     boolean heartbeatEnabled;
     /** true as long as RTO-Calc. has been done */
@@ -243,7 +245,6 @@ static gboolean handleChunksRetransmitted(short pathID)
 */
 static void handleChunksAcked(short pathID, unsigned int newRTT)
 {
-
 
     if (!pmData->pathData) {
         error_logi(ERROR_MAJOR, "handleChunksAcked(%d): Path Data Structures not initialized yet, returning !", pathID);
@@ -466,6 +467,7 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
     short pathID;
     ChunkID heartbeatCID;
     PathmanData *old_pmData = NULL;
+    gboolean hbSignatureOkay = FALSE;
 
     pmData = (PathmanData *) mdi_readPathMan();
 
@@ -483,13 +485,27 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
     sendingTime = ch_HBsendingTime(heartbeatCID);
     roundtripTime = pm_getTime() - sendingTime;
     event_logii(INTERNAL_EVENT_0, "HBAck for path %u, RTT = %u msecs", pathID, roundtripTime);
+
+    hbSignatureOkay = ch_verifyHeartbeat(heartbeatCID);
+    event_logi(EXTERNAL_EVENT, "HB Signature is %s", (hbSignatureOkay == TRUE)?"correct":"FALSE");
+
+    if (hbSignatureOkay == FALSE) {
+        error_log(ERROR_FATAL, "pm_heartbeatAck: FALSE SIGNATURE !!!!!!!!!!!!!!!");
+        return;
+    } else {
+        if (pmData->pathData[pathID].confirmationState == PM_PATH_UNCONFIRMED) {
+            mdi_networkStatusChangeNotif(pathID, PM_PATH_CONFIRMED);
+            pmData->pathData[pathID].confirmationState = PM_PATH_CONFIRMED;
+        }    
+        event_logi(EXTERNAL_EVENT, "Path Status of PATH %d is CONFIRMED", pathID);
+    }
     ch_forgetChunk(heartbeatCID);
 
     if (!(pathID >= 0 && pathID < pmData->numberOfPaths)) {
         error_logi(ERROR_MAJOR, "pm_heartbeatAck: invalid path ID %d", pathID);
         return;
     }
-
+    
     /* this also resets error counters */
     handleChunksAcked(pathID, roundtripTime);
 
@@ -938,6 +954,33 @@ unsigned int pm_readSRTT(short pathID)
     }
 }                               /* end: pm_readSRTT */
 
+/**
+ * pm_pathConfirmed returns the current confirmation state of the path.
+ * @param pathID  path-ID
+ * @return TRUE if path has been confirmed, FALSE if path has not been confirmed
+*/
+gboolean pm_pathConfirmed(short pathID)
+{
+    pmData = (PathmanData *) mdi_readPathMan();
+
+    if (pmData == NULL) {
+        error_log(ERROR_MAJOR, "pm_pathConfirmed: mdi_readPathMan failed");
+        return FALSE;
+    }
+    if (pmData->pathData == NULL) {
+        error_log(ERROR_MAJOR, "pm_pathConfirmed: pathData==NULL failed");
+        return FALSE;
+    }
+
+    if (pathID >= 0 && pathID < pmData->numberOfPaths) {
+        return (pmData->pathData[pathID].confirmationState == PM_PATH_CONFIRMED);
+    } else {
+        error_logi(ERROR_MAJOR, "pm_pathConfirmed: invalid path ID %d", pathID);
+        return FALSE;
+    }
+
+
+}
 
 
 /**
@@ -1180,6 +1223,11 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
 
         for (i = 0; i < noOfPaths; i++) {
             pmData->pathData[i].state = PM_ACTIVE;
+            if (i != primaryPathID) {
+                pmData->pathData[i].confirmationState = PM_PATH_UNCONFIRMED;
+            } else {
+                pmData->pathData[pmData->primaryPath].confirmationState = PM_PATH_CONFIRMED;
+            }
             pmData->pathData[i].heartbeatEnabled = TRUE;
             pmData->pathData[i].firstRTO = TRUE;
             pmData->pathData[i].pathRetranscount = 0;
@@ -1196,18 +1244,30 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
             pmData->pathData[i].heartbeatIntervall = PM_INITIAL_HB_INTERVAL;
             pmData->pathData[i].hearbeatTimer = 0;
             pmData->pathData[i].pathID = i;
-            pmData->pathData[i].hearbeatTimer =
-                adl_startTimer(pmData->pathData[i].heartbeatIntervall+pmData->pathData[i].rto,
-                                &pm_heartbeatTimer,
-                                TIMER_TYPE_HEARTBEAT,
-                                (void *) &pmData->associationID,
-                                (void *) &pmData->pathData[i].pathID);
+            if (i != primaryPathID) {
+                pmData->pathData[i].hearbeatTimer =
+                    adl_startTimer(i * pmData->pathData[i].rto,   /* send HB quickly on all unconfirmed paths */
+                                    &pm_heartbeatTimer,
+                                    TIMER_TYPE_HEARTBEAT,
+                                    (void *) &pmData->associationID,
+                                    (void *) &pmData->pathData[i].pathID);
+            } else {
+                pmData->pathData[i].hearbeatTimer =
+                    adl_startTimer(pmData->pathData[i].heartbeatIntervall+pmData->pathData[i].rto,
+                                    &pm_heartbeatTimer,
+                                    TIMER_TYPE_HEARTBEAT,
+                                    (void *) &pmData->associationID,
+                                    (void *) &pmData->pathData[i].pathID);
+            }                
             /* after RTO we can do next RTO update */
             adl_gettime(&(pmData->pathData[i].rto_update));
-            adl_add_msecs_totime(&(pmData->pathData[i].rto_update), 10);
 
         }
+
         event_log(INTERNAL_EVENT_0, "pm_setPaths called ");
+
+        mdi_networkStatusChangeNotif(pmData->primaryPath, PM_PATH_CONFIRMED);
+
         return 0;
     } else {
         error_log(ERROR_MAJOR, "pm_setPaths: invalid path ID");

@@ -1,5 +1,5 @@
 /*
- *  $Id: messages.h,v 1.4 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: messages.h,v 1.5 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -346,6 +346,11 @@ typedef struct SCTP_HEARTBEAT
     SCTP_vlparam_header HB_Info;
     guint32 sendingTime;
     guint32 pathID;
+#ifdef MD5_HMAC
+    guint8 hmac[16];
+#elif SHA_HMAC
+    guint32 hmac[5];
+#endif
 }
 SCTP_heartbeat;
 

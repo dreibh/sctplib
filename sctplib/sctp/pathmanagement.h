@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: pathmanagement.h,v 1.4 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -47,8 +47,13 @@
 
 
 /* The states of pathmanagement, also used for network status change */
-#define  PM_ACTIVE     0
-#define  PM_INACTIVE   1
+#define  PM_ACTIVE              0
+#define  PM_INACTIVE            1
+#define  PM_ADDED               2
+#define  PM_REMOVED             3
+#define  PM_PATH_CONFIRMED      4
+#define  PM_PATH_UNCONFIRMED    5
+
 
 #define PM_INITIAL_HB_INTERVAL  30000
 
@@ -197,6 +202,12 @@ unsigned int pm_readRttVar(short pathID);
 */
 short pm_readState(short pathID);
 
+/**
+ * pm_pathConfirmed returns the current confirmation state of the path.
+ * @param pathID  path-ID
+ * @return TRUE if path has been confirmed, FALSE if path has not been confirmed
+*/
+gboolean pm_pathConfirmed(short pathID);
 
 
 /* pm_readPrimaryPath returns the primary path.

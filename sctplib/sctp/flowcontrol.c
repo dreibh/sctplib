@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.10 2003/11/06 09:59:14 ajung Exp $
+ * $Id: flowcontrol.c,v 1.11 2003/11/17 23:35:33 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -398,7 +398,7 @@ unsigned int fc_getNextActivePath(fc_data* fc, unsigned int start)
     while (count < fc->number_of_addresses) {
         path = (path+1)%fc->number_of_addresses;
         count++;
-        if (pm_readState(path) == PM_ACTIVE) return path;
+        if (pm_readState(path) == PM_ACTIVE && pm_pathConfirmed(path) == TRUE) return path;
     }
     return path;
 }
@@ -429,7 +429,7 @@ fc_select_destination(fc_data * fc, chunk_data * dat,
     }
     /* 1. return  a value that is equal to old_destination, if possible */
     if (old_destination) {
-        if (pm_readState(*old_destination) == PM_ACTIVE) {
+        if (pm_readState(*old_destination) == PM_ACTIVE && pm_pathConfirmed(*old_destination) == TRUE) {
             return *old_destination;
         } else {
             return (fc_getNextActivePath(fc, *old_destination));
@@ -440,7 +440,7 @@ fc_select_destination(fc_data * fc, chunk_data * dat,
         next = (short) dat->initial_destination;
     }
     /* 3. else try the primary */
-    if ((data_retransmitted == FALSE) && (pm_readState(next) == PM_ACTIVE))
+    if ((data_retransmitted == FALSE) && (pm_readState(next) == PM_ACTIVE) && pm_pathConfirmed(next) == TRUE)
         return next;
     /* 4. send retransmitted chunks to the next possible address */
     if (data_retransmitted == TRUE) next = dat->last_destination;

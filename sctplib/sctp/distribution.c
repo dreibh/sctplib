@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.14 2003/11/07 20:29:15 tuexen Exp $
+ *  $Id: distribution.c,v 1.15 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -282,7 +282,6 @@ static gint ipv6_sctp_socket;
 
 /* port management array */
 static unsigned char portsSeized[0x10000];
-static unsigned int lastPortSeized;
 static unsigned int numberOfSeizedPorts;
 
 #ifdef HAVE_RANDOM
@@ -613,23 +612,22 @@ static short checkForExistingAssociations(Association * assoc_new)
  */
 static unsigned short seizePort(void)
 {
-    /* this is not nice, as you can guess the next port that will be chosen quite easily */
-    /* maybe  replace that by a sort of bit mapped array, marking free/used ports,  that */
-    /* we can choose randomly from ?!   */
+    unsigned short seizePort = 0;
+
+    /* problem: no more available ports ?! */    
     if (numberOfSeizedPorts >= 0xFBFF)
         return 0x0000;
 
-    while (portsSeized[++lastPortSeized])
-        if (lastPortSeized >= 0xFFFF)
-            lastPortSeized = 0x00000400;
+    seizePort = (unsigned short)(random() % 0xFFFF);
+    
+    while (portsSeized[seizePort] || seizePort < 0x0400) {
+        seizePort = (unsigned short)(random() % 0xFFFF);
+    }
 
     numberOfSeizedPorts++;
-    portsSeized[lastPortSeized] = 1;
+    portsSeized[seizePort] = 1;
 
-    if (lastPortSeized > 0xFFFF)
-        error_log(ERROR_MINOR, "Warning: lastPortSeized exceeds range of unsigned short");
-
-    return (unsigned short) lastPortSeized;
+    return seizePort;
 }
 
 
@@ -640,8 +638,10 @@ static unsigned short seizePort(void)
  */
 static void releasePort(unsigned short portSeized)
 {
-    if (portsSeized[portSeized])
+    if (portsSeized[portSeized] == 0 || portSeized == 0){
         error_log(ERROR_MINOR, "Warning: release of port that is not seized");
+	return;
+    }
 
     numberOfSeizedPorts--;
     portsSeized[portSeized] = 0;
@@ -1445,7 +1445,6 @@ int sctp_initLibrary(void)
 
     /* initialize ports seized -- see comments above !!! */
     for (i = 0; i < 0x10000; i++) portsSeized[i] = 0;
-    lastPortSeized = 0x00000400;
     numberOfSeizedPorts = 0x00000000;
 
     /* initialize random number generator */

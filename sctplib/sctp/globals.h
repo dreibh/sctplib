@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.7 2003/10/30 12:41:38 tuexen Exp $
+ *  $Id: globals.h,v 1.8 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -135,7 +135,7 @@
 #define ERROR_MINOR        3    /* recovery from error was possible without affecting the system. */
 #define ERROR_MAJOR        2    /* recovery from error was possible with some affects to the system,
                                    for instance abort of an association. */
-#define ERROR_FATAL        4    /* recovery from error was not possible, the program exits. */
+#define ERROR_FATAL        1    /* recovery from error was not possible, the program exits. */
 
 #define Current_error_log_ 1    /* Defines the level up to which the errors are printed.
                                    ERROR_WARNING (4) means all events are printed.
@@ -189,6 +189,7 @@ typedef struct chunk_data_struct
 #define event_logiii(x,y,z,i,j)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j))
 #define event_logiiii(x,y,z,i,j,k)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j),(k))
 #define event_logiiiii(x,y,z,i,j,k,l)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j),(k),(l))
+
 
 #define error_log(x,y)        if (Current_error_log_ >= x) error_log1((x), __FILE__, __LINE__, (y))
 #define error_logi(x,y,z)        if (Current_error_log_ >= x) error_log1((x), __FILE__, __LINE__, (y),(z))
@@ -320,6 +321,7 @@ union sockunion
 #define sockunion_family(X)  (X)->sa.sa_family
 
 #define SUPPORT_ADDRESS_TYPE_IPV4        0x00000001
+
 #define SUPPORT_ADDRESS_TYPE_IPV6        0x00000002
 #define SUPPORT_ADDRESS_TYPE_DNS         0x00000004
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.8 2003/11/06 09:59:14 ajung Exp $
+ *  $Id: sctp.h,v 1.9 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -95,6 +95,9 @@ extern "C" {
 #define SCTP_PATH_UNREACHABLE           1
 #define SCTP_PATH_ADDED                 2
 #define SCTP_PATH_REMOVED               3
+#define SCTP_PATH_CONFIRMED             4
+#define SCTP_PATH_UNCONFIRMED           5
+
 
 /* for use in  sctp_changeHeartBeat */
 #define SCTP_HEARTBEAT_ON               1

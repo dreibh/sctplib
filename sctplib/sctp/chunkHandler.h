@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.h,v 1.3 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: chunkHandler.h,v 1.4 2003/11/17 23:35:33 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -162,6 +162,13 @@ unsigned int ch_cookieLifeTime(ChunkID chunkID);
 guint32 ch_CookieLocalTieTag(ChunkID chunkID);
 guint32 ch_CookiePeerTieTag(ChunkID chunkID);
 
+/**
+ * functions read src/dest port from a received cookie echo chunk
+ */
+guint16 ch_CookieDestPort(ChunkID chunkID);
+guint16 ch_CookieSrcPort(ChunkID chunkID);
+
+
 /* ch_IPaddresses reads the IP-addresses from an init or initAck */
 int ch_IPaddresses(ChunkID chunkID, unsigned int mySupportedTypes, union sockunion addresses[],
                     unsigned int *supportedTypes, union sockunion* lastSource);
@@ -180,14 +187,17 @@ SCTP_init_fixed *ch_initFixed(ChunkID chunkID);
 
 /****** create and read from cookie chunk *********************************************************/
 
-/* ch_makeCookie creates a cookie chunk.
-*/
+/**
+ * ch_makeCookie creates a cookie chunk.
+ */
 ChunkID ch_makeCookie(SCTP_cookie_param * cookieParam);
 
 
 
-/* ch_cookieInitFixed creates an init chunk from the fixed part of an init contained in a cookie
-   and returns its chunkID */
+/**
+ *  ch_cookieInitFixed creates an init chunk from the fixed part of an init contained in a cookie
+ *  and returns its chunkID
+ */
 ChunkID ch_cookieInitFixed(ChunkID chunkID);
 
 
@@ -223,6 +233,11 @@ boolean ch_goodCookie(ChunkID chunkID);
 */
 ChunkID ch_makeHeartbeat(unsigned int sendingTime, unsigned int pathID);
 
+/**
+ * ch_verifyHeartbeat checks the signature of the received heartbeat.
+ * @return TRUE, if HB signature was okay, else FALSE
+ */
+gboolean ch_verifyHeartbeat(ChunkID chunkID);
 
 
 /* ch_HBsendingTime reads the sending time of a heartbeat.
@@ -327,3 +342,5 @@ void ch_deleteChunk(ChunkID chunkID);
      can not be freed here.
 */
 void ch_forgetChunk(ChunkID chunkID);
+
+
