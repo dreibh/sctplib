@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.4 2003/07/14 08:42:11 ajung Exp $
+ *  $Id: sctp.h,v 1.5 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -46,7 +46,7 @@
 #define SCTP_H
 
 
-// Some important definitions for usage of reentrant versions.
+/* Some important definitions for usage of reentrant versions. */
 #ifndef _REENTRANT
     #define _REENTRANT
 #endif

@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: distribution.h,v 1.4 2003/09/10 21:34:40 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -60,7 +60,9 @@
 #define MAX_INIT_RETRANSMITS    8
 #define MAX_PATH_RETRANSMITS    5
 #define VALID_COOKIE_LIFE_TIME  10000
-// #define RWND_CONST              64000
+/*
+#define RWND_CONST              64000
+*/
 #define SACK_DELAY              200
 #define RTO_INITIAL             3000
 #define IPTOS_DEFAULT           0x10    /* IPTOS_LOWDELAY */

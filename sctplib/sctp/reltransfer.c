@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.5 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: reltransfer.c,v 1.6 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -66,44 +66,44 @@ static chunk_data *rtx_chunks[MAX_NUM_OF_CHUNKS];
  */
 typedef struct rtx_buffer_struct
 {
-    //@{
+    /*@{ */
     /** storing the lowest tsn that is in the list */
     unsigned int lowest_tsn;
-    ///
+    /** */
     unsigned int highest_tsn;
-    ///
+    /** */
     unsigned int num_of_chunks;
-    ///
+    /** */
     unsigned int highest_acked;
     /** a list that is ordered by ascending tsn values */
     GList *chunk_list;
-    ///
+    /** */
     struct timeval sack_arrival_time;
-    ///
+    /** */
     struct timeval saved_send_time;
     /** this val stores 0 if retransmitted chunks have been acked, else 1 */
     unsigned int save_num_of_txm;
-    ///
+    /** */
     unsigned int newly_acked_bytes;
-    ///
+    /** */
     unsigned int num_of_addresses;
-    ///
+    /** */
     unsigned int my_association;
-    ///
+    /** */
     unsigned int peer_arwnd;
-    ///
+    /** */
     gboolean shutdown_received;
-    ///
+    /** */
     gboolean fast_recovery_active;
-    /// the exit point is only valid, if we are in fast recovery
+    /** the exit point is only valid, if we are in fast recovery */
     unsigned int fr_exit_point;
     unsigned int advancedPeerAckPoint;
-    ///
+    /** */
     unsigned int lastSentForwardTSN;
     unsigned int lastReceivedCTSNA;
 
     GArray *prChunks;
-//@}
+/*@} */
 } rtx_buffer;
 
 
@@ -273,8 +273,10 @@ int rtx_dequeue_up_to(unsigned int ctsna, unsigned int addr_index)
 {
     rtx_buffer *rtx;
     chunk_data *dat, *old_dat;
-//    boolean deleted_chunk = FALSE;
-//    guint i=0, list_length = 0;
+/*
+    boolean deleted_chunk = FALSE;
+    guint i=0, list_length = 0;
+*/
     unsigned int chunk_tsn;
     GList* tmp;
 
@@ -619,8 +621,8 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         /* read next chunk */
                         i++;
                         dat = g_list_nth_data(rtx->chunk_list, i);
-                        if (dat == NULL)
-                            break; // was the last chunk in the list
+                        if (dat == NULL) 
+                            break; /* was the last chunk in the list */
                         if (chunks_to_rtx == MAX_NUM_OF_CHUNKS)
                             break;
                         else continue;

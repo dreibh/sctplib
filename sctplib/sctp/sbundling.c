@@ -1,5 +1,5 @@
 /*
- *  $Id: sbundling.c,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: sbundling.c,v 1.3 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -57,37 +57,37 @@
  */
 typedef struct bundling_instance_struct
 {
-    //@{
-    /// buffer for control chunks
+    /*@{ */
+    /** buffer for control chunks */
     guchar ctrl_buf[MAX_MTU_SIZE];
-    /// buffer for sack chunks
+    /** buffer for sack chunks */
     guchar sack_buf[MAX_MTU_SIZE];
-    /// buffer for data chunks
+    /** buffer for data chunks */
     guchar data_buf[MAX_MTU_SIZE];
     /* Leave some space for the SCTP common header */
-    ///  current position in the buffer for control chunks
+    /**  current position in the buffer for control chunks */
     guint ctrl_position;
-    ///  current position in the buffer for sack chunks
+    /**  current position in the buffer for sack chunks */
     guint sack_position;
-    ///  current position in the buffer for data chunks
+    /**  current position in the buffer for data chunks */
     guint data_position;
-    /// is there data to be sent in the buffer ?
+    /** is there data to be sent in the buffer ? */
     gboolean data_in_buffer;
-    ///  is there a control chunk  to be sent in the buffer ?
+    /**  is there a control chunk  to be sent in the buffer ? */
     gboolean ctrl_chunk_in_buffer;
-    ///  is there a sack chunk  to be sent in the buffer ?
+    /**  is there a sack chunk  to be sent in the buffer ? */
     gboolean sack_in_buffer;
     /** status flag for correct sequence of actions */
     gboolean got_send_request;
-    ///
+    /** */
     gboolean got_send_address;
-    ///
+    /** */
     gboolean locked;
-    /// did we receive a shutdown, either by ULP or peer ?
+    /** did we receive a shutdown, either by ULP or peer ? */
     gboolean got_shutdown;
-    ///
+    /** */
     guint requested_destination;
-    //@}
+    /*@} */
 
 }
 bundling_instance;

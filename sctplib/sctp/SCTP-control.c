@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.5 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.6 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -92,7 +92,7 @@
     \end{itemize}
  */
 
-//@{
+/*@{ */
 
 /** macro to return the minimum of two values */
 #define min(x,y)            (x)<(y)?(x):(y)
@@ -104,14 +104,14 @@
  */
 typedef struct SCTP_CONTROLDATA
 {
-    //@{
+    /*@{ */
     /** the state of this state machine */
     guint32 association_state;
     /** stores timer-ID of init/cookie-timer, used to stop this timer */
     TimerID initTimer;
-    ///
+    /** */
     unsigned int initTimerDuration;
-    ///  stores the association id (==tag) of this association
+    /**  stores the association id (==tag) of this association */
     unsigned int associationID;
     /** Counter for init and cookie retransmissions */
     short initRetransCounter;
@@ -123,9 +123,9 @@ typedef struct SCTP_CONTROLDATA
     guint32 local_tie_tag;
     /** peer's tie tag for cross initialization and other sick cases */
     guint32 peer_tie_tag;
-    /// we store these here, too. Maybe better be stored with StreamEngine ?
+    /** we store these here, too. Maybe better be stored with StreamEngine ? */
     unsigned short NumberOfOutStreams;
-    /// we store these here, too. Maybe better be stored with StreamEngine ?
+    /** we store these here, too. Maybe better be stored with StreamEngine ? */
     unsigned short NumberOfInStreams;
     /** value for maximum retransmissions per association */
     int assocMaxRetransmissions;
@@ -135,12 +135,14 @@ typedef struct SCTP_CONTROLDATA
     int cookieLifeTime;
     /** the sctp instance */
     void * instance;
-    //@}
+    /*@} */
 } SCTP_controlData;
 
 /* -------------------- Declarations -------------------------------------------------------------*/
 
-/// pointer to the current controller structure. Only set when association exists.
+/*
+pointer to the current controller structure. Only set when association exists.
+*/
 static SCTP_controlData *localData;
 
 
@@ -2459,4 +2461,4 @@ gboolean sci_shutdown_procedure_started()
         return FALSE;
 }
 
-//@}
+/*@}*/

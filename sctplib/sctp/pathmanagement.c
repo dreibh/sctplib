@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.4 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.5 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,7 +64,7 @@
  */
 typedef struct PATHDATA
 {
-    //@{
+    /*@{ */
     /** operational state of pathmanagement for one path */
     short state;
     /** true if heartbeat is enabled */
@@ -98,7 +98,7 @@ typedef struct PATHDATA
     struct timeval rto_update;
     /** ID of path */
     unsigned int pathID;
-    //@}
+    /*@} */
 } PathData;
 
 
@@ -108,7 +108,7 @@ typedef struct PATHDATA
  */
 typedef struct PATHMANDATA
 {
-    //@{
+    /*@{ */
     /** stores the current primary path */
     short primaryPath;
     /** the number of paths used by this assoc. */
@@ -127,7 +127,7 @@ typedef struct PATHMANDATA
     int rto_min;
     /** maximum RTO, a configurable parameter */
     int rto_max;
-    //@}
+    /*@} */
 } PathmanData;
 
 

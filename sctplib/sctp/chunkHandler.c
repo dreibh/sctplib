@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.4 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -239,7 +239,9 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                 if (IN_BADCLASS(ntohl(address->dest_addr.sctp_ipv4))) discard = TRUE;
                 if (INADDR_ANY == ntohl(address->dest_addr.sctp_ipv4)) discard = TRUE;
                 if (INADDR_BROADCAST == ntohl(address->dest_addr.sctp_ipv4)) discard = TRUE;
-  //            if (INADDR_LOOPBACK == ntohl(address->dest_addr.sctp_ipv4)) discard = TRUE;
+                /*
+                if (INADDR_LOOPBACK == ntohl(address->dest_addr.sctp_ipv4)) discard = TRUE;
+                */
                 event_logii(VVERBOSE, "Got IPv4 address %x, discard: %s !",
                                         ntohl(address->dest_addr.sctp_ipv4), (discard==TRUE)?"TRUE":"FALSE");
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.7 2003/07/14 08:42:11 ajung Exp $
+ *  $Id: distribution.c,v 1.8 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -73,7 +73,6 @@
 #include  "chunkHandler.h"
 
 #include  <sys/types.h>
-// #include  <stdio.h>
 #include  <errno.h>
 #include  <arpa/inet.h>         /* for inet_ntoa() under both SOLARIS/LINUX */
 
@@ -95,7 +94,7 @@ static gboolean supportADDIP                = FALSE;
  */
 typedef struct SCTPINSTANCE
 {
-    //@{
+    /*@{ */
     /** The name of this SCTP-instance, used as key. */
     unsigned short sctpInstanceName;
     /** The local port of this instance, or zero for don't cares.
@@ -130,7 +129,7 @@ typedef struct SCTPINSTANCE
     unsigned int supportedAddressTypes;
     gboolean    supportsPRSCTP;
     gboolean    supportsADDIP;
-   //@}
+   /*@}*/
 }
 SCTP_instance;
 
@@ -141,7 +140,7 @@ SCTP_instance;
  */
 typedef struct ASSOCIATION
 {
-    //@{
+    /*@{*/
     /** The current ID of this association,
         it is used as a key to find a association in the list,
         and never changes in the  live of the association  */
@@ -197,7 +196,7 @@ typedef struct ASSOCIATION
     /* and these values for our peer */
     gboolean    peerSupportsPRSCTP;
     gboolean    peerSupportsADDIP;
-    //@}
+    /*@}*/
 } Association;
 
 
@@ -691,7 +690,9 @@ boolean mdi_destination_address_okay(union sockunion * dest_addr)
     /* this case will be specially treated after the call to mdi_destination_address_okay() */
     if (sctpInstance == NULL && currentAssociation == NULL) return TRUE;
 
-    // if (sctpInstance == NULL && currentAssociation == NULL) return FALSE;
+    /*
+    if (sctpInstance == NULL && currentAssociation == NULL) return FALSE;
+    */
     if (currentAssociation != NULL) {
         /* search through the _association_ list */
         /* and accept or decline */
@@ -1406,7 +1407,7 @@ int sctp_initLibrary(void)
     initstate(curTime.tv_sec, (char *) rstate, 8);
     setstate((char *) rstate);
 #else
-    // FIXME: this may be too weak (better than nothing however)
+    /* FIXME: this may be too weak (better than nothing however) */
     srand(curTime.tv_usec);
 #define random() rand()
 #endif
@@ -1795,8 +1796,8 @@ sctp_registerInstance(unsigned short port,
 
 int sctp_unregisterInstance(unsigned short instance_name)
 {
-    // Look through the instance list, and delete instance, when
-    // found, else return error.
+    /* Look through the instance list, and delete instance, when
+       found, else return error. */
     SCTP_instance temporary;
     SCTP_instance* instance;
     guint32 fds;

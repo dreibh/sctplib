@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.4 2003/07/14 08:42:11 ajung Exp $
+ *  $Id: recvctrl.c,v 1.5 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -52,12 +52,12 @@
  */
 typedef struct rxc_buffer_struct
 {
-    //@{
-    ///
+    /*@{ */
+    /** */
     void *sack_chunk;
-    ///
+    /** */
     GList *frag_list;
-    ///
+    /** */
     GList *dup_list;
     /** cumulative TSN acked */
     unsigned int ctsna;
@@ -66,28 +66,28 @@ typedef struct rxc_buffer_struct
     /** stores highest tsn received so far, taking care of wraps
         i.e. highest < lowest indicates a wrap */
     unsigned int highest;
-    ///
+    /** */
     boolean contains_valid_sack;
-    ///
+    /** */
     boolean timer_running;
     /** indicates whether a chunk was recvd that is truly new */
     boolean new_chunk_received;
-    /// timer for delayed sacks
+    /** timer for delayed sacks */
     TimerID sack_timer;
     int datagrams_received;
      /* either 1 (= sack each data chunk) or 2 (=sack every second chunk)*/
     unsigned int sack_flag;
-    ///
+    /** */
     unsigned int last_address;
-    ///
+    /** */
     unsigned int my_association;
-    ///
+    /** */
     unsigned int my_rwnd;
-    /// delay for delayed ACK in msecs
+    /** delay for delayed ACK in msecs */
     unsigned int delay;
-    // number of dest addresses
+    /** number of dest addresses */
     unsigned int num_of_addresses;
-    //@}
+    /*@} */
 } rxc_buffer;
 
 
@@ -100,8 +100,9 @@ typedef struct rxc_buffer_struct
 void *rxc_new_recvctrl(unsigned int remote_initial_TSN, unsigned int number_of_destination_addresses, void* sctpInstance)
 {
     rxc_buffer *tmp;
-//    unsigned int count;
-
+/*
+    unsigned int count;
+*/
     tmp = malloc(sizeof(rxc_buffer));
     if (!tmp) error_log(ERROR_FATAL, "Malloc failed");
 

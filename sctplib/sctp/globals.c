@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.c,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: globals.c,v 1.3 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -132,7 +132,9 @@ void read_tracelevels()
         for (i = 0; i < 50; i++) {
             fscanf(fptr, "%s %d %d", tracedModules[i], &errorTraceLevel[i], &eventTraceLevel[i]);
             if (strcmp(tracedModules[i], "LOGFILE") == 0) {
-                // printf("Logging all errors and events to file ./tmp%d.log\n", (int)getpid());
+                /*
+                printf("Logging all errors and events to file ./tmp%d.log\n", (int)getpid());
+                */
                 fileTrace = TRUE;
                 sprintf(filename, "./tmp%d.log",(int)getpid());
                 logfile = fopen(filename, "w+");
@@ -146,13 +148,17 @@ void read_tracelevels()
         }
         noOftracedModules = i;
         if (i<= 1) globalTrace = TRUE;
-        // printf("  globalTrace = %s \n",  (globalTrace==TRUE)?"TRUE":"FALSE");
+        /*
+        printf("  globalTrace = %s \n",  (globalTrace==TRUE)?"TRUE":"FALSE");
+        */
     } else {
         globalTrace = TRUE; /* ??? */
     }
-    // printf("global = %d, #of modules = %d\n", (int) globalTrace, noOftracedModules);
-    // for (i = 0; i < noOftracedModules; i++)
-    //    printf("%20s %2d %2d\n", tracedModules[i], errorTraceLevel[i], eventTraceLevel[i]);
+    /*
+    printf("global = %d, #of modules = %d\n", (int) globalTrace, noOftracedModules);
+    for (i = 0; i < noOftracedModules; i++)
+      printf("%20s %2d %2d\n", tracedModules[i], errorTraceLevel[i], eventTraceLevel[i]);
+    */
 }
 
 

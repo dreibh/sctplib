@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.3 2003/07/14 08:42:11 ajung Exp $
+ * $Id: streamengine.c,v 1.4 2003/09/10 21:34:40 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -63,9 +63,9 @@
 
 typedef struct
 {
-    GList *pduList;          //list of PDUs waiting for pickup (after notofication has been called)
-    GList *unorderedList;	 //list for unordered fragments
-    GList *orderedList;      //list of ordered chunks AND fragments (waiting for reordering)
+    GList *pduList;          /*list of PDUs waiting for pickup (after notofication has been called) */
+    GList *unorderedList;	 /*list for unordered fragments */
+    GList *orderedList;      /*list of ordered chunks AND fragments (waiting for reordering) */
     unsigned int nextSSN;
     int index;
 }ReceiveStream;
@@ -202,7 +202,7 @@ void* se_new_stream_engine (unsigned int numberReceiveStreams,        /* max of 
       (se->RecvStreams)[i].pduList = NULL;
       (se->RecvStreams[i]).unorderedList = NULL;
       (se->RecvStreams[i]).orderedList = NULL;
-      (se->RecvStreams[i]).index = 0; //for ordered chunks, next ssn
+      (se->RecvStreams[i]).index = 0; /* for ordered chunks, next ssn */
     }
     for (i = 0; i < numberSendStreams; i++)
     {

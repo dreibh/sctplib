@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.5 2003/07/01 13:58:27 ajung Exp $
+ * $Id: flowcontrol.c,v 1.6 2003/09/10 21:34:40 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -61,60 +61,60 @@
  */
 typedef struct __congestion_parameters
 {
-    //@{
-    ///
+    /*@{ */
+    /** */
     unsigned int cwnd;
-    ///
+    /** */
     unsigned int cwnd2;
-    ///
+    /** */
     unsigned int partial_bytes_acked;
-    ///
+    /** */
     unsigned int ssthresh;
-    ///
+    /** */
     unsigned int mtu;
-    ///
+    /** */
     struct timeval time_of_cwnd_adjustment;
-    ///
+    /** */
     struct timeval last_send_time;
-    //@}
+    /*@} */
 } cparm;
 
 typedef struct flowcontrol_struct
 {
-    //@{
-    ///
+    /*@{*/
+    /** */
     unsigned int outstanding_bytes;
-    ///
+    /** */
     unsigned int announced_rwnd;
-    ///
+    /** */
     unsigned int number_of_addresses;
     /** pointer to array of congestion window parameters */
     cparm *cparams;
-    ///
+    /** */
     unsigned int current_tsn;
-    ///
+    /** */
     GList *chunk_list;
-    ///
+    /** */
     unsigned int list_length;
     /** one timer may be running per destination address */
     TimerID *T3_timer;
     /** for passing as parameter in callback functions */
     unsigned int *addresses;
-    ///
+    /** */
     unsigned int my_association;
-    ///
+    /** */
     boolean shutdown_received;
-    ///
+    /** */
     boolean waiting_for_sack;
-    ///
+    /** */
     boolean t3_retransmission_sent;
-    ///
+    /** */
     boolean one_packet_inflight;
-    ///
+    /** */
     boolean doing_retransmission;
-    ///
+    /** */
     unsigned int maxQueueLen;
-    //@}
+    /*@} */
 } fc_data;
 
 

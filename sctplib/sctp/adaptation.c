@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.9 2003/09/04 10:26:40 ajung Exp $
+ *  $Id: adaptation.c,v 1.10 2003/09/10 21:34:40 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,7 +64,6 @@
 #include <sys/param.h>
 #include <sys/ioctl.h>
 
-// #include <netinet/in.h>
 #include <netinet/tcp.h>
 #include <net/if.h>
 
@@ -749,10 +748,10 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
         /* test -- stop */
 
         if (txmt_len < 0) {
-            // perror("AF_INET : Sendto returned error : ");
+            /* perror("AF_INET : Sendto returned error : "); */
             error_logi(ERROR_MAJOR, "AF_INET : sendto()=%d !", txmt_len);
-            // txmt_len = sendto(sfd, sendbuf, len, 0, (struct sockaddr *) &(dest->sin), dest_len);
-            // error_logi(ERROR_MAJOR, "AF_INET : Second sendto() returned %d !", txmt_len);
+            /* txmt_len = sendto(sfd, sendbuf, len, 0, (struct sockaddr *) &(dest->sin), dest_len); */
+            /* error_logi(ERROR_MAJOR, "AF_INET : Second sendto() returned %d !", txmt_len); */
         }
 #if defined (LINUX)
         tmp = setsockopt(sfd, IPPROTO_IP, IP_TOS, &old_tos, sizeof(unsigned char));
@@ -770,7 +769,9 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
         dest_len = sizeof(struct sockaddr_in6);
         txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), dest_len);
         if (txmt_len < 0) {
-            //perror("AF_INET6 : Sendto returned error: ");
+            /* 
+            perror("AF_INET6 : Sendto returned error: ");
+            */
             error_logi(ERROR_MAJOR, "AF_INET6 : sendto()=%d, retrying !", txmt_len);
             txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), dest_len);
             error_logi(ERROR_MAJOR, "AF_INET6 : Second sendto() returned %d !", txmt_len);
