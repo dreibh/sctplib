@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.h,v 1.6 2004/08/13 14:21:28 ajung Exp $
+ *  $Id: distribution.h,v 1.7 2004/11/19 21:06:17 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -128,7 +128,7 @@ int mdi_send_message(SCTP_message * message, unsigned int length, short destAddr
  *  @param length       number of bytes thet have arrived
  *  @param  unordered  unordered flag (TRUE==1==unordered, FALSE==0==normal,numbered chunk)
  */
-void mdi_dataArriveNotif(unsigned int streamID, unsigned int length, unsigned short streamSN,
+void mdi_dataArriveNotif(unsigned short streamID, unsigned int length, unsigned short streamSN,
                          unsigned int tsn, unsigned int protoID, unsigned int unordered);
 
 

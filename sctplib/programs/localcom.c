@@ -1,5 +1,5 @@
 /*
- *  $Id: localcom.c,v 1.6 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: localcom.c,v 1.7 2004/11/19 21:13:27 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -51,7 +51,7 @@
 #endif
 
 struct ulp_data {
-    unsigned short maximumStreamID;
+    int maximumStreamID;
     unsigned int assocID;
     unsigned long nrOfReceivedChunks;
     unsigned long nrOfReceivedBytes;
@@ -177,7 +177,7 @@ void serverDataArriveNotif(unsigned int assocID, unsigned short streamID, unsign
     
     /* and send it */
     result = SCTP_send(assocID,
-                       min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
+                       (unsigned short)min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
                        chunk, length,
                        protoID,
                        SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME, unordered, SCTP_BUNDLING_DISABLED);

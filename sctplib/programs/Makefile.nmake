@@ -17,12 +17,14 @@ LINKFLAGS=sctp_wrapper.obj /NOLOGO /NODEFAULTLIB:"LIBCMTD.lib" /DEBUG /FIXED:No 
 
 
 all : \
-	sctp_wrapper	combined_server \
-	  echo_tool  \
+	sctp_wrapper  \
+	combined_server \
+	echo_tool  \
         daytime_server  \
         discard_server   \
         echo_server   \
-        chargen_server
+        chargen_server  \
+        terminal
 
 sctp_wrapper:
 		$(CC) $(CFLAGS) -DWIN32 -W3 -c -Zi sctp_wrapper.c
@@ -50,6 +52,10 @@ echo_server:
 chargen_server: 
 		$(CC) -Od -DWIN32 -W3 -c -Zi chargen_server.c
 		link -out:chargen_server.exe chargen_server.obj $(LINKFLAGS)
+
+terminal: 
+		$(CC) -Od -DWIN32 -W3 -c -Zi terminal.c
+		link -out:terminal.exe terminal.obj $(LINKFLAGS)
            
 clean:
 	rm -f sctp.lib

@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.29 2004/11/17 21:18:28 tuexen Exp $
+ *  $Id: distribution.c,v 1.30 2004/11/19 21:05:26 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -3168,6 +3168,7 @@ int sctp_getInstanceID(unsigned int associationID, unsigned short* instanceID)
 /* ----------------------------------------------------------------------------------------*/
 /* ------------------------------------ HELPER FUNCTIONS from adaptation ------------------*/
 /* ----------------------------------------------------------------------------------------*/
+#ifndef WIN32
 int sctp_registerUdpCallback(unsigned char me[],
                              unsigned short my_port,
                              sctp_socketCallback scf)
@@ -3205,7 +3206,7 @@ int sctp_sendUdpData(int sfd, unsigned char* buf, int length,
     LEAVE_LIBRARY("sctp_sendUdpData");
     return result;
 }
-
+#endif
 
 int sctp_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
 {
@@ -3218,7 +3219,19 @@ int sctp_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
     return result;
 }
 
+int sctp_unregisterStdinCallback()
+{
+    int result;
 
+    ENTER_LIBRARY("sctp_unregisterStdinCallback");
+    CHECK_LIBRARY;
+    result = adl_unregisterStdinCallback();
+    LEAVE_LIBRARY("sctp_registerStdinCallback");
+    return result;
+
+}
+
+#ifndef WIN32
 int sctp_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, short int eventMask)
 {
     int result;
@@ -3241,18 +3254,7 @@ int sctp_unregisterUserCallback(int fd)
     return result;
 
 }
-
-int sctp_unregisterStdinCallback()
-{
-    int result;
-
-    ENTER_LIBRARY("sctp_unregisterStdinCallback");
-    CHECK_LIBRARY;
-    result = adl_unregisterStdinCallback();
-    LEAVE_LIBRARY("sctp_registerStdinCallback");
-    return result;
-
-}
+#endif
 
 unsigned int sctp_startTimer(unsigned int seconds , unsigned int microseconds,
                         sctp_timerCallback timer_cb, void *param1, void *param2)
@@ -3519,7 +3521,7 @@ int mdi_send_message(SCTP_message * message, unsigned int length, short destAddr
  *  @param  protoID  the protocol ID of the arrived payload
  *  @param  unordered  unordered flag (TRUE==1==unordered, FALSE==0==normal,numbered chunk)
  */
-void mdi_dataArriveNotif(unsigned int streamID, unsigned int length, unsigned short streamSN,
+void mdi_dataArriveNotif(unsigned short streamID, unsigned int length, unsigned short streamSN,
                          unsigned int tsn, unsigned int protoID, unsigned int unordered)
 {
 
