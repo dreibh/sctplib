@@ -1,5 +1,5 @@
 /*
- *  $Id: main.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: main.c,v 1.5 2004/11/19 21:25:00 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -74,7 +74,7 @@ unsigned short localNumberOfInStreams = 15; /* Our default number of streams.
                                                imports this in order to limit number of
                                                in-streams a-side requests. */
 static gboolean streamRobin = FALSE; /* By default all data are transmitted over one stream */
-gboolean unordered = FALSE;
+gboolean use_unordered = FALSE;
 
 
 /* this one is global, as we want to know, whether to enable ipv6 calls, even if it may be compiled in */
@@ -366,7 +366,7 @@ void getArgs(int argc, char **argv)
         useLocalPort = FALSE;
 
     if (vflg) {
-        unordered = TRUE;
+        use_unordered = TRUE;
         printf("some chunks are transmitted unordered\n");
     }
 

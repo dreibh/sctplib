@@ -1,5 +1,5 @@
 /*
- *  $Id: mini-ulp.c,v 1.5 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: mini-ulp.c,v 1.6 2004/11/19 21:25:00 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,7 +64,7 @@ unsigned int payload = 0;
 /* global parameters, valid for all associations */
 extern unsigned int localNumberOfInStreams;
 
-extern gboolean unordered;
+extern gboolean use_unordered;
 
 static int dosend = 0;
 gboolean heartbeat = FALSE;
@@ -548,7 +548,7 @@ void timer_expired(unsigned int tID, void *associationIDvoid, void *unused)
         for (i = 0; i < SEND_EVENTS_WHEN_TIMER_EXPIRES; i++) {
            /*gettimeofday((struct timeval *) &chunk[0], NULL); */
            result = sctp_send(assocID, sID1, (unsigned char *) chunk,
-                           dataLength, payload, -1, 0, 0, unordered, 0);
+                           dataLength, payload, -1, 0, 0, use_unordered, 0);
         }
 
         if (result == -1) {
