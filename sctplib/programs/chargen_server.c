@@ -1,5 +1,5 @@
 /*
- *  $Id: chargen_server.c,v 1.10 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: chargen_server.c,v 1.11 2004/11/17 22:46:17 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -56,7 +56,6 @@
 
 static unsigned char  localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
 static unsigned short noOfLocalAddresses = 0;
-static unsigned char  destinationAddress[SCTP_MAX_IP_LEN];
 
 static int verbose              = 0;
 static int vverbose             = 0;
@@ -99,15 +98,14 @@ pathStateName(unsigned int state)
 
 void printUsage(void)
 {
-    printf("Usage:   chargen_server [options]\n");
+    printf("Usage:    chargen_server [options]\n");
     printf("options:\n");
-    printf("-i       ignore OOTB packets\n");
-    printf("-l       length of chunks (default random)\n");
-    printf("-n number    number of packets after which to stop and shutdown\n");   
-    printf("-s       source address\n");
-    printf("-t       time to live in ms\n");
-    printf("-v       verbose mode\n");
-    printf("-V       very verbose mode\n");   
+    printf("-i        ignore OOTB packets\n");
+    printf("-l        length of chunks (default random)\n");
+    printf("-s        source address\n");
+    printf("-t        time to live in ms\n");
+    printf("-v        verbose mode\n");
+    printf("-V        very verbose mode\n");   
 }
 
 void getArgs(int argc, char **argv)
