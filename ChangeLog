@@ -1,3 +1,40 @@
+2004-07-09 19:53  tuexen
+
+	* sctplib/sctp/streamengine.c: Get rid of a C++ style comment.
+
+2004-07-09 09:12  ajung
+
+	* sctplib/sctp/distribution.c: If Abort is called in
+	  CommunicationUp Notification, now the Network Status Change
+	  Notifications are not generated any more after the user's
+	  CommunicationUp handler returns.
+
+2004-07-09 09:10  ajung
+
+	* configure.in: Updated to version 1.0.2-pre1
+
+2004-07-05 15:07  rohde
+
+	* sctplib/sctp/streamengine.c: Fixed Minor bug
+
+2004-07-05 14:36  rohde
+
+	* sctplib.kdevses, sctplib/sctp/messages.h,
+	  sctplib/sctp/streamengine.c, sctplib/sctp/streamengine.h:
+	  Imported streamengine from version 1.1
+
+2004-05-03 12:29  ajung
+
+	* sctplib/sctp/distribution.c: Fixed segfault that occurrs in some
+	  cases on some architectures, when deleting the association in a
+	  CommunicationLost callback This is done by re-setting some freed
+	  pointers to NULL that are then used after callback.
+
+2004-01-13 17:33  ajung
+
+	* ChangeLog: Used cvs2cl.pl script to generate a fine ChangeLog
+	  from CVS.
+
 2004-01-08 18:05  tuexen
 
 	* configure.in: Bump version to rc10.
@@ -423,10 +460,6 @@
 	  nearly all files Removed routing socket, and all of the asconf
 	  stuff.  Added in new funtion that updates local addresses every
 	  once in a while.
-
-2003-07-01 14:03  ajung
-
-	* sctplib/sctp/.libs/libsctp.lai: Remove void file
 
 2003-07-01 11:37  tuexen
 
@@ -863,9 +896,8 @@
 	  sctplib/sctp/sctp_asconf.c, sctplib/sctp/sctp_asconf.h,
 	  sctplib/sctp/streamengine.c, sctplib/sctp/streamengine.h,
 	  sctplib/sctp/timer_list.c, sctplib/sctp/timer_list.h,
-	  sctplib/sctp/.libs/libsctp.lai, sctplib/manual/commands.doc,
-	  sctplib/manual/commands.html, sctplib/manual/commands.pdf,
-	  sctplib/manual/sctp-api-1.0-1.pdf,
+	  sctplib/manual/commands.doc, sctplib/manual/commands.html,
+	  sctplib/manual/commands.pdf, sctplib/manual/sctp-api-1.0-1.pdf,
 	  sctplib/manual/sctp-api-1.0-1.ps,
 	  sctplib/manual/sctp-api-1.0-1.tex, sctplib/programs/Makefile.am,
 	  sctplib/programs/chargen_server.c, sctplib/programs/chat.c,
@@ -1221,9 +1253,8 @@
 	  sctplib/sctp/sctp_asconf.c, sctplib/sctp/sctp_asconf.h,
 	  sctplib/sctp/streamengine.c, sctplib/sctp/streamengine.h,
 	  sctplib/sctp/timer_list.c, sctplib/sctp/timer_list.h,
-	  sctplib/sctp/.libs/libsctp.lai, sctplib/manual/commands.doc,
-	  sctplib/manual/commands.html, sctplib/manual/commands.pdf,
-	  sctplib/manual/sctp-api-1.0-1.pdf,
+	  sctplib/manual/commands.doc, sctplib/manual/commands.html,
+	  sctplib/manual/commands.pdf, sctplib/manual/sctp-api-1.0-1.pdf,
 	  sctplib/manual/sctp-api-1.0-1.ps,
 	  sctplib/manual/sctp-api-1.0-1.tex, sctplib/programs/Makefile.am,
 	  sctplib/programs/chargen_server.c, sctplib/programs/chat.c,
