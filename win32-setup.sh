@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DOWNLOAD_PREFIX="http://www.ethereal.com/distribution/win32/development"
+DOWNLOAD_PREFIX="http://download.au.kde.org/pub/ftp.mozilla.org/pub/mozilla/libraries/win32/"
 err_exit () {
 	echo "ERROR: $1"
 	echo ""

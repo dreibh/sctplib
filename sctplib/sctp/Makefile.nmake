@@ -5,8 +5,7 @@
 
 include ..\..\config.nmake
 
-CFLAGS=/Od /I$(GLIB_DIR)\include\glib-2.0 /I$(GLIB_DIR)\lib\glib-2.0\include 
-#CFLAGS=/Od /I..\include
+CFLAGS=/Od /I$(GLIB_DIR)\include
 
 CVARSDLL=-DWIN32 -DMBCS
 
