@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.14 2004/07/26 15:53:38 ajung Exp $
+ * $Id: flowcontrol.c,v 1.15 2004/11/12 14:32:59 dreibh Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -863,7 +863,7 @@ void fc_check_t3(unsigned int ad_idx, boolean all_acked, boolean new_acked)
     fc_data *fc = NULL;
     int result, obpa = 0;
     unsigned int count;
-    
+
     fc = (fc_data *) mdi_readFlowControl();
     if (!fc) {
         error_log(ERROR_MAJOR, "fc_data instance not set !");
@@ -1364,7 +1364,7 @@ int fc_dequeueOldestUnsentChunk(unsigned char *buf, unsigned int *len, unsigned 
     *tsn = dat->chunk_tsn;
     *sID = ntohs(dchunk->stream_id);
     *sSN = ntohs(dchunk->stream_sn);
-    *pID = ntohl(dchunk->protocolId);
+    *pID = dchunk->protocolId;
     *flags = dchunk->chunk_flags;
     *ctx = dat->context;
     fc->chunk_list = g_list_remove(fc->chunk_list, (gpointer) dat);

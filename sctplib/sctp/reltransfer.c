@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.9 2004/01/07 09:02:57 ajung Exp $
+ *  $Id: reltransfer.c,v 1.10 2004/11/12 14:32:59 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -50,7 +50,7 @@
 #include <string.h>
 #include <stdio.h>
 
-#define MAX_NUM_OF_CHUNKS   500 
+#define MAX_NUM_OF_CHUNKS   500
 
 static chunk_data *rtx_chunks[MAX_NUM_OF_CHUNKS];
 
@@ -415,8 +415,8 @@ int rtx_send_forward_tsn(rtx_buffer *rtx, unsigned int forward_tsn, unsigned int
 
     int result;
     unsigned int count;
-    
-    SCTP_forward_tsn_chunk chk; 
+
+    SCTP_forward_tsn_chunk chk;
     pr_stream_data * psd;
     pr_stream_data   hton_psd;
     for (count = 0; count < rtx->prChunks->len; count++) {
@@ -625,7 +625,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         /* read next chunk */
                         i++;
                         dat = g_list_nth_data(rtx->chunk_list, i);
-                        if (dat == NULL) 
+                        if (dat == NULL)
                             break; /* was the last chunk in the list */
                         if (chunks_to_rtx == MAX_NUM_OF_CHUNKS)
                             break;
@@ -1063,7 +1063,7 @@ int rtx_dequeueOldestUnackedChunk(unsigned char *buf, unsigned int *len, unsigne
     *tsn = dat->chunk_tsn;
     *sID = ntohs(dchunk->stream_id);
     *sSN = ntohs(dchunk->stream_sn);
-    *pID = ntohl(dchunk->protocolId);
+    *pID = dchunk->protocolId;
     *flags = dchunk->chunk_flags;
     *ctx = dat->context;
     event_logiii(VERBOSE, "rtx_dequeueOldestUnackedChunk() returns chunk tsn %u, num-trans: %u, chunks left: %u",
@@ -1197,7 +1197,7 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
         rtx->lowest_tsn = ctsna;
         event_logi(VVERBOSE, "Updated rtx->lowest_tsn==ctsna==%u", ctsna);
         rtx_queue_len =  g_list_length(rtx->chunk_list);
-        
+
         if (rtx->newly_acked_bytes != 0) new_acked = TRUE;
         if (rtx_queue_len == 0) all_acked = TRUE;
         fc_sack_info(0, rtx->peer_arwnd, ctsna, all_acked, new_acked,

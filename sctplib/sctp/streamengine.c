@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.13 2004/07/27 07:56:35 ajung Exp $
+ * $Id: streamengine.c,v 1.14 2004/11/12 14:32:59 dreibh Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -342,7 +342,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
         dchunk->chunk_length  = htons (byteCount + FIXED_DATA_CHUNK_SIZE);
         dchunk->tsn = 0;        /* gets assigned in the flowcontrol module */
         dchunk->stream_id     = htons (streamId);
-        dchunk->protocolId    = htonl (protocolId);
+        dchunk->protocolId    = protocolId;
 
         if (unorderedDelivery)
         {
@@ -371,7 +371,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
     else
     {
         /* calculate nr. of necessary chunks -> use fc_getMTU() later !!! */
-      numberOfSegments = byteCount / SCTP_MAXIMUM_DATA_LENGTH;	
+      numberOfSegments = byteCount / SCTP_MAXIMUM_DATA_LENGTH;
       residual = byteCount % SCTP_MAXIMUM_DATA_LENGTH;
       if (residual != 0) {
             numberOfSegments++;
@@ -413,12 +413,12 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
                 event_log (EXTERNAL_EVENT, "NEXT FRAGMENTED CHUNK -> END");
                 bCount = residual;
             }
- 
+
         dchunk->chunk_id = CHUNK_DATA;
         dchunk->chunk_length = htons (bCount + FIXED_DATA_CHUNK_SIZE);
         dchunk->tsn = htonl (0);
         dchunk->stream_id = htons (streamId);
-        dchunk->protocolId = htonl (protocolId);
+        dchunk->protocolId = protocolId;
 
         if (unorderedDelivery)
         {
@@ -656,9 +656,9 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
     d_chunk->data_length = datalength;
     d_chunk->chunk_flags = dataChunk->chunk_flags;
     d_chunk->stream_sn =    ntohs (dataChunk->stream_sn);
-    d_chunk->protocolId =   ntohl (dataChunk->protocolId);
+    d_chunk->protocolId =   dataChunk->protocolId;
     d_chunk->fromAddressIndex =  address_index;
-    
+
 
 
     se->List = g_list_insert_sorted(se->List, d_chunk, (GCompareFunc) sort_tsn_se);
