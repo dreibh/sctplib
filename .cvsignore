@@ -1,0 +1,13 @@
+config.h
+config.log
+config.status
+libtool
+Makefile
+Makefile.in
+*.tar.gz
+stamp-h1
+aclocal.m4
+config.h.in
+configure
+ltmain.sh
+
