@@ -1,5 +1,5 @@
 /*
- *  $Id: messages.h,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: messages.h,v 1.2 2003/06/05 14:11:15 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -203,16 +203,13 @@ SCTP_data_chunk;
 #define VLPARAM_HOST_NAME_ADDR          0x000B
 #define VLPARAM_SUPPORTED_ADDR_TYPES    0x000C
 
-#define VLPARAM_PRSCTP                   0xC000
+#define VLPARAM_PRSCTP                  0xC000
 #define VLPARAM_ADDIP                   0xC001
 #define VLPARAM_DELIP                   0xC002
-#define VLPARAM_STREAM_BYTE_LIMIT       0xC003
-#define VLPARAM_STREAM_MSG_LIMIT        0xC007
-#define VLPARAM_ASSOC_MSG_LIMIT         0xC008
-#define VLPARAM_ERROR_CAUSE_INDICATION  0xC004
-#define VLPARAM_SET_PRIMARY             0xC005
-#define VLPARAM_SUCCESS_REPORT          0xC006
-
+#define VLPARAM_ERROR_CAUSE_INDICATION  0xC003
+#define VLPARAM_SET_PRIMARY             0xC004
+#define VLPARAM_SUCCESS_REPORT          0xC005
+#define VLPARAM_ADAPTATION_LAYER_IND    0xC006
 
 /* Header of variable length parameters */
 typedef struct SCTP_VLPARAM_HEADER

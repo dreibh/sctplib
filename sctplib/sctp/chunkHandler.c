@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.1 2003/05/16 13:47:49 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.2 2003/06/05 14:11:15 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -158,7 +158,11 @@ static gint32 retrieveVLParamFromString(guint16 paramType, guchar * mstring, gui
                      pType == VLPARAM_IPV6_ADDRESS ||
                      pType == VLPARAM_COOKIE ||
                      pType == VLPARAM_COOKIE_PRESERV ||
-                     pType == ECC_STALE_COOKIE_ERROR || pType == VLPARAM_SUPPORTED_ADDR_TYPES) {
+                     pType == ECC_STALE_COOKIE_ERROR ||
+                     pType == VLPARAM_SUPPORTED_ADDR_TYPES ||
+                     pType == VLPARAM_PRSCTP||
+                     pType == VLPARAM_SET_PRIMARY||
+                     pType == VLPARAM_ADAPTATION_LAYER_IND) {
             curs += ntohs(param_header->param_length);
             /* take care of padding */
             while ((curs % 4) != 0)
@@ -176,10 +180,11 @@ static gint32 retrieveVLParamFromString(guint16 paramType, guchar * mstring, gui
                 return -1;
             }
             /* try to continue parsing */
-            if ((ntohs(param_header->param_length) + curs) < length)
+            if ((ntohs(param_header->param_length) + curs) <= length) {
                 curs += ntohs(param_header->param_length);
-            else
-                break;
+                while ((curs % 4) != 0) curs++;
+            } else
+                return -1;
             /* take care of padding here */
             while ((curs % 4) != 0)
                 curs++;
@@ -322,7 +327,8 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                 if (IN6_IS_ADDR_V4COMPAT((struct in6_addr*)&(address->dest_addr))) discard = TRUE;
 #endif
                 if (adl_filterInetAddress(&tmp_su, filterFlags) == FALSE) discard = TRUE;
-                event_logi(VERBOSE, "Found IPv6 Address - discard: %s !", (discard==TRUE)?"TRUE":"FALSE");
+                event_logiii(VERBOSE, "Found IPv6 Address - discard=%s - #v4=%d - #v6=%d !",
+                    (discard==TRUE)?"TRUE":"FALSE", v4found, v6found);
                 if (discard == FALSE) {
                     new_found = TRUE;
 
@@ -1127,10 +1133,12 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
                 curs += pLen;
                 /* take care of padding */
                 while ((curs % 4) != 0) curs++;
-            } else {
-                *errorchunk = cid;
+            } else { /* this is an unknown unknwon parameter....very strange...ignore it */
+		    /* this is probably a bakeoff test.... :-)   */
+                curs += pLen;
+                /* take care of padding */
+                while ((curs % 4) != 0) curs++;
                 event_logi(EXTERNAL_EVENT, "Encountered Unrecognized Param %u: stop parsing and return: stop !", oType);
-                return -1;
             }
         } else if (pType == VLPARAM_IPV4_ADDRESS) {
             if (with_ipv4 != TRUE) {
@@ -1149,16 +1157,6 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
                 ch_enterErrorCauseData(cid, ECC_UNRESOLVABLE_ADDRESS,pLen,(unsigned char*)vl_ackPtr);
 
             }
-            curs += pLen;
-            /* take care of padding */
-            while ((curs % 4) != 0) curs++;
-        } else if (pType == VLPARAM_STREAM_BYTE_LIMIT || pType == VLPARAM_STREAM_MSG_LIMIT ||
-                   pType == VLPARAM_ASSOC_MSG_LIMIT) {
-            /* we do not understand that yet ! Skip Param with Error */
-            if (cid == 0) cid = ch_makeErrorChunk();
-
-            ch_enterErrorCauseData(cid, ECC_UNRECOGNIZED_PARAMS, pLen,(unsigned char*)vl_ackPtr);
-
             curs += pLen;
             /* take care of padding */
             while ((curs % 4) != 0) curs++;
