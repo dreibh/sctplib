@@ -1,5 +1,5 @@
 /*
- *  $Id: daytime_server.c,v 1.5 2003/11/20 18:34:07 tuexen Exp $
+ *  $Id: daytime_server.c,v 1.6 2003/11/20 19:23:00 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -67,10 +67,10 @@ pathStateName(unsigned int state)
 {
     switch (state) {
         case SCTP_PATH_OK:
-            return "OK";
+            return "REACHABLE";
             break;
         case SCTP_PATH_UNREACHABLE:
-            return "UNRECHABLE";
+            return "UNREACHABLE";
             break;
         case SCTP_PATH_ADDED:
             return "ADDED";

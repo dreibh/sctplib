@@ -101,10 +101,10 @@ pathStateName(unsigned int state)
 {
     switch (state) {
         case SCTP_PATH_OK:
-            return "OK";
+            return "REACHABLE";
             break;
         case SCTP_PATH_UNREACHABLE:
-            return "UNRECHABLE";
+            return "UNREACHABLE";
             break;
         case SCTP_PATH_ADDED:
             return "ADDED";
