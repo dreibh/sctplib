@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.8 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: adaptation.c,v 1.9 2003/09/04 10:26:40 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -74,12 +74,12 @@
     #include <linux/rtnetlink.h>
     #ifndef HAVE_PKTINFO
     /* the definition from <bits/in.h> */
-    struct in_pktinfo
-    {
-        int ipi_ifindex;                    /* Interface index  */
-        struct in_addr ipi_spec_dst;        /* Routing destination address  */
-        struct in_addr ipi_addr;            /* Header destination address  */
-    };
+    /* struct in_pktinfo */
+    /* { */
+    /*    int ipi_ifindex; */                   /* Interface index  */
+    /*    struct in_addr ipi_spec_dst;*/        /* Routing destination address  */
+    /*    struct in_addr ipi_addr;*/            /* Header destination address  */
+    /*}; */
 
     #endif
 #else /* this may not be okay for SOLARIS !!! */
