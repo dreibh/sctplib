@@ -24,7 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "sctptest.h"
-#include <sctp.h>
+#include "sctp.h"
 
 #define POLLIN     0x001
 #define POLLPRI    0x002

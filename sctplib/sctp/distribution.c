@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.10 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: distribution.c,v 1.11 2003/10/23 16:48:11 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -61,7 +61,7 @@
 #include <config.h>
 #endif
 
-#include  <sctp.h>              /* ULP-interface definitions */
+#include  "sctp.h"              /* ULP-interface definitions */
 #include  "distribution.h"      /* SCTP-internal interfaces to message distribution */
 #include  "adaptation.h"        /* interfaces to adaptation layer */
 #include  "bundling.h"          /* interfaces to bundling */

@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.h,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: adaptation.h,v 1.3 2003/10/23 16:48:11 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -50,7 +50,7 @@
 #include <config.h>
 #endif
 
-#include <sctp.h>
+#include "sctp.h"
 #include "globals.h"
 #include "distribution.h"
 

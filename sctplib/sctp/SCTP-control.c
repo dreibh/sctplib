@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.7 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.8 2003/10/23 16:48:11 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -77,7 +77,7 @@
 #include <stdio.h>
 #include <errno.h>
 
-#include <sctp.h>
+#include "sctp.h"
 
 
 
