@@ -13,6 +13,7 @@ EXTRA_DIST = combined_server.c daytime_server.c discard_server.c echo_server.c e
 
 noinst_PROGRAMS = combined_server daytime_server discard_server echo_server echo_tool terminal test_tool mulp localcom @cursesprogs_BIN@ chargen_server
 EXTRA_PROGRAMS = monitor chat echo_monitor 
+EXTRA_DIST = Makefile.nmake
 
 combined_server_SOURCES = combined_server.c sctp_wrapper.c
 combined_server_LDADD =  ../sctp/libsctp.la @glib_LIBS@
