@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.32 2005/03/03 17:14:44 dreibh Exp $
+ *  $Id: distribution.c,v 1.33 2005/03/07 09:35:05 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -604,6 +604,21 @@ static short checkForExistingAssociations(Association * assoc_new)
 /*------------------- Internal port management Functions -----------------------------------------*/
 
 /**
+ * allocatePort Allocate a given port.
+ * @return Allocated port or 0 if port is occupied.
+ */
+static unsigned short allocatePort(unsigned short port)
+{
+   if(portsSeized[port] == 0) {
+      portsSeized[port] = 1;
+      numberOfSeizedPorts++;
+      return(port);
+   }
+   return(0);
+}
+
+
+/**
  * seizePort return a free port number.
  * @return free port.
  */
@@ -626,7 +641,6 @@ static unsigned short seizePort(void)
 
     return seizePort;
 }
-
 
 
 /**
@@ -1627,11 +1641,25 @@ sctp_registerInstance(unsigned short port,
             return SCTP_PARAMETER_PROBLEM;
     }
 
+    if(port == 0) {
+        port = seizePort();
+    }
+    else {
+        port = allocatePort(port);
+    }
+    if(port == 0) {
+        sctpInstance = old_Instance;
+        currentAssociation = old_assoc;
+        error_log(ERROR_MAJOR, "User gave incorrect address !");
+        LEAVE_LIBRARY("sctp_registerInstance");
+        return SCTP_WRONG_ADDRESS;
+    }
 
 
     for (i=0; i< noOfLocalAddresses; i++) {
         if (adl_str2sockunion((localAddressList[i]), &su) < 0) {
             error_logi(ERROR_MAJOR, "Address Error in sctp_registerInstance(%s)", (localAddressList[i]));
+            releasePort(port);
             sctpInstance = old_Instance;
             currentAssociation = old_assoc;
             LEAVE_LIBRARY("sctp_registerInstance");
@@ -1657,6 +1685,7 @@ sctp_registerInstance(unsigned short port,
 #endif
                               ) {
             error_log(ERROR_MAJOR, "No valid address in sctp_registerInstance()");
+            releasePort(port);
             sctpInstance = old_Instance;
             currentAssociation = old_assoc;
             LEAVE_LIBRARY("sctp_registerInstance");
@@ -1666,6 +1695,7 @@ sctp_registerInstance(unsigned short port,
     i = mdi_updateMyAddressList();
     if (i != SCTP_SUCCESS) {
             error_log(ERROR_MAJOR, "Could not update my local addresses...");
+            releasePort(port);
             sctpInstance = old_Instance;
             currentAssociation = old_assoc;
             LEAVE_LIBRARY("sctp_registerInstance");
@@ -1675,6 +1705,7 @@ sctp_registerInstance(unsigned short port,
     sctpInstance = (SCTP_instance *) malloc(sizeof(SCTP_instance));
     if (!sctpInstance) {
         error_log_sys(ERROR_MAJOR, (short)errno);
+        releasePort(port);
         sctpInstance = old_Instance;
         currentAssociation = old_assoc;
         LEAVE_LIBRARY("sctp_registerInstance");
@@ -1715,6 +1746,7 @@ sctp_registerInstance(unsigned short port,
                 break;
 #endif
             default:
+                releasePort(port);
                 free(sctpInstance);
                 sctpInstance = old_Instance;
                 currentAssociation = old_assoc;
@@ -1738,6 +1770,7 @@ sctp_registerInstance(unsigned short port,
         for (i=0; i< noOfLocalAddresses; i++) {
             adl_str2sockunion(localAddressList[i], &(sctpInstance->localAddressList[i]));
             if (mdi_checkForCorrectAddress(&(sctpInstance->localAddressList[i])) == FALSE){
+                releasePort(port);
                 free (sctpInstance->localAddressList);
                 free(sctpInstance);
                 sctpInstance = old_Instance;
@@ -1758,6 +1791,7 @@ sctp_registerInstance(unsigned short port,
     list_result = g_list_find_custom(InstanceList, sctpInstance, &CheckForAddressInInstance);
 
     if (list_result) {
+        releasePort(port);
         free(sctpInstance->localAddressList);
         free(sctpInstance);
         sctpInstance = old_Instance;
@@ -1907,6 +1941,7 @@ int sctp_unregisterInstance(unsigned short instance_name)
             free(instance->localAddressList);
         }
         event_log(VVERBOSE, "sctp_unregisterInstance : freeing instance ");
+        releasePort(instance->localPort);
         free(instance);
         InstanceList = g_list_remove(InstanceList, result->data);
         LEAVE_LIBRARY("sctp_unregisterInstance");
