@@ -1,6 +1,6 @@
 #!/bin/sh
 
-DOWNLOAD_PREFIX="http://download.au.kde.org/pub/ftp.mozilla.org/pub/mozilla/libraries/win32/"
+DOWNLOAD_PREFIX="http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/"
 err_exit () {
 	echo "ERROR: $1"
 	echo ""

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.h,v 1.5 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: sctp_wrapper.h,v 1.6 2004/11/21 14:06:33 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -115,8 +115,10 @@ SCTP_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length);
 
 int SCTP_unregisterStdinCallback();
 
+#ifndef WIN32
 int
 SCTP_registerUserCallback(int fd, sctp_userCallback sdf, void* userData);
+#endif
 
 int
 SCTP_getAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParameters* params);

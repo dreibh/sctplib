@@ -30,5 +30,7 @@ verify_apps:
 
 setup: verify_apps
 	@$(SH) win32-setup.sh --download "$(ETHEREAL_LIBS)" \
-		glib vc7-glib-1.2.10-bin.zip
+		glib-1.2-lib glib-19990228.zip
+	@$(SH) win32-setup.sh --download "$(ETHEREAL_LIBS)" \
+		glib-1.2-dev glib-1.2-dev-19990228.zip
 
