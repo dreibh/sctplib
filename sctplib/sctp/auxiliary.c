@@ -1,5 +1,5 @@
 /*
- *  $Id: auxiliary.c,v 1.3 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id: auxiliary.c,v 1.4 2003/11/20 13:24:10 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -43,10 +43,6 @@
 #include "sctp.h"
 
 #include <stdio.h>
-
-#ifndef HAVE_RANDOM
-#define random() rand()
-#endif
 
 #define BASE 65521L             /* largest prime smaller than 65536 */
 #define NMAX 5552
@@ -173,7 +169,7 @@ unsigned char* key_operation(int operation_code)
         secret_key = malloc(SECRET_KEYSIZE);
         while (count < SECRET_KEYSIZE){
             /* if you care for security, you need to use a cryptographically secure PRNG */
-            tmp = random();
+            tmp = adl_random();
             memcpy(&secret_key[count], &tmp, sizeof(unsigned int));
             count += 4;
         }

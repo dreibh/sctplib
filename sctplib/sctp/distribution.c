@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.16 2003/11/18 13:03:36 ajung Exp $
+ *  $Id: distribution.c,v 1.17 2003/11/20 13:24:10 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -283,10 +283,6 @@ static gint ipv6_sctp_socket;
 /* port management array */
 static unsigned char portsSeized[0x10000];
 static unsigned int numberOfSeizedPorts;
-
-#ifdef HAVE_RANDOM
-static long rstate[2];
-#endif
 
 
 /* ---------------------- Internal Function Prototypes ------------------------------------------- */
@@ -618,10 +614,10 @@ static unsigned short seizePort(void)
     if (numberOfSeizedPorts >= 0xFBFF)
         return 0x0000;
 
-    seizePort = (unsigned short)(random() % 0xFFFF);
+    seizePort = (unsigned short)(adl_random() % 0xFFFF);
     
     while (portsSeized[seizePort] || seizePort < 0x0400) {
-        seizePort = (unsigned short)(random() % 0xFFFF);
+        seizePort = (unsigned short)(adl_random() % 0xFFFF);
     }
 
     numberOfSeizedPorts++;
@@ -1414,7 +1410,6 @@ unsigned int sctp_getLibraryVersion(void)
 int sctp_initLibrary(void)
 {
     int i, result, sfd = -1, maxMTU=0;
-    struct timeval curTime;
     /* initialize the output of event/error-log functions */
     ENTER_LIBRARY("sctp_initLibrary");
     if (sctpLibraryInitialized == TRUE) {
@@ -1446,19 +1441,6 @@ int sctp_initLibrary(void)
     /* initialize ports seized -- see comments above !!! */
     for (i = 0; i < 0x10000; i++) portsSeized[i] = 0;
     numberOfSeizedPorts = 0x00000000;
-
-    /* initialize random number generator */
-    adl_gettime(&curTime);
-#ifdef HAVE_RANDOM
-    rstate[0] = curTime.tv_sec;
-    rstate[1] = curTime.tv_usec;
-    initstate(curTime.tv_sec, (char *) rstate, 8);
-    setstate((char *) rstate);
-#else
-    /* FIXME: this may be too weak (better than nothing however) */
-    srand(curTime.tv_usec);
-#define random() rand()
-#endif
 
     /* initialize bundling, i.e. the common buffer for sending chunks when no association
           exists. */
@@ -3987,7 +3969,7 @@ unsigned int mdi_generateTag(void)
 {
     unsigned int tag;
 
-    while ((tag = random()) == 0);
+    while ((tag = adl_random()) == 0);
 
     return tag;
 }
@@ -4000,7 +3982,7 @@ unsigned int mdi_generateTag(void)
  */
 unsigned int mdi_generateStartTSN(void)
 {
-    return random();
+    return adl_random();
 }
 
 

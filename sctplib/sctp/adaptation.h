@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.h,v 1.4 2003/11/19 14:03:24 tuexen Exp $
+ *  $Id: adaptation.h,v 1.5 2003/11/20 13:24:10 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -54,6 +54,8 @@
 #include "globals.h"
 #include "distribution.h"
 
+
+unsigned int adl_random(void);
 
 boolean adl_equal_address(union sockunion *one, union sockunion *two);
 

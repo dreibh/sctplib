@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.15 2003/11/20 09:59:23 tuexen Exp $
+ *  $Id: adaptation.c,v 1.16 2003/11/20 13:24:10 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -170,7 +170,19 @@ struct event_cb
     void* userData;
 };
 
+#ifdef HAVE_RANDOM
+static long rstate[2];
+#endif
 
+unsigned int
+adl_random(void)
+{
+#ifdef HAVE_RANDOM
+    return (unsigned int) random();
+#else
+    return (unsigned int)rand();
+#endif
+}
 
 /*
  * An extended poll() implementation based on select()
@@ -1265,6 +1277,7 @@ int adl_getEvents(void)
 
 int adl_init_adaptation_layer(int * myRwnd)
 {
+    struct timeval curTime;
 #ifdef WIN32
 	WSADATA					wsaData;
     int Ret;
@@ -1279,6 +1292,18 @@ int adl_init_adaptation_layer(int * myRwnd)
         error_log(ERROR_FATAL, "WSAStartup failed.");
         return SCTP_SPECIFIC_FUNCTION_ERROR;
     }
+#endif
+
+    /* initialize random number generator */
+    adl_gettime(&curTime);
+#ifdef HAVE_RANDOM
+    rstate[0] = curTime.tv_sec;
+    rstate[1] = curTime.tv_usec;
+    initstate(curTime.tv_sec, (char *) rstate, 8);
+    setstate((char *) rstate);
+#else
+    /* FIXME: this may be too weak (better than nothing however) */
+    srand(curTime.tv_usec);
 #endif
 
     init_poll_fds();
