@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.16 2003/11/20 13:24:10 tuexen Exp $
+ *  $Id: adaptation.c,v 1.17 2003/11/20 18:34:53 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -166,7 +166,7 @@ struct event_cb
     /* pointer to possible arguments, associations etc. */
     void *arg1;
     void *arg2;
-    void (*action) ();
+    void (*action) ((void *) (void *));
     void* userData;
 };
 
