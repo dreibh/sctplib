@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.11 2004/07/26 15:53:38 ajung Exp $
+ *  $Id: globals.h,v 1.12 2004/11/17 21:02:44 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -135,7 +135,7 @@
                                    for instance abort of an association. */
 #define ERROR_FATAL        1    /* recovery from error was not possible, the program exits. */
 
-#define Current_error_log_ 1    /* Defines the level up to which the errors are printed.
+#define Current_error_log_ 0    /* Defines the level up to which the errors are printed.
                                    ERROR_WARNING (4) means all events are printed.
                                    This parameter could also come from a command line option */
 

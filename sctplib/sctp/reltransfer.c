@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.10 2004/11/12 14:32:59 dreibh Exp $
+ *  $Id: reltransfer.c,v 1.11 2004/11/17 21:01:04 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -199,11 +199,11 @@ void rtx_rtt_update(unsigned int adr_idx, rtx_buffer * rtx)
         rtt = adl_timediff_to_msecs(&(rtx->sack_arrival_time), &(rtx->saved_send_time));
         if (rtt != -1) {
             event_logii(ERROR_MINOR, "Calling pm_chunksAcked(%u, %d)...", adr_idx, rtt);
-            pm_chunksAcked(adr_idx, (unsigned int)rtt);
+            pm_chunksAcked((short)adr_idx, (unsigned int)rtt);
         }
     } else {
         event_logi(VERBOSE, "Calling pm_chunksAcked(%u, 0)...", adr_idx);
-        pm_chunksAcked(adr_idx, 0L);
+        pm_chunksAcked((short)adr_idx, (unsigned int)0L);
     }
     return;
 }
@@ -429,9 +429,9 @@ int rtx_send_forward_tsn(rtx_buffer *rtx, unsigned int forward_tsn, unsigned int
     chk.forward_tsn                = htonl(forward_tsn);
     chk.chunk_header.chunk_id      = CHUNK_FORWARD_TSN;
     chk.chunk_header.chunk_flags   = 0;
-    chk.chunk_header.chunk_length  = htons(sizeof(SCTP_chunk_header)+
+    chk.chunk_header.chunk_length  = htons((unsigned short)(sizeof(SCTP_chunk_header)+
                                            sizeof(unsigned int)+
-                                           rtx->prChunks->len*sizeof(pr_stream_data));
+                                           rtx->prChunks->len*sizeof(pr_stream_data)));
 
     event_logi(INTERNAL_EVENT_0, "===================>  Sending FORWARD TSN : %u",forward_tsn);
 
@@ -1200,7 +1200,7 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
 
         if (rtx->newly_acked_bytes != 0) new_acked = TRUE;
         if (rtx_queue_len == 0) all_acked = TRUE;
-        fc_sack_info(0, rtx->peer_arwnd, ctsna, all_acked, new_acked,
+        fc_sack_info(0, rtx->peer_arwnd, ctsna, (boolean)all_acked, (boolean)new_acked,
                      rtx->newly_acked_bytes, rtx->num_of_addresses);
         rtx_reset_bytecounters(rtx);
     } else {

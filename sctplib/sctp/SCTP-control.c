@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.16 2004/07/30 13:04:19 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.17 2004/11/17 21:08:50 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -611,7 +611,7 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
 
         if (error_type >= 0) {
-            sci_add_abort_error_cause(abortCID,  (unsigned int)error_type, error_param_length, error_param_data);
+            sci_add_abort_error_cause(abortCID,  (unsigned short)error_type, error_param_length, error_param_data);
         }
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
         bu_sendAllChunks(NULL);
@@ -638,7 +638,7 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
 
         if (error_type >= 0) {
-            sci_add_abort_error_cause(abortCID,  (unsigned int)error_type, error_param_length,error_param_data);
+            sci_add_abort_error_cause(abortCID,  (unsigned short)error_type, error_param_length,error_param_data);
         }
 
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
@@ -1581,7 +1581,7 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                                                             ch_receiverWindow(initCID),
                                                             ch_initialTSN(initCID),
                                                             ch_initialTSN(initAckCID),
-                                                            ndAddresses, 0, dAddresses,
+                                                            (short)ndAddresses, 0, dAddresses,
                                                             peerSupportsPRSCTP,FALSE); /* setting 0 as primary */
                     if (restart_result == 0) {
                         /* what happens to SCTP data chunks is implementation specific */

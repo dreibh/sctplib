@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.12 2004/11/10 19:22:21 dreibh Exp $
+ *  $Id: sctp.h,v 1.13 2004/11/17 21:04:01 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -189,7 +189,7 @@ struct SCTP_ulp_Callbacks
      *  @param 7 unordered flag (TRUE==1==unordered, FALSE==0==normal, numbered chunk)
      *  @param 8 pointer to ULP data
      */
-    void (*dataArriveNotif) (unsigned int, unsigned int, unsigned int, unsigned short, unsigned int, unsigned int, unsigned int,   void*);
+    void (*dataArriveNotif) (unsigned int, unsigned short, unsigned int, unsigned short, unsigned int, unsigned int, unsigned int,   void*);
     /**
      * indicates a send failure (chapter 10.2.B).
      *  @param 1 associationID
@@ -657,6 +657,7 @@ typedef void (*sctp_userCallback) (int, short int, short int*, void*);
  * @param  scf  callback funtion that is called when data has arrived
  * @return new UDP socket file descriptor, or -1 if error ocurred
  */
+#ifndef WIN32
 int sctp_registerUdpCallback(unsigned char me[],
                              unsigned short my_port,
                              sctp_socketCallback scf);
@@ -665,6 +666,14 @@ int sctp_unregisterUdpCallback(int udp_sfd);
 
 int sctp_sendUdpData(int sfd, unsigned char* buf, int length,
                      unsigned char destination[], unsigned short dest_port);
+#endif
+
+typedef void (*sctp_StdinCallback) (char*, int);
+
+int sctp_registerStdinCallback(sctp_StdinCallback sdf, 
+                                 char* buffer, int length);
+								 
+int sctp_unregisterStdinCallback();							
 
 /**
  * this function registers a callback function for catching
@@ -674,9 +683,10 @@ int sctp_sendUdpData(int sfd, unsigned char* buf, int length,
  * @param  scf  callback funtion that is called (when return is hit)
  * @return 0, or -1 if error ocurred (i.e. already used)
  */
+#ifndef WIN32
 int sctp_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, short int eventMask);
 int sctp_unregisterUserCallback(int fd);
-
+#endif
 
 /* Defines the callback function that is called when an timer expires.
    Params: 1. ID of timer

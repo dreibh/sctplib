@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.14 2004/08/13 15:05:46 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.15 2004/11/17 21:10:12 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -356,7 +356,7 @@ void pm_heartbeatTimer(TimerID timerID, void *associationIDvoid, void *pathIDvoi
         if (pmData->pathData[pathID].state == PM_ACTIVE) {
             /* Handling of unacked heartbeats is the same as that of unacked data chunks.
                The state after calling pm_chunksRetransmitted may have changed to inactive. */
-           removed_association = handleChunksRetransmitted(pathID);
+           removed_association = handleChunksRetransmitted((short)pathID);
            if (removed_association)
                 event_logi(INTERNAL_EVENT_0, "Association was removed by handleChunksRetransmitted(%u)!!!!",pathID);
         } else if (pmData->pathData[pathID].state == PM_INACTIVE) {

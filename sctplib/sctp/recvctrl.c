@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.12 2004/01/06 08:50:01 ajung Exp $
+ *  $Id: recvctrl.c,v 1.13 2004/11/17 21:00:10 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -730,8 +730,8 @@ void rxc_all_chunks_processed(boolean new_data_received)
         frag_stop16 = (unsigned short) (f32->stop_tsn - rxc->ctsna);
         event_logii(VVERBOSE, "frag_start16==%u, frag_stop16==%u", frag_start16, frag_stop16);
 
-        chunk_frag.start = htons(f32->start_tsn - rxc->ctsna);
-        chunk_frag.stop = htons(f32->stop_tsn - rxc->ctsna);
+        chunk_frag.start = htons((unsigned short)(f32->start_tsn - rxc->ctsna));
+        chunk_frag.stop = htons((unsigned short)(f32->stop_tsn - rxc->ctsna));
         event_logii(VVERBOSE, "chunk_frag.start=%u,chunk_frag.stop ==%u",
                                 ntohs(chunk_frag.start), ntohs(chunk_frag.stop));
         memcpy(&sack->fragments_and_dups[pos], &chunk_frag, sizeof(fragment));

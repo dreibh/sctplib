@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.h,v 1.5 2003/11/20 13:24:10 tuexen Exp $
+ *  $Id: adaptation.h,v 1.6 2004/11/17 21:11:53 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -158,6 +158,10 @@ int adl_unregisterUdpCallback(int udp_sfd);
 
 int adl_sendUdpData(int sfd, unsigned char* buf, int length,
                      unsigned char destination[], unsigned short dest_port);
+
+
+int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length);
+int adl_unregisterStdinCallback();
 
 int adl_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, short int eventMask);
 

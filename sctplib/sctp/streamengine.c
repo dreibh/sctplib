@@ -1,5 +1,6 @@
+
 /*
- * $Id: streamengine.c,v 1.14 2004/11/12 14:32:59 dreibh Exp $
+ * $Id: streamengine.c,v 1.15 2004/11/17 20:58:27 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -338,8 +339,8 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
         dchunk = (SCTP_data_chunk*)cdata->data;
 
         dchunk->chunk_id      = CHUNK_DATA;
-        dchunk->chunk_flags   = SCTP_DATA_BEGIN_SEGMENT + SCTP_DATA_END_SEGMENT;
-        dchunk->chunk_length  = htons (byteCount + FIXED_DATA_CHUNK_SIZE);
+        dchunk->chunk_flags   = (guint8)SCTP_DATA_BEGIN_SEGMENT + SCTP_DATA_END_SEGMENT;
+        dchunk->chunk_length  = htons ((unsigned short)(byteCount + FIXED_DATA_CHUNK_SIZE));
         dchunk->tsn = 0;        /* gets assigned in the flowcontrol module */
         dchunk->stream_id     = htons (streamId);
         dchunk->protocolId    = protocolId;
@@ -351,7 +352,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
         }
         else
         {       /* unordered flag not put */
-            dchunk->stream_sn = htons (se->SendStreams[streamId].nextSSN);
+            dchunk->stream_sn = htons ((unsigned short)(se->SendStreams[streamId].nextSSN));
             se->SendStreams[streamId].nextSSN++;
             se->SendStreams[streamId].nextSSN = se->SendStreams[streamId].nextSSN % 0x10000;
         }
@@ -415,7 +416,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
             }
 
         dchunk->chunk_id = CHUNK_DATA;
-        dchunk->chunk_length = htons (bCount + FIXED_DATA_CHUNK_SIZE);
+        dchunk->chunk_length = htons ((unsigned short)(bCount + FIXED_DATA_CHUNK_SIZE));
         dchunk->tsn = htonl (0);
         dchunk->stream_id = htons (streamId);
         dchunk->protocolId = protocolId;
@@ -427,7 +428,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
         }
         else
         {   /* unordered flag not put */
-            dchunk->stream_sn = htons (se->SendStreams[streamId].nextSSN);
+            dchunk->stream_sn = htons ((unsigned short)(se->SendStreams[streamId].nextSSN));
             /* only after the last segment we increase the SSN */
             if (i == numberOfSegments) {
                 se->SendStreams[streamId].nextSSN++;
@@ -587,7 +588,7 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
 int se_doNotifications(void)
 {
     int retVal;
-    unsigned int i;
+    unsigned short i;
 
     StreamEngine* se = (StreamEngine *) mdi_readStreamEngine ();
 

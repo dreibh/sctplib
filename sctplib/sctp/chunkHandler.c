@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.15 2004/08/13 14:21:28 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.16 2004/11/17 21:07:57 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -236,7 +236,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
 
         while ((cursrel = retrieveVLParamFromString(VLPARAM_IPV4_ADDRESS,
                                                     &mstring[cursabs],
-                                                    length - cursabs) ) >= 0) {
+                                                    (guint16)(length - cursabs)) ) >= 0) {
 
             address = (SCTP_ip_address *) & mstring[cursabs + cursrel];
 
@@ -440,7 +440,7 @@ ChunkID ch_makeInit(unsigned int initTag, unsigned int rwnd, unsigned short noOu
     /* creat init chunk */
     initChunk = (SCTP_init *) malloc(sizeof(SCTP_init));
 
-    if (initChunk == NULL) error_log_sys(ERROR_FATAL, errno);
+    if (initChunk == NULL) error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(initChunk, 0, sizeof(SCTP_init));
 
@@ -473,7 +473,7 @@ ch_makeInitAck(unsigned int initTag,
     /* creat init chunk */
     initAckChunk = (SCTP_init *) malloc(sizeof(SCTP_init));
     if (initAckChunk == NULL)
-        error_log_sys(ERROR_FATAL, errno);
+        error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(initAckChunk, 0, sizeof(SCTP_init));
 
@@ -933,7 +933,7 @@ ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
             ch_enterSetPrimary(initAckID, initCID);
         }
 
-        cookie->vlparam_header.param_length = htons(writeCursor[initAckID] - wCurs);
+        cookie->vlparam_header.param_length = htons((unsigned short)(writeCursor[initAckID] - wCurs));
 
         cookie->ck.sendingTime    = pm_getTime();
         cookie->ck.cookieLifetime = cookieLifetime;
@@ -946,7 +946,7 @@ ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
         while ((writeCursor[initAckID] % 4) != 0) writeCursor[initAckID]++;
 
         signCookie((unsigned char *) &(cookie->ck.z_side_initAck),
-                            ntohs(cookie->vlparam_header.param_length) - 4, cookie->ck.hmac);
+                            (unsigned short)(ntohs(cookie->vlparam_header.param_length) - 4), cookie->ck.hmac);
 
         ch_enterECNchunk(initAckID, initCID);
         event_logi(VERBOSE, "ch_enterCookieVLP: PRSCTP support: %d", result);
@@ -1625,7 +1625,7 @@ ChunkID ch_cookieInitFixed(ChunkID chunkID)
     /* creat init chunk from init data< in cookie */
     initChunk = (SCTP_init *) malloc(sizeof(SCTP_init));
     if (initChunk == NULL)
-        error_log_sys(ERROR_FATAL, errno);
+        error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(initChunk, 0, sizeof(SCTP_init));
 
@@ -1656,7 +1656,7 @@ ChunkID ch_cookieInitAckFixed(ChunkID chunkID)
     /* creat initAck chunk from init data in cookie */
     initAckChunk = (SCTP_init *) malloc(sizeof(SCTP_init));
     if (initAckChunk == NULL)
-        error_log_sys(ERROR_FATAL, errno);
+        error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(initAckChunk, 0, sizeof(SCTP_init));
 
@@ -1715,7 +1715,7 @@ int ch_cookieIPDestAddresses(ChunkID chunkID, unsigned int mySupportedTypes,
         /* TODO: FIX this    vl_param_total_length parameter, so that later addresses are not
            retrieved as well ! */
         nAddresses = setIPAddresses(&((SCTP_cookie_echo *)chunks[chunkID])->vlparams[0],
-                                                   vl_param_total_length, temp_addresses,
+                                                   (guint16)vl_param_total_length, temp_addresses,
                                                    peerSupportedAddressTypes, mySupportedTypes,
                                                    lastSource, FALSE, TRUE);
         if (nAddresses >
@@ -1912,7 +1912,7 @@ ChunkID ch_makeHeartbeat(unsigned int sendingTime, unsigned int pathID)
     /* creat Heartbeat chunk */
     heartbeatChunk = (SCTP_heartbeat *) malloc(sizeof(SCTP_simple_chunk));
     if (heartbeatChunk == NULL)
-        error_log_sys(ERROR_FATAL, errno);
+        error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(heartbeatChunk, 0, sizeof(SCTP_simple_chunk));
 
@@ -2059,7 +2059,7 @@ ChunkID ch_makeSimpleChunk(unsigned char chunkType, unsigned char flag)
     /* creat simple chunk (used for abort, shutdownAck and cookieAck) */
     simpleChunk = (SCTP_simple_chunk *) malloc(sizeof(SCTP_simple_chunk));
     if (simpleChunk == NULL)
-        error_log_sys(ERROR_FATAL, errno);
+        error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(simpleChunk, 0, sizeof(SCTP_simple_chunk));
 
@@ -2084,7 +2084,7 @@ ch_makeErrorChunk(void)
     /* creat init chunk */
     errorChunk = (SCTP_error_chunk *) malloc(sizeof(SCTP_error_chunk));
 
-    if (errorChunk == NULL) error_log_sys(ERROR_FATAL, errno);
+    if (errorChunk == NULL) error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(errorChunk, 0, sizeof(SCTP_error_chunk));
 
@@ -2110,7 +2110,7 @@ ch_addUnrecognizedParameter(unsigned char* pos, ChunkID cid,
     }
     ec = (SCTP_error_cause*) pos;
     ec->cause_code = htons(VLPARAM_UNRECOGNIZED_PARAM);
-    ec->cause_length = htons(length+2*sizeof(unsigned short));
+    ec->cause_length = htons((unsigned short)(length+2*sizeof(unsigned short)));
     if (length>0) memcpy(ec->cause_information, data, length);
     writeCursor[cid] += (length + 2*sizeof(unsigned short));
     while ((writeCursor[cid] % 4) != 0) writeCursor[cid]++;
@@ -2139,7 +2139,7 @@ ch_addParameterToInitChunk(ChunkID initChunkID, unsigned short pCode,
     vlPtr = (SCTP_UnrecognizedParams*) &(chunks[initChunkID]->simple_chunk_data[sizeof(SCTP_init_fixed)+index]);
 
     vlPtr->vlparam_header.param_type = htons(pCode);
-    vlPtr->vlparam_header.param_length = htons(dataLength+sizeof(SCTP_vlparam_header));
+    vlPtr->vlparam_header.param_length = htons((unsigned short)(dataLength+sizeof(SCTP_vlparam_header)));
     if (dataLength>0) memcpy(vlPtr->the_params, data, dataLength);
     writeCursor[initChunkID] += (dataLength + 2*sizeof(unsigned short));
     while ((writeCursor[initChunkID] % 4) != 0) writeCursor[initChunkID]++;
@@ -2169,8 +2169,7 @@ ch_enterErrorCauseData(ChunkID chunkID, unsigned short code,
     index = writeCursor[chunkID];
     ec = (SCTP_error_cause*) &(chunks[chunkID]->simple_chunk_data[index]);
     ec->cause_code = htons(code);
-    ec->cause_length = htons(length+2*sizeof(unsigned short));
-    if (length>0 && data != NULL) memcpy(ec->cause_information, data, length);
+    ec->cause_length = htons((unsigned short)(length+2*sizeof(unsigned short)));
     writeCursor[chunkID] += (length + 2*sizeof(unsigned short));
     while ((writeCursor[chunkID] % 4) != 0) writeCursor[chunkID]++;
 
@@ -2268,7 +2267,7 @@ ChunkID ch_makeShutdown(unsigned int _cummTSNacked)
     /* creat Shutdown chunk */
     shutdown_chunk = (SCTP_simple_chunk *) malloc(sizeof(SCTP_simple_chunk));
     if (shutdown_chunk == NULL)
-        error_log_sys(ERROR_FATAL, errno);
+        error_log_sys(ERROR_FATAL, (short)errno);
 
     memset(shutdown_chunk, 0, sizeof(SCTP_simple_chunk));
 
@@ -2349,7 +2348,7 @@ SCTP_simple_chunk *ch_chunkString(ChunkID chunkID)
     }
 
     chunks[chunkID]->chunk_header.chunk_length =
-        htons(chunks[chunkID]->chunk_header.chunk_length + writeCursor[chunkID]);
+        htons((unsigned short)(chunks[chunkID]->chunk_header.chunk_length + writeCursor[chunkID]));
     chunkCompleted[chunkID] = TRUE;
 
     return chunks[chunkID];

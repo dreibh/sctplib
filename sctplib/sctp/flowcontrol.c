@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.15 2004/11/12 14:32:59 dreibh Exp $
+ * $Id: flowcontrol.c,v 1.16 2004/11/17 21:04:47 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -398,7 +398,7 @@ unsigned int fc_getNextActivePath(fc_data* fc, unsigned int start)
     while (count < fc->number_of_addresses) {
         path = (path+1)%fc->number_of_addresses;
         count++;
-        if (pm_readState(path) == PM_ACTIVE) return path;
+        if (pm_readState((short)path) == PM_ACTIVE) return path;
     }
     return path;
 }
@@ -429,7 +429,7 @@ fc_select_destination(fc_data * fc, chunk_data * dat,
     }
     /* 1. return  a value that is equal to old_destination, if possible */
     if (old_destination) {
-        if (pm_readState(*old_destination) == PM_ACTIVE) {
+        if (pm_readState((short)*old_destination) == PM_ACTIVE) {
             return *old_destination;
         } else {
             return (fc_getNextActivePath(fc, *old_destination));
@@ -440,7 +440,7 @@ fc_select_destination(fc_data * fc, chunk_data * dat,
         next = (short) dat->initial_destination;
     }
     /* 3. else try the primary */
-    if ((data_retransmitted == FALSE) && (pm_readState(next) == PM_ACTIVE))
+    if ((data_retransmitted == FALSE) && (pm_readState((short)next) == PM_ACTIVE))
         return next;
     /* 4. send retransmitted chunks to the next possible address */
     if (data_retransmitted == TRUE) next = dat->last_destination;
@@ -566,7 +566,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
         mdi_clearAssociationData();
         return;
     }
-    pm_rto_backoff(ad_idx);
+    pm_rto_backoff((short)ad_idx);
 
     fc_check_for_txmit(fc, oldListLen, TRUE);
 
@@ -682,7 +682,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
 
     if (dat->num_of_transmissions >= 1)  data_is_retransmitted = TRUE;
 
-    destination = fc_select_destination(fc, dat, data_is_retransmitted, NULL);
+    destination = fc_select_destination(fc, dat, (unsigned char)data_is_retransmitted, NULL);
 
     total_size = 0;
 
@@ -767,7 +767,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
             if (dat->num_of_transmissions >= 1)    data_is_retransmitted = TRUE;
             else if (dat->num_of_transmissions == 0) data_is_retransmitted = FALSE;
             oldDestination = destination;
-            destination = fc_select_destination(fc, dat, data_is_retransmitted, &destination);
+            destination = fc_select_destination(fc, dat, (unsigned char)data_is_retransmitted, &destination);
             if (destination != oldDestination) {
                 obpa = rtx_get_obpa(destination, &fc->outstanding_bytes);
                 if (obpa < 0) {
@@ -803,24 +803,24 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
 
     if (fc->T3_timer[destination] == 0) { /* see section 5.1 */
 
-        fc->T3_timer[destination] =  adl_startTimer(pm_readRTO(destination),
+        fc->T3_timer[destination] =  adl_startTimer(pm_readRTO((short)destination),
                                                     &fc_timer_cb_t3_timeout,
                                                     TIMER_TYPE_RTXM,
-                                                    &(fc->my_association),
+                                                   &(fc->my_association),
                                                     &(fc->addresses[destination]));
 
         event_logiii(INTERNAL_EVENT_0,
                      "fc_check_for_transmit: started T3 Timer with RTO(%u)==%u msecs on address %u",
-                     destination, pm_readRTO(destination), fc->addresses[destination]);
+                     destination, pm_readRTO((short)destination), fc->addresses[destination]);
     } else {
         /* restart only if lowest TSN is being retransmitted, else leave running */
         /* see section 6.1 */
         if (lowest_tsn_is_retransmitted) {
             event_logiii(INTERNAL_EVENT_0,
                          "RTX of lowest TSN: Restarted T3 Timer with RTO(%u)==%u msecs on address %u",
-                         destination, pm_readRTO(destination), fc->addresses[destination]);
+                         destination, pm_readRTO((short)destination), fc->addresses[destination]);
 
-            fc->T3_timer[destination] =  adl_restartTimer(fc->T3_timer[destination], pm_readRTO(destination));
+            fc->T3_timer[destination] =  adl_restartTimer(fc->T3_timer[destination], pm_readRTO((short)destination));
         }
     }
 
@@ -829,7 +829,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
     if (data_is_submitted == TRUE) {
         fc->one_packet_inflight = TRUE;
         bu_sendAllChunks(&destination);
-        rto_time = pm_readRTO(destination);
+        rto_time = pm_readRTO((short)destination);
 
         if (fc->maxQueueLen != 0) {
             if (len < fc->maxQueueLen && oldListLen >= fc->maxQueueLen) {
@@ -907,17 +907,17 @@ void fc_check_t3(unsigned int ad_idx, boolean all_acked, boolean new_acked)
          */
         if (fc->T3_timer[ad_idx] != 0) {
             fc->T3_timer[ad_idx] =
-                adl_restartTimer(fc->T3_timer[ad_idx], pm_readRTO(ad_idx));
+                adl_restartTimer(fc->T3_timer[ad_idx], pm_readRTO((short)ad_idx));
             event_logii(INTERNAL_EVENT_0,
                         "Restarted T3 Timer with RTO==%u msecs on address %u",
-                        pm_readRTO(ad_idx), ad_idx);
+                        pm_readRTO((short)ad_idx), ad_idx);
         } else {
             fc->T3_timer[ad_idx] =
-                adl_startTimer(pm_readRTO(ad_idx), &fc_timer_cb_t3_timeout, TIMER_TYPE_RTXM,
+                adl_startTimer(pm_readRTO((short)ad_idx), &fc_timer_cb_t3_timeout, TIMER_TYPE_RTXM,
                                 &(fc->my_association), &(fc->addresses[ad_idx]));
             event_logii(INTERNAL_EVENT_0,
                         "Started T3 Timer with RTO==%u msecs on address %u",
-                        pm_readRTO(ad_idx), ad_idx);
+                        pm_readRTO((short)ad_idx), ad_idx);
 
         }
         return;
@@ -1082,7 +1082,7 @@ int fc_adjustCounters(fc_data *fc, unsigned int addressIndex,
          * was greater than or equal to cwnd), increase cwnd by MTU, and
          * reset partial_bytes_acked to (partial_bytes_acked - cwnd)."
          */
-        rtt_time = pm_readSRTT(addressIndex);
+        rtt_time = pm_readSRTT((short)addressIndex);
         last_update = fc->cparams[addressIndex].time_of_cwnd_adjustment;
         adl_add_msecs_totime(&last_update, rtt_time);
         adl_gettime(&now);
