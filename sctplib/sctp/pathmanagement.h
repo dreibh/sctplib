@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.h,v 1.4 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: pathmanagement.h,v 1.5 2004/07/26 15:53:38 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -51,7 +51,7 @@
 #define  PM_INACTIVE            1
 #define  PM_ADDED               2
 #define  PM_REMOVED             3
-#define  PM_PATH_CONFIRMED      4
+
 #define  PM_PATH_UNCONFIRMED    5
 
 
@@ -196,18 +196,13 @@ unsigned int pm_readSRTT(short pathID);
 unsigned int pm_readRttVar(short pathID);
 
 
-/* pm_readState returns the current state of the path.
-   Params: pathID:      path-ID
-           returns:     state of path (active/inactive) 
-*/
+/**
+ * pm_readState returns the current state of the path.
+ * @params pathID      index of the path that is checked for its state
+ * @return  state value for this path (PM_ACTIVE, PM_INACTIVE, PM_PATH_UNCONFIRMED)
+ */
 short pm_readState(short pathID);
 
-/**
- * pm_pathConfirmed returns the current confirmation state of the path.
- * @param pathID  path-ID
- * @return TRUE if path has been confirmed, FALSE if path has not been confirmed
-*/
-gboolean pm_pathConfirmed(short pathID);
 
 
 /* pm_readPrimaryPath returns the primary path.

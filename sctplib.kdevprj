@@ -40,7 +40,7 @@ project_type=normal_c
 sgml_file=/home/ajung/sctp/src/0307/sctplib/sctplib/docs/en/index.sgml
 short_info=
 sub_dir=sctplib/
-version=1.0.1-rc9
+version=1.0.2-pre3
 version_control=None
 workspace=1
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.10 2004/01/06 08:50:01 ajung Exp $
+ *  $Id: globals.h,v 1.11 2004/07/26 15:53:38 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.

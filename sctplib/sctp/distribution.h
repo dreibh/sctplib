@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.h,v 1.4 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: distribution.h,v 1.5 2004/07/26 15:53:38 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -68,6 +68,7 @@
 #define IPTOS_DEFAULT           0x10    /* IPTOS_LOWDELAY */
 #define RTO_MIN                 1000
 #define DEFAULT_MAX_SENDQUEUE   0       /* unlimited send queue */
+#define DEFAULT_MAX_BURST       4       /* unlimited send queue */
 #define RTO_MAX                 60000
 
 
@@ -359,7 +360,8 @@ int mdi_getDefaultDelay(void* sctpInstance);
 int mdi_getDefaultIpTos(void* sctpInstance);
 int mdi_getDefaultMaxSendQueue(void* sctpInstance);
 int mdi_getDefaultMaxRecvQueue(void* sctpInstance);
-
+int mdi_getDefaultMaxBurst(void);
+	
 unsigned int mdi_getSupportedAddressTypes(void);
 
 gboolean mdi_supportsPRSCTP(void);

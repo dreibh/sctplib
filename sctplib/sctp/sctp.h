@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.10 2004/01/06 08:50:01 ajung Exp $
+ *  $Id: sctp.h,v 1.11 2004/07/26 15:53:38 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -67,7 +67,7 @@ extern "C" {
 
 #define SCTP_MAJOR_VERSION      1
 #define SCTP_MINOR_VERSION      0
-#define SCTP_TINY_VERSION       1
+#define SCTP_TINY_VERSION       2
  
 /* the maximum length of an IP address string (IPv4 or IPv6, NULL terminated) */
 /* see RFC 1884 (mixed IPv6/Ipv4 addresses)   */

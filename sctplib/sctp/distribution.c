@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.23 2004/07/09 07:12:37 ajung Exp $
+ *  $Id: distribution.c,v 1.24 2004/07/26 15:53:38 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -138,6 +138,7 @@ typedef struct SCTPINSTANCE
     unsigned int default_rtoMax;
     unsigned int default_maxSendQueue;
     unsigned int default_maxRecvQueue;
+    unsigned int default_maxBurst;
     unsigned int supportedAddressTypes;
     gboolean    supportsPRSCTP;
     gboolean    supportsADDIP;
@@ -1820,7 +1821,7 @@ sctp_registerInstance(unsigned short port,
     sctpInstance->default_rtoMin = RTO_MIN;
     sctpInstance->default_rtoMax = RTO_MAX;
     sctpInstance->default_maxSendQueue = DEFAULT_MAX_SENDQUEUE;
-    sctpInstance->default_maxRecvQueue = 0;
+    sctpInstance->default_maxBurst = DEFAULT_MAX_BURST;
 
     InstanceList = g_list_insert_sorted(InstanceList, sctpInstance, &CompareInstanceNames);
 
@@ -3738,10 +3739,10 @@ void mdi_communicationUpNotif(unsigned short status)
                                                                 currentAssociation->supportsPRSCTP,
                                                                 currentAssociation->ulp_dataptr);
             LEAVE_CALLBACK("communicationUpNotif");
-	    if (currentAssociation != NULL) {
-		for (pathNum = 0; pathNum < currentAssociation->noOfNetworks; pathNum++) {
-		    if (pm_pathConfirmed(pathNum) == TRUE) {
-			mdi_networkStatusChangeNotif(pathNum, PM_PATH_CONFIRMED);
+            if (currentAssociation != NULL) {
+                for (pathNum = 0; pathNum < currentAssociation->noOfNetworks; pathNum++) {
+		    if (pm_readState(pathNum) == PM_ACTIVE) {
+			mdi_networkStatusChangeNotif(pathNum, PM_ACTIVE);
 		    }
 		}
 	    }
@@ -4463,6 +4464,14 @@ int mdi_getDefaultRtoMax(void* sctpInstance)
     if (sctpInstance == NULL) return -1;
     else
         return ((SCTP_instance*)sctpInstance)->default_rtoMax;
+}
+
+int mdi_getDefaultMaxBurst(void)
+{
+    if (sctpInstance == NULL) return DEFAULT_MAX_BURST;
+    else if (currentAssociation == NULL) return DEFAULT_MAX_BURST;
+    else 
+	return (currentAssociation->sctpInstance->default_maxBurst);
 }
 
 int mdi_getDefaultDelay(void* sctpInstance)

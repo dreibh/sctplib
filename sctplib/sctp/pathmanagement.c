@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.11 2004/07/23 14:37:38 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.12 2004/07/26 15:53:38 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,8 +64,6 @@ typedef struct PATHDATA
     /*@{ */
     /** operational state of pathmanagement for one path */
     short state;
-    /** ==1 if path has been confirmed, else == 0*/
-    int confirmationState;    
     /** true if heartbeat is enabled */
     boolean heartbeatEnabled;
     /** true as long as RTO-Calc. has been done */
@@ -185,11 +183,15 @@ static gboolean handleChunksRetransmitted(short pathID)
                  "handleChunksRetransmitted(%d) : path-rtx-count==%u, peer-rtx-count==%u",
                  pathID, pmData->pathData[pathID].pathRetranscount, pmData->peerRetranscount);
 
-    if (pmData->pathData[pathID].state == PM_ACTIVE) {
+    if (pmData->pathData[pathID].state == PM_PATH_UNCONFIRMED) {
+    
         pmData->pathData[pathID].pathRetranscount++;
-	if (pmData->pathData[pathID].confirmationState == PM_PATH_CONFIRMED) {
-	        pmData->peerRetranscount++;
-	}
+        
+    } else if (pmData->pathData[pathID].state == PM_ACTIVE) {
+    
+        pmData->pathData[pathID].pathRetranscount++;
+        pmData->peerRetranscount++;
+        
     } else {
         event_log(INTERNAL_EVENT_0,
                   "handleChunksRetransmitted: ignored, because already inactive");
@@ -371,10 +373,10 @@ void pm_heartbeatTimer(TimerID timerID, void *associationIDvoid, void *pathIDvoi
         }
     }
 
-    if (!pmData->pathData[pathID].chunksAcked &&
+    if (!removed_association &&
+        !pmData->pathData[pathID].chunksAcked &&
          pmData->pathData[pathID].heartbeatEnabled &&
-        !pmData->pathData[pathID].chunksSent &&
-        !removed_association) {
+        !pmData->pathData[pathID].chunksSent) {
         /* Remark: If commLost is detected in handleChunksRetransmitted, the current association
            is marked for deletetion. Doing so, all timers are stop. The HB-timers are
            stopped by calling pm_disableHB in mdi_deleteCurrentAssociation. This is why
@@ -494,13 +496,8 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
     if (hbSignatureOkay == FALSE) {
         error_log(ERROR_FATAL, "pm_heartbeatAck: FALSE SIGNATURE !!!!!!!!!!!!!!!");
         return;
-    } else {
-        if (pmData->pathData[pathID].confirmationState == PM_PATH_UNCONFIRMED) {
-            mdi_networkStatusChangeNotif(pathID, PM_PATH_CONFIRMED);
-            pmData->pathData[pathID].confirmationState = PM_PATH_CONFIRMED;
-        }    
-        event_logi(EXTERNAL_EVENT, "Path Status of PATH %d is CONFIRMED", pathID);
     }
+    
     ch_forgetChunk(heartbeatCID);
 
     if (!(pathID >= 0 && pathID < pmData->numberOfPaths)) {
@@ -511,7 +508,7 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
     /* this also resets error counters */
     handleChunksAcked(pathID, roundtripTime);
 
-    if (pmData->pathData[pathID].state == PM_INACTIVE) {
+    if (pmData->pathData[pathID].state == PM_INACTIVE || pmData->pathData[pathID].state == PM_PATH_UNCONFIRMED) {
         /* Handling of acked heartbeats is the simular that that of acked data chunks. */
         /* change to the active state */
         pmData->pathData[pathID].state = PM_ACTIVE;
@@ -956,34 +953,6 @@ unsigned int pm_readSRTT(short pathID)
     }
 }                               /* end: pm_readSRTT */
 
-/**
- * pm_pathConfirmed returns the current confirmation state of the path.
- * @param pathID  path-ID
- * @return TRUE if path has been confirmed, FALSE if path has not been confirmed
-*/
-gboolean pm_pathConfirmed(short pathID)
-{
-    pmData = (PathmanData *) mdi_readPathMan();
-
-    if (pmData == NULL) {
-        error_log(ERROR_MAJOR, "pm_pathConfirmed: mdi_readPathMan failed");
-        return FALSE;
-    }
-    if (pmData->pathData == NULL) {
-        error_log(ERROR_MAJOR, "pm_pathConfirmed: pathData==NULL failed");
-        return FALSE;
-    }
-
-    if (pathID >= 0 && pathID < pmData->numberOfPaths) {
-        return (pmData->pathData[pathID].confirmationState == PM_PATH_CONFIRMED);
-    } else {
-        error_logi(ERROR_MAJOR, "pm_pathConfirmed: invalid path ID %d", pathID);
-        return FALSE;
-    }
-
-
-}
-
 
 /**
   pm_readState returns the current state of the path.
@@ -1203,7 +1172,7 @@ int pm_getHBInterval(short pathID, unsigned int* current_interval)
 short pm_setPaths(short noOfPaths, short primaryPathID)
 {
     PathmanData *pmData;
-    int i;
+    int b,i,j = 0;
 
     pmData = (PathmanData *) mdi_readPathMan();
 
@@ -1224,11 +1193,9 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
 
 
         for (i = 0; i < noOfPaths; i++) {
-            pmData->pathData[i].state = PM_ACTIVE;
-            if (i != primaryPathID) {
-                pmData->pathData[i].confirmationState = PM_PATH_UNCONFIRMED;
-            } else {
-                pmData->pathData[pmData->primaryPath].confirmationState = PM_PATH_CONFIRMED;
+            pmData->pathData[i].state = PM_PATH_UNCONFIRMED;
+            if (i == primaryPathID) {
+                pmData->pathData[i].state = PM_ACTIVE;
             }
             pmData->pathData[i].heartbeatEnabled = TRUE;
             pmData->pathData[i].firstRTO = TRUE;
@@ -1246,13 +1213,26 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
             pmData->pathData[i].heartbeatIntervall = PM_INITIAL_HB_INTERVAL;
             pmData->pathData[i].hearbeatTimer = 0;
             pmData->pathData[i].pathID = i;
+
+            b = mdi_getDefaultMaxBurst();
+            
             if (i != primaryPathID) {
-                pmData->pathData[i].hearbeatTimer =
-                    adl_startTimer((i * pmData->pathData[i].rto + 1),    /* send HB quickly on all unconfirmed paths */
-                                    &pm_heartbeatTimer,
-                                    TIMER_TYPE_HEARTBEAT,
-                                    (void *) &pmData->associationID,
-                                    (void *) &pmData->pathData[i].pathID);
+                j++;
+                if (j < b) {
+                    pmData->pathData[i].hearbeatTimer =
+                        adl_startTimer(j,    /* send HB quickly on first usually four unconfirmed paths */
+                                       &pm_heartbeatTimer,
+                                       TIMER_TYPE_HEARTBEAT,
+                                        (void *) &pmData->associationID,
+                                        (void *) &pmData->pathData[i].pathID);
+                } else {
+                    pmData->pathData[i].hearbeatTimer =
+                        adl_startTimer(pmData->pathData[i].rto * (j-b),    /* send HB more slowly on other paths */
+                                       &pm_heartbeatTimer,
+                                       TIMER_TYPE_HEARTBEAT,
+                                       (void *) &pmData->associationID,
+                                       (void *) &pmData->pathData[i].pathID);
+                }
             } else {
                 pmData->pathData[i].hearbeatTimer =
                     adl_startTimer(pmData->pathData[i].heartbeatIntervall+pmData->pathData[i].rto,
