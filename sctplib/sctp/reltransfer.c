@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.8 2004/01/06 08:50:01 ajung Exp $
+ *  $Id: reltransfer.c,v 1.9 2004/01/07 09:02:57 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -88,6 +88,8 @@ typedef struct rtx_buffer_struct
     /** */
     unsigned int peer_arwnd;
     /** */
+    gboolean all_chunks_are_unacked;
+    /** */
     gboolean shutdown_received;
     /** */
     gboolean fast_recovery_active;
@@ -146,6 +148,7 @@ void *rtx_new_reltransfer(unsigned int number_of_destination_addresses, unsigned
     tmp->peer_arwnd = 0L;
     tmp->shutdown_received = FALSE;
     tmp->fast_recovery_active = FALSE;
+    tmp->all_chunks_are_unacked = TRUE;
     tmp->fr_exit_point = 0L;
     tmp->num_of_addresses = number_of_destination_addresses;
     tmp->advancedPeerAckPoint = iTSN - 1;   /* a save bet */
@@ -488,6 +491,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
     SCTP_sack_chunk *sack=NULL;
     fragment *frag=NULL;
     chunk_data *dat=NULL;
+    GList* tmp_list = NULL;
     int result;
     unsigned int advertised_rwnd, old_own_ctsna;
     unsigned int low, hi, ctsna, pos;
@@ -632,6 +636,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         if (dat->hasBeenAcked == FALSE && dat->hasBeenDropped == FALSE) {
                             rtx->newly_acked_bytes += dat->chunk_len;
                             dat->hasBeenAcked = TRUE;
+                            rtx->all_chunks_are_unacked = FALSE;
                             dat->gap_reports = 0;
                             if (dat->num_of_transmissions == 1 && adr_index == dat->last_destination) {
                                 rtx->saved_send_time = dat->transmission_time;
@@ -672,7 +677,32 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
 
     } else {                    /* no gaps reported in this SACK */
         /* do nothing */
+        if (rtx->all_chunks_are_unacked == FALSE) {
+            /* okay, we have chunks in the queue that were acked by a gap report before       */
+            /* and reneged: reset their status to unacked, since that is what peer reported   */
+            /* fast retransmit reneged chunks, as per section   6.2.1.D.iii) of RFC 2960      */
+            event_log(VVERBOSE, "rtx_process_sack: resetting all *hasBeenAcked* attributes");
+            tmp_list = g_list_first(rtx->chunk_list);
+            while (tmp_list) {
+                dat = g_list_nth_data(tmp_list, 0);
+                if (!dat) break;
+                if (dat->hasBeenAcked == TRUE && dat->hasBeenDropped == FALSE) {
+                    dat->hasBeenAcked = FALSE;
+                    rtx_necessary = TRUE;
+                    rtx_chunks[chunks_to_rtx] = dat;
+                    dat->gap_reports = 0;
+                    dat->hasBeenFastRetransmitted = TRUE;
+                    event_logi(VVERBOSE, "rtx_process_sack: RENEG --> fast retransmitting chunk tsn %u ", dat->chunk_tsn);
+                    chunks_to_rtx++;
+                    /* preparation for what is in section 6.2.1.C */
+                    retransmitted_bytes += dat->chunk_len;
+                }
+                tmp_list = g_list_next(tmp_list);
+            }
+            rtx->all_chunks_are_unacked = TRUE;
+        }
     }
+
     event_log(INTERNAL_EVENT_0, "Marking of Chunks done in rtx_process_sack()");
     chunk_list_debug(VVERBOSE, rtx->chunk_list);
 

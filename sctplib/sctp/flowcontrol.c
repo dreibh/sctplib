@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.12 2004/01/06 08:50:01 ajung Exp $
+ * $Id: flowcontrol.c,v 1.13 2004/01/07 09:02:57 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -460,7 +460,7 @@ fc_select_destination(fc_data * fc, chunk_data * dat,
 void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
 {
     fc_data *fc;
-    unsigned int ad_idx, res, retransmitted_bytes = 0;
+    unsigned int ad_idx, res /*, retransmitted_bytes = 0 */;
     unsigned int oldListLen;
     int count;
     int num_of_chunks;
@@ -519,7 +519,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
         /* as per implementor's guide */
         fc->cparams[ad_idx].partial_bytes_acked = 0;
     }
-
+/*
     for (count = 0; count < num_of_chunks; count++) {
         retransmitted_bytes += chunks[count]->chunk_len;
         event_logi(VERBOSE, "fc_timer_cb_t3_timeout: Got TSN==%u for RTXmit\n",
@@ -532,15 +532,17 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
     else
         fc->outstanding_bytes = 0;
 
-
+*/
     /* insert chunks to be retransmitted at the beginning of the list */
     /* make sure, that they are unique in this list ! */
     for (count = num_of_chunks - 1; count >= 0; count--) {
         if (g_list_find(fc->chunk_list, chunks[count]) == NULL){
-            fc->chunk_list = g_list_insert_sorted(fc->chunk_list, chunks[count], (GCompareFunc) sort_tsn);
-            /* these chunks will not be counted, until they are actually sent again */
-            chunks[count]->hasBeenRequeued = TRUE;
-            fc->list_length++;
+            if (chunks[count]->hasBeenAcked == FALSE) {
+                fc->chunk_list = g_list_insert_sorted(fc->chunk_list, chunks[count], (GCompareFunc) sort_tsn);
+                /* these chunks will not be counted, until they are actually sent again */
+                chunks[count]->hasBeenRequeued = TRUE;
+                fc->list_length++;
+            }
         } else {
             event_logi(VERBOSE, "Chunk number %u already in list, skipped adding it", chunks[count]->chunk_tsn);
         }
@@ -602,7 +604,7 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
     dat->hasBeenRequeued = FALSE;
 
     /* section 6.2.1.B */
-    /* leave peers arwnd untouched for retransmitted data !!!!!!!!! */
+    /* leave    peers arwnd untouched for retransmitted data !!!!!!!!! */
     if (dat->num_of_transmissions == 1) {
         /* outstanding byte counter has been decreased if chunks were scheduled for RTX, increase here ! */
         fc->outstanding_bytes += dat->chunk_len;
