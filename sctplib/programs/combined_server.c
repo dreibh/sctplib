@@ -1,5 +1,5 @@
 /*
- *  $Id: combined_server.c,v 1.7 2003/11/20 19:23:00 tuexen Exp $
+ *  $Id: combined_server.c,v 1.8 2004/07/22 10:30:46 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -282,10 +282,19 @@ void* echoCommunicationUpNotif(unsigned int assocID, int status,
                                int associationSupportsPRSCTP, void* dummy)
 {	
     struct ulp_data *ulpDataPtr;
+    SCTP_PathStatus pathStatus;
+    unsigned int i;
 
     if (verbose) {  
         fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfPaths);
         fflush(stdout);
+    }
+    
+    if (vverbose) {
+        for (i=0; i < noOfPaths; i++) {
+            SCTP_getPathStatus(assocID, i, &pathStatus);
+            fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
+        }
     }
   
     ulpDataPtr                   = malloc(sizeof(struct ulp_data));
@@ -295,16 +304,25 @@ void* echoCommunicationUpNotif(unsigned int assocID, int status,
 }
 
 void* daytimeCommunicationUpNotif(unsigned int assocID, int status,
-                                  unsigned int noOfDestinations,
+                                  unsigned int noOfPaths,
                                   unsigned short noOfInStreams, unsigned short noOfOutStreams,
                                   int associationSupportsPRSCTP, void* dummy)
 {	
     char *timeAsString;
     time_t now;
+    SCTP_PathStatus pathStatus;
+    unsigned int i;
  
     if (verbose) {  
-        fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfDestinations);
+        fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfPaths);
         fflush(stdout);
+    }
+    
+    if (vverbose) {
+        for (i=0; i < noOfPaths; i++) {
+            SCTP_getPathStatus(assocID, i, &pathStatus);
+            fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
+        }
     }
    
     /* get the current time and convert to string */
@@ -329,19 +347,28 @@ void* daytimeCommunicationUpNotif(unsigned int assocID, int status,
 }
 
 void* chargenCommunicationUpNotif(unsigned int assocID, int status,
-                                  unsigned int noOfDestinations,
+                                  unsigned int noOfPaths,
                                   unsigned short noOfInStreams, unsigned short noOfOutStreams,
                                   int associationSupportsPRSCTP, void* dummy)
 {	
     int length;
     unsigned char buffer[BUFFER_LENGTH];
     struct ulp_data *ulpDataPtr;
+    SCTP_PathStatus pathStatus;
+    unsigned int i;
 
     if (verbose) {  
-        fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfDestinations);
+        fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfPaths);
         fflush(stdout);
     }
     
+    if (vverbose) {
+        for (i=0; i < noOfPaths; i++) {
+            SCTP_getPathStatus(assocID, i, &pathStatus);
+            fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
+        }
+    }
+
     length = 1 + (rand() % 512);
     memset((void *)buffer, 'A', length);
     buffer[length-1] = '\n';
@@ -364,14 +391,25 @@ void* chargenCommunicationUpNotif(unsigned int assocID, int status,
 }
 
 void* discardCommunicationUpNotif(unsigned int assocID, int status,
-                                  unsigned int noOfDestinations,
+                                  unsigned int noOfPaths,
                                   unsigned short noOfInStreams, unsigned short noOfOutStreams,
                                   int associationSupportsPRSCTP, void* dummy)
 {	
+    SCTP_PathStatus pathStatus;
+    unsigned int i;
+
     if (verbose) {  
-        fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfDestinations);
+        fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfPaths);
         fflush(stdout);
     }
+        
+    if (vverbose) {
+        for (i=0; i < noOfPaths; i++) {
+            SCTP_getPathStatus(assocID, i, &pathStatus);
+            fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
+        }
+    }
+
     return NULL;
 }
 
