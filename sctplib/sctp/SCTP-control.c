@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.9 2003/10/28 20:44:55 tuexen Exp $
+ *  $Id: SCTP-control.c,v 1.10 2003/10/30 17:21:15 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1302,6 +1302,8 @@ void scr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
     if (mdi_readLastInitiateTag() != cookie_local_tag) {
         ch_forgetChunk(cookieCID);
+        ch_deleteChunk(initCID);
+        ch_deleteChunk(initAckCID);
         event_log(EXTERNAL_EVENT, "event: good cookie echo received, but with incorrect verification tag");
         return;
     }
