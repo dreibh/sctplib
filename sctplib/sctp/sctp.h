@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.11 2004/07/26 15:53:38 ajung Exp $
+ *  $Id: sctp.h,v 1.12 2004/11/10 19:22:21 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -38,8 +38,8 @@
  *          Further comments on these functions can be found in the implemen-
  *          tation of this interface in the files distribution.c, adaptation.c
  *          and in the accompanying manual (see subdirectory manual)
- * 
- *  function prefix: sctp_         
+ *
+ *  function prefix: sctp_
  */
 
 #ifndef SCTP_H
@@ -68,14 +68,14 @@ extern "C" {
 #define SCTP_MAJOR_VERSION      1
 #define SCTP_MINOR_VERSION      0
 #define SCTP_TINY_VERSION       2
- 
+
 /* the maximum length of an IP address string (IPv4 or IPv6, NULL terminated) */
 /* see RFC 1884 (mixed IPv6/Ipv4 addresses)   */
 #define SCTP_MAX_IP_LEN           46        /* ==  INET6_ADDRSTRLEN      */
 
 /** this parameter specifies the maximum number of addresses that an endpoint may have */
 #define SCTP_MAX_NUM_ADDRESSES      20
-                                
+
 /* reasonable sized SACK, SCTP and IP header + one data chunk should be less than MTU */
 /* this is for ethernet..... ;-) */
 #define SCTP_MAXIMUM_DATA_LENGTH     1400
@@ -170,7 +170,7 @@ typedef
    This struct containes the pointers to ULP callback functions.
    Each SCTP-instance can have its own set of callback functions.
    The callback functions of each SCTP-instance can be found by
-   first reading the datastruct of an association from the list of 
+   first reading the datastruct of an association from the list of
    associations. The datastruct of the association contains the name
    of the SCTP instance to which it belongs. With the name of the SCTP-
    instance its datastruct can be read from the list of SCTP-instances.
@@ -531,21 +531,24 @@ unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
                              unsigned short destinationPort,
                              void* ulp_data);
 
-                            
+
 int sctp_shutdown(unsigned int associationID);
 
 int sctp_abort(unsigned int associationID);
 
-int sctp_send(unsigned int associationID,
-              unsigned short streamID,
-              unsigned char *buffer,
-              unsigned int length,
-              unsigned int protocolId,
-              short path_id,         /* -1 for primary path, else address index to be taken */
-              void * context,        /* SCTP_NO_CONTEXT */
-              unsigned int lifetime, /* 0xFFFFFFFF-> infinite, 0->no retransmit, else msecs */
-              int unorderedDelivery, /* use constants SCTP_ORDERED_DELIVERY, SCTP_UNORDERED_DELIVERY */
-              int dontBundle);  /* use constants SCTP_BUNDLING_ENABLED, SCTP_BUNDLING_DISABLED */
+#ifndef SCTP_SOCKET_API
+#define sctp_send sctp_send_private
+#endif
+int sctp_send_private(unsigned int associationID,
+                      unsigned short streamID,
+                      unsigned char *buffer,
+                      unsigned int length,
+                      unsigned int protocolId,
+                      short path_id,         /* -1 for primary path, else address index to be taken */
+                      void * context,        /* SCTP_NO_CONTEXT */
+                      unsigned int lifetime, /* 0xFFFFFFFF-> infinite, 0->no retransmit, else msecs */
+                      int unorderedDelivery, /* use constants SCTP_ORDERED_DELIVERY, SCTP_UNORDERED_DELIVERY */
+                      int dontBundle);  /* use constants SCTP_BUNDLING_ENABLED, SCTP_BUNDLING_DISABLED */
 
 
 /*
@@ -582,10 +585,10 @@ int sctp_setAssocStatus(unsigned int associationID, SCTP_AssociationStatus* new_
 int sctp_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatus* status);
 int sctp_setPathStatus(unsigned int associationID, short path_id, SCTP_PathStatus *new_status);
 /*----------------------------------------------------------------------------------------------*/
-/* 
+/*
  * These _could_ be build up from the above functions, but for the sake of a
  * complete API according to RFC 2960, section 10, we have the following
- * six functions  here, explicitly 
+ * six functions  here, explicitly
  */
 
 short sctp_setPrimary(unsigned int associationID, short path_id);

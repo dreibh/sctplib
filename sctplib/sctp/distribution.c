@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.27 2004/08/25 13:25:14 dreibh Exp $
+ *  $Id: distribution.c,v 1.28 2004/11/10 19:22:21 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -2205,12 +2205,12 @@ int sctp_abort(unsigned int associationID)
  *                           boolean, 0==normal bundling, 1==do not bundle message
  *  @return   error code     -1 for send error, 1 for association error, 0 if successful
  */
-int sctp_send(unsigned int associationID, unsigned short streamID,
-                   unsigned char *buffer, unsigned int length, unsigned int protocolId, short path_id,
-                   void*  context, /* optional (=SCTP_NO_CONTEXT=NULL if none) */
-                   unsigned int lifetime, /* optional (zero -> infinite) */
-                   int unorderedDelivery, /* boolean, 0==ordered, 1==unordered */
-                   int dontBundle)      /* boolean, 0==normal bundling, 1==do not bundle message */
+int sctp_send_private(unsigned int associationID, unsigned short streamID,
+                      unsigned char *buffer, unsigned int length, unsigned int protocolId, short path_id,
+                      void*  context, /* optional (=SCTP_NO_CONTEXT=NULL if none) */
+                      unsigned int lifetime, /* optional (zero -> infinite) */
+                      int unorderedDelivery, /* boolean, 0==ordered, 1==unordered */
+                      int dontBundle)      /* boolean, 0==normal bundling, 1==do not bundle message */
 {
     int result = SCTP_SUCCESS;
     SCTP_instance *old_Instance = sctpInstance;
