@@ -27,25 +27,25 @@
 
 
 
-// payload: header (6 bytes) and body (initially 26 bytes)
+/* payload: header (6 bytes) and body (initially 26 bytes) */
 char payloadContents[MAX_PAYLOAD_LENGTH] = "\0\0\0\0\0\0ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 unsigned int payloadLength = HEADER_LENGTH + 26;
 
-// receiver state
+/* receiver state */
 int receiveEnabled = 1;
 int receiveMode = RECEIVE_DISCARD;
 unsigned int unreceivedChunks = 0;
 
-// instance and association IDs (0 indicates that no instance is registered / no association is established)
+/* instance and association IDs (0 indicates that no instance is registered / no association is established) */
 short instanceID = 0;
 unsigned int assocID = 0;
 
-// association parameters
+/* association parameters */
 unsigned short noOfInStreams;
 unsigned short noOfOutStreams;
-char localIP[SCTP_MAX_IP_LEN];   // this is only used in event log messages
+char localIP[SCTP_MAX_IP_LEN];   /* this is only used in event log messages */
 
-// Timer ID (0 indicates that the timer isn't running)
+/* Timer ID (0 indicates that the timer isn't running) */
 unsigned int pauseTimerID = 0;
 
 
@@ -76,7 +76,7 @@ int sctptest_start(char *filename, int mode)
     } loop[100];
 
 
-    // open script file
+    /* open script file */
     if ((scriptFile = fopen(filename, "r")) == NULL) {
         fprintf(stderr, "File not found: %s\n", filename);
         exit(1);
@@ -100,7 +100,7 @@ int sctptest_start(char *filename, int mode)
                  break;
 
             case PARSE_OK:
-                 // check if INITIALIZE is the first command
+                 /* check if INITIALIZE is the first command */
                  if (initialized == 0) {
                      if (strcmp(scriptCommand.command, "INITIALIZE") != 0) {
                          fprintf(stderr, "Line %u: INITIALIZE expected at beginning of script file.\n", lineNum);
@@ -109,7 +109,7 @@ int sctptest_start(char *filename, int mode)
                      initialized = 1;
                  }
 
-                 // handle loops
+                 /* handle loops */
                  if (strcmp(scriptCommand.command, "LOOP") == 0)
                  {
                      if (loopIndex > 99) {
@@ -145,7 +145,7 @@ int sctptest_start(char *filename, int mode)
                      }
                  }
 
-                 // process script command
+                 /* process script command */
                  else {
                      err += processScriptCommand(&scriptCommand, lineNum, mode);
                      break;
@@ -173,10 +173,10 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
 {
     unsigned int errors = 0;
 
-    // nur zum Testen...
-    // printCommand(sc, lineNum);
+    /* nur zum Testen... */
+    /* printCommand(sc, lineNum); */
 
-    // Of course, a hashtable would be much more elegant... ;-)
+    /* Of course, a hashtable would be much more elegant... ;-) */
 
     /* INITIALIZE */
     if (strcmp(sc->command, "INITIALIZE") == 0)
@@ -479,19 +479,19 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                                     SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
                 n++;
 
-                // handle sctp_send errors
+                /* handle sctp_send errors */
                 if (sendRes == 1)
                     printf("Exception in line %u: sctp_send returned association error\n", lineNum);
                 else if (sendRes == -1)
                     printf("Exception in line %u: sctp_send returned send error\n", lineNum);
 
-                // start delay timer
+                /* start delay timer */
                 if (delay > 0) {
                     pauseTimerID = sctp_startTimer(delay/1000, (delay%1000)*1000, &timerCallback, NULL, NULL);
                     while (pauseTimerID != 0)
                         sctp_eventLoop();
                 }
-                // unnötig(?) sctp_getEvents();
+                /* unnötig(?) sctp_getEvents(); */
             }
         }
     }
@@ -516,7 +516,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
 
             sendRes = sctp_sendRawData(assocID, pathId, payloadContents, payloadLength);
 
-            // handle sctp_send errors
+            /* handle sctp_send errors */
             if (sendRes == 1)
                     printf("Exception in line %u: sctp_sendRawData returned association error\n", lineNum);
              else if (sendRes == -1)
@@ -683,7 +683,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                 printf("Exception in line %u: ASSOCIATE failed.\n", lineNum);
             }
 
-            // wait until assoc is established
+            /* wait until assoc is established */
             while(assocID == 0)
                 sctp_eventLoop();
         }
@@ -697,7 +697,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
     }
 
 
-    // Get outstanding events
+    /* Get outstanding events */
     if (mode == RUN_SCRIPT)
         sctp_getEvents();
 
@@ -773,8 +773,8 @@ char *getStrParam(struct sctptest_scriptCommand *sc, char *key, unsigned int *er
 unsigned long getIntParam(struct sctptest_scriptCommand *sc, char *key, unsigned long lowLimit,
                  unsigned long highLimit, int base, unsigned int *err, int paramType, unsigned int lineNum)
 {
-    // Maybe there should be a parameter for the (default) value that
-    // shall be returned if an optional parameter has been omitted
+    /* Maybe there should be a parameter for the (default) value that */
+    /* shall be returned if an optional parameter has been omitted */
 
     char *str, *endp;
     unsigned long res;
@@ -862,7 +862,7 @@ void dataArriveNotif(unsigned int assoc, unsigned int stream, unsigned int len,
     unsigned short seqno;
     unsigned int tsn;
 
-    // if data unexpectedly arrives on a stream > 0
+    /* if data unexpectedly arrives on a stream > 0 */
     if (stream != 0) {
         printf("%s (%s) - Data arrived on stream %u -- receiving %u bytes\n",
                getTimeString(), localIP, stream, len);
@@ -884,7 +884,7 @@ void dataArriveNotif(unsigned int assoc, unsigned int stream, unsigned int len,
                             SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME,
                             SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
 
-        // handle sctp_send errors
+        /* handle sctp_send errors */
         if (sendRes == 1)
             printf("Exception in mirror process: sctp_send returned association error\n");
         else if (sendRes == -1)
@@ -912,7 +912,7 @@ void *communicationUpNotif(unsigned int assoc, int status, unsigned  int noOfDes
                            unsigned short instreams, unsigned short outstreams,
                            int associationSupportsPRSCTP, void *dummy)
 {
-    // abort if association already exists
+    /* abort if association already exists */
     if (assocID != 0) {
         printf("%s (%s) - Communication up notification arrived -> sending ABORT (only one association allowed)",
                getTimeString(), localIP);

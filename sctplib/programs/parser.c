@@ -70,7 +70,7 @@ int getScriptCommand(FILE *scriptFile, struct sctptest_scriptCommand *scriptComm
     enum { COMMAND, PARAM_KEY, PARAM_VALUE, PARAM_VALUE_STRING } state;
 
 
-    // Initialization
+    /* Initialization */
     if ((line != NULL) && (*line == 0))
         *line = 1;
     for (i = 0; i < MAX_NUM_OF_PARAMS; i++) {
@@ -84,7 +84,7 @@ int getScriptCommand(FILE *scriptFile, struct sctptest_scriptCommand *scriptComm
     termExp = 0;
 
 
-    // enter scan/parse loop
+    /* enter scan/parse loop */
     while (1)
     {
         ch = fgetc(scriptFile);
@@ -168,7 +168,7 @@ int getScriptCommand(FILE *scriptFile, struct sctptest_scriptCommand *scriptComm
                         termCh = '=';
                         break;
                     case PARAM_VALUE_STRING:
-                        // just to avoid compiler warnings
+                        /* just to avoid compiler warnings */
                         break;
                     default:
                         break;
@@ -187,7 +187,7 @@ int getScriptCommand(FILE *scriptFile, struct sctptest_scriptCommand *scriptComm
                 return PARSE_ERROR;
         }
 
-        else {   // (if !termExp)
+        else {   /* (if !termExp) */
 
             if (isspace(ch)) {
                 if (*wordBuffer != '\0')
@@ -231,7 +231,7 @@ int getScriptCommand(FILE *scriptFile, struct sctptest_scriptCommand *scriptComm
                         termCh = '=';
                         break;
                     case PARAM_VALUE_STRING:
-                        // just to avoid compiler warnings
+                        /* just to avoid compiler warnings */
                         break;
                     default:
                         break;

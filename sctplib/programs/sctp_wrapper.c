@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: sctp_wrapper.c,v 1.3 2003/09/10 21:21:50 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -224,7 +224,7 @@ SCTP_receive(unsigned int associationID, unsigned short streamID, unsigned char 
             fprintf(stderr, "sctp_receive: internal error.\n");
         } else
         if (result == SCTP_SPECIFIC_FUNCTION_ERROR) {
-            // fprintf(stderr, "sctp_receive: NO DATA AVAILABLE.\n");
+            /* fprintf(stderr, "sctp_receive: NO DATA AVAILABLE.\n"); */
         } else
         if (result == SCTP_PARAMETER_PROBLEM) {
             fprintf(stderr, "sctp_receive: parameter problem (Null-Pointers, PathID ?)\n");

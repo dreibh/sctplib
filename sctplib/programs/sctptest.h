@@ -17,33 +17,33 @@
 
 
 
-// payload lengths
+/* payload lengths */
 #define MIN_PAYLOAD_LENGTH   20
 #define MAX_PAYLOAD_LENGTH  494
 #define HEADER_LENGTH  6
 
-// constants used by processScriptCommand()
+/* constants used by processScriptCommand() */
 #define CHECK_SCRIPT  0
 #define RUN_SCRIPT    1
 
-// receive mode constants
+/* receive mode constants */
 #define RECEIVE_DISCARD  0
 #define RECEIVE_MIRROR   1
 
-// constants used by getIntParam() and getStrParam()
+/* constants used by getIntParam() and getStrParam() */
 #define OPTIONAL   1
 #define MANDATORY  0
 #define DECIMAL      10
 #define HEXADECIMAL  16
 
-// results returned by getScriptCommand()
+/* results returned by getScriptCommand() */
 #define PARSE_OK           0
 #define END_OF_FILE        1
 #define PARSE_ERROR       -1
 
-// constants for sctptest_scriptCommand
+/* constants for sctptest_scriptCommand */
 #define MAX_NUM_OF_PARAMS   10
-#define MAX_WORD_LENGTH   1000      // (this includes the terminating '\0' character)
+#define MAX_WORD_LENGTH   1000      /* (this includes the terminating '\0' character) */
 
 
 
@@ -53,14 +53,14 @@
  */
 struct sctptest_scriptCommand
 {
-    // the number of parameters that are passed along with this command
+    /* the number of parameters that are passed along with this command */
     unsigned int numOfParams;
 
-    // the command string
+    /* the command string */
     char command[MAX_WORD_LENGTH];
 
-    // an array of structs containing the parameters;
-    // each parameter consists of a key and a value
+    /* an array of structs containing the parameters; */
+    /* each parameter consists of a key and a value */
     struct {
         char key[MAX_WORD_LENGTH];
         char value[MAX_WORD_LENGTH];
@@ -75,7 +75,7 @@ int sctptest_start(char *, int);
 
 int getScriptCommand(FILE *, struct sctptest_scriptCommand *, unsigned int *, unsigned int *, int mode);
 
-// only for testing...
+/* only for testing... */
 void printCommand(struct sctptest_scriptCommand *, unsigned int);
 
 int processScriptCommand(struct sctptest_scriptCommand *, unsigned int, int);

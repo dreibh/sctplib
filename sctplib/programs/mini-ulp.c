@@ -1,5 +1,5 @@
 /*
- *  $Id: mini-ulp.c,v 1.2 2003/07/01 13:58:26 ajung Exp $
+ *  $Id: mini-ulp.c,v 1.3 2003/09/10 21:21:50 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -277,7 +277,9 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
 	if (strcmp(readBuffer, "help") == 0) {
 		printf("Available commands are:\n");
 		printf(" quit - exit the program\n");
-//        printf(" setassoc:WWW.XXX.YYY.ZZZ - set association id for assoc with this destination\n");
+        /*
+        printf(" setassoc:WWW.XXX.YYY.ZZZ - set association id for assoc with this destination\n");
+        */
 		printf(" setpay:payload - set the payload type\n");
 		printf(" setdefstrm:num - set the default stream to\n");
 		printf(" ping:size:stream:times - play ping pong\n");
@@ -312,14 +314,16 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
 			printf("N was 0? defaulting to 64\n");
 			x = 64;
 		}
-		// ret = sendLoopRequest(m, x);
+		/*
+        ret = sendLoopRequest(m, x);
+		*/ 
 		printf("Sent loop returned %d\n", ret);
     } else if (strncmp(readBuffer, "setpay:", 7) == 0) {
 		payload = strtol(&readBuffer[7], NULL, 0);
 		printf("payloadtype set to %d\n", payload);
     } else if (strncmp(readBuffer, "setassoc:", 9) == 0) {
-//      this could be used when we have several assocs		
-//         = strtol(&readBuffer[9], NULL, 0);
+/*      this could be used when we have several assocs	*/	
+/*         = strtol(&readBuffer[9], NULL, 0);  */
 		printf("assoc ID is %u\n", assocID);
     } else if (strncmp(readBuffer, "timeoutval:", 11) == 0) {
 		timeoutval = strtol(&readBuffer[11], NULL, 0);
@@ -333,7 +337,7 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
                 sctp_changeHeartBeat(assocID, i, TRUE, timeoutval);
 		}
 	} else if (strcmp(readBuffer, "getrtt") == 0) {
-		// printf("RTT of TO is %d\n", sctpGETRTTREPORT(m, &to_ip));
+		/* printf("RTT of TO is %d\n", sctpGETRTTREPORT(m, &to_ip)); */
     } else if (strncmp(readBuffer, "dohb:",5) == 0) {
         int path;
 		path = strtol(&readBuffer[5], NULL, 0);
@@ -359,7 +363,7 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
 		sID1 = strtol(&readBuffer[11], NULL, 0);
 	} else if (strcmp("assoc", readBuffer) == 0) {
 		printf("Sorry - command not yet implemented\n");
-        //	sctpASSOCIATE(m, &to_ip, 0);
+        /*	sctpASSOCIATE(m, &to_ip, 0); */
 	} else if (strncmp("ping:", readBuffer, 5) == 0) {
 		char *end, *nxt;
 		int skip;
@@ -413,7 +417,9 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
 		/* prepare ping buffer */
         doPingPong();
 	} else if (strncmp("bulk:", readBuffer, 5) == 0) {
-		// int ret;
+		/*
+        int ret;
+		*/
 		char *end, *nxt;
 		int skip;
 		skip = 0;
@@ -461,8 +467,8 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
         timerID = sctp_startTimer(timeoutval/1000, (timeoutval%1000)*1000, &timer_expired, NULL, NULL);
 
 	} else if (strcmp("inqueue", readBuffer) == 0) {
-//		printf("Outbound queue count to dest = %d\n", sctpHOWMANYINQUEUE(m, &to_ip));
-//		printf("Inbound queue count = %d\n", sctpHOWMANYINBOUND(m));
+/*		printf("Outbound queue count to dest = %d\n", sctpHOWMANYINQUEUE(m, &to_ip)); */
+/*		printf("Inbound queue count = %d\n", sctpHOWMANYINBOUND(m)); */
 	} else {
         if (timerID != 0) {
 		    printf("bulk or ping might be in progress, not sending !!!\n");
@@ -496,7 +502,9 @@ void timer_expired(unsigned int tID, void *associationIDvoid, void *unused)
     int i;
     unsigned char j;
 
-//     AssociationStatus *state = NULL;
+/*
+    AssociationStatus *state = NULL;
+*/
 
 /*  fprintf(stderr, "#######################################################################\n");
     fprintf(stderr, "ULP timer expired: sending next chunk\n");
@@ -538,7 +546,7 @@ void timer_expired(unsigned int tID, void *associationIDvoid, void *unused)
             /*                send chunk with length = datalength  */
 
         for (i = 0; i < SEND_EVENTS_WHEN_TIMER_EXPIRES; i++) {
-           //gettimeofday((struct timeval *) &chunk[0], NULL);
+           /*gettimeofday((struct timeval *) &chunk[0], NULL); */
            result = sctp_send(assocID, sID1, (unsigned char *) chunk,
                            dataLength, payload, -1, 0, 0, unordered, 0);
         }
@@ -569,7 +577,9 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned
     unsigned int theTSN;
     unsigned short SID, SSN;
     gboolean ascii_chunk;
-//    struct timeval *t;
+/*
+    struct timeval *t;
+*/
 
     fprintf(stderr, "\n#######################################################################\n");
     fprintf(stderr, "ulp_dataArriveNotif : Association ID : %u, Stream ID : %u, Length : %u, TSN: %u, ProtoID : %u\n",
@@ -580,10 +590,10 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned
     sctp_receive(assoc_id, stream_id, chunk, (unsigned int *) &length, &SSN, &theTSN, SCTP_MSG_DEFAULT);
     chunks_received++;
 
-//     t = (struct timeval *) chunk;
-
-//    fprintf(stderr, "%lu.%06lu \n", t->tv_sec, t->tv_usec);
-
+/*
+    t = (struct timeval *) chunk;
+    fprintf(stderr, "%lu.%06lu \n", t->tv_sec, t->tv_usec);
+*/
     if (pingPongCount > 0) {
         if (strncmp(chunk, "pong", 4) == 0) {
 			i = handlePong();
@@ -700,7 +710,9 @@ void ulp_communicationLostNotif(unsigned int assoc_id, unsigned short status, vo
     timerID = 0;
 	printf(">");
 	fflush(stdout);
-//    exit(0);
+/*
+    exit(0);
+*/
 }
 
 void ulp_ShutdownCompleteNotif(unsigned int assoc_id, void* dummy)

@@ -37,7 +37,7 @@
  */
 void exitCallback(int fd, short int revents, short int* gotEvents, void * dummy)
 {
-    // clear stdin buffer
+    /* clear stdin buffer */
     while(getchar() != 10);
 
     exit(0);
@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 {
     unsigned int numOfErrors = 0;
 
-    // check if there is exactly one command line parameter
+    /* check if there is exactly one command line parameter */
     if (argc != 2) {
         fprintf(stderr, "SCTPTest by Andreas Lang\n");
         fprintf(stderr, "Usage: sctptest <scriptfile>\n");
@@ -64,13 +64,13 @@ int main(int argc, char *argv[])
 
     sctp_initLibrary();
 
-    // check script for errors
+    /* check script for errors */
     if ((numOfErrors = sctptest_start(argv[1], CHECK_SCRIPT)) != 0) {
         fprintf(stderr, "\n%u error(s) in script file!\n", numOfErrors);
         exit(1);
     }
 
-    // run script
+    /* run script */
     sctptest_start(argv[1], RUN_SCRIPT);
 
     fprintf(stderr, "\nReached end of script file. Press RETURN to exit.\n");
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
     while (sctp_eventLoop() >= 0);
 
-    // this will never be reached
+    /* this will never be reached */
     return 0;
 }
 
