@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.4 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: terminal.c,v 1.5 2003/10/12 10:50:01 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -205,14 +205,12 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
       fflush(stdout);
     }
     /* read it */
-/*    
+        
     length = SCTP_MAXIMUM_DATA_LENGTH;
     SCTP_receive(assocID, streamID, chunk, &length,&ssn, &the_tsn, SCTP_MSG_DEFAULT);
-    chunk[length]=0;
+    chunk[length] = 0;
     fprintf(stdout, "%s", chunk);
-    fflush(stdout); */
-    fprintf(stdout, "Not Printing Data of Chunk, chunklen==%d \n", len);
-    fflush(stdout); 
+    fflush(stdout);
 }
 
 void sendFailureNotif(unsigned int assocID,
