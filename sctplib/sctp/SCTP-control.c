@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.14 2004/07/30 09:46:40 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.15 2004/07/30 12:06:52 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -575,7 +575,8 @@ void sci_add_abort_error_cause(ChunkID abortChunk,
 }                                                                    
 
 /**
- * this function aborts this association.
+ * this function aborts this association. And optionally adds an error parameter 
+ * to the ABORT chunk that is sent out.
  */
 void scu_abort(short error_type, unsigned short error_param_length, unsigned char* error_param_data)
 {
@@ -610,7 +611,7 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
         abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
 
         if (error_type >= 0) {
-            sci_add_abort_error_cause(abortCID,  (unsigned int)error_type, error_param_length,error_param_data);
+            sci_add_abort_error_cause(abortCID,  (unsigned int)error_type, error_param_length, error_param_data);
         }
         bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
         bu_sendAllChunks(NULL);
@@ -798,11 +799,13 @@ int scr_init(SCTP_init * init)
             ch_forgetChunk(initCID); */
             return_state = STATE_STOP_PARSING; /* to stop parsing without actually removing it */
             /* return return_state; */
-        } else if (process_further == 1) {
-            return_state = STATE_STOP_PARSING; /* to stop parsing without actually removing it */
+        } else {
+            if (process_further == 1) {
+                return_state = STATE_STOP_PARSING; /* to stop parsing without actually removing it */
+            }
+            /* send initAck */
+            bu_put_Ctrl_Chunk(ch_chunkString(initAckCID),NULL);
         }
-        /* send initAck */
-        bu_put_Ctrl_Chunk(ch_chunkString(initAckCID),NULL);
         bu_sendAllChunks(NULL);
         bu_unlock_sender(NULL);
         ch_deleteChunk(initAckCID);

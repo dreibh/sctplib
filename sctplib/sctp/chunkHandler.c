@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.11 2004/07/30 09:46:40 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.12 2004/07/30 12:05:28 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -231,7 +231,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
 
     event_logii(VERBOSE, "setIPAddresses : length = %u, my supp. AddrTypes=%d", length, myTypes);
 
-    (*types) = 0;
+    (*peerTypes) = 0;
     if (myTypes & SUPPORT_ADDRESS_TYPE_IPV4) {
 
         while ((cursrel = retrieveVLParamFromString(VLPARAM_IPV4_ADDRESS,
@@ -1030,11 +1030,13 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
             curs += pLen;
             /* take care of padding */
             while ((curs % 4) != 0) curs++;
-        
+        } else if (pType == VLPARAM_HOST_NAME_ADDR) {
+            scu_abort(ECC_UNRESOLVABLE_ADDRESS, pLen, (unsigned char*)vl_initPtr);
+            return -1;
         } else {
             event_logii(VERBOSE, "found unknown parameter type %u len %u in message", pType, pLen);
 
-            if (STOP_PARAM_PROCESSING(pType)) return -1;
+            if (STOP_PARAM_PROCESSING(pType)) return 1;
 
             if (STOP_PARAM_PROCESSING_WITH_ERROR(pType)){
 
