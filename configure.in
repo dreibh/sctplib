@@ -8,7 +8,7 @@ AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AC_CONFIG_SRCDIR(sctplib/programs/discard_server.c)
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(sctplib,1.0.2e)
+AM_INIT_AUTOMAKE(sctplib,1.0.2f)
 
 AC_CANONICAL_HOST
 
@@ -113,7 +113,7 @@ solaris*)
 	LDFLAGS="$LDFLAGS -lsocket -lnsl -lrt -lresolv"
 	;;
 darwin*)
-	CFLAGS="$CFLAGS -O0 -DDARWIN -Wall -ansi"
+	CFLAGS="$CFLAGS -O0 -DDARWIN -Wall -ansi -Wformat"
 	thread_LIBS="-lpthread"
 	;;
 esac
