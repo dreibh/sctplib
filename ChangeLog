@@ -1,11 +1,412 @@
-2004-07-30  <>
-	In the case of a hostname parameter sent to us in an INIT, we now send an ABORT 
-	with a error parameter back. 
-	 
+2004-07-30 15:25  ajung
 
-2004-07-30  <>
-	In the case of a hostname parameter sent to us in an INIT, we now send an ABORT  
-	with a error parameter back. 
+	* sctplib/docs/en/index.sgml: Added index.sgml file that can be
+	  used for documentation purposes.  We should later use this as a
+	  basis for creating a documentation.
+
+2004-07-30 15:21  ajung
+
+	* sctplib/docs/sctplibDoxy.txt: Added doxygen file. Users with
+	  installed doxygen can now go to the sctplib/docs directory and
+	  type "make doxygen" in order to create online documentation.
+
+2004-07-30 15:19  ajung
+
+	* sctplib/docs/sctplib/Makefile.am: Added new rfcs, and adapted the
+	  Makefile to include this
+
+2004-07-30 15:16  ajung
+
+	* sctplib/docs/html/.cvsignore: removed old file
+
+2004-07-30 15:03  ajung
+
+	* ChangeLog, sctplib.kdevses, sctplib/docs/Makefile.am,
+	  sctplib/docs/html/ASSOCIATION.html,
+	  sctplib/docs/html/AssociationDistribution.html,
+	  sctplib/docs/html/AssociationList.html,
+	  sctplib/docs/html/ChunkAssembler.html,
+	  sctplib/docs/html/ClassGraph.class,
+	  sctplib/docs/html/ClassGraphPanel.class,
+	  sctplib/docs/html/ClassLayout.class,
+	  sctplib/docs/html/DLL_error_log1.html,
+	  sctplib/docs/html/ErrorHandler.html,
+	  sctplib/docs/html/FlowControl.html,
+	  sctplib/docs/html/General.html,
+	  sctplib/docs/html/GloballyUsedFunctionsandDefinitions.html,
+	  sctplib/docs/html/HIER.html, sctplib/docs/html/HIERjava.html,
+	  sctplib/docs/html/HelperFunctions.html,
+	  sctplib/docs/html/HelperModules.html,
+	  sctplib/docs/html/InstanceList.html,
+	  sctplib/docs/html/LibraryInterface.html,
+	  sctplib/docs/html/Makefile.am,
+	  sctplib/docs/html/NavigatorButton.class,
+	  sctplib/docs/html/OSAdaptationLayer.html,
+	  sctplib/docs/html/PATHDATA.html,
+	  sctplib/docs/html/PATHMANDATA.html,
+	  sctplib/docs/html/PathManagementModule.html,
+	  sctplib/docs/html/ProtocolEngine.html,
+	  sctplib/docs/html/ReceiveBundlingModule.html,
+	  sctplib/docs/html/ReceptionControlModule.html,
+	  sctplib/docs/html/ReliableTransfer.html,
+	  sctplib/docs/html/SCTPINSTANCE.html,
+	  sctplib/docs/html/SCTPStateMachineController.2.html,
+	  sctplib/docs/html/SCTPStateMachineController.html,
+	  sctplib/docs/html/SCTP_Association_Status.html,
+	  sctplib/docs/html/SCTP_CONTROLDATA.html,
+	  sctplib/docs/html/SCTP_Instance_Parameters.html,
+	  sctplib/docs/html/SCTP_MAX_NUM_ADDRESSES.html,
+	  sctplib/docs/html/SCTP_Path_Status.html,
+	  sctplib/docs/html/SCTP_ulp_Callbacks.html,
+	  sctplib/docs/html/SenderBundlingModule.html,
+	  sctplib/docs/html/StreamEngine.html,
+	  sctplib/docs/html/TimerListFunctions.html,
+	  sctplib/docs/html/UpperLayer.html,
+	  sctplib/docs/html/UpperLayerProtocol.html,
+	  sctplib/docs/html/__congestion_parameters.html,
+	  sctplib/docs/html/adl_get_message.html,
+	  sctplib/docs/html/adl_gettime.html,
+	  sctplib/docs/html/adl_open_udp_socket.html,
+	  sctplib/docs/html/adl_register_fd_cb.html,
+	  sctplib/docs/html/adl_register_socket_cb.html,
+	  sctplib/docs/html/adl_remove_cb.html,
+	  sctplib/docs/html/adl_remove_poll_fd.html,
+	  sctplib/docs/html/adl_send_message.html,
+	  sctplib/docs/html/adl_str2sockunion.html,
+	  sctplib/docs/html/adl_timediff_to_msecs.html,
+	  sctplib/docs/html/adler32.html,
+	  sctplib/docs/html/assign_poll_fd.html,
+	  sctplib/docs/html/before.html, sctplib/docs/html/between.html,
+	  sctplib/docs/html/bu_delete.html,
+	  sctplib/docs/html/bu_lock_sender.html,
+	  sctplib/docs/html/bu_new.html,
+	  sctplib/docs/html/bu_put_Ctrl_Chunk.html,
+	  sctplib/docs/html/bu_put_Data_Chunk.html,
+	  sctplib/docs/html/bu_put_SACK_Chunk.html,
+	  sctplib/docs/html/bu_sendAllChunks.html,
+	  sctplib/docs/html/bu_unlock_sender.html,
+	  sctplib/docs/html/bundling_instance_struct.html,
+	  sctplib/docs/html/ch_CookieLocalTieTag.html,
+	  sctplib/docs/html/ch_CookiePeerTieTag.html,
+	  sctplib/docs/html/ch_cookieLifeTime.html,
+	  sctplib/docs/html/ch_enterCookiePreservative.html,
+	  sctplib/docs/html/ch_enterIPaddresses.html,
+	  sctplib/docs/html/ch_goodCookie.html,
+	  sctplib/docs/html/checkForExistingAssociations.html,
+	  sctplib/docs/html/chunk_list_debug.html,
+	  sctplib/docs/html/compareAssociationIDs.html,
+	  sctplib/docs/html/currentAssociation.html,
+	  sctplib/docs/html/del_timer_list.html,
+	  sctplib/docs/html/dispatch_event.html,
+	  sctplib/docs/html/dispatch_timer.html,
+	  sctplib/docs/html/eh_send_invalid_streamid.html,
+	  sctplib/docs/html/eh_send_missing_mandatory_param.html,
+	  sctplib/docs/html/eh_send_unresolvable_address.html,
+	  sctplib/docs/html/enterAssociation.html,
+	  sctplib/docs/html/equalAssociations.html,
+	  sctplib/docs/html/error_log1.html,
+	  sctplib/docs/html/error_log_sys1.html,
+	  sctplib/docs/html/event_cb.html,
+	  sctplib/docs/html/event_log1.html,
+	  sctplib/docs/html/fc_check_for_txmit.html,
+	  sctplib/docs/html/fc_debug_cparams.html,
+	  sctplib/docs/html/fc_delete_flowcontrol.html,
+	  sctplib/docs/html/fc_do_retransmission.html,
+	  sctplib/docs/html/fc_do_timerbased_rtxmit.html,
+	  sctplib/docs/html/fc_new_flowcontrol.html,
+	  sctplib/docs/html/fc_readCWND.html,
+	  sctplib/docs/html/fc_readCWND2.html,
+	  sctplib/docs/html/fc_readMTU.html,
+	  sctplib/docs/html/fc_readNumberOfQueuedChunks.html,
+	  sctplib/docs/html/fc_readOutstandingBytes.html,
+	  sctplib/docs/html/fc_readOutstandingBytesPerAddress.html,
+	  sctplib/docs/html/fc_readPBA.html,
+	  sctplib/docs/html/fc_readSsthresh.html,
+	  sctplib/docs/html/fc_restart.html,
+	  sctplib/docs/html/fc_sack_info.html,
+	  sctplib/docs/html/fc_select_destination.html,
+	  sctplib/docs/html/fc_send_data_chunk.html,
+	  sctplib/docs/html/fc_shutdown.html,
+	  sctplib/docs/html/fc_sort_tsn.html,
+	  sctplib/docs/html/fc_stop_timers.html,
+	  sctplib/docs/html/fc_timer_cb_reduce_cwnd.html,
+	  sctplib/docs/html/fc_timer_cb_t3_timeout.html,
+	  sctplib/docs/html/fc_update_chunk_data.html,
+	  sctplib/docs/html/flowcontrol_struct.html,
+	  sctplib/docs/html/get_item.html,
+	  sctplib/docs/html/get_msecs_to_nexttimer.html,
+	  sctplib/docs/html/global_buffer.html,
+	  sctplib/docs/html/handleChunksAcked.html,
+	  sctplib/docs/html/handleChunksRetransmitted.html,
+	  sctplib/docs/html/icon1.gif, sctplib/docs/html/icon2.gif,
+	  sctplib/docs/html/index.html,
+	  sctplib/docs/html/init_poll_fds.html,
+	  sctplib/docs/html/init_timer_list.html,
+	  sctplib/docs/html/insert_item.html,
+	  sctplib/docs/html/localData.html,
+	  sctplib/docs/html/mdi_clearAssociationData.html,
+	  sctplib/docs/html/mdi_communicationLostNotif.html,
+	  sctplib/docs/html/mdi_communicationUpNotif.html,
+	  sctplib/docs/html/mdi_dataArriveNotif.html,
+	  sctplib/docs/html/mdi_deleteAssociation.html,
+	  sctplib/docs/html/mdi_deleteCurrentAssociation.html,
+	  sctplib/docs/html/mdi_generateLocalTag.html,
+	  sctplib/docs/html/mdi_generateStartTSN.html,
+	  sctplib/docs/html/mdi_initAssociation.html,
+	  sctplib/docs/html/mdi_networkStatusChangeNotif.html,
+	  sctplib/docs/html/mdi_newAssociation.html,
+	  sctplib/docs/html/mdi_readAssociationID.html,
+	  sctplib/docs/html/mdi_readBundling.html,
+	  sctplib/docs/html/mdi_readFlowControl.html,
+	  sctplib/docs/html/mdi_readLastDestPort.html,
+	  sctplib/docs/html/mdi_readLastFromAddress.html,
+	  sctplib/docs/html/mdi_readLastFromPath.html,
+	  sctplib/docs/html/mdi_readLastFromPort.html,
+	  sctplib/docs/html/mdi_readLocalAddresses.html,
+	  sctplib/docs/html/mdi_readLocalInStreams.html,
+	  sctplib/docs/html/mdi_readLocalOutStreams.html,
+	  sctplib/docs/html/mdi_readPathMan.html,
+	  sctplib/docs/html/mdi_readRX_control.html,
+	  sctplib/docs/html/mdi_readReliableTransfer.html,
+	  sctplib/docs/html/mdi_readSCTP_control.html,
+	  sctplib/docs/html/mdi_readStreamEngine.html,
+	  sctplib/docs/html/mdi_readTagRemote.html,
+	  sctplib/docs/html/mdi_receiveMessage.html,
+	  sctplib/docs/html/mdi_restartNotif.html,
+	  sctplib/docs/html/mdi_sendFailureNotif.html,
+	  sctplib/docs/html/mdi_send_message.html,
+	  sctplib/docs/html/mdi_setAssociationData.html,
+	  sctplib/docs/html/mdi_shutdownCompleteNotif.html,
+	  sctplib/docs/html/mdi_writeDestinationAddresses.html,
+	  sctplib/docs/html/min.html, sctplib/docs/html/pmData.html,
+	  sctplib/docs/html/pm_chunksAcked.html,
+	  sctplib/docs/html/pm_chunksRetransmitted.html,
+	  sctplib/docs/html/pm_chunksSentOn.html,
+	  sctplib/docs/html/pm_deletePathman.html,
+	  sctplib/docs/html/pm_disableAllHB.html,
+	  sctplib/docs/html/pm_disableHB.html,
+	  sctplib/docs/html/pm_doHB.html,
+	  sctplib/docs/html/pm_enableHB.html,
+	  sctplib/docs/html/pm_getMaxPathRetransmisions.html,
+	  sctplib/docs/html/pm_getRtoInitial.html,
+	  sctplib/docs/html/pm_heartbeat.html,
+	  sctplib/docs/html/pm_heartbeatAck.html,
+	  sctplib/docs/html/pm_heartbeatTimer.html,
+	  sctplib/docs/html/pm_newPathman.html,
+	  sctplib/docs/html/pm_readPrimaryPath.html,
+	  sctplib/docs/html/pm_readRTO.html,
+	  sctplib/docs/html/pm_readRttVar.html,
+	  sctplib/docs/html/pm_readSRTT.html,
+	  sctplib/docs/html/pm_readState.html,
+	  sctplib/docs/html/pm_rto_backoff.html,
+	  sctplib/docs/html/pm_setMaxPathRetransmisions.html,
+	  sctplib/docs/html/pm_setPaths.html,
+	  sctplib/docs/html/pm_setPrimaryPath.html,
+	  sctplib/docs/html/pm_setRtoInitial.html,
+	  sctplib/docs/html/printString.html,
+	  sctplib/docs/html/rbu_rcvDatagram.html,
+	  sctplib/docs/html/rbu_scanDatagram.html,
+	  sctplib/docs/html/rbu_scanDatagramForError.html,
+	  sctplib/docs/html/read_tracelevels.html,
+	  sctplib/docs/html/releasePort.html,
+	  sctplib/docs/html/remove_item.html,
+	  sctplib/docs/html/retrieveAssociation.html,
+	  sctplib/docs/html/retrieveAssociationByTransportAddress.html,
+	  sctplib/docs/html/retrieveAssociationULP.html,
+	  sctplib/docs/html/retrieveIPAddressesFromString.html,
+	  sctplib/docs/html/retrieveVLParamFromString.html,
+	  sctplib/docs/html/rtx_buffer_struct.html,
+	  sctplib/docs/html/rtx_delete_reltransfer.html,
+	  sctplib/docs/html/rtx_dequeue_up_to.html,
+	  sctplib/docs/html/rtx_new_reltransfer.html,
+	  sctplib/docs/html/rtx_process_sack.html,
+	  sctplib/docs/html/rtx_rcv_shutdown_ctsna.html,
+	  sctplib/docs/html/rtx_readLocalTSNacked.html,
+	  sctplib/docs/html/rtx_readNumberOfUnackedChunks.html,
+	  sctplib/docs/html/rtx_read_remote_receiver_window.html,
+	  sctplib/docs/html/rtx_reset_bytecounters.html,
+	  sctplib/docs/html/rtx_restart_reliable_transfer.html,
+	  sctplib/docs/html/rtx_rtt_update.html,
+	  sctplib/docs/html/rtx_save_retrans_chunks.html,
+	  sctplib/docs/html/rtx_set_remote_receiver_window.html,
+	  sctplib/docs/html/rtx_shutdown.html,
+	  sctplib/docs/html/rtx_sort_tsn.html,
+	  sctplib/docs/html/rtx_t3_timeout.html,
+	  sctplib/docs/html/rtx_update_retrans_chunks.html,
+	  sctplib/docs/html/rxc_all_chunks_processed.html,
+	  sctplib/docs/html/rxc_buffer_struct.html,
+	  sctplib/docs/html/rxc_chunk_is_duplicate.html,
+	  sctplib/docs/html/rxc_create_sack.html,
+	  sctplib/docs/html/rxc_data_chunk_rx.html,
+	  sctplib/docs/html/rxc_delete_recvctrl.html,
+	  sctplib/docs/html/rxc_new_recvctrl.html,
+	  sctplib/docs/html/rxc_read_cummulativeTSNacked.html,
+	  sctplib/docs/html/rxc_read_last_active_address.html,
+	  sctplib/docs/html/rxc_restart_receivecontrol.html,
+	  sctplib/docs/html/rxc_sack_timer_cb.html,
+	  sctplib/docs/html/rxc_send_sack_every_second_time.html,
+	  sctplib/docs/html/rxc_send_sack_everytime.html,
+	  sctplib/docs/html/rxc_set_local_receiver_window.html,
+	  sctplib/docs/html/rxc_stop_sack_timer.html,
+	  sctplib/docs/html/rxc_update_ctsna.html,
+	  sctplib/docs/html/rxc_update_duplicates.html,
+	  sctplib/docs/html/rxc_update_fragments.html,
+	  sctplib/docs/html/rxc_update_highest.html,
+	  sctplib/docs/html/rxc_update_lowest.html,
+	  sctplib/docs/html/sci_allChunksAcked.html,
+	  sctplib/docs/html/sci_deleteSCTP_control.html,
+	  sctplib/docs/html/sci_getCookieLifeTime.html,
+	  sctplib/docs/html/sci_getMaxAssocRetransmissions.html,
+	  sctplib/docs/html/sci_getMaxInitRetransmissions.html,
+	  sctplib/docs/html/sci_getState.html,
+	  sctplib/docs/html/sci_newSCTP_control.html,
+	  sctplib/docs/html/sci_setCookieLifeTime.html,
+	  sctplib/docs/html/sci_setMaxAssocRetransmissions.html,
+	  sctplib/docs/html/sci_setMaxInitRetransmissions.html,
+	  sctplib/docs/html/sci_timer_expired.html,
+	  sctplib/docs/html/scr_abort.html,
+	  sctplib/docs/html/scr_cookieAck.html,
+	  sctplib/docs/html/scr_cookie_echo.html,
+	  sctplib/docs/html/scr_init.html,
+	  sctplib/docs/html/scr_initAck.html,
+	  sctplib/docs/html/scr_shutdown.html,
+	  sctplib/docs/html/scr_shutdownAck.html,
+	  sctplib/docs/html/scr_shutdownComplete.html,
+	  sctplib/docs/html/scr_staleCookie.html,
+	  sctplib/docs/html/sctp-modules.png,
+	  sctplib/docs/html/sctp.h.html,
+	  sctplib/docs/html/sctpInstance.2.html,
+	  sctplib/docs/html/sctp_abort.html,
+	  sctplib/docs/html/sctp_associate.html,
+	  sctplib/docs/html/sctp_changeHeartBeat.html,
+	  sctplib/docs/html/sctp_deleteAssociation.html,
+	  sctplib/docs/html/sctp_eventLoop.html,
+	  sctplib/docs/html/sctp_getAssocDefaults.html,
+	  sctplib/docs/html/sctp_getAssocStatus.html,
+	  sctplib/docs/html/sctp_getEvents.html,
+	  sctplib/docs/html/sctp_getPathStatus.html,
+	  sctplib/docs/html/sctp_getPrimary.html,
+	  sctplib/docs/html/sctp_getSrttReport.html,
+	  sctplib/docs/html/sctp_getTime.2.html,
+	  sctplib/docs/html/sctp_getTime.html,
+	  sctplib/docs/html/sctp_receive.html,
+	  sctplib/docs/html/sctp_receiveUnacked.html,
+	  sctplib/docs/html/sctp_receiveUnsent.html,
+	  sctplib/docs/html/sctp_registerInstance.html,
+	  sctplib/docs/html/sctp_registerStdinCallback.2.html,
+	  sctplib/docs/html/sctp_registerStdinCallback.html,
+	  sctplib/docs/html/sctp_registerUdpCallback.2.html,
+	  sctplib/docs/html/sctp_registerUdpCallback.html,
+	  sctplib/docs/html/sctp_requestHeartbeat.html,
+	  sctplib/docs/html/sctp_restartTimer.2.html,
+	  sctplib/docs/html/sctp_restartTimer.html,
+	  sctplib/docs/html/sctp_send.html,
+	  sctplib/docs/html/sctp_sendUdpData.html,
+	  sctplib/docs/html/sctp_setAssocDefaults.html,
+	  sctplib/docs/html/sctp_setAssocStatus.html,
+	  sctplib/docs/html/sctp_setFailureThreshold.html,
+	  sctplib/docs/html/sctp_setPathStatus.html,
+	  sctplib/docs/html/sctp_setPrimary.html,
+	  sctplib/docs/html/sctp_shutdown.html,
+	  sctplib/docs/html/sctp_socket.html,
+	  sctplib/docs/html/sctp_startTimer.2.html,
+	  sctplib/docs/html/sctp_startTimer.html,
+	  sctplib/docs/html/sctp_stopTimer.2.html,
+	  sctplib/docs/html/sctp_stopTimer.html,
+	  sctplib/docs/html/scu_abort.html,
+	  sctplib/docs/html/scu_associate.html,
+	  sctplib/docs/html/scu_shutdown.html,
+	  sctplib/docs/html/se_numOfQueuedChunks.html,
+	  sctplib/docs/html/se_numOfRecvStreams.html,
+	  sctplib/docs/html/se_numOfSendStreams.html,
+	  sctplib/docs/html/se_ulpreceive.html,
+	  sctplib/docs/html/se_ulpsend.html,
+	  sctplib/docs/html/seizePort.html, sctplib/docs/html/toc.html,
+	  sctplib/docs/html/update_item.html,
+	  sctplib/docs/sctplib/draft-ietf-tsvwg-sctpimpguide-10.txt,
+	  sctplib/docs/sctplib/draft-stewart-tsvwg-prsctp-02.txt,
+	  sctplib/docs/sctplib/rfc3257.txt,
+	  sctplib/docs/sctplib/rfc3286.txt,
+	  sctplib/docs/sctplib/rfc3309.txt,
+	  sctplib/docs/sctplib/rfc3758.txt, sctplib/sctp/SCTP-control.c,
+	  sctplib/sctp/chunkHandler.c: Removed old documentation and added
+	  new target
+
+2004-07-30 14:05  ajung
+
+	* sctplib/sctp/: chunkHandler.c, SCTP-control.c: In the case of a
+	  hostname parameter sent to us in an INIT, we now send an ABORT
+	  with a error parameter back.
+
+2004-07-30 11:46  ajung
+
+	* sctplib/sctp/: SCTP-control.c, chunkHandler.c: some minor
+	  cleaning up
+
+2004-07-29 20:01  ajung
+
+	* sctplib/sctp/SCTP-control.c: Removed old comment
+
+2004-07-29 19:01  ajung
+
+	* configure.in, sctplib.kdevprj, sctplib/sctp/chunkHandler.c,
+	  sctplib/sctp/rbundling.c: Added checks for zero length or too
+	  small length parameters in a number of places. This should catch
+	  a larger number of dirty packets.  Functions were changed in
+	  rbundling.c (all scan functions) and in chunkHandler.c as well.
+
+2004-07-29 17:20  ajung
+
+	* sctplib/sctp/: SCTP-control.c, rbundling.c: Catch zero length
+	  chunk and ignore the rest of the SCTP packet.
+
+2004-07-28 12:35  ajung
+
+	* sctplib/sctp/rbundling.c: Fixed bug with unrecognized chunk
+	  handling (used incorrect 0x20 instead of 0x40 - I must have been
+	  asleep while coding this :-)
+
+2004-07-27 09:56  ajung
+
+	* sctplib/sctp/: distribution.c, streamengine.c: Added an if-clause
+	  for the sctp_getPathStatus function, to return a proper error
+	  code, if the association is not established yet.
+
+2004-07-26 17:53  ajung
+
+	* configure.in, sctplib.kdevprj, sctplib.kdevses,
+	  sctplib/sctp/distribution.c, sctplib/sctp/distribution.h,
+	  sctplib/sctp/flowcontrol.c, sctplib/sctp/globals.h,
+	  sctplib/sctp/pathmanagement.c, sctplib/sctp/pathmanagement.h,
+	  sctplib/sctp/sctp.h: Cleaned up path states: we now go from
+	  PM_UNCONFIRMED to PM_ACTIVE (and possibly later to PM_INACTIVE).
+	  A notification is at once sent for the initial primary path
+	  (Network Status Change to PM_ACTIVE).
+
+	  Also: removed a bug in pathmanagement, that appeared on MacOS-X
+	  due to the order of arguments in an if-statement. The flag that
+	  checks if the association is gone needs to be in the first place.
+
+2004-07-23 16:37  ajung
+
+	* sctplib/sctp/pathmanagement.c: Do not increase peer error counter
+	  for path that has not been confirmed yet...
+
+2004-07-22 12:31  tuexen
+
+	* configure.in: Workaround for a gcc-3-3 bug on Mac OS X
+
+2004-07-22 12:30  tuexen
+
+	* sctplib/programs/combined_server.c: Added path output.
+
+2004-07-22 12:30  tuexen
+
+	* sctplib/programs/terminal.c: Added path output
+
+2004-07-11 13:44  ajung
+
+	* ChangeLog: Updated Changelog to reflect latest modifications
 
 2004-07-09 19:53  tuexen
 
@@ -470,6 +871,10 @@
 	  stuff.  Added in new funtion that updates local addresses every
 	  once in a while.
 
+2003-07-01 14:03  ajung
+
+	* sctplib/sctp/.libs/libsctp.lai: Remove void file
+
 2003-07-01 11:37  tuexen
 
 	* sctplib/programs/discard_server.c: added Solaris suppport again
@@ -905,8 +1310,9 @@
 	  sctplib/sctp/sctp_asconf.c, sctplib/sctp/sctp_asconf.h,
 	  sctplib/sctp/streamengine.c, sctplib/sctp/streamengine.h,
 	  sctplib/sctp/timer_list.c, sctplib/sctp/timer_list.h,
-	  sctplib/manual/commands.doc, sctplib/manual/commands.html,
-	  sctplib/manual/commands.pdf, sctplib/manual/sctp-api-1.0-1.pdf,
+	  sctplib/sctp/.libs/libsctp.lai, sctplib/manual/commands.doc,
+	  sctplib/manual/commands.html, sctplib/manual/commands.pdf,
+	  sctplib/manual/sctp-api-1.0-1.pdf,
 	  sctplib/manual/sctp-api-1.0-1.ps,
 	  sctplib/manual/sctp-api-1.0-1.tex, sctplib/programs/Makefile.am,
 	  sctplib/programs/chargen_server.c, sctplib/programs/chat.c,
@@ -1262,8 +1668,9 @@
 	  sctplib/sctp/sctp_asconf.c, sctplib/sctp/sctp_asconf.h,
 	  sctplib/sctp/streamengine.c, sctplib/sctp/streamengine.h,
 	  sctplib/sctp/timer_list.c, sctplib/sctp/timer_list.h,
-	  sctplib/manual/commands.doc, sctplib/manual/commands.html,
-	  sctplib/manual/commands.pdf, sctplib/manual/sctp-api-1.0-1.pdf,
+	  sctplib/sctp/.libs/libsctp.lai, sctplib/manual/commands.doc,
+	  sctplib/manual/commands.html, sctplib/manual/commands.pdf,
+	  sctplib/manual/sctp-api-1.0-1.pdf,
 	  sctplib/manual/sctp-api-1.0-1.ps,
 	  sctplib/manual/sctp-api-1.0-1.tex, sctplib/programs/Makefile.am,
 	  sctplib/programs/chargen_server.c, sctplib/programs/chat.c,
