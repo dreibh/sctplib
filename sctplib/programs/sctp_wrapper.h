@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.h,v 1.3 2003/10/23 16:48:11 tuexen Exp $
+ *  $Id: sctp_wrapper.h,v 1.4 2004/08/11 12:01:02 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -31,7 +31,7 @@
  * wrapper for SCTPLIB functions. Outputs appropriate error messages
  *
  */
-#include "sctp.h"
+#include "../sctp/sctp.h"
 
 
 
