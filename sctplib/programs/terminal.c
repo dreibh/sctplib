@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.9 2003/11/20 19:23:00 tuexen Exp $
+ *  $Id: terminal.c,v 1.10 2003/11/25 20:24:31 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -422,7 +422,7 @@ int main(int argc, char **argv)
     params.checksumAlgorithm = SCTP_CHECKSUM_ALGORITHM_CRC32C;
     SCTP_setLibraryParameters(&params);
 
-    sctpInstance=SCTP_registerInstance(0,
+    sctpInstance=SCTP_registerInstance(localPort,
                                        MAXIMUM_NUMBER_OF_IN_STREAMS,  MAXIMUM_NUMBER_OF_OUT_STREAMS,
                                        noOfLocalAddresses, localAddressList,
                                        terminalUlp);
