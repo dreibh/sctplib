@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.6 2003/10/27 20:57:10 ajung Exp $
+ * $Id: streamengine.c,v 1.7 2003/10/28 20:44:55 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -155,7 +155,7 @@ void* se_new_stream_engine (unsigned int numberReceiveStreams,        /* max of 
                             unsigned int numberSendStreams,           /* max of streams to send */
                             gboolean assocSupportsPRSCTP)
 {
-    int i;
+    unsigned int i;
     StreamEngine* se;
 
     event_logiii (EXTERNAL_EVENT, "new_stream_engine: #inStreams=%d, #outStreams=%d, unreliable == %s",
@@ -223,7 +223,7 @@ void
 se_delete_stream_engine (void *septr)
 {
   StreamEngine* se;
-  int i;
+  unsigned int i;
   se = (StreamEngine*) septr;
 
   event_log (INTERNAL_EVENT_0, "delete streamengine: freeing send streams");
@@ -584,8 +584,9 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
  * to the pduList, and calls DataArrive-Notification
  */
 int se_doNotifications(void){
-    int i, retVal, result;
-
+    int retVal, result;
+    unsigned int i;
+    
     StreamEngine* se = (StreamEngine *) mdi_readStreamEngine ();
 
     if (se == NULL) {

@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.9 2003/10/28 11:48:26 ajung Exp $
+ *  $Id: recvctrl.c,v 1.10 2003/10/28 20:44:55 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -455,7 +455,7 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
 
     bytesQueued = se_getQueuedBytes();
     if (bytesQueued < 0) bytesQueued = 0;
-    if (bytesQueued > rxc->my_rwnd) {
+    if ((unsigned int)bytesQueued > rxc->my_rwnd) {
         current_rwnd = 0;
     } else {
         current_rwnd = rxc->my_rwnd - bytesQueued;
@@ -688,7 +688,7 @@ void rxc_all_chunks_processed(boolean new_data_received)
 
     bytesQueued = se_getQueuedBytes();
     if (bytesQueued < 0) bytesQueued = 0;
-    if (bytesQueued > rxc->my_rwnd) {
+    if ((unsigned int)bytesQueued > rxc->my_rwnd) {
         current_rwnd = 0;
     } else {
         current_rwnd = rxc->my_rwnd - bytesQueued;

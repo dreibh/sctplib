@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.6 2003/10/27 20:57:10 ajung Exp $
+ *  $Id: rbundling.c,v 1.7 2003/10/28 20:44:55 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -163,17 +163,14 @@ guchar* rbu_findChunk(guchar * datagram, guint len, gushort chunk_type)
                     "rbu_findChunk : len==%u, processed_len == %u", len, processed_len);
 
         chunk = (SCTP_simple_chunk *) current_position;
-        switch (chunk->chunk_header.chunk_id == chunk_type) {
-        case TRUE:
+        if (chunk->chunk_header.chunk_id == chunk_type)
             return current_position;
-            break;
-        default:
+        else {
             processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
             pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
             processed_len += pad_bytes;
             current_position +=
                 (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
-            break;
         }
     }
     return NULL;
@@ -289,8 +286,7 @@ gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_ca
                     "rbu_scanDatagramForError : len==%u, processed_len == %u", len, processed_len);
 
         chunk = (SCTP_simple_chunk *) current_position;
-        switch (chunk->chunk_header.chunk_id == CHUNK_ERROR) {
-        case TRUE:
+        if (chunk->chunk_header.chunk_id == CHUNK_ERROR) {
             event_log(INTERNAL_EVENT_0, "rbu_scanDatagramForError : Error Chunk Found");
             while (err_len < (ntohs(chunk->chunk_header.chunk_length)-sizeof(SCTP_chunk_header)) ) {
                 err_chunk = (SCTP_staleCookieError *) &(chunk->simple_chunk_data[err_len]);
@@ -304,15 +300,11 @@ gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_ca
                 while ((err_len % 4) != 0)
                     err_len++;
             }
-
-        default:
-            processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
-            pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
-            processed_len += pad_bytes;
-            current_position +=
-                (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
-            break;
         }
+        processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+        pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
+        processed_len += pad_bytes;
+        current_position += (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
     }
     event_logi(VERBOSE,
                "rbu_scanDatagramForError : Error Cause %u NOT found -> Returning FALSE",

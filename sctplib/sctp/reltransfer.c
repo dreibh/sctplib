@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.6 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: reltransfer.c,v 1.7 2003/10/28 20:44:55 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -49,10 +49,6 @@
 
 #include <string.h>
 #include <stdio.h>
-
-/* here we should not have to worry about wrap */
-#define max(x,y)            ((x)>(y))?(x):(y)
-#define min(x,y)            ((x)<(y))?(x):(y)
 
 #define MAX_NUM_OF_CHUNKS   500 
 
@@ -414,7 +410,9 @@ static int rtx_advancePeerAckPoint(rtx_buffer *rtx)
 
 int rtx_send_forward_tsn(rtx_buffer *rtx, unsigned int forward_tsn, unsigned int idx, gboolean sendAtOnce){
 
-    int result, count;
+    int result;
+    unsigned int count;
+    
     SCTP_forward_tsn_chunk chk; 
     pr_stream_data * psd;
     pr_stream_data   hton_psd;

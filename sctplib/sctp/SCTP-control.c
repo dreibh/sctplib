@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.8 2003/10/23 16:48:11 tuexen Exp $
+ *  $Id: SCTP-control.c,v 1.9 2003/10/28 20:44:55 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -93,9 +93,6 @@
  */
 
 /*@{ */
-
-/** macro to return the minimum of two values */
-#define min(x,y)            (x)<(y)?(x):(y)
 
 /******************** Typedef *********************************************************************/
 
@@ -202,7 +199,7 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
             bu_put_Ctrl_Chunk((SCTP_simple_chunk *) localData->initChunk,NULL);
             bu_sendAllChunks(NULL);
             /* restart init timer after timer backoff */
-            localData->initTimerDuration = min(localData->initTimerDuration * 2, pm_getRtoMax());
+            localData->initTimerDuration = min(localData->initTimerDuration * 2, (unsigned int)pm_getRtoMax());
             event_logi(INTERNAL_EVENT_0, "init timer backedoff %d msecs",
                        localData->initTimerDuration);
             localData->initTimer =
@@ -233,7 +230,7 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
             bu_put_Ctrl_Chunk((SCTP_simple_chunk *) localData->cookieChunk,NULL);
             bu_sendAllChunks(NULL);
             /* restart cookie timer after timer backoff */
-            localData->initTimerDuration = min(localData->initTimerDuration * 2, pm_getRtoMax());
+            localData->initTimerDuration = min(localData->initTimerDuration * 2, (unsigned int)pm_getRtoMax());
             event_logi(INTERNAL_EVENT_0, "cookie timer backedoff %d msecs",
                        localData->initTimerDuration);
 
@@ -272,7 +269,7 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
             ch_deleteChunk(shutdownCID);
 
             /* restart shutdown timer after timer backoff */
-            localData->initTimerDuration = min(localData->initTimerDuration * 2, pm_getRtoMax());
+            localData->initTimerDuration = min(localData->initTimerDuration * 2, (unsigned int)pm_getRtoMax());
             event_logi(INTERNAL_EVENT_0, "shutdown timer backed off %d msecs",
                        localData->initTimerDuration);
 
@@ -309,7 +306,7 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
             /* ch_deleteChunk(shutdown_complete_CID); */
 
             /* restart shutdown timer after timer backoff */
-            localData->initTimerDuration = min(localData->initTimerDuration * 2, pm_getRtoMax());
+            localData->initTimerDuration = min(localData->initTimerDuration * 2, (unsigned int)pm_getRtoMax());
             event_logi(INTERNAL_EVENT_0, "shutdown timer backed off %d msecs",
                        localData->initTimerDuration);
             localData->initTimer =
@@ -996,7 +993,7 @@ gboolean scr_initAck(SCTP_init * initAck)
     unsigned int index=0;
     union sockunion destAddress;
     union sockunion dAddresses[MAX_NUM_ADDRESSES];
-    int ndAddresses;
+    unsigned int ndAddresses;
     unsigned short inbound_streams;
     unsigned short outbound_streams;
 
