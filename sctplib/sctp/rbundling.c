@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: rbundling.c,v 1.4 2003/09/25 10:52:46 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -91,6 +91,44 @@ gboolean rbu_scanDatagram(guchar * datagram, guint len, gushort chunk_type)
     }
     return FALSE;
 }
+
+gboolean rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
+{
+    gushort processed_len;
+    guint len = 0, parameterLength = 0;
+    guchar *current_position;
+    guint pad_bytes;
+    SCTP_init *initChunk;
+    SCTP_vlparam_header* vlp;
+
+    initChunk = (SCTP_init *) chunk;
+
+    if (initChunk->chunk_header.chunk_id != CHUNK_INIT &&
+        initChunk->chunk_header.chunk_id != CHUNK_INIT_ACK) {
+        return FALSE;
+    }
+    len = ntohs(initChunk->chunk_header.chunk_length);
+    current_position = initChunk->variableParams;
+    processed_len = (sizeof(SCTP_chunk_header)+sizeof(SCTP_init_fixed));
+
+    while (processed_len < len) {
+        event_logii(INTERNAL_EVENT_0,
+                    "rbu_scanInitChunkForParameter : len==%u, processed_len == %u", len, processed_len);
+        vlp = (SCTP_vlparam_header*) current_position;
+        parameterLength = ntohs(vlp->param_length);
+
+        if (ntohs(vlp->param_type) == paramType) {
+            return TRUE;
+        }
+        processed_len += parameterLength;
+        pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
+        processed_len += pad_bytes;
+        current_position += (parameterLength + pad_bytes * sizeof(unsigned char));
+    }
+    return FALSE;
+
+}
+
 
 /*
  * rbu_findChunk: looks for chunk_type in a newly received datagram

@@ -1,5 +1,5 @@
 /*
- * $Id: bundling.h,v 1.2 2003/07/01 13:58:27 ajung Exp $
+ * $Id: bundling.h,v 1.3 2003/09/25 10:52:46 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -77,6 +77,8 @@ void bu_delete(gpointer instancePtr);
  */
 gboolean rbu_scanDatagram(guchar * datagram, guint len, gushort chunk_type);
 
+
+gboolean rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType);
 
 /*
  * rbu_findChunk: looks for chunk_type in a newly received datagram

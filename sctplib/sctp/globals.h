@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: globals.h,v 1.4 2003/09/25 10:52:46 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -133,7 +133,7 @@
 #define ERROR_MINOR        3    /* recovery from error was possible without affecting the system. */
 #define ERROR_MAJOR        2    /* recovery from error was possible with some affects to the system,
                                    for instance abort of an association. */
-#define ERROR_FATAL        1    /* recovery from error was not possible, the program exits. */
+#define ERROR_FATAL        4    /* recovery from error was not possible, the program exits. */
 
 #define Current_error_log_ 1    /* Defines the level up to which the errors are printed.
                                    ERROR_WARNING (4) means all events are printed.

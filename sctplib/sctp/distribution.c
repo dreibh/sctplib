@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.8 2003/09/10 21:34:40 tuexen Exp $
+ *  $Id: distribution.c,v 1.9 2003/09/25 10:52:46 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1086,20 +1086,14 @@ mdi_receiveMessage(gint socket_fd,
                        or lack of local resources, it MUST respond with an ABORT chunk */
                 } else {
                      event_log(INTERNAL_EVENT_0, "mdi_receiveMsg: INIT Message - processing it !");
-
-                     /* union sockunion alternateFromAddress; */
-                     /* while (get_alternate_address_from(initPtr, &alternateFromAddress) > 0 && currentAssociation == 
-NULL) { */                     /*     currentAssociation = retrieveAssociationByTransportAddress(lastFromAddress, 
-lastFromPort,lastDestPort);*/                     /* } */
-
-                        /* TODO : check for all src address parameters in INIT, whether they correspond
-                           to an association. If there are addresses previously unknown (that may have
-                           been added or changed) discard the INIT. Might be an attack then.     */
-
                 }
                 initChunk = ((SCTP_init_fixed *) & ((SCTP_init *) message->sctp_pdu)->init_fixed);
                 lastInitiateTag = ntohl(initChunk->init_tag);
                 event_logi(VERBOSE, "setting lastInitiateTag to %x ", lastInitiateTag);
+
+                if (rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR) == TRUE) {
+                    sendAbort = TRUE;
+                }
 
             } else {    /* we do not have an instance up listening on that port-> ABORT him */
                 event_log(INTERNAL_EVENT_0,
@@ -1140,37 +1134,6 @@ lastFromPort,lastDestPort);*/                     /* } */
                 sendAbort = TRUE;
         }
 
-        if (sendAbort == TRUE) {
-            if (sendAbortForOOTB == FALSE) {
-                event_log(VERBOSE, "mdi_receiveMsg: sendAbortForOOTB==FALSE -> Discarding MESSAGE: not sending ABORT");
-                lastFromAddress = NULL;
-                lastDestAddress = NULL;
-                lastFromPort = 0;
-                lastDestPort = 0;
-                currentAssociation = NULL;
-                sctpInstance = NULL;
-                /* and discard that packet */
-                return;
-            }
-            /* make and send abort message */
-            abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NO_TCB);
-            bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
-            /* should send it to last address */
-            bu_unlock_sender(NULL);
-            bu_sendAllChunks(NULL);
-            /* free abort chunk */
-            ch_deleteChunk(abortCID);
-            /* send an ABORT with peers veri-tag, set T-Bit */
-            event_log(VERBOSE, "mdi_receiveMsg: sending ABORT with T-Bit");
-            lastFromAddress = NULL;
-            lastDestAddress = NULL;
-            lastFromPort = 0;
-            lastDestPort = 0;
-            currentAssociation = NULL;
-            sctpInstance = NULL;
-            /* and discard that packet */
-            return;
-        }
 
     } else { /* i.e. if(currentAssociation != NULL) */
 
@@ -1244,6 +1207,9 @@ lastFromPort,lastDestPort);*/                     /* } */
             lastInitiateTag = ntohl(initChunk->init_tag);
             event_logi(VVERBOSE, "Got an INIT CHUNK with initiation-tag %u", lastInitiateTag);
 
+            if (rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR) == TRUE) {
+                sendAbort = TRUE;
+            }
         }
         if (rbu_scanDatagram(message->sctp_pdu, len, CHUNK_ABORT) == TRUE) {
             /* accept my-tag or peers tag, else drop packet */
@@ -1306,6 +1272,21 @@ lastFromPort,lastDestPort);*/                     /* } */
                cookieEchoFound = TRUE;
         }
 
+        if ((initPtr = rbu_findChunk(message->sctp_pdu, len, CHUNK_INIT_ACK)) != NULL) {
+
+            if (rbu_scanInitChunkForParameter(initPtr, VLPARAM_HOST_NAME_ADDR) == TRUE) {
+                    /* actually, this does not make sense...anyway: kill assoc, and notify user */
+                    scu_abort();
+                    currentAssociation = NULL;
+                    sctpInstance = NULL;
+                    lastFromPort = 0;
+                    lastDestPort = 0;
+                    lastDestAddress = NULL;
+                    lastFromAddress = NULL;
+                    return;
+            }
+        }
+
         if (!cookieEchoFound && !initFound && !abortFound && lastInitiateTag != currentAssociation->tagLocal) {
             error_logii(ERROR_MINOR,
                         "Tag mismatch in receive DG, received Tag = %u, local Tag = %u -> discarding",
@@ -1323,8 +1304,41 @@ lastFromPort,lastDestPort);*/                     /* } */
 
     }
 
-
-    /* printString("Processing received SCTP-message : ", buffer, bufferLength); */
+    if (sendAbort == TRUE) {
+        if (sendAbortForOOTB == FALSE) {
+            event_log(VERBOSE, "mdi_receiveMsg: sendAbortForOOTB==FALSE -> Discarding MESSAGE: not sending ABORT");
+            lastFromAddress = NULL;
+            lastDestAddress = NULL;
+            lastFromPort = 0;
+            lastDestPort = 0;
+            currentAssociation = NULL;
+            sctpInstance = NULL;
+            /* and discard that packet */
+            return;
+        }
+        /* make and send abort message */
+        if (currentAssociation == NULL) {
+            abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NO_TCB);
+        } else {
+            abortCID = ch_makeSimpleChunk(CHUNK_ABORT, FLAG_NONE);
+        }
+        bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
+        /* should send it to last address */
+        bu_unlock_sender(NULL);
+        bu_sendAllChunks(NULL);
+        /* free abort chunk */
+        ch_deleteChunk(abortCID);
+        /* send an ABORT with peers veri-tag, set T-Bit */
+        event_log(VERBOSE, "mdi_receiveMsg: sending ABORT with T-Bit");
+        lastFromAddress = NULL;
+        lastDestAddress = NULL;
+        lastFromPort = 0;
+        lastDestPort = 0;
+        currentAssociation = NULL;
+        sctpInstance = NULL;
+        /* and discard that packet */
+        return;
+    }
 
     /* forward DG to bundling */
     rbu_rcvDatagram(lastFromPath, message->sctp_pdu, bufferLength - sizeof(SCTP_common_header));
