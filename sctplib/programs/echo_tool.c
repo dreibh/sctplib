@@ -1,5 +1,5 @@
 /*
- *  $Id: echo_tool.c,v 1.6 2003/11/20 19:23:00 tuexen Exp $
+ *  $Id: echo_tool.c,v 1.7 2003/11/21 14:40:45 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -322,7 +322,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
                                    SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
                 if (vverbose) {
                     fprintf(stdout, "%-8x: Data sent (%u bytes on stream %u, %s) Result: %d\n",
-                                    ulpData[index].assocID, len, min(streamID, ulpData[index].maximumStreamID),
+                                    ulpData[index].assocID, len, min(streamID, (unsigned int)ulpData[index].maximumStreamID),
                                     (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered", result);
                     fflush(stdout);
                 }
