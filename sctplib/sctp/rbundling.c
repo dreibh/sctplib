@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.9 2004/07/29 15:20:45 ajung Exp $
+ *  $Id: rbundling.c,v 1.10 2004/07/29 17:01:13 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -56,6 +56,7 @@
 unsigned int rbu_scanPDU(guchar * pdu, guint len)
 {
     gushort processed_len = 0;
+    gushort chunk_len = 0;
     unsigned int result = 0;
     guchar *current_position;
     guint pad_bytes;
@@ -64,10 +65,14 @@ unsigned int rbu_scanPDU(guchar * pdu, guint len)
     current_position = pdu; /* points to the first chunk in this pdu */
 
     while (processed_len < len) {
-
+        
         event_logii(VERBOSE, "rbu_scanPDU : len==%u, processed_len == %u", len, processed_len);
 
         chunk = (SCTP_simple_chunk *) current_position;
+        chunk_len = CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+        
+        if (chunk_len < 4 || chunk_len + processed_len > len) return result;
+        
         if (chunk->chunk_header.chunk_id <= 30) {
             result = result | (1 << chunk->chunk_header.chunk_id);
             event_logii(VERBOSE, "rbu_scanPDU : Chunk type==%u, result == %x", chunk->chunk_header.chunk_id, result);
@@ -75,11 +80,14 @@ unsigned int rbu_scanPDU(guchar * pdu, guint len)
             result = result | (1 << 31);
             event_logii(VERBOSE, "rbu_scanPDU : Chunk type==%u setting bit 31 --> result == %x", chunk->chunk_header.chunk_id, result);
         }    
-        processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+        processed_len += chunk_len;
         pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
         processed_len += pad_bytes;
-        current_position +=
-                (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
+        chunk_len = (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
+        
+        if (chunk_len < 4 || chunk_len + processed_len > len) return result;
+        current_position += chunk_len;
+        
     }
     return result;
 }
@@ -125,7 +133,9 @@ guchar* rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
                     "rbu_scanInitChunkForParameter : len==%u, processed_len == %u", len, processed_len);
         vlp = (SCTP_vlparam_header*) current_position;
         parameterLength = ntohs(vlp->param_length);
-
+        
+        if (parameterLength < 4 || parameterLength + processed_len > len) return NULL;
+        
         if (ntohs(vlp->param_type) == paramType) {
             return current_position;
         }
@@ -151,7 +161,7 @@ guchar* rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
  */
 guchar* rbu_findChunk(guchar * datagram, guint len, gushort chunk_type)
 {
-    gushort processed_len = 0;
+    gushort processed_len = 0, chunk_len = 0;
     guchar *current_position;
     guint pad_bytes;
     SCTP_simple_chunk *chunk;
@@ -166,11 +176,15 @@ guchar* rbu_findChunk(guchar * datagram, guint len, gushort chunk_type)
         if (chunk->chunk_header.chunk_id == chunk_type)
             return current_position;
         else {
+            chunk_len = CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+            if (chunk_len < 4 || chunk_len + processed_len > len) return NULL;
+            
             processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
             pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
             processed_len += pad_bytes;
-            current_position +=
-                (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
+            chunk_len = (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
+            if (chunk_len < 4 || chunk_len + processed_len > len) return NULL;
+            current_position += chunk_len;
         }
     }
     return NULL;
@@ -215,7 +229,9 @@ gint rbu_findAddress(guchar * chunk, guint n, union sockunion* foundAddress, int
                     "rbu_findAddress : len==%u, processed_len == %u", len, processed_len);
         vlp = (SCTP_vlparam_header*) current_position;
         parameterLength = ntohs(vlp->param_length);
-
+        
+        if (parameterLength < 4 || parameterLength + processed_len > len) return -1;
+        
         if (ntohs(vlp->param_type) == VLPARAM_IPV4_ADDRESS &&
             supportedAddressTypes & SUPPORT_ADDRESS_TYPE_IPV4) {
             /* discard invalid addresses */
@@ -270,7 +286,7 @@ gint rbu_findAddress(guchar * chunk, guint n, union sockunion* foundAddress, int
  */
 gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_cause)
 {
-    gushort processed_len = 0;
+    gushort processed_len = 0, param_length = 0, chunk_length = 0;
     gushort err_len = 0;
 
     guchar *current_position;
@@ -286,9 +302,16 @@ gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_ca
                     "rbu_scanDatagramForError : len==%u, processed_len == %u", len, processed_len);
 
         chunk = (SCTP_simple_chunk *) current_position;
+        chunk_length = CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+        if (chunk_length < 4 || chunk_length + processed_len > len) return FALSE;
+        
         if (chunk->chunk_header.chunk_id == CHUNK_ERROR) {
+            
+            if (chunk_length < 4 || chunk_length + processed_len > len) return FALSE;
+            
             event_log(INTERNAL_EVENT_0, "rbu_scanDatagramForError : Error Chunk Found");
-            while (err_len < (ntohs(chunk->chunk_header.chunk_length)-sizeof(SCTP_chunk_header)) ) {
+            /* now search for error parameter that fits */
+            while (err_len < chunk_length - sizeof(SCTP_chunk_header))  {
                 err_chunk = (SCTP_staleCookieError *) &(chunk->simple_chunk_data[err_len]);
                 if (ntohs(err_chunk->vlparam_header.param_type) == error_cause) {
                     event_logi(VERBOSE,
@@ -296,15 +319,21 @@ gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_ca
                                error_cause);
                     return TRUE;
                 }
-                err_len += ntohs(err_chunk->vlparam_header.param_length);
+                param_length = ntohs(err_chunk->vlparam_header.param_length);
+                if (param_length < 4 || param_length + err_len > len) return FALSE;
+                
+                err_len += param_length;
                 while ((err_len % 4) != 0)
                     err_len++;
             }
         }
-        processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
+        
+        processed_len += chunk_length;
         pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
         processed_len += pad_bytes;
-        current_position += (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
+        chunk_length = (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
+        if (chunk_length < 4 || chunk_length + processed_len > len) return FALSE;
+        current_position += chunk_length;
     }
     event_logi(VERBOSE,
                "rbu_scanDatagramForError : Error Cause %u NOT found -> Returning FALSE",

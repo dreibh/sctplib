@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.9 2003/12/01 12:38:50 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.10 2004/07/29 17:01:13 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -158,6 +158,11 @@ static gint32 retrieveVLParamFromString(guint16 paramType, guchar * mstring, gui
     while (curs < length) {
         param_header = (SCTP_vlparam_header *) & mstring[curs];
         pType = ntohs(param_header->param_type);
+        
+        if (ntohs(param_header->param_length) < 4) {
+            error_log(ERROR_MINOR, "Program/Peer implementation problem : parameter length 0");
+            return -1;
+        }
 
         if (pType == paramType) {
             return curs;
@@ -183,10 +188,6 @@ static gint32 retrieveVLParamFromString(guint16 paramType, guchar * mstring, gui
                 curs++;
         } else {
             error_logi(ERROR_MINOR, "unknown parameter type %u in message", pType);
-            if (ntohs(param_header->param_length) == 0) {
-                error_log(ERROR_MINOR, "Program/Peer implementation problem : parameter length 0");
-                return -1;
-            }
             /* try to continue parsing */
             if ((ntohs(param_header->param_length) + curs) <= length) {
                 curs += ntohs(param_header->param_length);
@@ -687,7 +688,7 @@ gboolean ch_getPRSCTPfromCookie(ChunkID cookieCID)
 
    if (chunks[cookieCID] == NULL) {
         error_log(ERROR_FATAL, "Invalid Cookie chunk ID");
-        return -1;
+        return FALSE;
     }
     vlp_totalLength =
             ((SCTP_cookie_echo *) chunks[cookieCID])->chunk_header.chunk_length -
@@ -701,10 +702,13 @@ gboolean ch_getPRSCTPfromCookie(ChunkID cookieCID)
         pType =  ntohs(vl_Ptr->param_type);
         pLen  =  ntohs(vl_Ptr->param_length);
         event_logiii(VERBOSE, "Scan variable parameters in cookie: Got type %u, len: %u, position %u",pType, pLen, curs);
-
+        
+        /* peer error - ignore - should send an error notification */
+        if (pLen < 4) return FALSE; 
+        
         if (pType == VLPARAM_PRSCTP) {
             /* ha, we got one ! */
-            if (pLen < 4) result = FALSE; /* peer error - ignore - should send an error notification */
+            
             if (pLen >= 4){
                  event_log(VERBOSE, "Peer Supports PRSCTP");
                  result = TRUE; /* peer supports it  */
@@ -744,11 +748,14 @@ gboolean ch_getPRSCTPfromInitAck(ChunkID initAckCID)
         vl_Ptr = (SCTP_vlparam_header *) & ack_string[curs];
         pType =  ntohs(vl_Ptr->param_type);
         pLen  =  ntohs(vl_Ptr->param_length);
+        
+        if (pLen < 4) return  FALSE; /* peer error - ignore - should send an error notification */
+        
         event_logiii(VERBOSE, "Scan variable parameters: Got type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_PRSCTP) {
             /* ha, we got one ! */
-            if (pLen < 4) result = FALSE; /* peer error - ignore - should send an error notification */
+
             if (pLen >= 4) result = TRUE; /* peer supports it */
             break;
         }
@@ -786,11 +793,14 @@ int ch_enterPRSCTPfromInit(ChunkID initAckCID, ChunkID initCID)
         vl_initPtr = (SCTP_vlparam_header *) & init_string[curs];
         pType =  ntohs(vl_initPtr->param_type);
         pLen  =  ntohs(vl_initPtr->param_length);
+        
+        if (pLen < 4) result = -1; /* peer error - ignore - should send an error notification */        
+        
         event_logiii(VERBOSE, "Scan variable parameters: Got type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_PRSCTP) {
             /* ha, we got one ! */
-            if (pLen < 4) result = -1; /* peer error - ignore - should send an error notification */
+
             if (pLen == 4) result = 0; /* peer supports it, but doesn't send anything unreliably  */
             if (pLen > 4)  result = 1; /* peer supports it, and does send some */
             memcpy(ack_string, vl_initPtr, pLen);
@@ -1005,6 +1015,9 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
         vl_initPtr = (SCTP_vlparam_header *) & init_string[curs];
         pType = ntohs(vl_initPtr->param_type);
         pLen =   ntohs(vl_initPtr->param_length);
+        
+        if (pLen < 4)  return -1;
+        
         event_logiii(VERBOSE, "Scan variable parameters: type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_COOKIE_PRESERV ||
@@ -1041,28 +1054,25 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
 
             if (STOP_PARAM_PROCESSING(pType)) return -1;
 
-            if (pLen != 0) {
-                if (STOP_PARAM_PROCESSING_WITH_ERROR(pType)){
+            if (STOP_PARAM_PROCESSING_WITH_ERROR(pType)){
 
-                    ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr);
-                    return 1;
-                }
-                if (SKIP_PARAM_WITH_ERROR(pType)) {
-                    ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr);
-                }
-                /* finally: simple SKIP_PARAM ! */
-                curs += pLen;
-                /* take care of padding */
-                while ((curs % 4) != 0) curs++;
-            } else /* plen == 0 ! */
-
-                return -1;
+                ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr);
+                return 1;
+            }
+            if (SKIP_PARAM_WITH_ERROR(pType)) {
+                ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr);
+            }
+            /* finally: simple SKIP_PARAM ! */
+            curs += pLen;
+            /* take care of padding */
+            while ((curs % 4) != 0) curs++;
+            
         }
     }
     return 0;
 }
 
-
+/* ------------------------------------------------------------------------------------------------------*/
 int ch_enterUnrecognizedErrors(ChunkID initAckID,
                                unsigned int supportedTypes,
                                ChunkID *errorchunk,
@@ -1128,6 +1138,8 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
         pLen =   ntohs(vl_ackPtr->param_length);
         event_logiii(VERBOSE, "Scan variable parameters: type %u, len: %u, position %u",pType, pLen, curs);
 
+        if (pLen < 4) return -1;
+        
         if (pType == VLPARAM_COOKIE_PRESERV || pType == VLPARAM_COOKIE ||
             pType == VLPARAM_SUPPORTED_ADDR_TYPES) {
 
@@ -1140,6 +1152,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
             vl_optionsPtr = (SCTP_vlparam_header *) & ack_string[curs+sizeof(SCTP_vlparam_header)];
             oType =  ntohs(vl_optionsPtr->param_type);
             oLen =   ntohs(vl_optionsPtr->param_length);
+            
             if (oType ==  VLPARAM_PRSCTP) {
                 *peerSupportsPRSCTP = FALSE;
                 curs += pLen;
@@ -1263,23 +1276,20 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
                 return -1;
             }
 
-            if (pLen != 0) {
-                if (STOP_PARAM_PROCESSING_WITH_ERROR(pType)){
-                    if (cid == 0) cid = ch_makeErrorChunk();
-                    ch_enterErrorCauseData(cid,VLPARAM_UNRECOGNIZED_PARAM ,pLen,(unsigned char*)vl_ackPtr);
-                    *errorchunk = cid;
-                    return 1;
-                }
-                if (SKIP_PARAM_WITH_ERROR(pType)) {
-                    if (cid == 0) cid = ch_makeErrorChunk();
-                    ch_enterErrorCauseData(cid,VLPARAM_UNRECOGNIZED_PARAM ,pLen,(unsigned char*)vl_ackPtr);
-                }
-                /* finally: simple SKIP_PARAM ! */
-                curs += pLen;
-                /* take care of padding */
-                while ((curs % 4) != 0) curs++;
-            } else
-                return -1;
+            if (STOP_PARAM_PROCESSING_WITH_ERROR(pType)){
+                 if (cid == 0) cid = ch_makeErrorChunk();
+                 ch_enterErrorCauseData(cid,VLPARAM_UNRECOGNIZED_PARAM ,pLen,(unsigned char*)vl_ackPtr);
+                 *errorchunk = cid;
+                 return 1;
+            }
+            if (SKIP_PARAM_WITH_ERROR(pType)) {
+                if (cid == 0) cid = ch_makeErrorChunk();
+                ch_enterErrorCauseData(cid,VLPARAM_UNRECOGNIZED_PARAM ,pLen,(unsigned char*)vl_ackPtr);
+            }
+            /* finally: simple SKIP_PARAM ! */
+            curs += pLen;
+            /* take care of padding */
+            while ((curs % 4) != 0) curs++;
         }
     }
     *errorchunk = cid;
@@ -1431,7 +1441,7 @@ unsigned int ch_cookieLifeTime(ChunkID chunkID)
 unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
 {
     gint32 vl_param_curs;
-    guint16 vl_param_total_length, pos=0, num=0;
+    guint16 vl_param_total_length, pos=0, num=0, pLen = 0;
     SCTP_supported_addresstypes *param = NULL;
 
     guint32 result=0;
@@ -1454,8 +1464,12 @@ unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
             /* found cookie preservative */
             param = (SCTP_supported_addresstypes*)
                         &((SCTP_init *)chunks[chunkID])->variableParams[vl_param_curs];
-
-            while(pos < param->vlparam_header.param_length) {
+                        
+            pLen = ntohs(param->vlparam_header.param_length);
+            
+            if (pLen < 4 || pLen > 12) return result;
+            
+            while(pos < pLen) {
                 if (ntohs(param->address_type[num]) == VLPARAM_IPV4_ADDRESS)
                     result |= SUPPORT_ADDRESS_TYPE_IPV4;
                 else if (ntohs(param->address_type[num]) == VLPARAM_IPV6_ADDRESS)
