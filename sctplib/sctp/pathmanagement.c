@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.7 2003/10/28 22:00:15 tuexen Exp $
+ *  $Id: pathmanagement.c,v 1.8 2003/10/30 12:41:38 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -258,16 +258,16 @@ static void handleChunksAcked(short pathID, unsigned int newRTT)
         if (pmData->pathData[pathID].firstRTO) {
             pmData->pathData[pathID].srtt = newRTT;
             pmData->pathData[pathID].rttvar = max(newRTT / 2, GRANULARITY);;
-            pmData->pathData[pathID].rto = max(min(newRTT * 3, pmData->rto_max), (unsigned int)pmData->rto_min);
+            pmData->pathData[pathID].rto = max(min(newRTT * 3, (unsigned int)pmData->rto_max), (unsigned int)pmData->rto_min);
             pmData->pathData[pathID].firstRTO = FALSE;
         } else {
             pmData->pathData[pathID].rttvar = (unsigned int)
-                (1. - RTO_BETA) * pmData->pathData[pathID].rttvar +
-                RTO_BETA * abs(pmData->pathData[pathID].srtt - newRTT);
+                ((1. - RTO_BETA) * pmData->pathData[pathID].rttvar +
+                RTO_BETA * abs(pmData->pathData[pathID].srtt - newRTT));
             pmData->pathData[pathID].rttvar = max((unsigned int)pmData->pathData[pathID].rttvar, GRANULARITY);
 
             pmData->pathData[pathID].srtt = (unsigned int)
-                (1. - RTO_ALPHA) * pmData->pathData[pathID].srtt + RTO_ALPHA * newRTT;
+                ((1. - RTO_ALPHA) * pmData->pathData[pathID].srtt + RTO_ALPHA * newRTT);
 
             pmData->pathData[pathID].rto = pmData->pathData[pathID].srtt +
                 4 * pmData->pathData[pathID].rttvar;

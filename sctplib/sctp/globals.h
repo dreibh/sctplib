@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.6 2003/10/28 22:00:15 tuexen Exp $
+ *  $Id: globals.h,v 1.7 2003/10/30 12:41:38 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -68,6 +68,7 @@
 
 #ifdef WIN32
 #include <winsock2.h>
+#include <time.h>
 #endif
 
 #ifdef FreeBSD
@@ -80,22 +81,18 @@
 #include <stdarg.h>
 #endif
 
-#include <netinet/in.h>
-
 
 /* turn on  Posix 1g for compatible cmsg structure */
-#ifdef USE_RFC2292BIS
-   #define _XPG4_2
-#endif
- 
-#include <sys/socket.h>
-  
-/* turn off  Posix 1g for compatible cmsg structure */
-#ifdef USE_RFC2292BIS
-  #undef _XPG4_2
-#endif
-  
+/* #ifdef USE_RFC2292BIS
+     #define _XPG4_2
+  #endif
+*/
 
+#ifndef WIN32
+#include <sys/socket.h>
+#include <netinet/in.h>
+#endif
+  
 #include "messages.h"
 
 /* timer granularity in millliseconds..... */
@@ -112,8 +109,9 @@
 
 #define SECRET_KEYSIZE  4096
 #define KEY_INIT     0
+#ifndef KEY_READ
 #define KEY_READ     1
-
+#endif
 #define MAX_DEST 	16
 
 

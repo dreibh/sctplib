@@ -1,5 +1,5 @@
 /*
- *  $Id: md5.h,v 1.2 2003/06/27 10:16:57 ajung Exp $
+ *  $Id: md5.h,v 1.3 2003/10/30 12:41:38 tuexen Exp $
  *
  * MD5.H - header file for MD5C.C
  */
@@ -34,9 +34,6 @@
   The following makes PROTOTYPES default to 0 if it has not already
   been defined with C compiler flags.
  */
-#ifndef PROTOTYPES
-#define PROTOTYPES 0
-#endif
 
 #include <string.h>
 
@@ -53,12 +50,6 @@ typedef unsigned long int UINT4;
 If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
   returns an empty list.
  */
-#if PROTOTYPES
-#define PROTO_LIST(list) list
-#else
-#define PROTO_LIST(list) ()
-#endif
-
 
 /* MD5 context. */
 typedef struct
@@ -68,9 +59,9 @@ typedef struct
     unsigned char buffer[64];   /* input buffer */
 } MD5_CTX;
 
-void MD5Init PROTO_LIST((MD5_CTX *));
-void MD5Update PROTO_LIST((MD5_CTX *, unsigned char *, unsigned int));
-void MD5Final PROTO_LIST((unsigned char[16], MD5_CTX *));
+void MD5Init (MD5_CTX *);
+void MD5Update (MD5_CTX *, unsigned char *, unsigned int);
+void MD5Final (unsigned char[16], MD5_CTX *);
 
 
 #define MD5_memcpy(output,input,len) 	memcpy(output,input,len)
