@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.9 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: pathmanagement.c,v 1.10 2003/11/24 13:30:40 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1246,7 +1246,7 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
             pmData->pathData[i].pathID = i;
             if (i != primaryPathID) {
                 pmData->pathData[i].hearbeatTimer =
-                    adl_startTimer(i * pmData->pathData[i].rto,   /* send HB quickly on all unconfirmed paths */
+                    adl_startTimer((i * pmData->pathData[i].rto + 1),    /* send HB quickly on all unconfirmed paths */
                                     &pm_heartbeatTimer,
                                     TIMER_TYPE_HEARTBEAT,
                                     (void *) &pmData->associationID,
@@ -1265,8 +1265,6 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
         }
 
         event_log(INTERNAL_EVENT_0, "pm_setPaths called ");
-
-        mdi_networkStatusChangeNotif(pmData->primaryPath, PM_PATH_CONFIRMED);
 
         return 0;
     } else {

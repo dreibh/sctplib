@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.19 2003/11/21 14:45:23 tuexen Exp $
+ *  $Id: distribution.c,v 1.20 2003/11/24 13:30:40 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -92,7 +92,7 @@
 
 static int      myRWND                      = 0x7FFF;
 static union    sockunion *myAddressList    = NULL;
-static unsigned int myNumberOfAddresses     = 0;
+static          int myNumberOfAddresses     = 0;
 static gboolean sendAbortForOOTB            = TRUE;
 static int      checksumAlgorithm           = SCTP_CHECKSUM_ALGORITHM_CRC32C;
 static gboolean librarySupportsPRSCTP         = TRUE;
@@ -1452,7 +1452,7 @@ int sctp_initLibrary(void)
     /* we might need to replace this socket !*/
     sfd = adl_get_sctpv4_socket();
 
-    if (adl_gatherLocalAddresses(&myAddressList, (int *)&myNumberOfAddresses,sfd,TRUE,&maxMTU,flag_Default) == FALSE) {
+    if (adl_gatherLocalAddresses(&myAddressList, &myNumberOfAddresses,sfd,TRUE,&maxMTU,flag_Default) == FALSE) {
         LEAVE_LIBRARY("sctp_initLibrary");
         return SCTP_SPECIFIC_FUNCTION_ERROR;
     }
@@ -1472,7 +1472,7 @@ int mdi_updateMyAddressList(void)
     sfd = adl_get_sctpv4_socket();
     free(myAddressList);
 
-    if (adl_gatherLocalAddresses(&myAddressList, (int *)&myNumberOfAddresses,sfd,TRUE,&maxMTU,flag_Default) == FALSE) {
+    if (adl_gatherLocalAddresses(&myAddressList, &myNumberOfAddresses,sfd,TRUE,&maxMTU,flag_Default) == FALSE) {
         return SCTP_SPECIFIC_FUNCTION_ERROR;
     }
 
@@ -3681,7 +3681,7 @@ void mdi_communicationLostNotif(unsigned short status)
 void mdi_communicationUpNotif(unsigned short status)
 {
     union sockunion lastAddress;
-    int result;
+    int result, pathNum;
     short primaryPath;
     unsigned short noOfInStreams;
     unsigned short noOfOutStreams;
@@ -3728,6 +3728,12 @@ void mdi_communicationUpNotif(unsigned short status)
                                                                 currentAssociation->supportsPRSCTP,
                                                                 currentAssociation->ulp_dataptr);
             LEAVE_CALLBACK("communicationUpNotif");
+
+            for (pathNum = 0; pathNum < currentAssociation->noOfNetworks; pathNum++) {
+                if (pm_pathConfirmed(pathNum) == TRUE) {
+                    mdi_networkStatusChangeNotif(pathNum, PM_PATH_CONFIRMED);
+                }
+            }
         } else {
             currentAssociation->ulp_dataptr = NULL;
         }
