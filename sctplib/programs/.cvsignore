@@ -16,3 +16,4 @@ mulp
 terminal
 test_tool
 .DS_Store
+.gdb_history
