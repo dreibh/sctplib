@@ -1,5 +1,5 @@
 /*
- *  $Id: discard_server.c,v 1.8 2004/11/17 20:56:06 tuexen Exp $
+ *  $Id: discard_server.c,v 1.9 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -389,8 +389,7 @@ int main(int argc, char **argv)
     SCTP_ulpCallbacks discardUlp;
     SCTP_LibraryParameters params;
     SCTP_InstanceParameters instanceParameters;
-
-    short sctpInstance;
+    int sctpInstance;
     int index;
     
     for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {

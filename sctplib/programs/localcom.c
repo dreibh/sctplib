@@ -1,5 +1,5 @@
 /*
- *  $Id: localcom.c,v 1.7 2004/11/19 21:13:27 tuexen Exp $
+ *  $Id: localcom.c,v 1.8 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -395,7 +395,7 @@ measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void *par
 
 int main(int argc, char **argv)
 {
-    unsigned short sctpServerInstance, sctpClientInstance;
+    int sctpServerInstance, sctpClientInstance;
     SCTP_ulpCallbacks echoServerUlp, echoClientUlp;
     SCTP_LibraryParameters params;
     unsigned int index, version;

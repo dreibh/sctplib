@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.14 2004/12/24 14:25:13 tuexen Exp $
+ *  $Id: terminal.c,v 1.15 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -69,7 +69,7 @@ static unsigned short remotePort = ECHO_PORT;
 static unsigned short localPort  = 0;
 static unsigned char  tosByte    = 0x10;  /* IPTOS_LOWDELAY */
 static unsigned int associationID;
-static unsigned short sctpInstance;
+static int sctpInstance;
 static int useAbort = 0;
 static int sendOOTBAborts = 1;
 static unsigned int myRwnd = 0;

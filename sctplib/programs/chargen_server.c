@@ -1,5 +1,5 @@
 /*
- *  $Id: chargen_server.c,v 1.11 2004/11/17 22:46:17 tuexen Exp $
+ *  $Id: chargen_server.c,v 1.12 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -418,7 +418,7 @@ int main(int argc, char **argv)
     SCTP_ulpCallbacks chargenUlp;
     SCTP_LibraryParameters params;
     SCTP_InstanceParameters instanceParameters;
-    short sctpInstance;
+    int sctpInstance;
     
     /* initialize the discard_ulp variable */
     chargenUlp.dataArriveNotif           = &dataArriveNotif;

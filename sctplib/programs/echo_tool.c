@@ -1,5 +1,5 @@
 /*
- *  $Id: echo_tool.c,v 1.9 2004/11/19 20:11:47 tuexen Exp $
+ *  $Id: echo_tool.c,v 1.10 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -570,7 +570,7 @@ measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void *par
 
 int main(int argc, char **argv)
 {
-    unsigned short sctpInstance;
+    int sctpInstance;
     SCTP_ulpCallbacks echoUlp;
     SCTP_InstanceParameters instanceParameters;
     SCTP_LibraryParameters params;

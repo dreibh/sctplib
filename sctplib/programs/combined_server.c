@@ -1,5 +1,5 @@
 /*
- *  $Id: combined_server.c,v 1.10 2004/11/19 20:11:47 tuexen Exp $
+ *  $Id: combined_server.c,v 1.11 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -584,7 +584,7 @@ int main(int argc, char **argv)
     SCTP_ulpCallbacks echoUlp, discardUlp, daytimeUlp, chargenUlp;
     SCTP_LibraryParameters params;
     SCTP_InstanceParameters instanceParameters;
-    short sctpInstance;
+    int sctpInstance;
 
     /* initialize the echo_ulp variable */
     echoUlp.dataArriveNotif              = &echoDataArriveNotif;

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.c,v 1.7 2004/12/24 14:25:13 tuexen Exp $
+ *  $Id: sctp_wrapper.c,v 1.8 2005/03/08 13:29:52 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -106,7 +106,7 @@ SCTP_initLibrary(void)
     return result;
 }
 
-short
+int
 SCTP_registerInstance(unsigned short port,
                       unsigned short noOfInStreams,
                       unsigned short noOfOutStreams,
@@ -114,7 +114,7 @@ SCTP_registerInstance(unsigned short port,
                       unsigned char localAddressList[][SCTP_MAX_IP_LEN],
                       SCTP_ulpCallbacks ULPcallbackFunctions)
 {
-    short result;
+    int result;
     
     result = sctp_registerInstance(port, noOfInStreams, noOfOutStreams,
                                    noOfLocalAddresses, localAddressList,
