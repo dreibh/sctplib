@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.7 2003/11/17 23:35:33 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.8 2003/11/20 10:01:26 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -648,7 +648,7 @@ int ch_enterIPaddresses(ChunkID chunkID, union sockunion sock_addresses[], int n
                 length += 8;
                 break;
 #ifdef HAVE_IPV6
-            cpm_heartbeatase AF_INET6:
+            case AF_INET6:
                 address->vlparam_header.param_type = htons(VLPARAM_IPV6_ADDRESS);
                 address->vlparam_header.param_length = htons(20);
                 memcpy(address->dest_addr.sctp_ipv6,
