@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.24 2004/07/26 15:53:38 ajung Exp $
+ *  $Id: distribution.c,v 1.25 2004/07/27 07:56:35 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -2566,8 +2566,8 @@ pathMaxRetransmissions);
  */
 int sctp_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatus* status)
 {
-
     guint16 result;
+    guint32 assocState;
     unsigned int totalBytesInFlight;
     SCTP_instance *old_Instance = sctpInstance;
     Association *old_assoc = currentAssociation;
@@ -2586,22 +2586,27 @@ int sctp_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatu
 
     /* TODO: error handling for these two events should be separated - return two different errors */
     if (currentAssociation != NULL && path_id >= 0 && path_id< currentAssociation->noOfNetworks) {
-        sctpInstance = currentAssociation->sctpInstance;
-        adl_sockunion2str(&(currentAssociation->destinationAddresses[path_id]),
+        assocState = sci_getState();
+        if (assocState < ESTABLISHED) {
+            result = SCTP_ASSOC_NOT_FOUND;
+        } else {
+            sctpInstance = currentAssociation->sctpInstance;
+            adl_sockunion2str(&(currentAssociation->destinationAddresses[path_id]),
                           &(status->destinationAddress[0]), SCTP_MAX_IP_LEN);
-        status->state = pm_readState(path_id);
-        status->srtt = pm_readSRTT(path_id);
-        status->rto = pm_readRTO(path_id);
-        status->rttvar = pm_readRttVar(path_id);
-        pm_getHBInterval(path_id, &(status->heartbeatIntervall));
-        status->cwnd = fc_readCWND(path_id);
-        status->cwnd2 = fc_readCWND2(path_id);
-        status->partialBytesAcked = fc_readPBA(path_id);
-        status->ssthresh = fc_readSsthresh(path_id);
-        status->outstandingBytesPerAddress = rtx_get_obpa((unsigned int)path_id, &totalBytesInFlight);
-        status->mtu = fc_readMTU(path_id);
-        status->ipTos = currentAssociation->ipTos;
-        result = SCTP_SUCCESS;
+            status->state = pm_readState(path_id);
+            status->srtt = pm_readSRTT(path_id);
+            status->rto = pm_readRTO(path_id);
+            status->rttvar = pm_readRttVar(path_id);
+            pm_getHBInterval(path_id, &(status->heartbeatIntervall));
+            status->cwnd = fc_readCWND(path_id);
+            status->cwnd2 = fc_readCWND2(path_id);
+            status->partialBytesAcked = fc_readPBA(path_id);
+            status->ssthresh = fc_readSsthresh(path_id);
+            status->outstandingBytesPerAddress = rtx_get_obpa((unsigned int)path_id, &totalBytesInFlight);
+            status->mtu = fc_readMTU(path_id);
+            status->ipTos = currentAssociation->ipTos;
+            result = SCTP_SUCCESS;
+        }
     } else {
         error_logi(ERROR_MAJOR, "sctp_getPathStatus : association %u does not exist", associationID);
         result = SCTP_ASSOC_NOT_FOUND;

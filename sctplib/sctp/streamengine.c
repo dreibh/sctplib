@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.12 2004/07/09 17:53:03 tuexen Exp $
+ * $Id: streamengine.c,v 1.13 2004/07/27 07:56:35 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -396,51 +396,50 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
             dchunk = (SCTP_data_chunk*)cdata->data;
 
             if ((i != 1) && (i != numberOfSegments))
-	            {
-	                dchunk->chunk_flags = 0;
-              	    bCount = SCTP_MAXIMUM_DATA_LENGTH;
-	                event_log (VERBOSE, "NEXT FRAGMENTED CHUNK -> MIDDLE");
-	            }
-	        else if (i == 1)
-	            {
-	                dchunk->chunk_flags = SCTP_DATA_BEGIN_SEGMENT;
-	                event_log (VERBOSE, "NEXT FRAGMENTED CHUNK -> BEGIN");
-            	    bCount = SCTP_MAXIMUM_DATA_LENGTH;
-	            }
-	        else if (i == numberOfSegments)
-	            {
-	                dchunk->chunk_flags = SCTP_DATA_END_SEGMENT;
-	                event_log (EXTERNAL_EVENT, "NEXT FRAGMENTED CHUNK -> END");
-            	    bCount = residual;
-	            }
+            {
+                dchunk->chunk_flags = 0;
+                bCount = SCTP_MAXIMUM_DATA_LENGTH;
+                event_log (VERBOSE, "NEXT FRAGMENTED CHUNK -> MIDDLE");
+            }
+            else if (i == 1)
+            {
+                dchunk->chunk_flags = SCTP_DATA_BEGIN_SEGMENT;
+                event_log (VERBOSE, "NEXT FRAGMENTED CHUNK -> BEGIN");
+                bCount = SCTP_MAXIMUM_DATA_LENGTH;
+            }
+            else if (i == numberOfSegments)
+            {
+                dchunk->chunk_flags = SCTP_DATA_END_SEGMENT;
+                event_log (EXTERNAL_EVENT, "NEXT FRAGMENTED CHUNK -> END");
+                bCount = residual;
+            }
+ 
+        dchunk->chunk_id = CHUNK_DATA;
+        dchunk->chunk_length = htons (bCount + FIXED_DATA_CHUNK_SIZE);
+        dchunk->tsn = htonl (0);
+        dchunk->stream_id = htons (streamId);
+        dchunk->protocolId = htonl (protocolId);
 
-	        dchunk->chunk_id = CHUNK_DATA;
-	        dchunk->chunk_length = htons (bCount + FIXED_DATA_CHUNK_SIZE);
-	        dchunk->tsn = htonl (0);
-	        dchunk->stream_id = htons (streamId);
-	        dchunk->protocolId = htonl (protocolId);
-	
-    	    if (unorderedDelivery)
-	            {
-	                dchunk->stream_sn = 0;
-	                dchunk->chunk_flags += SCTP_DATA_UNORDERED;
-	            }
-	        else
-	            {			/* unordered flag not put */
-		            dchunk->stream_sn = htons (se->SendStreams[streamId].nextSSN);
-                    /* only after the last segment we increase the SSN */
-                if (i == numberOfSegments) {
-	            		se->SendStreams[streamId].nextSSN++;
-  	     	        se->SendStreams[streamId].nextSSN = se->SendStreams[streamId].nextSSN % 0x10000;
-	  	     	    }
-	            }
-	
-          memcpy (dchunk->data, bufPosition, bCount);
-          bufPosition += bCount * sizeof(unsigned char);
-	
+        if (unorderedDelivery)
+        {
+            dchunk->stream_sn = 0;
+            dchunk->chunk_flags += SCTP_DATA_UNORDERED;
+        }
+        else
+        {   /* unordered flag not put */
+            dchunk->stream_sn = htons (se->SendStreams[streamId].nextSSN);
+            /* only after the last segment we increase the SSN */
+            if (i == numberOfSegments) {
+                se->SendStreams[streamId].nextSSN++;
+                se->SendStreams[streamId].nextSSN = se->SendStreams[streamId].nextSSN % 0x10000;
+            }
+        }
 
-	        event_logiii (EXTERNAL_EVENT, "======> SE sends fragment %d of chunk (SSN=%u, SID=%u) to FlowControl <======",
-		            i, ntohs (dchunk->stream_sn),ntohs (dchunk->stream_id));
+        memcpy (dchunk->data, bufPosition, bCount);
+        bufPosition += bCount * sizeof(unsigned char);
+
+        event_logiii (EXTERNAL_EVENT, "======> SE sends fragment %d of chunk (SSN=%u, SID=%u) to FlowControl <======",
+                        i, ntohs (dchunk->stream_sn),ntohs (dchunk->stream_id));
 
             if (!se->unreliable) lifetime = 0xFFFFFFFF;
 
@@ -451,7 +450,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
                 /* FIXME : Howto Propagate an Error here - Result gets overwritten on next Call */
                 retVal = result;
             }
-	    }
+        }
     }
   return retVal;
 }
