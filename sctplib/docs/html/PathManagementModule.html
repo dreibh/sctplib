@@ -1,0 +1,137 @@
+<HTML>
+<HEAD>
+   <TITLE> Path Management Module </TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2> <A HREF="#DOC.DOCU">Path Management Module </A></H2>
+
+<HR>
+<DL>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="PATHDATA"></A>
+<A HREF=PATHDATA.html><B>PATHDATA</B></A><DD><I> this struct contains the necessary data per (destination or) path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="PATHMANDATA"></A>
+<A HREF=PATHMANDATA.html><B>PATHMANDATA</B></A><DD><I> this struct contains all necessary data for one instance of the path management module.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pmData"></A>
+<A HREF=pmData.html><B>pmData</B></A><DD><I> this pointer is set to point to the current asssociation's path management struct it becomes zero after we have treated an incoming/outgoing datagram</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getTime"></A>
+<A HREF=sctp_getTime.2.html><B>sctp_getTime</B></A><DD><I> return the current system time converted to a value of  milliseconds.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="handleChunksRetransmitted"></A>
+<A HREF=handleChunksRetransmitted.html><B>handleChunksRetransmitted</B></A><DD><I> handleChunksRetransmitted is called whenever datachunks are retransmitted or a hearbeat-request has not been acknowledged within the current heartbeat-intervall.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="handleChunksAcked"></A>
+<A HREF=handleChunksAcked.html><B>handleChunksAcked</B></A><DD><I> Function is used to update RTT, SRTT, RTO values after chunks have been acked.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_heartbeat"></A>
+<A HREF=pm_heartbeat.html><B>pm_heartbeat</B></A><DD><I> pm_heartbeat is called when a heartbeat was received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_heartbeatTimer"></A>
+<A HREF=pm_heartbeatTimer.html><B>pm_heartbeatTimer</B></A><DD><I> pm_heartbeatTimer is called by the adaption-layer when the heartbeat timer expires.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_doHB"></A>
+<A HREF=pm_doHB.html><B>pm_doHB</B></A><DD><I> simple function that sends a heartbeat chunk to the indicated address </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_heartbeatAck"></A>
+<A HREF=pm_heartbeatAck.html><B>pm_heartbeatAck</B></A><DD><I> pm_heartbeatAck is called when a heartbeat acknowledgement was received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_chunksAcked"></A>
+<A HREF=pm_chunksAcked.html><B>pm_chunksAcked</B></A><DD><I> pm_chunksAcked is called by reliable transfer whenever chunks have been acknowledged.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_chunksSentOn"></A>
+<A HREF=pm_chunksSentOn.html><B>pm_chunksSentOn</B></A><DD><I> helper function, that simply sets the chunksSent flag of this path management instance to TRUE </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_chunksRetransmitted"></A>
+<A HREF=pm_chunksRetransmitted.html><B>pm_chunksRetransmitted</B></A><DD><I> pm_chunksRetransmitted is called by reliable transfer whenever chunks have been retransmitted.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_rto_backoff"></A>
+<A HREF=pm_rto_backoff.html><B>pm_rto_backoff</B></A><DD><I> pm_rto_backoff is called by reliable transfer when the T3 retransmission timer expires.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_enableHB"></A>
+<A HREF=pm_enableHB.html><B>pm_enableHB</B></A><DD><I> pm_enableHB is called when ULP wants to enable heartbeat.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_disableAllHB"></A>
+<A HREF=pm_disableAllHB.html><B>pm_disableAllHB</B></A><DD><I> pm_disableAllHB is usually called on shutdown to disable all heartbeats</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_disableHB"></A>
+<A HREF=pm_disableHB.html><B>pm_disableHB</B></A><DD><I> pm_disableHB is called to disable heartbeat for one specific path id.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_setPrimaryPath"></A>
+<A HREF=pm_setPrimaryPath.html><B>pm_setPrimaryPath</B></A><DD><I> pm_setPrimaryPath sets the primary path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_readRTO"></A>
+<A HREF=pm_readRTO.html><B>pm_readRTO</B></A><DD><I> pm_readRTO returns the currently set RTO value for a certain path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_readRttVar"></A>
+<A HREF=pm_readRttVar.html><B>pm_readRttVar</B></A><DD><I> pm_readRttVar returns the currently measured value for Round-Trip time variation of a certain path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_readSRTT"></A>
+<A HREF=pm_readSRTT.html><B>pm_readSRTT</B></A><DD><I> pm_readSRTT returns the currently set SRTT value for a certain path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_readState"></A>
+<A HREF=pm_readState.html><B>pm_readState</B></A><DD><I> pm_readState returns the current state of the path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_readPrimaryPath"></A>
+<A HREF=pm_readPrimaryPath.html><B>pm_readPrimaryPath</B></A><DD><I> pm_readPrimaryPath is used to determine the current primary path </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_getMaxPathRetransmisions"></A>
+<A HREF=pm_getMaxPathRetransmisions.html><B>pm_getMaxPathRetransmisions</B></A><DD><I> pm_getMaxPathRetransmisions is used to get the current  maxPathRetransmissions parameter value </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_setMaxPathRetransmisions"></A>
+<A HREF=pm_setMaxPathRetransmisions.html><B>pm_setMaxPathRetransmisions</B></A><DD><I> pm_setMaxPathRetransmisions is used to get the current  maxPathRetransmissions parameter value </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_getRtoInitial"></A>
+<A HREF=pm_getRtoInitial.html><B>pm_getRtoInitial</B></A><DD><I> pm_getRtoInitial is used to get the current  rto_initial parameter value </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_setRtoInitial"></A>
+<A HREF=pm_setRtoInitial.html><B>pm_setRtoInitial</B></A><DD><I> pm_getRtoInitial is used to get the current  rto_initial parameter value </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_setPaths"></A>
+<A HREF=pm_setPaths.html><B>pm_setPaths</B></A><DD><I> pm_setPaths modufies number of paths and sets the primary path.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_newPathman"></A>
+<A HREF=pm_newPathman.html><B>pm_newPathman</B></A><DD><I> pm_newPathman creates a new instance of pathmanagement.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="pm_deletePathman"></A>
+<A HREF=pm_deletePathman.html><B>pm_deletePathman</B></A><DD><I> Deletes the instance pointed to by pathmanPtr.</I>
+</DL>
+<A NAME="DOC.DOCU">
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

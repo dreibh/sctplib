@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned int insert_item</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned int <A HREF="#DOC.DOCU">insert_item</A>(AlarmTimer * item)</H2>
+<BLOCKQUOTE> this function inserts a timer_item into the list.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+this function inserts a timer_item into the list. Keeps it ordered,
+and updates length, and possibly one timeval entry. Checks whether
+we insert at beginning/end first. timer_item must have been alloc'ed
+first by the application, this is not done by this function !
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>tlist</B> - 		pointer to the timer_list instance
+<BR><B>item</B> - 	pointer to the event item that is to be added
+<BR><DT><B>Returns:</B><DD>  timer_id on success, 0 if a pointer was NULL or other error<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

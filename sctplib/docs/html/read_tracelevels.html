@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+   <TITLE>void read_tracelevels</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>void <A HREF="#DOC.DOCU">read_tracelevels</A>()</H2>
+<BLOCKQUOTE> read_tracelevels reads from a file the tracelevels for errors and events for each module.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+read_tracelevels reads from a file the tracelevels for errors and events for each module.
+Modules that are not listed in the file will not be traced. if the file does not exist or
+is empty, the global tracelevel defined in globals.h will be used. THe name of the file has
+to be {\texttt tracelevels.in} in the current directory where the executable is located.
+The normal format of the file is:
+<PRE>
+&nbsp;&nbsp;&nbsp;module1.c&nbsp;errorTraceLevel&nbsp;eventTraceLevel
+&nbsp;&nbsp;&nbsp;module2.c&nbsp;errorTraceLevel&nbsp;eventTraceLevel
+&nbsp;&nbsp;&nbsp;....
+&nbsp;&nbsp;&nbsp;</PRE>
+The file must be terminated by a null line.
+Alternatively there may be the entry
+<PRE>
+&nbsp;&nbsp;&nbsp;&nbsp;LOGFILE
+&nbsp;&nbsp;&nbsp;</PRE>
+in that file, which causes all output from event_logs() to go into a logfile in the local
+directory.</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

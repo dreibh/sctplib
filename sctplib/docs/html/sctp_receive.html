@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned short sctp_receive</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned short <A HREF="#DOC.DOCU">sctp_receive</A>(unsigned int associationID, unsigned short streamID, unsigned char *buffer, unsigned int *length)</H2>
+<BLOCKQUOTE> sctp_receive is called in response to the dataArriveNotification to get the received data.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+sctp_receive is called in response to the dataArriveNotification to
+get the received data.
+The stream engine must copy the chunk data from a received  SCTP datagram to
+a new byte string, because the SCTP datagram is overwritten when the next datagram
+is received and the lifetime of a chunk in the streamengine might outlast the
+the reception of several SCTP datagrams.
+For this reasons and to avoid repeated copying of byte strings, a pointer to
+the byte string of chunkdata allocated by the streamengine is returned.
+According to the standard, the chunkdata should be copied to to a buffer provided
+by the ULP.
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>associationID</B> -   ID of association.
+<BR><B>streamID</B> -        the stream on which the data chunk is received.
+<BR><B>buffer</B> -          pointer to where payload data of arrived chunk will be copied
+<BR><B>length</B> -          length of chunk data.
+<BR><DT><B>Returns:</B><DD>  1 if association does not exist, 0 if okay<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

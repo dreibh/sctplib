@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+   <TITLE>typedef struct  rxc_buffer_struct</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>typedef struct  <A HREF="#DOC.DOCU">rxc_buffer_struct</A></H2>
+<BLOCKQUOTE> this struct contains all necessary data for creating SACKs from received data chunks</BLOCKQUOTE>
+
+<HR>
+<P><DL>
+ <DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>void* <B><A HREF="#DOC.1.2.6.1.1">sack_chunk</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>List* <B><A HREF="#DOC.1.2.6.1.2">frag_list</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>List* <B><A HREF="#DOC.1.2.6.1.3">dup_list</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.4">ctsna</A></B>
+<DD><I>cumulative TSN acked </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.5">lowest</A></B>
+<DD><I>store lowest tsn value for dups (!) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.6">highest</A></B>
+<DD><I>stores highest tsn received so far, taking care of wraps ie.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.6.1.7">contains_valid_sack</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.6.1.8">timer_running</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.6.1.9">new_chunk_received</A></B>
+<DD><I>indicates whether a chunk was recvd that is truly new </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TimerID <B><A HREF="#DOC.1.2.6.1.10">sack_timer</A></B>
+<DD><I>timer for delayed sacks</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.11">last_address</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.12">my_association</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.13">my_rwnd</A></B>
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.6.1.14">delay</A></B>
+<DD><I>delay for delayed ACK in msecs</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+this struct contains all necessary data for creating SACKs from received data chunks</BLOCKQUOTE>
+<DL>
+
+<A NAME="sack_chunk">
+<A NAME="DOC.1.2.6.1.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>void* sack_chunk</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="frag_list">
+<A NAME="DOC.1.2.6.1.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>List* frag_list</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="dup_list">
+<A NAME="DOC.1.2.6.1.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>List* dup_list</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="ctsna">
+<A NAME="DOC.1.2.6.1.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int ctsna</B></TT>
+<DD>cumulative TSN acked 
+<DL><DT><DD></DL><P>
+<A NAME="lowest">
+<A NAME="DOC.1.2.6.1.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int lowest</B></TT>
+<DD>store lowest tsn value for dups (!) 
+<DL><DT><DD></DL><P>
+<A NAME="highest">
+<A NAME="DOC.1.2.6.1.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int highest</B></TT>
+<DD>stores highest tsn received so far, taking care of wraps
+ie. highest &lt; lowest indicates a wrap 
+<DL><DT><DD></DL><P>
+<A NAME="contains_valid_sack">
+<A NAME="DOC.1.2.6.1.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean contains_valid_sack</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="timer_running">
+<A NAME="DOC.1.2.6.1.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean timer_running</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="new_chunk_received">
+<A NAME="DOC.1.2.6.1.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean new_chunk_received</B></TT>
+<DD>indicates whether a chunk was recvd that is truly new 
+<DL><DT><DD></DL><P>
+<A NAME="sack_timer">
+<A NAME="DOC.1.2.6.1.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TimerID sack_timer</B></TT>
+<DD>timer for delayed sacks
+<DL><DT><DD></DL><P>
+<A NAME="last_address">
+<A NAME="DOC.1.2.6.1.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int last_address</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="my_association">
+<A NAME="DOC.1.2.6.1.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int my_association</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="my_rwnd">
+<A NAME="DOC.1.2.6.1.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int my_rwnd</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="delay">
+<A NAME="DOC.1.2.6.1.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int delay</B></TT>
+<DD>delay for delayed ACK in msecs
+<DL><DT><DD></DL><P></DL>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+   <TITLE>int mdi_send_message</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>int <A HREF="#DOC.DOCU">mdi_send_message</A>(SCTP_message * message, unsigned int length, short destAddressIndex)</H2>
+<BLOCKQUOTE> Used by bundling to send a SCTP-datagramm.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Used by bundling to send a SCTP-datagramm.
+
+<P>Bundling passes a static pointer and leaves space for common header, so
+we can fill that header in up front !
+Before calling send_message at the adaption-layer, this function does:
+<UL>
+<LI> add the SCTP common header to the message
+<LI> convert the SCTP message to a byte string
+<LI> retrieve the socket-file descriptor of the SCTP-instance
+<LI> retrieve the destination address
+<LI> retrieve destination port ???
+</UL>
+
+<P></BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>SCTP_message</B> -      SCTP message as a struct (i.e. common header and chunks)
+<BR><B>length</B> -            length of complete SCTP message.
+<BR><B>destAddresIndex</B> -   Index of address in the destination address list.
+<BR><DT><B>Returns:</B><DD>  Errorcode (0 for good case: length bytes sent; 1 or -1 for error)<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

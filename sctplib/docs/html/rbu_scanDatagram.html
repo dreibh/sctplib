@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+   <TITLE>gboolean rbu_scanDatagram</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>gboolean <A HREF="#DOC.DOCU">rbu_scanDatagram</A>(guchar * datagram, guint len, gushort chunk_type)</H2>
+<BLOCKQUOTE> looks for chunk_type in a newly received datagram</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+looks for chunk_type in a newly received datagram
+
+<P>All chunks within the datagram are lookes at, until one is found
+that equals the parameter chunk_type.
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>datagram</B> -      pointer to the newly received data
+<BR><B>chunk_type</B> -    chunk type to look for
+<BR><DT><B>Returns:</B><DD>  true is chunk_type exists in SCTP datagram, false if it is not in there<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

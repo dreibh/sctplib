@@ -1,0 +1,141 @@
+<HTML>
+<HEAD>
+   <TITLE>Table of Contents</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>Table of Contents</H1>
+<H2>General stuff</H2>
+<UL>
+<LI><A HREF="index.html">SCTP Documentation</A> <I>Documentation for SCTP implementation </I>
+<UL></UL></UL>
+<H2>Variables</H2>
+<UL>
+<LI><A HREF="ASSOCIATION.html#bundling">bundling</A> <I>pointer to bundling structure </I>
+<LI><A HREF="ASSOCIATION.html#deleted">deleted</A> <I>marks an association for deletion </I>
+<LI><A HREF="ASSOCIATION.html#flowControl">flowControl</A> <I>pointer to flowcontrol structure </I>
+<LI><A HREF="ASSOCIATION.html#ipTos">ipTos</A> <I>IP TOS value per association </I>
+<LI><A HREF="ASSOCIATION.html#localPort">localPort</A> <I>the local port number of this association.</I>
+<LI><A HREF="ASSOCIATION.html#noOfNetworks">noOfNetworks</A> <I>number of destination networks (paths) </I>
+<LI><A HREF="ASSOCIATION.html#pathMan">pathMan</A> <I>pointer to pathmanagement structure </I>
+<LI><A HREF="ASSOCIATION.html#reliableTransfer">reliableTransfer</A> <I>pointer to reliable-transfer structure </I>
+<LI><A HREF="ASSOCIATION.html#remotePort">remotePort</A> <I>the remote port number of this association.</I>
+<LI><A HREF="ASSOCIATION.html#rx_control">rx_control</A> <I>pointer to receive-control structure </I>
+<LI><A HREF="ASSOCIATION.html#sctpInstance">sctpInstance</A> <I>Pointer to the SCTP-instance this association belongs to.</I>
+<LI><A HREF="ASSOCIATION.html#sctp_control">sctp_control</A> <I>pointer to SCTP-control </I>
+<LI><A HREF="ASSOCIATION.html#streamengine">streamengine</A> <I>pointer to stream structure </I>
+<LI><A HREF="ASSOCIATION.html#tagLocal">tagLocal</A> <I>The local tag of this association.</I>
+<LI><A HREF="ASSOCIATION.html#tagRemote">tagRemote</A> <I>The tag of remote side of this association </I>
+<LI><A HREF="ASSOCIATION.html#ulp_dataptr">ulp_dataptr</A> <I>transparent pointer to some upper layer data </I>
+<LI><A HREF="SCTPINSTANCE.html#ULPcallbackFunctions">ULPcallbackFunctions</A> <I>set of callback functions that were registered by the ULP </I>
+<LI><A HREF="SCTPINSTANCE.html#default_rtoInitial">default_rtoInitial</A> <I>here follow default parameters for instance initialization </I>
+<LI><A HREF="SCTPINSTANCE.html#localPort">localPort</A> <I>The local port of this instance, or zero for don't cares.</I>
+<LI><A HREF="SCTPINSTANCE.html#noOfInStreams">noOfInStreams</A> <I>maximum number of incoming streams that this instance will take </I>
+<LI><A HREF="SCTPINSTANCE.html#noOfOutStreams">noOfOutStreams</A> <I>maximum number of outgoingng streams that this instance will take </I>
+<LI><A HREF="SCTPINSTANCE.html#sctpInstanceName">sctpInstanceName</A> <I>The name of this SCTP-instance, used as key.</I>
+<LI><A HREF="__congestion_parameters.html#cwnd">cwnd</A>
+<LI><A HREF="__congestion_parameters.html#cwnd2">cwnd2</A>
+<LI><A HREF="__congestion_parameters.html#mtu">mtu</A>
+<LI><A HREF="__congestion_parameters.html#outstanding_bytes_per_address">outstanding_bytes_per_address</A>
+<LI><A HREF="__congestion_parameters.html#partial_bytes_acked">partial_bytes_acked</A>
+<LI><A HREF="__congestion_parameters.html#ssthresh">ssthresh</A>
+<LI><A HREF="flowcontrol_struct.html#T3_timer">T3_timer</A> <I>one timer may be running per destination address </I>
+<LI><A HREF="flowcontrol_struct.html#addresses">addresses</A> <I>for passing as parameter in callback functions </I>
+<LI><A HREF="flowcontrol_struct.html#chunk_list">chunk_list</A>
+<LI><A HREF="flowcontrol_struct.html#cparams">cparams</A> <I>pointer to array of congestion window parameters </I>
+<LI><A HREF="flowcontrol_struct.html#current_tsn">current_tsn</A>
+<LI><A HREF="flowcontrol_struct.html#cwnd_timer">cwnd_timer</A>
+<LI><A HREF="flowcontrol_struct.html#last_active_address">last_active_address</A>
+<LI><A HREF="flowcontrol_struct.html#my_association">my_association</A>
+<LI><A HREF="flowcontrol_struct.html#number_of_addresses">number_of_addresses</A>
+<LI><A HREF="flowcontrol_struct.html#one_packet_inflight">one_packet_inflight</A>
+<LI><A HREF="flowcontrol_struct.html#outstanding_bytes">outstanding_bytes</A>
+<LI><A HREF="flowcontrol_struct.html#shutdown_received">shutdown_received</A>
+<LI><A HREF="flowcontrol_struct.html#t3_retransmission_sent">t3_retransmission_sent</A>
+<LI><A HREF="flowcontrol_struct.html#waiting_for_sack">waiting_for_sack</A>
+<LI><A HREF="PATHDATA.html#chunksAcked">chunksAcked</A> <I>set to true when data chunks are acknowledged </I>
+<LI><A HREF="PATHDATA.html#chunksSent">chunksSent</A> <I>TRUE, if chunks have been sent over that path within last RTO </I>
+<LI><A HREF="PATHDATA.html#firstRTO">firstRTO</A> <I>true as long as RTO-Calc.</I>
+<LI><A HREF="PATHDATA.html#hearbeatTimer">hearbeatTimer</A> <I>ID of the heartbeat timer </I>
+<LI><A HREF="PATHDATA.html#heartbeatAcked">heartbeatAcked</A> <I>set to true when a hearbeat is acknowledged and to false when a heartbeat is sent when the heartbeat timer expires.</I>
+<LI><A HREF="PATHDATA.html#heartbeatEnabled">heartbeatEnabled</A> <I>true if heartbeat is enabled </I>
+<LI><A HREF="PATHDATA.html#heartbeatIntervall">heartbeatIntervall</A> <I>defines the rate at which heartbeats are sent </I>
+<LI><A HREF="PATHDATA.html#heartbeatSent">heartbeatSent</A> <I>set to true when a heartbeat is sent.</I>
+<LI><A HREF="PATHDATA.html#pathID">pathID</A> <I>ID of path </I>
+<LI><A HREF="PATHDATA.html#pathRetranscount">pathRetranscount</A> <I>Counter for retransmissions on a single path </I>
+<LI><A HREF="PATHDATA.html#rto">rto</A> <I>Retransmission time out used for all retrans.</I>
+<LI><A HREF="PATHDATA.html#rttvar">rttvar</A> <I>round trip time variation </I>
+<LI><A HREF="PATHDATA.html#srtt">srtt</A> <I>smoothed round trip time </I>
+<LI><A HREF="PATHDATA.html#state">state</A> <I>operational state of pathmanagement for one path </I>
+<LI><A HREF="PATHDATA.html#timerBackoff">timerBackoff</A> <I>Only once per HB-intervall </I>
+<LI><A HREF="PATHMANDATA.html#associationID">associationID</A> <I>association-ID </I>
+<LI><A HREF="PATHMANDATA.html#maxPathRetransmissions">maxPathRetransmissions</A> <I>maximum retransmissions per path parameter </I>
+<LI><A HREF="PATHMANDATA.html#numberOfPaths">numberOfPaths</A> <I>the number of paths used by this assoc.</I>
+<LI><A HREF="PATHMANDATA.html#pathData">pathData</A> <I>pointer to path-specific data </I>
+<LI><A HREF="PATHMANDATA.html#peerRetranscount">peerRetranscount</A> <I>Counter for all retransmissions over all paths </I>
+<LI><A HREF="PATHMANDATA.html#primaryPath">primaryPath</A> <I>stores the current primary path </I>
+<LI><A HREF="PATHMANDATA.html#rto_initial">rto_initial</A> <I>initial RTO, a configurable parameter </I>
+<LI><A HREF="PATHMANDATA.html#rto_min">rto_min</A> <I>minimum RTO, a configurable parameter </I>
+<LI><A HREF="rxc_buffer_struct.html#contains_valid_sack">contains_valid_sack</A>
+<LI><A HREF="rxc_buffer_struct.html#ctsna">ctsna</A> <I>cumulative TSN acked </I>
+<LI><A HREF="rxc_buffer_struct.html#delay">delay</A> <I>delay for delayed ACK in msecs</I>
+<LI><A HREF="rxc_buffer_struct.html#dup_list">dup_list</A>
+<LI><A HREF="rxc_buffer_struct.html#frag_list">frag_list</A>
+<LI><A HREF="rxc_buffer_struct.html#highest">highest</A> <I>stores highest tsn received so far, taking care of wraps ie.</I>
+<LI><A HREF="rxc_buffer_struct.html#last_address">last_address</A>
+<LI><A HREF="rxc_buffer_struct.html#lowest">lowest</A> <I>store lowest tsn value for dups (!) </I>
+<LI><A HREF="rxc_buffer_struct.html#my_association">my_association</A>
+<LI><A HREF="rxc_buffer_struct.html#my_rwnd">my_rwnd</A>
+<LI><A HREF="rxc_buffer_struct.html#new_chunk_received">new_chunk_received</A> <I>indicates whether a chunk was recvd that is truly new </I>
+<LI><A HREF="rxc_buffer_struct.html#sack_chunk">sack_chunk</A>
+<LI><A HREF="rxc_buffer_struct.html#sack_timer">sack_timer</A> <I>timer for delayed sacks</I>
+<LI><A HREF="rxc_buffer_struct.html#timer_running">timer_running</A>
+<LI><A HREF="rtx_buffer_struct.html#chunk_list">chunk_list</A> <I>a list that is ordered by ascending tsn values </I>
+<LI><A HREF="rtx_buffer_struct.html#highest_tsn">highest_tsn</A>
+<LI><A HREF="rtx_buffer_struct.html#lowest_tsn">lowest_tsn</A> <I>storing the lowest tsn that is in the list </I>
+<LI><A HREF="rtx_buffer_struct.html#my_association">my_association</A>
+<LI><A HREF="rtx_buffer_struct.html#newly_acked_bytes">newly_acked_bytes</A>
+<LI><A HREF="rtx_buffer_struct.html#newly_acked_per_address">newly_acked_per_address</A>
+<LI><A HREF="rtx_buffer_struct.html#num_of_addresses">num_of_addresses</A>
+<LI><A HREF="rtx_buffer_struct.html#num_of_chunks">num_of_chunks</A>
+<LI><A HREF="rtx_buffer_struct.html#peer_arwnd">peer_arwnd</A>
+<LI><A HREF="rtx_buffer_struct.html#save_num_of_txm">save_num_of_txm</A> <I>this val stores 0 if retransmitted chunks have been acked, else 1 </I>
+<LI><A HREF="rtx_buffer_struct.html#shutdown_received">shutdown_received</A>
+<LI><A HREF="SCTP_CONTROLDATA.html#NumberOfInStreams">NumberOfInStreams</A> <I>we store these here, too.</I>
+<LI><A HREF="SCTP_CONTROLDATA.html#NumberOfOutStreams">NumberOfOutStreams</A> <I>we store these here, too.</I>
+<LI><A HREF="SCTP_CONTROLDATA.html#assocMaxInitRetransmissions">assocMaxInitRetransmissions</A> <I>value for maximum initial retransmissions per association </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#assocMaxRetransmissions">assocMaxRetransmissions</A> <I>value for maximum retransmissions per association </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#associationID">associationID</A> <I>stores the association id (==tag) of this association</I>
+<LI><A HREF="SCTP_CONTROLDATA.html#association_state">association_state</A> <I>the state of this state machine </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#cookieChunk">cookieChunk</A> <I>pointer to the cookie chunk data structure (for retransmissions) </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#cookieLifeTime">cookieLifeTime</A> <I>value for the current cookie lifetime </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#initChunk">initChunk</A> <I>pointer to the init chunk data structure (for retransmissions) </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#initRetransCounter">initRetransCounter</A> <I>Counter for init and cookie retransmissions </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#initTimer">initTimer</A> <I>stores timer-ID of init/cookie-timer, used to stop this timer </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#initTimerDuration">initTimerDuration</A>
+<LI><A HREF="SCTP_CONTROLDATA.html#instance">instance</A> <I>the sctp instance </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#local_tie_tag">local_tie_tag</A> <I>my tie tag for cross initialization and other sick cases </I>
+<LI><A HREF="SCTP_CONTROLDATA.html#peer_tie_tag">peer_tie_tag</A> <I>peer's tie tag for cross initialization and other sick cases </I>
+<LI><A HREF="bundling_instance_struct.html#ctrl_buf">ctrl_buf</A> <I>buffer for control chunks</I>
+<LI><A HREF="bundling_instance_struct.html#ctrl_chunk_in_buffer">ctrl_chunk_in_buffer</A> <I>is there a control chunk  to be sent in the buffer ?</I>
+<LI><A HREF="bundling_instance_struct.html#ctrl_position">ctrl_position</A> <I>current position in the buffer for control chunks</I>
+<LI><A HREF="bundling_instance_struct.html#data_buf">data_buf</A> <I>buffer for data chunks</I>
+<LI><A HREF="bundling_instance_struct.html#data_in_buffer">data_in_buffer</A> <I>is there data to be sent in the buffer ?</I>
+<LI><A HREF="bundling_instance_struct.html#data_position">data_position</A> <I>current position in the buffer for data chunks</I>
+<LI><A HREF="bundling_instance_struct.html#got_sack">got_sack</A>
+<LI><A HREF="bundling_instance_struct.html#got_sack_request">got_sack_request</A>
+<LI><A HREF="bundling_instance_struct.html#got_send_address">got_send_address</A>
+<LI><A HREF="bundling_instance_struct.html#got_send_request">got_send_request</A>
+<LI><A HREF="bundling_instance_struct.html#got_shutdown">got_shutdown</A> <I>did we receive a shutdown, either by ULP or peer ?</I>
+<LI><A HREF="bundling_instance_struct.html#locked">locked</A>
+<LI><A HREF="bundling_instance_struct.html#requested_destination">requested_destination</A>
+<LI><A HREF="bundling_instance_struct.html#sack_buf">sack_buf</A> <I>buffer for sack chunks</I>
+<LI><A HREF="bundling_instance_struct.html#sack_in_buffer">sack_in_buffer</A> <I>is there a sack chunk  to be sent in the buffer ?</I>
+<LI><A HREF="bundling_instance_struct.html#sack_position">sack_position</A> <I>current position in the buffer for sack chunks</I>
+<LI><A HREF="bundling_instance_struct.html#treating_received_chunks">treating_received_chunks</A> <I>status flag for correct sequence of actions </I>
+</UL>
+<I><A HREF="HIER.html">Hierarchy of classes</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

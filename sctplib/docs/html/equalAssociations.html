@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+   <TITLE>gint equalAssociations</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>gint <A HREF="#DOC.DOCU">equalAssociations</A>(gconstpointer a, gconstpointer b)</H2>
+<BLOCKQUOTE> equalAssociations compares two associations and returns 0 if they are equal.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+equalAssociations compares two associations and returns 0 if they are equal. In contrast to
+function compareAssociationIDs, equal here means the two associations belong to the same
+SCTP-instance and have at least one destinationaddress in common.
+This is a call back function called by GList-functions whenever two association need to be compared.
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>i1</B> -   association data 1
+<BR><B>i2</B> -   association data 2
+<BR><DT><B>Returns:</B><DD>  0 if il1 and il2 are equal according to above definition, 1 else<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

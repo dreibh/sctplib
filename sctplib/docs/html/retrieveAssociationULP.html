@@ -1,0 +1,32 @@
+<HTML>
+<HEAD>
+   <TITLE>Association* retrieveAssociationULP</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>Association* <A HREF="#DOC.DOCU">retrieveAssociationULP</A>(unsigned int assocID)</H2>
+<BLOCKQUOTE> retrieveAssociationULP retrieves a association from the list using the local tag as key.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+retrieveAssociationULP retrieves a association from the list using the local tag as key.
+This function is required, because for ULP calls at SCTP, it is not known if the association
+pointer is set or not. For instance, sctp_send() can result from an event originating from SCTP
+or for instance from a time event. In the first case the association must not be retrieved
+from the list, whereas in second it must.
+retrieveAssociationULP bypasses this problems by retrieving the association only if
+currentAssociation equals NULL. Furthermore the global parameter clearAssociation is
+set accordingly to signal the caller it should clear the currentAssociation after the
+ULP call has been handled.
+
+<P></BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>assocID</B> -   association ID
+<BR><DT><B>Returns:</B><DD>  pointer to the retrieved association, or NULL<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

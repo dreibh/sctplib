@@ -1,0 +1,116 @@
+<HTML>
+<HEAD>
+   <TITLE> SCTP Documentation</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2> <A HREF="#DOC.DOCU">SCTP Documentation</A></H2>
+<BLOCKQUOTE>Documentation for SCTP implementation </BLOCKQUOTE>
+
+<HR>
+<DL>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="Library Interface "></A>
+<A HREF=LibraryInterface.html><B>Library Interface </B></A><DD><I></I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="Protocol Engine "></A>
+<A HREF=ProtocolEngine.html><B>Protocol Engine </B></A><DD><I></I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="Upper Layer  "></A>
+<A HREF=UpperLayer.html><B>Upper Layer  </B></A><DD><I></I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="Helper Modules  "></A>
+<A HREF=HelperModules.html><B>Helper Modules  </B></A><DD><I></I>
+</DL>
+<A NAME="DOC.DOCU">
+<BLOCKQUOTE>
+<CENTER>
+<FONT SIZE="+2"><B>Documentation of SCTP Source Code</B></FONT>
+</CENTER>
+
+<P>The current version of this SCTP projects implements SCTP according
+to RFC 2960.
+This RFC describes in section 1.3 a number of functional components of 
+the protocol which each implementation would have to provide.
+Consequently, we have adopted a module concept in our SCTP software
+development project, which was partly derived from
+an SDL specification we did from an earlier version of the draft.
+
+<P><IMG SRC="../sctp-modules.png">
+
+<P>The image presents the modules we implemented together with the 
+approximate data/control flow.
+We distinguish between SCTP instances (usually there will be one SCTP
+instance per host - this is what we mostly tested),
+and associations. Since an SCTP instance may connect to several SCTP
+endpoints (i. e. it may have a number of established SCTP associations), 
+it can have multiple instances of data structures belonging to an association.
+
+<P>Therefore the data arriving from an upper layer protocol (ULP) or the
+network must be dispatched accordingly to the correct
+association. That is done by the Association Distribution Layer (cf.
+distribution).
+The Adaptation Layer (adaptation) takes care of network input and 
+output as well as timer functions. The protocol can register call-back functions
+associated with a timer, that will be called after a certain
+time has passed.
+
+<P>So there are two kinds of events, that SCTP must react to :
+<UL>
+<LI> Network Read Events
+<LI> Timer Events
+</UL>
+
+<P>For both events the Association Distribution Layer sets the
+correct association, and schedules the necessary functions. If data
+arrives on the network, it is validated and then passed to the
+Bundling Module (see bundling), where the single chunks that 
+may be part of an SCTP packet
+are passed on to the relevant module. That may be either :
+<UL>
+<LI> SCTP Controller (see sctp-control) which deals with chunks that 
+change the association's state
+<LI> SCTP Reception Controller (see recvctrl), which keeps track of 
+data chunks
+<LI> SCTP Retransmission Handler (reltransfer) that deals with SACK chunks
+<LI> Path Management (pathmanagement) for Heartbeat Chunks
+</UL>
+
+<P>Timer events trigger the execution of callback functions, often when a
+timer expires that initializes re-transmission of data.
+This is used for heartbeats, initialization and shutdown timers, timer
+based ULP actions, the data re-transmission, the sending of delayed SACKs 
+and the timed reduction of the congestion window if no data is to be sent.
+
+<P>If the association state changes, if data arrives or the ULP is to be
+notified of a change of path state, data is passed
+from the SCTP protocol instance to the ULP. Currently this is
+implemented via function callbacks within one program (i.e.
+the ULP has functions registered at the very beginning of the program,
+that are to be called if some notification is due).
+Right now, there is only <B>one</B> ULP instance. In the future the
+communication between SCTP and the ULP shall be done
+with a locally bound UDP socket, that will be used to register a ULP
+instance with the SCTP instance.
+Thus it will be possible to asynchronously call functions of the SCTP
+protocol engine from a process that sends data on
+a local UDP socket, and is passed the results and other notification
+messages back over that socket.
+
+<P>Any data chunks that are received are held back in the 
+Stream Engine, if they do not arrive in order. 
+Normally the chunks are reordered at that level. All chunks are 
+immediately being delivered up to the
+highest stream sequence number that has consecutively arrived.
+
+<P>
+</BLOCKQUOTE>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

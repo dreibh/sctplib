@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned int sctp_getTime</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned int <A HREF="#DOC.DOCU">sctp_getTime</A>(void)</H2>
+<BLOCKQUOTE> return the current system time converted to a value of  milliseconds.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+return the current system time converted to a value of  milliseconds.
+MSB of tv_sec field are removed in order
+to make representation in millisecs possible. This done by taking the remainder of
+a division by 1728000 = 20x24x60x60, restarting millisecs count every 20 days.
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Returns:</B><DD>  unsigned 32 bit value representing system time in milliseconds. Hmmmh.<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

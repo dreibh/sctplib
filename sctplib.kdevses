@@ -1,0 +1,11 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<!DOCTYPE KDevPrjSession>
+<KDevPrjSession>
+ <LastCompileConfig>(Default)</LastCompileConfig>
+ <Mainframe MaximizeMode="1" />
+ <DocsAndViews NumberOfDocuments="1" >
+  <Doc0 Type="CDocBrowser" NumberOfViews="1" FileName="/usr/share/doc/HTML/en/kdevelop/reference/C/CONCEPT/type_conv.html" >
+   <View Top="0" Width="745" Attach="1" Height="438" Left="0" Focus="0" Type="KHTMLView" MinMaxMode="0" />
+  </Doc0>
+ </DocsAndViews>
+</KDevPrjSession>

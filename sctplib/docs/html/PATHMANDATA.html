@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+   <TITLE>typedef struct  PATHMANDATA</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>typedef struct  <A HREF="#DOC.DOCU">PATHMANDATA</A></H2>
+<BLOCKQUOTE> this struct contains all necessary data for one instance of the path management module.</BLOCKQUOTE>
+
+<HR>
+<P><DL>
+ <DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>short <B><A HREF="#DOC.1.2.5.2.1">primaryPath</A></B>
+<DD><I>stores the current primary path </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>short <B><A HREF="#DOC.1.2.5.2.2">numberOfPaths</A></B>
+<DD><I>the number of paths used by this assoc.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.2.3">peerRetranscount</A></B>
+<DD><I>Counter for all retransmissions over all paths </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>PathData* <B><A HREF="#DOC.1.2.5.2.4">pathData</A></B>
+<DD><I>pointer to path-specific data </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.2.5">associationID</A></B>
+<DD><I>association-ID </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.1.2.5.2.6">maxPathRetransmissions</A></B>
+<DD><I>maximum retransmissions per path parameter </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.1.2.5.2.7">rto_initial</A></B>
+<DD><I>initial RTO, a configurable parameter </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>int <B><A HREF="#DOC.1.2.5.2.8">rto_min</A></B>
+<DD><I>minimum RTO, a configurable parameter </I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+this struct contains all necessary data for one instance of the path management
+module. There is one such module per existing association.</BLOCKQUOTE>
+<DL>
+
+<A NAME="primaryPath">
+<A NAME="DOC.1.2.5.2.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>short primaryPath</B></TT>
+<DD>stores the current primary path 
+<DL><DT><DD></DL><P>
+<A NAME="numberOfPaths">
+<A NAME="DOC.1.2.5.2.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>short numberOfPaths</B></TT>
+<DD>the number of paths used by this assoc. 
+<DL><DT><DD></DL><P>
+<A NAME="peerRetranscount">
+<A NAME="DOC.1.2.5.2.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int peerRetranscount</B></TT>
+<DD>Counter for all retransmissions over all paths 
+<DL><DT><DD></DL><P>
+<A NAME="pathData">
+<A NAME="DOC.1.2.5.2.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>PathData* pathData</B></TT>
+<DD>pointer to path-specific data 
+<DL><DT><DD></DL><P>
+<A NAME="associationID">
+<A NAME="DOC.1.2.5.2.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int associationID</B></TT>
+<DD>association-ID 
+<DL><DT><DD></DL><P>
+<A NAME="maxPathRetransmissions">
+<A NAME="DOC.1.2.5.2.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int maxPathRetransmissions</B></TT>
+<DD>maximum retransmissions per path parameter 
+<DL><DT><DD></DL><P>
+<A NAME="rto_initial">
+<A NAME="DOC.1.2.5.2.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int rto_initial</B></TT>
+<DD>initial RTO, a configurable parameter 
+<DL><DT><DD></DL><P>
+<A NAME="rto_min">
+<A NAME="DOC.1.2.5.2.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>int rto_min</B></TT>
+<DD>minimum RTO, a configurable parameter 
+<DL><DT><DD></DL><P></DL>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,148 @@
+<HTML>
+<HEAD>
+   <TITLE>typedef struct  PATHDATA</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>typedef struct  <A HREF="#DOC.DOCU">PATHDATA</A></H2>
+<BLOCKQUOTE> this struct contains the necessary data per (destination or) path.</BLOCKQUOTE>
+
+<HR>
+<P><DL>
+ <DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>short <B><A HREF="#DOC.1.2.5.1.1">state</A></B>
+<DD><I>operational state of pathmanagement for one path </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.2">heartbeatEnabled</A></B>
+<DD><I>true if heartbeat is enabled </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.3">firstRTO</A></B>
+<DD><I>true as long as RTO-Calc.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.4">timerBackoff</A></B>
+<DD><I>Only once per HB-intervall </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.5">chunksAcked</A></B>
+<DD><I>set to true when data chunks are acknowledged </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.6">chunksSent</A></B>
+<DD><I>TRUE, if chunks have been sent over that path within last RTO </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.7">heartbeatSent</A></B>
+<DD><I>set to true when a heartbeat is sent.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>boolean <B><A HREF="#DOC.1.2.5.1.8">heartbeatAcked</A></B>
+<DD><I>set to true when a hearbeat is acknowledged and to false when a heartbeat is sent when the heartbeat timer expires.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.1.9">pathRetranscount</A></B>
+<DD><I>Counter for retransmissions on a single path </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.1.10">rto</A></B>
+<DD><I>Retransmission time out used for all retrans.</I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.1.11">srtt</A></B>
+<DD><I>smoothed round trip time </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.1.12">rttvar</A></B>
+<DD><I>round trip time variation </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.1.13">heartbeatIntervall</A></B>
+<DD><I>defines the rate at which heartbeats are sent </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>TimerID <B><A HREF="#DOC.1.2.5.1.14">hearbeatTimer</A></B>
+<DD><I>ID of the heartbeat timer </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.2.5.1.15">pathID</A></B>
+<DD><I>ID of path </I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+this struct contains the necessary data per (destination or) path.
+There may be more than one within an association</BLOCKQUOTE>
+<DL>
+
+<A NAME="state">
+<A NAME="DOC.1.2.5.1.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>short state</B></TT>
+<DD>operational state of pathmanagement for one path 
+<DL><DT><DD></DL><P>
+<A NAME="heartbeatEnabled">
+<A NAME="DOC.1.2.5.1.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean heartbeatEnabled</B></TT>
+<DD>true if heartbeat is enabled 
+<DL><DT><DD></DL><P>
+<A NAME="firstRTO">
+<A NAME="DOC.1.2.5.1.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean firstRTO</B></TT>
+<DD>true as long as RTO-Calc. has been done 
+<DL><DT><DD></DL><P>
+<A NAME="timerBackoff">
+<A NAME="DOC.1.2.5.1.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean timerBackoff</B></TT>
+<DD>Only once per HB-intervall 
+<DL><DT><DD></DL><P>
+<A NAME="chunksAcked">
+<A NAME="DOC.1.2.5.1.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean chunksAcked</B></TT>
+<DD>set to true when data chunks are acknowledged 
+<DL><DT><DD></DL><P>
+<A NAME="chunksSent">
+<A NAME="DOC.1.2.5.1.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean chunksSent</B></TT>
+<DD>TRUE, if chunks have been sent over that path within last RTO 
+<DL><DT><DD></DL><P>
+<A NAME="heartbeatSent">
+<A NAME="DOC.1.2.5.1.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean heartbeatSent</B></TT>
+<DD>set to true when a heartbeat is sent. 
+<DL><DT><DD></DL><P>
+<A NAME="heartbeatAcked">
+<A NAME="DOC.1.2.5.1.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>boolean heartbeatAcked</B></TT>
+<DD>set to true when a hearbeat is acknowledged and to false when a
+heartbeat is sent when the heartbeat timer expires. 
+<DL><DT><DD></DL><P>
+<A NAME="pathRetranscount">
+<A NAME="DOC.1.2.5.1.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int pathRetranscount</B></TT>
+<DD>Counter for retransmissions on a single path 
+<DL><DT><DD></DL><P>
+<A NAME="rto">
+<A NAME="DOC.1.2.5.1.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int rto</B></TT>
+<DD>Retransmission time out used for all retrans. timers 
+<DL><DT><DD></DL><P>
+<A NAME="srtt">
+<A NAME="DOC.1.2.5.1.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int srtt</B></TT>
+<DD>smoothed round trip time 
+<DL><DT><DD></DL><P>
+<A NAME="rttvar">
+<A NAME="DOC.1.2.5.1.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int rttvar</B></TT>
+<DD>round trip time variation 
+<DL><DT><DD></DL><P>
+<A NAME="heartbeatIntervall">
+<A NAME="DOC.1.2.5.1.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int heartbeatIntervall</B></TT>
+<DD>defines the rate at which heartbeats are sent 
+<DL><DT><DD></DL><P>
+<A NAME="hearbeatTimer">
+<A NAME="DOC.1.2.5.1.14">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>TimerID hearbeatTimer</B></TT>
+<DD>ID of the heartbeat timer 
+<DL><DT><DD></DL><P>
+<A NAME="pathID">
+<A NAME="DOC.1.2.5.1.15">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int pathID</B></TT>
+<DD>ID of path 
+<DL><DT><DD></DL><P></DL>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

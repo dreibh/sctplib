@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+   <TITLE>int rtx_t3_timeout</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>int <A HREF="#DOC.DOCU">rtx_t3_timeout</A>(void *assoc_id, unsigned int address, unsigned int mtu, chunk_data ** chunks)</H2>
+<BLOCKQUOTE> called from flow-control to trigger retransmission of chunks that have previously been sent to the address that timed out.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+called from flow-control to trigger retransmission of chunks that have previously
+been sent to the address that timed out.
+It is only called from flowcontrol, so association should be set correctly here
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>assoc_id</B> -      pointer to the id value of the association, where timeout occurred
+<BR><B>address</B> -       address that timed out
+<BR><B>mtu</B> -          current path mtu (this needs to be fixed, too !)
+<BR><B>chunks</B> -       pointer to an array, that will contain pointers to chunks that need to
+be retransmitted after this function returns. Provide space !
+<BR><DT><B>Returns:</B><DD>  -1 on error, 0 for empty list, else number of chunks that can be retransmitted<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,33 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned short sctp_registerInstance</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned short <A HREF="#DOC.DOCU">sctp_registerInstance</A>(unsigned short port, unsigned short noOfInStreams, unsigned short noOfOutStreams, unsigned int noOfLocalAddresses, unsigned char localAddressList[][SCTP_MAX_IP_LEN], SCTP_ulpCallbacks ULPcallbackFunctions)</H2>
+<BLOCKQUOTE> sctp_registerInstance is called to initialize one SCTP-instance.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+sctp_registerInstance is called to initialize one SCTP-instance.
+Each Adaption-Layer of the ULP must create its own SCTP-instance, and
+define and register appropriate callback functions.
+An SCTP-instance may define an own port, or zero here ! Servers and clients
+that care for their source port must chose a port, clients that do not really
+care which source port they use, chose ZERO, and have the implementation chose
+a free source port.
+
+<P></BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>port</B> -                    wellknown port of this sctp-instance
+<BR><B>noOfLocalAddresses</B> -      number of local addresses
+<BR><B>localAddressList</B> -        local address list (pointer to a string-array)
+<BR><B>ULPcallbackFunctions</B> -    call back functions for primitives passed from sctp to ULP
+<BR><DT><B>Returns:</B><DD>  instance name of this SCTP-instance or 0 in case of errors<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

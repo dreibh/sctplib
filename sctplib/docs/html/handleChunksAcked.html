@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+   <TITLE>static   void handleChunksAcked</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>static   void <A HREF="#DOC.DOCU">handleChunksAcked</A>(short pathID, unsigned int newRTT)</H2>
+<BLOCKQUOTE> Function is used to update RTT, SRTT, RTO values after chunks have been acked.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Function is used to update RTT, SRTT, RTO values after chunks have been acked.
+CHECKME : this function is called too often with RTO == 0;
+Is there one update per RTT ?
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>pathID</B> -  index of the path where data was acked
+<BR><B>newRTT</B> -  new RTT measured, when data was acked, or zero if it was retransmitted<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

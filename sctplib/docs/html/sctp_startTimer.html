@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned int sctp_startTimer</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned int <A HREF="#DOC.DOCU">sctp_startTimer</A>(unsigned int milliseconds, sctp_timerCallback timer_cb, void *param1, void *param2)</H2>
+<BLOCKQUOTE> This function adds a callback that is to be called some time from now.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+This function adds a callback that is to be called some time from now. It realizes
+the timer (in an ordered list).
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>milliseconds</B> -   action is to be started in milliseconds ms from now
+<BR><B>timer_cb</B> -       pointer to a function to be executed, when timer expires
+<BR><B>param1</B> -         pointer to be returned to the caller when timer expires
+<BR><B>param2</B> -         pointer to be returned to the caller when timer expires
+<BR><DT><B>Returns:</B><DD>  returns an id value, that can be used to cancel a timer
+<BR><DT><B>Author:</B><DD>ajung
+<DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

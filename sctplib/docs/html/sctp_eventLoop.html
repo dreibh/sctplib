@@ -1,0 +1,26 @@
+<HTML>
+<HEAD>
+   <TITLE>int sctp_eventLoop</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>int <A HREF="#DOC.DOCU">sctp_eventLoop</A>(void)</H2>
+<BLOCKQUOTE> function to check for events on all poll fds (ie.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+function to check for events on all poll fds (ie. open sockets), or else
+execute the next timer event. Executed timer events are removed from the list.
+Wrapper to poll() -- returns after timeout or read event
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Returns:</B><DD>  number of events that where seen on the socket fds, 0 for timer event, -1 for error
+<BR><DT><B>Author:</B><DD>ajung
+<DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

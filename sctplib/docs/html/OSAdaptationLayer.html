@@ -1,0 +1,109 @@
+<HTML>
+<HEAD>
+   <TITLE> OS Adaptation Layer </TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2> <A HREF="#DOC.DOCU">OS Adaptation Layer </A></H2>
+
+<HR>
+<DL>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="event_cb"></A>
+<A HREF=event_cb.html><B>event_cb</B></A><DD><I> Structure for callback events.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_str2sockunion"></A>
+<A HREF=adl_str2sockunion.html><B>adl_str2sockunion</B></A><DD><I> converts address-string (hex for ipv6, dotted decimal for ipv4 to a sockunion structure </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_open_udp_socket"></A>
+<A HREF=adl_open_udp_socket.html><B>adl_open_udp_socket</B></A><DD><I> This function creates a UDP socket bound to localhost, for asynchronous interprocess communication with an Upper Layer process.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_sendUdpData"></A>
+<A HREF=sctp_sendUdpData.html><B>sctp_sendUdpData</B></A><DD><I> function to be called when we get a message from a peer sctp instance in the poll loop </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_send_message"></A>
+<A HREF=adl_send_message.html><B>adl_send_message</B></A><DD><I> function to be called when library sends a message on an SCTP socket </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="assign_poll_fd"></A>
+<A HREF=assign_poll_fd.html><B>assign_poll_fd</B></A><DD><I> function to assign an event mask to a certain poll</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_remove_poll_fd"></A>
+<A HREF=adl_remove_poll_fd.html><B>adl_remove_poll_fd</B></A><DD><I> remove a sfd from the poll_list, and shift that list to the left </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_register_fd_cb"></A>
+<A HREF=adl_register_fd_cb.html><B>adl_register_fd_cb</B></A><DD><I> function to register a file descriptor, that gets activated for certain read/write events when these occur, the specified callback funtion is activated and passed the parameters that are pointed to by the event_callback struct</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_get_message"></A>
+<A HREF=adl_get_message.html><B>adl_get_message</B></A><DD><I> function to be called when we get a message from a peer sctp instance in the poll loop </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="dispatch_event"></A>
+<A HREF=dispatch_event.html><B>dispatch_event</B></A><DD><I> this function is responsible for calling the callback functions belonging to all of the file descriptors that have indicated an event !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="dispatch_timer"></A>
+<A HREF=dispatch_timer.html><B>dispatch_timer</B></A><DD><I> function calls the respective callback funtion, that is to be executed as a timer event, passing it two arguments</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_gettime"></A>
+<A HREF=adl_gettime.html><B>adl_gettime</B></A><DD><I> helper function for the sake of a cleaner interface :-)</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_timediff_to_msecs"></A>
+<A HREF=adl_timediff_to_msecs.html><B>adl_timediff_to_msecs</B></A><DD><I> function is to return difference in msecs between time a and b (ie.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="init_poll_fds"></A>
+<A HREF=init_poll_fds.html><B>init_poll_fds</B></A><DD><I> function initializes the array of fds we want to use for listening to events USE    POLL_FD_UNUSED to differentiate between used/unused fds !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_eventLoop"></A>
+<A HREF=sctp_eventLoop.html><B>sctp_eventLoop</B></A><DD><I> function to check for events on all poll fds (ie.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getEvents"></A>
+<A HREF=sctp_getEvents.html><B>sctp_getEvents</B></A><DD><I> function to check for events on all poll fds (ie.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_registerUdpCallback"></A>
+<A HREF=sctp_registerUdpCallback.2.html><B>sctp_registerUdpCallback</B></A><DD><I> this function is supposed to open and bind a UDP socket listening on a port to incoming udp pakets on a local interface (a local union sockunion address) </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_registerStdinCallback"></A>
+<A HREF=sctp_registerStdinCallback.2.html><B>sctp_registerStdinCallback</B></A><DD><I> this function is supposed to register a callback function for catching input from the Unix STDIN file descriptor.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_register_socket_cb"></A>
+<A HREF=adl_register_socket_cb.html><B>adl_register_socket_cb</B></A><DD><I> This function should only be called in exceptional caseseg.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_startTimer"></A>
+<A HREF=sctp_startTimer.2.html><B>sctp_startTimer</B></A><DD><I> This function adds a callback that is to be called some time from now.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_stopTimer"></A>
+<A HREF=sctp_stopTimer.2.html><B>sctp_stopTimer</B></A><DD><I> This function adds a callback that is to be called some time from now.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_restartTimer"></A>
+<A HREF=sctp_restartTimer.2.html><B>sctp_restartTimer</B></A><DD><I> Restarts a timer currently running </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="adl_remove_cb"></A>
+<A HREF=adl_remove_cb.html><B>adl_remove_cb</B></A><DD><I> function to close a bound socket from our list of socket descriptors </I>
+</DL>
+<A NAME="DOC.DOCU">
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

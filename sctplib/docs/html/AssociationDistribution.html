@@ -1,0 +1,305 @@
+<HTML>
+<HEAD>
+   <TITLE> Association Distribution </TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2> <A HREF="#DOC.DOCU">Association Distribution </A></H2>
+
+<HR>
+<DL>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="SCTPINSTANCE"></A>
+<A HREF=SCTPINSTANCE.html><B>SCTPINSTANCE</B></A><DD><I> This struct stores data of SCTP-instances.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="ASSOCIATION"></A>
+<A HREF=ASSOCIATION.html><B>ASSOCIATION</B></A><DD><I> This struct contains all data of an association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="AssociationList"></A>
+<A HREF=AssociationList.html><B>AssociationList</B></A><DD><I> Keyed list of associations with the association-ID as key</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctpInstance"></A>
+<A HREF=sctpInstance.2.html><B>sctpInstance</B></A><DD><I> Whenever an external event (ULP-call, socket-event or timer-event) this variable must contain the addressed sctp instance.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="InstanceList"></A>
+<A HREF=InstanceList.html><B>InstanceList</B></A><DD><I> Keyed list of SCTP instances with the instance name as key</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="currentAssociation"></A>
+<A HREF=currentAssociation.html><B>currentAssociation</B></A><DD><I> Whenever an external event (ULP-call, socket-event or timer-event) this variable must contain the addressed association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="lastFromPath"></A>
+<A HREF=AssociationDistribution.html><B>lastFromPath</B></A><DD><I></I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_socket"></A>
+<A HREF=sctp_socket.html><B>sctp_socket</B></A><DD><I> Descriptor of socket used by all associations and SCTP-instances</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="compareAssociationIDs"></A>
+<A HREF=compareAssociationIDs.html><B>compareAssociationIDs</B></A><DD><I> compareAssociationIDs compares the association ID's of two associations and returns 0 if they are equal.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="equalAssociations"></A>
+<A HREF=equalAssociations.html><B>equalAssociations</B></A><DD><I> equalAssociations compares two associations and returns 0 if they are equal.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="enterAssociation"></A>
+<A HREF=enterAssociation.html><B>enterAssociation</B></A><DD><I> enterAssociation adds an association to the list.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="retrieveAssociation"></A>
+<A HREF=retrieveAssociation.html><B>retrieveAssociation</B></A><DD><I> retrieveAssociation retrieves a association from the list using the local tag as key.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="retrieveAssociationULP"></A>
+<A HREF=retrieveAssociationULP.html><B>retrieveAssociationULP</B></A><DD><I> retrieveAssociationULP retrieves a association from the list using the local tag as key.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="retrieveAssociationByTransportAddress"></A>
+<A HREF=retrieveAssociationByTransportAddress.html><B>retrieveAssociationByTransportAddress</B></A><DD><I> retrieveAssociation retrieves a association from the list using the transport address as key.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="checkForExistingAssociations"></A>
+<A HREF=checkForExistingAssociations.html><B>checkForExistingAssociations</B></A><DD><I> checkForExistingAssociations checks wether a given association is already in the list using the equality condition given by function equalAssociations.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="seizePort"></A>
+<A HREF=seizePort.html><B>seizePort</B></A><DD><I> seizePort return a free port number.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="releasePort"></A>
+<A HREF=releasePort.html><B>releasePort</B></A><DD><I> releasePort frees a previously used port.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_deleteAssociation"></A>
+<A HREF=mdi_deleteAssociation.html><B>mdi_deleteAssociation</B></A><DD><I> deleteAssociation removes the association from the list of associations, frees all data allocated for it and &lt;calls moduleprefix&gt;_delete*() function at all modules.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_receiveMessage"></A>
+<A HREF=mdi_receiveMessage.html><B>mdi_receiveMessage</B></A><DD><I> mdi_receiveMessage is the callback function of the SCTP-message distribution.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_registerInstance"></A>
+<A HREF=sctp_registerInstance.html><B>sctp_registerInstance</B></A><DD><I> sctp_registerInstance is called to initialize one SCTP-instance.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_deleteAssociation"></A>
+<A HREF=sctp_deleteAssociation.html><B>sctp_deleteAssociation</B></A><DD><I> This function should be called AFTER an association has indicated a COMMUNICATION_LOST or a SHUTDOWN_COMPLETE, and the upper layer has retrieved all data it is interested in (possibly using the currently not implemented functions  sctp_receive_unsent() or sctp_receive_unacked()) it really removes all data belonging to the association, and removes the association instance from the list, on explicit upper layer instruction !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_associate"></A>
+<A HREF=sctp_associate.html><B>sctp_associate</B></A><DD><I> This function is called to setup an association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_shutdown"></A>
+<A HREF=sctp_shutdown.html><B>sctp_shutdown</B></A><DD><I> sctp_shutdown initiates the shutdown of the specified association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_abort"></A>
+<A HREF=sctp_abort.html><B>sctp_abort</B></A><DD><I> sctp_abort initiates the abort of the specified association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_send"></A>
+<A HREF=sctp_send.html><B>sctp_send</B></A><DD><I> sctp_send is used by the ULP to send data chunks.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_setPrimary"></A>
+<A HREF=sctp_setPrimary.html><B>sctp_setPrimary</B></A><DD><I> sctp_setPrimary changes the primary path of an association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_receive"></A>
+<A HREF=sctp_receive.html><B>sctp_receive</B></A><DD><I> sctp_receive is called in response to the dataArriveNotification to get the received data.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_changeHeartBeat"></A>
+<A HREF=sctp_changeHeartBeat.html><B>sctp_changeHeartBeat</B></A><DD><I> sctp_changeHeartBeat turns the hearbeat on a path of an association on or off, or modifies the interval </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_requestHeartbeat"></A>
+<A HREF=sctp_requestHeartbeat.html><B>sctp_requestHeartbeat</B></A><DD><I> sctp_requestHeartbeat sends a heartbeat to the given address of an association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getSrttReport"></A>
+<A HREF=sctp_getSrttReport.html><B>sctp_getSrttReport</B></A><DD><I> sctp_getSrttReport returns a smoothed RTT value for a path to a given address </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_setFailureThreshold"></A>
+<A HREF=sctp_setFailureThreshold.html><B>sctp_setFailureThreshold</B></A><DD><I> sctp_setFailureThreshold is currently NOT implemented !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getPathStatus"></A>
+<A HREF=sctp_getPathStatus.html><B>sctp_getPathStatus</B></A><DD><I> sctp_getPathStatus : IP_TOS support is still missing !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_setPathStatus"></A>
+<A HREF=sctp_setPathStatus.html><B>sctp_setPathStatus</B></A><DD><I> sctp_setPathStatus is currently NOT implemented !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_setAssocStatus"></A>
+<A HREF=sctp_setAssocStatus.html><B>sctp_setAssocStatus</B></A><DD><I> sctp_setAssocStatus allows for setting a number of association parameters.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getAssocStatus"></A>
+<A HREF=sctp_getAssocStatus.html><B>sctp_getAssocStatus</B></A><DD><I> sctp_getAssocStatus is currently NOT implemented !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_setAssocDefaults"></A>
+<A HREF=sctp_setAssocDefaults.html><B>sctp_setAssocDefaults</B></A><DD><I> sctp_setAssocDefaults allows for setting a few association default parameters !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getAssocDefaults"></A>
+<A HREF=sctp_getAssocDefaults.html><B>sctp_getAssocDefaults</B></A><DD><I> sctp_getInstanceParams returns a struct with default parameter values !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_receiveUnsent"></A>
+<A HREF=sctp_receiveUnsent.html><B>sctp_receiveUnsent</B></A><DD><I> sctp_receive_unsent is currently NOT implemented !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_receiveUnacked"></A>
+<A HREF=sctp_receiveUnacked.html><B>sctp_receiveUnacked</B></A><DD><I> sctp_receive_unacked is currently NOT implemented !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sctp_getPrimary"></A>
+<A HREF=sctp_getPrimary.html><B>sctp_getPrimary</B></A><DD><I> sctp_getPrimary is currently NOT implemented !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_send_message"></A>
+<A HREF=mdi_send_message.html><B>mdi_send_message</B></A><DD><I> Used by bundling to send a SCTP-datagramm.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_dataArriveNotif"></A>
+<A HREF=mdi_dataArriveNotif.html><B>mdi_dataArriveNotif</B></A><DD><I> indicates new data has arrived from peer (chapter 102) destined for the ULP</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_networkStatusChangeNotif"></A>
+<A HREF=mdi_networkStatusChangeNotif.html><B>mdi_networkStatusChangeNotif</B></A><DD><I> indicates a change of network status (chapter 102C).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_sendFailureNotif"></A>
+<A HREF=mdi_sendFailureNotif.html><B>mdi_sendFailureNotif</B></A><DD><I> indicates a send failure (chapter 102B).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_shutdownCompleteNotif"></A>
+<A HREF=mdi_shutdownCompleteNotif.html><B>mdi_shutdownCompleteNotif</B></A><DD><I> indicates that association has been gracefully shut down (chapter 102H).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_restartNotif"></A>
+<A HREF=mdi_restartNotif.html><B>mdi_restartNotif</B></A><DD><I> indicates that a restart has occured(chapter 102G).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_communicationLostNotif"></A>
+<A HREF=mdi_communicationLostNotif.html><B>mdi_communicationLostNotif</B></A><DD><I> indicates that communication was lost to peer (chapter 102E).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_communicationUpNotif"></A>
+<A HREF=mdi_communicationUpNotif.html><B>mdi_communicationUpNotif</B></A><DD><I> indicates that an association is established (chapter 102D).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readFlowControl"></A>
+<A HREF=mdi_readFlowControl.html><B>mdi_readFlowControl</B></A><DD><I> function to return a pointer to the flow control module of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readReliableTransfer"></A>
+<A HREF=mdi_readReliableTransfer.html><B>mdi_readReliableTransfer</B></A><DD><I> function to return a pointer to the reliable transfer-module of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readRX_control"></A>
+<A HREF=mdi_readRX_control.html><B>mdi_readRX_control</B></A><DD><I> function to return a pointer to the receiver module of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readStreamEngine"></A>
+<A HREF=mdi_readStreamEngine.html><B>mdi_readStreamEngine</B></A><DD><I> function to return a pointer to the stream-engine module of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readPathMan"></A>
+<A HREF=mdi_readPathMan.html><B>mdi_readPathMan</B></A><DD><I> function to return a pointer to the path management module of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readBundling"></A>
+<A HREF=mdi_readBundling.html><B>mdi_readBundling</B></A><DD><I> function to return a pointer to the bundling module of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readSCTP_control"></A>
+<A HREF=mdi_readSCTP_control.html><B>mdi_readSCTP_control</B></A><DD><I> function to return a pointer to the state machine controller of this association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readAssociationID"></A>
+<A HREF=mdi_readAssociationID.html><B>mdi_readAssociationID</B></A><DD><I> function to read the association id of the current association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readTagRemote"></A>
+<A HREF=mdi_readTagRemote.html><B>mdi_readTagRemote</B></A><DD><I> function to read the tag that the peer within the current association uses </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_generateLocalTag"></A>
+<A HREF=mdi_generateLocalTag.html><B>mdi_generateLocalTag</B></A><DD><I> generates a random tag value for a new association, but not 0 </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_generateStartTSN"></A>
+<A HREF=mdi_generateStartTSN.html><B>mdi_generateStartTSN</B></A><DD><I> generates a random tsn value for a new association (may also be 0) </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="*mdi_readLastFromAddress"></A>
+<A HREF=mdi_readLastFromAddress.html><B>*mdi_readLastFromAddress</B></A><DD><I> read the address from which the last datagramm was received (host byte order).</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readLastFromPath"></A>
+<A HREF=mdi_readLastFromPath.html><B>mdi_readLastFromPath</B></A><DD><I> read the index of the path from which the last DG was received (-1 if no DG was received) </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readLastFromPort"></A>
+<A HREF=mdi_readLastFromPort.html><B>mdi_readLastFromPort</B></A><DD><I> read the port of the sender of the last received DG (host byte order) </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readLastDestPort"></A>
+<A HREF=mdi_readLastDestPort.html><B>mdi_readLastDestPort</B></A><DD><I> read the port of the destination of the last received DG (host byte order) </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_writeDestinationAddresses"></A>
+<A HREF=mdi_writeDestinationAddresses.html><B>mdi_writeDestinationAddresses</B></A><DD><I> copies destination addresses from the array passed as parameter to  the current association </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readLocalInStreams"></A>
+<A HREF=mdi_readLocalInStreams.html><B>mdi_readLocalInStreams</B></A><DD><I> Function that returns the number of incoming streams that this instance is willing to handle !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readLocalOutStreams"></A>
+<A HREF=mdi_readLocalOutStreams.html><B>mdi_readLocalOutStreams</B></A><DD><I> Function that returns the number of incoming streams that this instance is willing to handle !</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_readLocalAddresses"></A>
+<A HREF=mdi_readLocalAddresses.html><B>mdi_readLocalAddresses</B></A><DD><I> Copies local addresses of this instance into the array passed as parameter CHECKME : does this function work in all circumstances ?</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_setAssociationData"></A>
+<A HREF=mdi_setAssociationData.html><B>mdi_setAssociationData</B></A><DD><I> Each module within SCTP that has timers implements its own timer call back functions.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_clearAssociationData"></A>
+<A HREF=mdi_clearAssociationData.html><B>mdi_clearAssociationData</B></A><DD><I> Clear the global association data.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_newAssociation"></A>
+<A HREF=mdi_newAssociation.html><B>mdi_newAssociation</B></A><DD><I> This function allocates memory for a new association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_initAssociation"></A>
+<A HREF=mdi_initAssociation.html><B>mdi_initAssociation</B></A><DD><I> This is the second function needed to fully create and initialize an association (after mdi_newAssociation()) THe association is created in two steps because data become available at the a-side in two steps <OL> <LI> associate <LI> init acknowledgement </OL> At the z-side, with the cookie message all data is available at once.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="mdi_deleteCurrentAssociation"></A>
+<A HREF=mdi_deleteCurrentAssociation.html><B>mdi_deleteCurrentAssociation</B></A><DD><I> mdi_deleteCurrentAssociation deletes the current association.</I>
+</DL>
+<A NAME="DOC.DOCU">
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,129 @@
+<HTML>
+<HEAD>
+   <TITLE> SCTP State Machine Controller </TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2> <A HREF="#DOC.DOCU">SCTP State Machine Controller </A></H2>
+
+<HR>
+<DL>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="min"></A>
+<A HREF=min.html><B>min</B></A><DD><I>macro to return the minimum of two values </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="SCTP_CONTROLDATA"></A>
+<A HREF=SCTP_CONTROLDATA.html><B>SCTP_CONTROLDATA</B></A><DD><I> SCTP-control structure.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="localData"></A>
+<A HREF=localData.html><B>localData</B></A><DD><I>pointer to the current controller structure.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_timer_expired"></A>
+<A HREF=sci_timer_expired.html><B>sci_timer_expired</B></A><DD><I> Defines the callback function that is called when an (INIT, COOKIE, SHUTDOWN etc) timer expires.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scu_associate"></A>
+<A HREF=scu_associate.html><B>scu_associate</B></A><DD><I> This function is called to initiate the setup an association.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scu_shutdown"></A>
+<A HREF=scu_shutdown.html><B>scu_shutdown</B></A><DD><I> function initiates the shutdown of this association</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scu_abort"></A>
+<A HREF=scu_abort.html><B>scu_abort</B></A><DD><I> this function aborts this association</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_init"></A>
+<A HREF=scr_init.html><B>scr_init</B></A><DD><I> scr_init is called by bundling when a init message is received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_initAck"></A>
+<A HREF=scr_initAck.html><B>scr_initAck</B></A><DD><I> scr_initAck is called by bundling when a init acknowledgement was received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_cookie_echo"></A>
+<A HREF=scr_cookie_echo.html><B>scr_cookie_echo</B></A><DD><I> scr_cookie_echo is called by bundling when a cookie echo chunk was received from  the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_cookieAck"></A>
+<A HREF=scr_cookieAck.html><B>scr_cookieAck</B></A><DD><I> scr_cookieAck is called by bundling when a cookieAck chunk was received from  the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_shutdown"></A>
+<A HREF=scr_shutdown.html><B>scr_shutdown</B></A><DD><I> scr_shutdown is called by bundling when a shutdown chunk was received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_shutdownAck"></A>
+<A HREF=scr_shutdownAck.html><B>scr_shutdownAck</B></A><DD><I> scr_shutdownAck is called by bundling when a shutdownAck chunk was received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_shutdownComplete"></A>
+<A HREF=scr_shutdownComplete.html><B>scr_shutdownComplete</B></A><DD><I> scr_shutdownComplete is called by bundling when a SHUTDOWN COMPLETE chunk was received from the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_abort"></A>
+<A HREF=scr_abort.html><B>scr_abort</B></A><DD><I> scr_abort is called by bundling when an ABORT chunk was received from  the peer.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="scr_staleCookie"></A>
+<A HREF=scr_staleCookie.html><B>scr_staleCookie</B></A><DD><I> scr_staleCookie is called by bundling when a 'stale cookie' error chunk was received.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_getState"></A>
+<A HREF=sci_getState.html><B>sci_getState</B></A><DD><I> sci_getState is called by distribution to get the state of the current SCTP-control instance.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_allChunksAcked"></A>
+<A HREF=sci_allChunksAcked.html><B>sci_allChunksAcked</B></A><DD><I> Called by reliable transfer if all (sent !) chunks in its retransmission queue have been acked.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_newSCTP_control"></A>
+<A HREF=sci_newSCTP_control.html><B>sci_newSCTP_control</B></A><DD><I> newSCTP_control allocates data for a new SCTP-Control instance</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_deleteSCTP_control"></A>
+<A HREF=sci_deleteSCTP_control.html><B>sci_deleteSCTP_control</B></A><DD><I> deleteSCTP_control frees memory allocated for a SCTP-Control instance</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_getMaxAssocRetransmissions"></A>
+<A HREF=sci_getMaxAssocRetransmissions.html><B>sci_getMaxAssocRetransmissions</B></A><DD><I> get current parameter value for assocMaxRetransmissions </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_getMaxInitRetransmissions"></A>
+<A HREF=sci_getMaxInitRetransmissions.html><B>sci_getMaxInitRetransmissions</B></A><DD><I> get current parameter value for assocMaxInitRetransmissions </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_getCookieLifeTime"></A>
+<A HREF=sci_getCookieLifeTime.html><B>sci_getCookieLifeTime</B></A><DD><I> get current parameter value for cookieLifeTime </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_setMaxAssocRetransmissions"></A>
+<A HREF=sci_setMaxAssocRetransmissions.html><B>sci_setMaxAssocRetransmissions</B></A><DD><I> set new parameter value for assocMaxRetransmissions </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_setMaxInitRetransmissions"></A>
+<A HREF=sci_setMaxInitRetransmissions.html><B>sci_setMaxInitRetransmissions</B></A><DD><I> set new parameter value for assocMaxRetransmissions </I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="sci_setCookieLifeTime"></A>
+<A HREF=sci_setCookieLifeTime.html><B>sci_setCookieLifeTime</B></A><DD><I> set new parameter value for cookieLifeTime </I>
+</DL>
+<A NAME="DOC.DOCU">
+<BLOCKQUOTE>
+<HR>
+Used function prefixes:
+<UL>
+<LI> scu_ for  primitives originating from the ULP
+<LI> scr_ for primitives originating from the peer
+<LI> sci_ for SCTP-internal calls
+</UL></BLOCKQUOTE>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

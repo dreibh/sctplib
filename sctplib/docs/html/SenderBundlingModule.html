@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+   <TITLE> Sender Bundling Module </TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2> <A HREF="#DOC.DOCU">Sender Bundling Module </A></H2>
+
+<HR>
+<DL>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bundling_instance_struct"></A>
+<A HREF=bundling_instance_struct.html><B>bundling_instance_struct</B></A><DD><I> this struct contains all data belonging to a bundling module</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="global_buffer"></A>
+<A HREF=global_buffer.html><B>global_buffer</B></A><DD><I> one static variable for a buffer that is used, if no bundling instance has been allocated and initialized yet</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_new"></A>
+<A HREF=bu_new.html><B>bu_new</B></A><DD><I> Creates a new bundling instance and returns a pointer to its data.</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_delete"></A>
+<A HREF=bu_delete.html><B>bu_delete</B></A><DD><I> Deletes a bundling instance</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_lock_sender"></A>
+<A HREF=bu_lock_sender.html><B>bu_lock_sender</B></A><DD><I> Keep sender from sending data right away - wait after received chunks have been diassembled completely</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_unlock_sender"></A>
+<A HREF=bu_unlock_sender.html><B>bu_unlock_sender</B></A><DD><I> Enable sending again - wait after received chunks have been diassembled completely</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_put_SACK_Chunk"></A>
+<A HREF=bu_put_SACK_Chunk.html><B>bu_put_SACK_Chunk</B></A><DD><I> Called by recvcontrol, when a SACK must be piggy-backed TODO : Handle multiple calls to this function between two send events</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_put_Ctrl_Chunk"></A>
+<A HREF=bu_put_Ctrl_Chunk.html><B>bu_put_Ctrl_Chunk</B></A><DD><I> this function used for bundling of control chunks Used by SCTP-control and Path management</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_put_Data_Chunk"></A>
+<A HREF=bu_put_Data_Chunk.html><B>bu_put_Data_Chunk</B></A><DD><I> this function used for putting data chunks into the buffer Used only in the flow control module</I>
+<DT>
+
+<IMG ALT="o" BORDER=0 SRC=icon1.gif><A NAME="bu_sendAllChunks"></A>
+<A HREF=bu_sendAllChunks.html><B>bu_sendAllChunks</B></A><DD><I> Trigger sending of all chunks previously entered with put_Chunk functions Chunks sent are deleted afterwards.</I>
+</DL>
+<A NAME="DOC.DOCU">
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">Hierarchy of classes</A></I></P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

@@ -1,0 +1,35 @@
+<HTML>
+<HEAD>
+   <TITLE>int sctp_send</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>int <A HREF="#DOC.DOCU">sctp_send</A>(unsigned int associationID, unsigned short streamID, unsigned char *buffer, unsigned int length, unsigned int protocolId, short path_id, void* context,  unsigned int lifetime,  int unorderedDelivery,  int dontBundle)</H2>
+<BLOCKQUOTE> sctp_send is used by the ULP to send data chunks.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+sctp_send is used by the ULP to send data chunks.
+
+<P></BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>associationID</B> -   the ID of the addressed association.
+<BR><B>streamID</B> -        identifies the stream on which the chunk is sent.
+<BR><B>buffer</B> -          chunk data.
+<BR><B>length</B> -          length of chunk data.
+<BR><B>protocolId</B> -      the payload protocol identifier
+<BR><B>path_id</B> -         index of destination address, if different from primary pat, negative for primary
+<BR><B>context</B> -         ULP context, i.e. a pointer that will may be retunred with certain callbacks.
+(in case of send errors).
+<BR><B>lifetime</B> -        maximum time of chunk in send queue in msecs, 0 for infinite
+<BR><B>unorderedDelivery</B> -  chunk is delivered to peer without resequencing, if true (==1), else ordered (==0).
+<BR><B>dontBundle</B> -      chunk must not be bundled with other data chunks.
+boolean, 0==normal bundling, 1==do not bundle message
+<BR><DT><B>Returns:</B><DD>  error code     -1 for send error, 1 for association error, 0 if successful<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

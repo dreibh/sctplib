@@ -1,0 +1,31 @@
+<HTML>
+<HEAD>
+   <TITLE>int sctp_receiveUnsent</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>int <A HREF="#DOC.DOCU">sctp_receiveUnsent</A>(unsigned int associationID, unsigned char *buffer, unsigned int *length, unsigned short *streamID, unsigned short *streamSN, unsigned int* protocolId)</H2>
+<BLOCKQUOTE> sctp_receive_unsent is currently NOT implemented !</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+sctp_receive_unsent is currently NOT implemented !
+Will return messages that could not be sent for some reason
+
+<P></BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>associationID</B> -        ID of assocation.
+<BR><B>buffer</B> -               pointer to a buffer that the application needs to pass. Data is copied there.
+<BR><B>length</B> -               pointer to size of the buffer passed by application, contains actual length
+of the copied chunk after the function call.
+<BR><B>streamID</B> -             pointer to the stream id, where data should have been sent
+<BR><B>streamSN</B> -             pointer to stream sequence number of the data chunk that was not sent
+<BR><B>protocolID</B> -           pointer to the protocol ID of the unsent chunk
+<BR><DT><B>Returns:</B><DD>  number of unsent chunks still in the queue, else -1 on error (no chunks there etc.)<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

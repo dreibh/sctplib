@@ -1,0 +1,37 @@
+<HTML>
+<HEAD>
+   <TITLE>void scr_cookie_echo</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>void <A HREF="#DOC.DOCU">scr_cookie_echo</A>(SCTP_cookie_echo * cookie_echo)</H2>
+<BLOCKQUOTE> scr_cookie_echo is called by bundling when a cookie echo chunk was received from  the peer.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+scr_cookie_echo is called by bundling when a cookie echo chunk was received from  the peer.
+The following data is retrieved from the cookie and saved for this association:
+<UL>
+<LI>  from the init chunk:
+<UL>
+<LI> peers tag
+<LI> peers receiver window credit
+<LI> peers initial TSN
+<LI> peers network address list if multihoming is used
+</UL>
+<LI> local tag generated before the initAck was sent
+<LI> my initial TSN generated before the initAck was sent
+<LI> number of send streams I use, must be lower or equal to peers number of receive streams from init chunk
+<LI> number of receive streams I use (can be lower than number of send streams the peer requested in
+the init chunk
+\end{itemiz}
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>cookie_echo</B> -  pointer to the received cookie echo chunk<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

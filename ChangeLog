@@ -1,0 +1,144 @@
+14.08.2002    Added patch by Stefan Jansen for correct
+12.08.2002    Do not check receiver window for retransmitted chunks.
+              Make sure that RTT calculation is only done when chunks acked
+              come from the same path.
+11.08.2002    Added change so that chunks sent to primary are assigned the
+              actual path only just before they are actually sent
+05.08.2002    Changed placement of break statement in adl_filterAddresses
+              (as it falsely cut off IPv6 filters)
+              Changed filter_flags in chunkhandler: setIPAddresses()
+              -> for IPv6 loopback addresses when chunk arrived from
+              a localhost address (changed it to flag_Default)
+05.08.2002    Made project release sctplib-1.0.0-pre19j
+04.08.2002    Modified check for correct source addresses in
+              mdi_receiveMessage, when an association pointer has been found.
+              This could cause an association not to establish in some cases.
+              Init sourceAddressExists to FALSE, and set it to TRUE, when
+              INIT, or INIT-ACK chunk contains list of addresses, but the
+              original source address is unkown.
+              Fixed a bug in rbu_findAddress that would cause an increase of position
+              by chunk-len, instead of variable parameter length.
+              Added to function mdi_addressListContainsLocalhost a check for
+              all local addresses, so that a global address that is only used
+              locally returns a TRUE as well.
+
+01.08.2002    Added Line "opt_len = sizeof(old_tos);" in adaptation.c line 933
+              Added Line "sctpInstance->supportedAddressTypes = 0;" in distribution.c, line 1656
+              initialized peerSupportedTypes to 0 in SCTP-control.c (4 places)
+
+31.07.2002    Made this version release scctplib-1.0.0-pre19i
+              Bugfix for a problem Michael detected:
+              We now skip over some unrecognized parameters (e.g. IPv6 addresses) in
+              INIT-ACK without reporting COMM-LOST, as long as there are sufficient
+              IPv4 addresses in the INIT-ACK -> function ch_enterUnrecognizedErrors
+              this now needs additional parameters.
+              modified setIPAddresses() with local address type parameter. If we
+              do not support IPv6, e.g., we need not accept these addresses.
+              Bugfix there also: handle ignore_dups for IPv6 equal to IP4 !
+              and use tmp_su instead of tmpAddr.
+              ch_IPaddresses and ch_cookieIPDestAddresses call this function,
+              so they are modified to pass the mySupportedTypes (addressTypes)
+              parameter along. All of their invocations in SCTP-control must
+              set this parameter and pass it along.
+              In adaptation.c we change the code for getting also the ::1 address.
+              in the applications, use #ifdef HAVE_CONFIG_H etc. so that autoheader
+              sets -DHAVE_CONFIG_H and the IPv6 version is actually compiled.
+
+30.07.2002    Added patch so that compile will now work outside the source tree
+
+26.07.2002    Removed bug in reltransfer which caused incorrect SACK processing
+              in some cases, due to incorrect gap length computation.
+              Removed the code for resetting of gap_ack counters to 0, when
+              a fast retransmission is scheduled -> only do rtx once !
+              Removed rtx_lenght and replaced it by retransmitted_bytes
+              in rtx_sack_process.
+              Changed computation of peer_rwnd in fc_fast_retransmission,
+              since it is an unsigned int after all !
+              Introduced a flag in the chunk_data struct (called "hasBeenAcked")
+              so that acked chunks are only counted once for acknowledgement.
+              (thanks to Janar and Armando for pointing these bugs out !)
+
+24.07.2002    Added local addresses and number of local addresses to the
+              struct  SCTP_InstanceParameters, so  that these can be read
+              by an application, also.
+
+24.07.2002    Found bug that occurred in SCTP-control, where a timer is not
+              correctly deleted in scr_shutDownAck (state SHUTDOWN-ACK-SENT)
+              Also made sure that in this function the association is NOT
+              removed in states COOKIE_WAIT and COOKIE_ECHO, and respective
+              peer tags are used (instead of zero)
+
+23.07.2002    Added back in Thomas's changes for passing poll flags to the
+              user-defined callback funtions.
+
+03.07.2002    Prepared new release sctplib-1.0.0-pre19, added new function
+              sctp_getVersion().
+
+12.06.2002    Split distribution into separate parts 
+
+01.06.2002    New release: sctplib-1.0.0-pre18
+
+21.05.2002    Fixed bug in sctp_deleteInstance, where list was freed for INADDR_ANY
+
+13.05.2002    Socket API reorganization:
+              - socketapi/ only contains the C Socket API (although internal parts use C++)
+                The socketapi/ files are LGPL.
+              - cppsocketapi/ contains the C++ Socket API. It is GPL.
+              - socket_programs still contain the C and C++ Socket API examples. They are GPL.
+
+23.04.2002 -  Some changes and bugfixes by Thomas (SockitAPI, RWND overrun fixed for TFTP
+              client, some other things)
+              Forward TSN Processing fixed in the case that there are no SACK fragments
+              in recvctrl.c
+              Added trigger for streamengine to start SACK timer, so that after the
+              ULP has removed data from the queue, an updated SACK with new ARWND is sent
+              after the SACK timer expires.
+
+17.04.2002  - Changed the license for the library from GPL to LGPL
+              My apologies. This must be the worst Changelog ever :-)
+              Fixed a (stupid, as always) bug in streamengine, where variable was
+              used after beig reset
+              Added in functionality so that T3 is only restarted when lowest TSN
+              is being retransmitted. This avoid a too frequent T3 restart in some
+              cases
+              Added funtion in rbundling, so that FORWARD_TSN is answered as UNKNOWN
+              PARAMETER, if respective library option is set.
+              Replaced USCTP by PRSCTP
+
+----------------------------------------- snip -------------------------------------------
+
+02.11.2000  - Version 0.9.0 released
+            - Change to GPL,
+            - updates and a lot of bugs fixed in SCTP control
+            - port to MacOS 10 (changes in adaptation.c)
+            - a lot of bugfixes in pathmanagement (now standard conform)
+            - fix in bundling to handle chunk_len correctly for bundled (control) chunks
+            - Updated TODO list. Important are especially showstoppers 1. and 2.
+            - sctp_send now returns a result (0,1,-1), changed ulp to reflect this.
+
+19.10.2000  -   Major rewrite of ULP module (some code blatantly stolen
+                from the latest SCTP reference implementation)
+            -   Data Arrive Notification now also sends Protocol ID along
+
+17.10.2000  -   Version 0.8.9 released
+            -   This fixes important bugs in flowcontrol, chunkhandler
+            -   Some performance improvements (if you compile with -O3 !)
+            -   Last release before the bakeoff.
+
+25.09.2000  -  Version 0.8.8 released (not shure about the date)
+            -  Finished OOTB handling according to section 8.4
+
+20.09.2000  -   Started this change log. This is a change. Wow :-)
+            -   Implemented finally a good part of the OOTB handling in
+(0.8.7)         distribution.c
+            -   Finally the JavaClient program works (most of the time). I could talk
+                with the reference implementation.
+            -   LibEfence is not required anymore. If you want to debug this program,
+                it should still be used. But well ;-)
+            -   Some of the usual bugs removed/found.
+            -   Changed interface of sctp_send to include the protocol id as  parameter
+            -   added a few functions in bundling, to scan for chunks in an SCTP datagram
+            -   no ipv6 sockets are opened now, if you do not specify ipv6 source/dest address
+
+
+

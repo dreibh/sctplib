@@ -1,0 +1,85 @@
+
+No, this implementation is NOT CARRIER GRADE :-)
+
+======================================================================
+ Things to do:
+======================================================================
+(these are minor things that should be cleaned up):
+
+-> check whether we delete an existing assoc, when we get a new
+   INIT with invalid parameters (shouldn't happen)
+
+-> number of streams, and their defaults are now stored in distribution
+   (for the defaults), streamengine (for the actual work), SCTP-control
+   (for the negotiation). This is ugly. Any suggestions ?
+
+-> Look in RFC. What about duplicate ctsna values in a received SACK.
+   Do these count for Fast RTX, too ? Or do we wait for timeout ?
+
+-> receive/set ipv6 flowlabels (discuss API first !)
+-> Error-Chunk-Handling must be further implemented, tested
+
+======================================================================
+-> callback verursacht senden von data chunks, als folge von ankommenden
+   daten.dann aber sender locked, dont bundle bit hat keinen effekt, sender
+   bundled trotzdem.
+-> sctp_send erst nach CommmUP in documentation
+-> document handling of supplied addresses....
+-> IPv4/IPv6 in path-status
+======================================================================
+
+
+SHOWSTOPPERS :
+1.  Incorporate pending patches by third parties
+2.  update documentation to reflect latest changes
+
+3.  Send Sutdown-Ack back to the source address of the SHUTDOWN message !
+    Check if that works ! Check also for Init, InitAck,Cookie, CookieEcho.
+4.  Reinitialization of Associaton (Restart) may change association parameters
+    (Number of streams, address-list etc.) -> needs testing !
+    Restart may change IP addresses -> now we check only whether we have
+    the same number of paths !
+5.  sanity checks (INIT chunk alone, ABORT with error cause code etc.)
+    for bogus packets.
+    -> in rbundling:
+    Check that there are no control chunks after the data chunks.
+6.  When we receive data froma previously deactivated path, that path
+    should be activated ! Check this !
+7.  ICMP Fragmentation needed handler should be added back...and needs
+    to look at the ICMP data, in order to find the path MTU that we need to
+    update. Build a lab setup for this first....
+
+
+
+======================================================================
+NICE TO HAVE (we are working on this - slowly :-) :
+======================================================================
+
+
+0.  use of the "Don't bundle" feature. (isn't this obsolete, really ? )
+
+1.  Replace scan functions in bundling by one function that scans for all chunk
+    types that are in an SCTP datagram, and sets an array with flags accordingly.
+    The scan functions for one special type of chunk become much simpler then,
+    since they only need to check, if a flag in that array is set or not.
+    Datagrams only need to be scanned once. This is better !
+
+2.  SeizePort-Functions should use Bit-mapped array or something similar to
+    store used ports. Then we could randomly use and free these.
+
+3.  Implemente SHA-1 as well as MD-5.
+
+5.  Replace timer lists by a more sophisticated data structure.
+
+6.  INIT : Add ECN support
+    Reserved for ECN Capable (Note 2)   Optional    0x000a
+
+->  pm_chunksAcked() könnte gefixed werden, um schneller festzustellen,
+    ob ein Path wieder ACTIVE ist.
+
+
+======================================================================
+ PR-SCTP
+======================================================================
+- check that T3 is stopped, when all chunks are dropped, or acked
+-

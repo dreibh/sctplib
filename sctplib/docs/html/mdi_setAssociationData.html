@@ -1,0 +1,30 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned short mdi_setAssociationData</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned short <A HREF="#DOC.DOCU">mdi_setAssociationData</A>(unsigned int associationID)</H2>
+<BLOCKQUOTE> Each module within SCTP that has timers implements its own timer call back functions.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+Each module within SCTP that has timers implements its own timer call back
+functions. These are registered at the adaption layer when a timer is started
+and called directly at the module when the timer expires.
+setAssociationData allows SCTP-modules with timers to retrieve the data of the
+addressed association from the list of associations.
+For this purpose the association-ID must be included in one of the
+parameters of the start_timer function of the adaption-layer.
+
+<P></BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>associationID</B> -     the ID of the association
+<BR><DT><B>Returns:</B><DD>  0 if successful, 1 if the association does not exist in the list<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

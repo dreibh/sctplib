@@ -1,0 +1,29 @@
+<HTML>
+<HEAD>
+   <TITLE>static   gint32 retrieveVLParamFromString</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>static   gint32 <A HREF="#DOC.DOCU">retrieveVLParamFromString</A>(guint16 paramType, guchar * mstring, guint16 length)</H2>
+<BLOCKQUOTE> retrieveVLParamFromString scans for a parameter of a certain type in a message string.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+retrieveVLParamFromString scans for a parameter of a certain type in a message string.
+The message string must point to a parameter header. The function can also be used
+to find parameters within a parameter (e.g. addresses within a cookie).
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>paramType</B> -  type of paramter to scan for,
+<BR><B>mstring</B> -    pointer to the first parameter header, from which we start scanning
+<BR><B>length</B> -     maximum length of parameter field, that may be scanned.
+<BR><DT><B>Returns:</B><DD>  position of first parameter occurence, relative to where mstring pointed to
+i.e. 0 returned, when mstring points to the parameter we scan for.
+OR -1 if not found !!!!!!!<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

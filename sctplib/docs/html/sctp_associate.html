@@ -1,0 +1,30 @@
+<HTML>
+<HEAD>
+   <TITLE>unsigned int sctp_associate</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>unsigned int <A HREF="#DOC.DOCU">sctp_associate</A>(unsigned short SCTP_InstanceName, unsigned short noOfOutStreams, unsigned char destinationAddress[], unsigned short destinationPort, void* ulp_data)</H2>
+<BLOCKQUOTE> This function is called to setup an association.</BLOCKQUOTE>
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+This function is called to setup an association.
+The ULP must specify the SCTP-instance to which this association belongs to.
+</BLOCKQUOTE>
+<DL>
+</DL>
+<DL><DT><DT><B>Parameters:</B><DD><B>SCTP_InstanceName</B> -      the SCTP instance this association belongs to.
+if the local port of this SCTP instance is zero, we will get a port num,
+else we will use the one from the SCTP instance !
+<BR><B>noOfOutStreams</B> -         number of output streams the ULP would like to have
+<BR><B>destinationAddress</B> -     destination address
+<BR><B>destinationPort</B> -        destination port
+<BR><B>ulp_data</B> -              pointer to an ULP data structure, will be passed with callbacks !
+<BR><DT><B>Returns:</B><DD>  association ID of this association (identical with local tag), 0 in case of failures<BR><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>

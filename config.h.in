@@ -1,0 +1,157 @@
+/* config.h.in.  Generated automatically from configure.in by autoheader.  */
+
+/* Define to empty if the keyword does not work.  */
+#undef const
+
+/* Define if you don't have vprintf but do have _doprnt.  */
+#undef HAVE_DOPRNT
+
+/* Define if you have the vprintf function.  */
+#undef HAVE_VPRINTF
+
+/* Define to `unsigned' if <sys/types.h> doesn't define.  */
+#undef size_t
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
+/* Define if your <sys/time.h> declares struct tm.  */
+#undef TM_IN_SYS_TIME
+
+/* Define if you have the inet_aton function.  */
+#undef HAVE_INET_ATON
+
+/* Define if you have the inet_ntop function.  */
+#undef HAVE_INET_NTOP
+
+/* Define if you have the inet_pton function.  */
+#undef HAVE_INET_PTON
+
+/* Define if you have ipv6 stack.  */
+#undef HAVE_IPV6
+
+/* whether sockaddr_in6 has a sin6_scope_id field */
+#undef HAVE_SIN6_SCOPE_ID
+
+/* whether we have a <sys/poll.h> include file or need to manually define poll() */
+#undef HAVE_SYS_POLL_H
+
+/* whether we have the socklen_t type defined */
+#undef HAVE_SOCKLEN_T
+
+/* Define if you have INRIA ipv6 stack.  */
+#undef INRIA_IPV6
+
+/* Define if you have KAME project ipv6 stack.  */
+#undef KAME
+
+/* Define if you have Linux ipv6 stack.  */
+#undef LINUX_IPV6
+
+/* Define if you have NRL ipv6 stack.  */
+#undef NRL
+
+/* Define if you have BSDI NRL IPv6 stack. */
+#undef BSDI_NRL
+
+#ifdef HAVE_IPV6
+#ifdef KAME
+#ifndef INET6
+#define INET6
+#endif /* INET6 */
+#endif /* KAME */
+#endif /* HAVE_IPV6 */
+
+#undef  USE_RFC2292BIS
+
+#undef  HAVE_PKTINFO
+
+#undef  HAVE_NCURSES_H
+
+/* The number of bytes in a char.  */
+#undef SIZEOF_CHAR
+
+/* The number of bytes in a int.  */
+#undef SIZEOF_INT
+
+/* The number of bytes in a long.  */
+#undef SIZEOF_LONG
+
+/* The number of bytes in a long long.  */
+#undef SIZEOF_LONG_LONG
+
+/* The number of bytes in a short.  */
+#undef SIZEOF_SHORT
+
+/* Define if you have the getaddrinfo function.  */
+#undef HAVE_GETADDRINFO
+
+/* Define if you have the geteuid function.  */
+#undef HAVE_GETEUID
+
+/* Define if you have the gettimeofday function.  */
+#undef HAVE_GETTIMEOFDAY
+
+/* Define if you have the getuid function.  */
+#undef HAVE_GETUID
+
+/* Define if you have the poll function.  */
+#undef HAVE_POLL
+
+/* Define if you have the random function.  */
+#undef HAVE_RANDOM
+
+/* Define if you have the setuid function.  */
+#undef HAVE_SETUID
+
+/* Define if you have the socket function.  */
+#undef HAVE_SOCKET
+
+/* Define if you have the strerror function.  */
+#undef HAVE_STRERROR
+
+/* Define if you have the <ncurses.h> header file.  */
+#undef HAVE_NCURSES_H
+
+/* Define if you have the <netdb.h> header file.  */
+#undef HAVE_NETDB_H
+
+/* Define if you have the <netinet/icmp6.h> header file.  */
+#undef HAVE_NETINET_ICMP6_H
+
+/* Define if you have the <netinet/in.h> header file.  */
+#undef HAVE_NETINET_IN_H
+
+/* Define if you have the <strings.h> header file.  */
+#undef HAVE_STRINGS_H
+
+/* Define if you have the <sys/file.h> header file.  */
+#undef HAVE_SYS_FILE_H
+
+/* Define if you have the <sys/poll.h> header file.  */
+#undef HAVE_SYS_POLL_H
+
+/* Define if you have the <sys/socket.h> header file.  */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the nsl library (-lnsl).  */
+#undef HAVE_LIBNSL
+
+/* Define if you have the socket library (-lsocket).  */
+#undef HAVE_LIBSOCKET
+
+/* Name of package */
+#undef PACKAGE
+
+/* Version number of package */
+#undef VERSION
+

@@ -1,0 +1,131 @@
+<HTML>
+<HEAD>
+   <TITLE>struct  SCTP_Path_Status</TITLE>
+   <META NAME="GENERATOR" CONTENT="DOC++ 3.4.4">
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H2>struct  <A HREF="#DOC.DOCU">SCTP_Path_Status</A></H2>
+<BLOCKQUOTE> this struct contains path specific parameters, so these values can only be retrieved/set, when the association already exists !</BLOCKQUOTE>
+
+<HR>
+<P><DL>
+ <DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char <B><A HREF="#DOC.1.1.1.5.1">destinationAddress</A></B>[SCTP_MAX_IP_LEN]
+<DD><I></I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>short <B><A HREF="#DOC.1.1.1.5.2">state</A></B>
+<DD><I>SCTP_PATH_ACTIVE  0, SCTP_PATH_INACTIVE   1    </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.3">srtt</A></B>
+<DD><I>smoothed round trip time in msecs </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.4">rto</A></B>
+<DD><I>current rto value in msecs </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.5">rttvar</A></B>
+<DD><I>round trip time variation, in msecs </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.6">heartbeatIntervall</A></B>
+<DD><I>defines the rate at which heartbeats are sent </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.7">cwnd</A></B>
+<DD><I>congestion window size (flowcontrol) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.8">cwnd2</A></B>
+<DD><I>congestion window size 2 (flowcontrol) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.9">partialBytesAcked</A></B>
+<DD><I>Partial Bytes Acked (flowcontrol) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.10">ssthresh</A></B>
+<DD><I>Slow Start Threshold (flowcontrol) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.11">outstandingBytesPerAddress</A></B>
+<DD><I>from flow control </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned int <B><A HREF="#DOC.1.1.1.5.12">mtu</A></B>
+<DD><I>Current MTU (flowcontrol) </I>
+<DT>
+<IMG ALT="[more]" BORDER=0 SRC=icon1.gif>unsigned char <B><A HREF="#DOC.1.1.1.5.13">ipTos</A></B>
+<DD><I>per path ?</I>
+</DL></P>
+
+
+<A NAME="DOC.DOCU">
+<HR>
+<H2>Documentation</H2>
+<BLOCKQUOTE>
+this struct contains path specific parameters, so these
+values can only be retrieved/set, when the association
+already exists !</BLOCKQUOTE>
+<DL>
+
+<A NAME="destinationAddress">
+<A NAME="DOC.1.1.1.5.1">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char destinationAddress[SCTP_MAX_IP_LEN]</B></TT>
+<DL><DT><DD></DL><P>
+<A NAME="state">
+<A NAME="DOC.1.1.1.5.2">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>short state</B></TT>
+<DD>SCTP_PATH_ACTIVE  0, SCTP_PATH_INACTIVE   1    
+<DL><DT><DD></DL><P>
+<A NAME="srtt">
+<A NAME="DOC.1.1.1.5.3">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int srtt</B></TT>
+<DD>smoothed round trip time in msecs 
+<DL><DT><DD></DL><P>
+<A NAME="rto">
+<A NAME="DOC.1.1.1.5.4">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int rto</B></TT>
+<DD>current rto value in msecs 
+<DL><DT><DD></DL><P>
+<A NAME="rttvar">
+<A NAME="DOC.1.1.1.5.5">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int rttvar</B></TT>
+<DD>round trip time variation, in msecs 
+<DL><DT><DD></DL><P>
+<A NAME="heartbeatIntervall">
+<A NAME="DOC.1.1.1.5.6">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int heartbeatIntervall</B></TT>
+<DD>defines the rate at which heartbeats are sent 
+<DL><DT><DD></DL><P>
+<A NAME="cwnd">
+<A NAME="DOC.1.1.1.5.7">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int cwnd</B></TT>
+<DD>congestion window size (flowcontrol) 
+<DL><DT><DD></DL><P>
+<A NAME="cwnd2">
+<A NAME="DOC.1.1.1.5.8">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int cwnd2</B></TT>
+<DD>congestion window size 2 (flowcontrol) 
+<DL><DT><DD></DL><P>
+<A NAME="partialBytesAcked">
+<A NAME="DOC.1.1.1.5.9">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int partialBytesAcked</B></TT>
+<DD>Partial Bytes Acked (flowcontrol) 
+<DL><DT><DD></DL><P>
+<A NAME="ssthresh">
+<A NAME="DOC.1.1.1.5.10">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int ssthresh</B></TT>
+<DD>Slow Start Threshold (flowcontrol) 
+<DL><DT><DD></DL><P>
+<A NAME="outstandingBytesPerAddress">
+<A NAME="DOC.1.1.1.5.11">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int outstandingBytesPerAddress</B></TT>
+<DD>from flow control 
+<DL><DT><DD></DL><P>
+<A NAME="mtu">
+<A NAME="DOC.1.1.1.5.12">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned int mtu</B></TT>
+<DD>Current MTU (flowcontrol) 
+<DL><DT><DD></DL><P>
+<A NAME="ipTos">
+<A NAME="DOC.1.1.1.5.13">
+<DT><IMG ALT="o" BORDER=0 SRC=icon2.gif><TT><B>unsigned char ipTos</B></TT>
+<DD>per path ? per instance ? for the IP type of service field. 
+<DL><DT><DD></DL><P></DL>
+<DL><DT><DD></DL><P><I><A HREF="index.html">Alphabetic index</A></I> <I><A HREF="HIER.html">HTML hierarchy of classes</A> or <A HREF="HIERjava.html">Java</A></I><P><HR>
+<BR>
+This page was generated with the help of <A HREF="http://www.linuxsupportline.com/~doc++">DOC++</A>.
+</BODY>
