@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.26 2004/08/13 14:21:28 ajung Exp $
+ *  $Id: distribution.c,v 1.27 2004/08/25 13:25:14 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -36,9 +36,9 @@
  * Purpose: This modules implements the interface defined distribution.h and sctp.h
  *          and holds a private list of associations.
  *          As an SCTP-instance has usually more than one associations, the main purpose
- *          of this module is the  distribution of signals from the ULP and from the 
+ *          of this module is the  distribution of signals from the ULP and from the
  *          peer (via the socket and unix-interface) to the addressed association.
- *          Signals from the UNIX-interface are always forwarded to 
+ *          Signals from the UNIX-interface are always forwarded to
  *          the bundling module of the addressed association.
  *          The corresponding function receive_msg is not defined here but in distribution.c,
  *          because it is called via a function-pointer that is registered at the
@@ -301,10 +301,10 @@ static unsigned int numberOfSeizedPorts;
  #define ENTER_CALLBACK(fname)	printf("Entering callback (%s)\n", fname); fflush(stdout);
  #define LEAVE_CALLBACK(fname)	printf("Leaving  callback (%s)\n", fname); fflush(stdout);
 #else
- #define ENTER_LIBRARY(fname)	
- #define LEAVE_LIBRARY(fname)	
- #define ENTER_CALLBACK(fname)	
- #define LEAVE_CALLBACK(fname)	
+ #define ENTER_LIBRARY(fname)
+ #define LEAVE_LIBRARY(fname)
+ #define ENTER_CALLBACK(fname)
+ #define LEAVE_CALLBACK(fname)
 #endif
 /*------------------- Internal LIST Functions ----------------------------------------------------*/
 
@@ -611,12 +611,12 @@ static unsigned short seizePort(void)
 {
     unsigned short seizePort = 0;
 
-    /* problem: no more available ports ?! */    
+    /* problem: no more available ports ?! */
     if (numberOfSeizedPorts >= 0xFBFF)
         return 0x0000;
 
     seizePort = (unsigned short)(adl_random() % 0xFFFF);
-    
+
     while (portsSeized[seizePort] || seizePort < 0x0400) {
         seizePort = (unsigned short)(adl_random() % 0xFFFF);
     }
@@ -992,7 +992,7 @@ mdi_receiveMessage(gint socket_fd,
     chunkArray = rbu_scanPDU(message->sctp_pdu, len);
 
 
-    
+
     if (currentAssociation == NULL) {
         if ((initPtr = rbu_findChunk(message->sctp_pdu, len, CHUNK_INIT)) != NULL) {
             event_log(VERBOSE, "mdi_receiveMsg: Looking for source address in INIT CHUNK");
@@ -1029,11 +1029,11 @@ mdi_receiveMessage(gint socket_fd,
     /* check whether chunk is illegal or not (see section 3.1 of RFC 2960) */
     if ( ((rbu_datagramContains(CHUNK_INIT, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_INIT))) ||
          ((rbu_datagramContains(CHUNK_INIT_ACK, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_INIT_ACK))) ||
-         ((rbu_datagramContains(CHUNK_SHUTDOWN_COMPLETE, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_SHUTDOWN_COMPLETE))) 
+         ((rbu_datagramContains(CHUNK_SHUTDOWN_COMPLETE, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_SHUTDOWN_COMPLETE)))
        ){
 
         error_log(ERROR_MINOR, "mdi_receiveMsg: discarding illegal packet....... :-)");
-           
+
         /* silently discard */
          lastFromAddress = NULL;
          lastDestAddress = NULL;
@@ -1043,7 +1043,7 @@ mdi_receiveMessage(gint socket_fd,
          currentAssociation = NULL;
          return;
     }
-    
+
     /* check if sctp-message belongs to an existing association */
     if (currentAssociation == NULL) {
          event_log(VVERBOSE, "mdi_receiveMsg: currentAssociation==NULL, start scanning !");
@@ -1522,7 +1522,7 @@ gboolean mdi_addressListContainsLocalhost(unsigned int noOfAddresses,
         if (sctpInstance) {
             if (sctpInstance->noOfLocalAddresses > 0){
                 for (counter = 0; counter < sctpInstance->noOfLocalAddresses; counter++) {
-                    if (adl_equal_address(&(addressList[ii]), &(sctpInstance->localAddressList[counter])) == TRUE) result = 
+                    if (adl_equal_address(&(addressList[ii]), &(sctpInstance->localAddressList[counter])) == TRUE) result =
 TRUE;                }
             } else {
                 if (sctpInstance->has_INADDR_ANY_set) {
@@ -1606,13 +1606,13 @@ sctp_registerInstance(unsigned short port,
     gboolean with_ipv4 = FALSE;
     unsigned short result;
     GList* list_result = NULL;
-    
+
 #ifdef HAVE_IPV6
     gboolean with_ipv6 = FALSE;
 #endif
     SCTP_instance *old_Instance = sctpInstance;
     Association *old_assoc = currentAssociation;
-    
+
     ENTER_LIBRARY("sctp_registerInstance");
     ZERO_CHECK_LIBRARY;
 
@@ -1757,7 +1757,9 @@ sctp_registerInstance(unsigned short port,
     list_result = g_list_find_custom(InstanceList, sctpInstance, &CheckForAddressInInstance);
 
     if (list_result) {
-        free(sctpInstance->localAddressList);
+        if(sctpInstance->noOfLocalAddresses != 0) {
+           free(sctpInstance->localAddressList);
+        }
         free(sctpInstance);
         sctpInstance = old_Instance;
         currentAssociation = old_assoc;
@@ -2314,7 +2316,7 @@ int sctp_receive(unsigned int associationID,
     unsigned int addressIndex;
     return (sctp_receivefrom(associationID,streamID, buffer, length,
                                 streamSN, tsn, &addressIndex, flags));
-    
+
 }
 
 
@@ -2333,7 +2335,7 @@ int sctp_receivefrom(unsigned int associationID,
                     unsigned int *length,
                     unsigned short *streamSN,
                     unsigned int * tsn,
-                    unsigned int *addressIndex, 
+                    unsigned int *addressIndex,
                     unsigned int flags)
 {
     int result;
@@ -2535,7 +2537,7 @@ sctp_setFailureThreshold(unsigned int associationID, unsigned short pathMaxRetra
 
     CHECK_LIBRARY;
 
-    event_logii(VERBOSE, "sctp_setFailureThreshold: Association %u, pathMaxRetr. %u", associationID, 
+    event_logii(VERBOSE, "sctp_setFailureThreshold: Association %u, pathMaxRetr. %u", associationID,
 pathMaxRetransmissions);
     currentAssociation = retrieveAssociation(associationID);
 
@@ -3321,7 +3323,7 @@ int sctp_sendRawData(unsigned int associationID, short path_id,
                 return 1;
             }
         }
-        event_logiii(INTERNAL_EVENT_1, "sctp_sendRawData(assoc:%u, path: %d): send %u bytes",associationID, 
+        event_logiii(INTERNAL_EVENT_1, "sctp_sendRawData(assoc:%u, path: %d): send %u bytes",associationID,
 path_id,length);
         /* Forward chunk to the addressed association */
         result = mdi_send_message((SCTP_message *) buffer, length, path_id);
@@ -4206,8 +4208,8 @@ unsigned short mdi_readLocalInStreams(void)
     } else {
         /* retrieve SCTP-instance with SCTP-instance name in current association */
         temporary.sctpInstanceName = currentAssociation->sctpInstance->sctpInstanceName;
-        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", 
-currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary, 
+        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ",
+currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary,
 &CompareInstanceNames);        if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance with name %u in List, FIXME !",
                 currentAssociation->sctpInstance->sctpInstanceName);
@@ -4249,8 +4251,8 @@ unsigned short mdi_readLocalOutStreams(void)
     } else {
         /* retrieve SCTP-instance with SCTP-instance name in current association */
         temporary.sctpInstanceName = currentAssociation->sctpInstance->sctpInstanceName;
-        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", 
-currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary, 
+        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ",
+currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary,
 &CompareInstanceNames);        if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance with name %u in List, FIXME !",
                 currentAssociation->sctpInstance->sctpInstanceName);
@@ -4320,7 +4322,7 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
         /* this is from a loopback, get all loopbacks */
         filterFlags = flag_Default;
     }
-     
+
     count = 0;
 
     if (sctpInstance->has_INADDR_ANY_set == TRUE) {
@@ -4337,7 +4339,7 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                 default: break;
             }
         }
-        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from INADDR_ANY (from %u)", 
+        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from INADDR_ANY (from %u)",
 count,myNumberOfAddresses );    } else if (sctpInstance->has_IN6ADDR_ANY_set == TRUE) {
         for (tmp = 0; tmp < myNumberOfAddresses; tmp++) {
             switch(sockunion_family( &(myAddressList[tmp]))) {
@@ -4362,7 +4364,7 @@ count,myNumberOfAddresses );    } else if (sctpInstance->has_IN6ADDR_ANY_set == 
                 default: break;
             }
         }
-        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from IN6ADDR_ANY (from %u)", count, 
+        event_logii(VERBOSE, "mdi_readLocalAddresses: found %u local addresses from IN6ADDR_ANY (from %u)", count,
 myNumberOfAddresses);
     } else {
         for (tmp = 0; tmp < sctpInstance->noOfLocalAddresses; tmp++) {
@@ -4476,7 +4478,7 @@ int mdi_getDefaultMaxBurst(void)
 {
     if (sctpInstance == NULL) return DEFAULT_MAX_BURST;
     else if (currentAssociation == NULL) return DEFAULT_MAX_BURST;
-    else 
+    else
 	return (currentAssociation->sctpInstance->default_maxBurst);
 }
 
@@ -4595,7 +4597,7 @@ mdi_newAssociation(void*  sInstance,
 
     if (sInstance == NULL) {
         if (sctpInstance == NULL) {
-            error_logi(ERROR_FATAL, "SCTP Instance for Port %u were all NULL, call sctp_registerInstance FIRST !",local_port);     
+            error_logi(ERROR_FATAL, "SCTP Instance for Port %u were all NULL, call sctp_registerInstance FIRST !",local_port);
             return 1;
        } else {
             instance = sctpInstance;
@@ -4648,8 +4650,8 @@ mdi_newAssociation(void*  sInstance,
     if (result != SCTP_SUCCESS) {
         error_log(ERROR_MAJOR, "Could not update my address list. Unable to initiate new association.");
         return 1;
-    }        
-    
+    }
+
     if (instance->has_IN6ADDR_ANY_set) {
         /* get ALL addresses */
         currentAssociation->noOfLocalAddresses =  myNumberOfAddresses;
@@ -4676,7 +4678,7 @@ mdi_newAssociation(void*  sInstance,
                 currentAssociation->noOfLocalAddresses++;
             }
         }
-        event_logi(VERBOSE," mdi_newAssociation: Assoc has has_INADDR_ANY_set, and %d addresses",currentAssociation->noOfLocalAddresses);    
+        event_logi(VERBOSE," mdi_newAssociation: Assoc has has_INADDR_ANY_set, and %d addresses",currentAssociation->noOfLocalAddresses);
     } else {        /* get all specified addresses */
         currentAssociation->noOfLocalAddresses = instance->noOfLocalAddresses;
         currentAssociation->localAddresses =
@@ -4720,7 +4722,7 @@ mdi_newAssociation(void*  sInstance,
 
     currentAssociation->supportsPRSCTP = instance->supportsPRSCTP;
     currentAssociation->peerSupportsPRSCTP = instance->supportsPRSCTP;
-    
+
     currentAssociation->supportsADDIP = FALSE;
     currentAssociation->peerSupportsADDIP = FALSE;
 
