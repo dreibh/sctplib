@@ -107,8 +107,8 @@ linux*)
 	CFLAGS="$CFLAGS -Wall -DLINUX"
 	thread_LIBS="-lpthread"
 	;;
-solaris*)
-	CFLAGS="$CFLAGS -Wall -DSOLARIS -D__sun -DSUN -DSUNOS_5 -D_XPG4_2"
+
+	CFLAGS="$CFLAGS -D__EXTENSIONS__ -Wall -DSOLARIS -D__sun -DSUN -DSUNOS_5 -D_XPG4_2"
 	thread_LIBS="-lpthread"
 	LDFLAGS="$LDFLAGS -lsocket -lnsl -lrt -lresolv"
 	;;
