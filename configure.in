@@ -3,10 +3,10 @@
 # Process this file with autoconf to produce a configure script.
 # -----------------------------------------------------------------------
 
-AC_PREREQ(2.57)
+AC_PREREQ(2.52)
 AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AC_CONFIG_SRCDIR([sctplib/programs/discard_server.c])
-AC_CONFIG_HEADER([config.h])
+AM_CONFIG_HEADER([config.h])
 
 AM_INIT_AUTOMAKE(sctplib,1.0.0-rc1)
 
@@ -68,8 +68,7 @@ AC_SUBST(curses_LIBS)
 # Checks for header files.
 # -----------------------------------------------------------------------
 AC_HEADER_STDC
-AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/ioctl.h sys/param.h sys/socket.h sys/time.h syslog.h unistd.h])
-
+AC_CHECK_HEADERS([arpa/inet.h netdb.h netinet/in.h stdlib.h string.h strings.h sys/ioctl.h sys/param.h sys/socket.h sys/poll.h sys/time.h syslog.h unistd.h])
 # -----------------------------------------------------------------------
 # Checks for typedefs, structures, and compiler characteristics.
 # -----------------------------------------------------------------------
@@ -109,12 +108,12 @@ linux*)
 	thread_LIBS="-lpthread"
 	;;
 solaris*)
-	CFLAGS="$CFLAGS -Wall -DSOLARIS -D__sun -DSUN -DSUNOS_5"
+	CFLAGS="$CFLAGS -Wall -DSOLARIS -D__sun -DSUN -DSUNOS_5 -D_XPG4_2"
 	thread_LIBS="-lpthread"
 	LDFLAGS="$LDFLAGS -lsocket -lnsl -lrt -lresolv"
 	;;
 darwin*)
-	CFLAGS="$CFLAGS -DDARWIN"
+	CFLAGS="$CFLAGS -DDARWIN -Wall -ansi"
 	thread_LIBS="-lpthread"
 	;;
 esac
