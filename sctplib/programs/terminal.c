@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.11 2004/01/08 17:02:52 tuexen Exp $
+ *  $Id: terminal.c,v 1.12 2004/07/22 10:30:22 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -257,8 +257,9 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
     unsigned short pathID;
     
     if (verbose) {  
-        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n", 
-        assocID, destAddrIndex, pathStateName(newState));
+        SCTP_getPathStatus(assocID, destAddrIndex, &pathStatus);
+        fprintf(stdout, "%-8x: Network status change: path %u (towards %s) is now %s\n", 
+                assocID, destAddrIndex, pathStatus.destinationAddress, pathStateName(newState));
         fflush(stdout);
     }
     
@@ -286,9 +287,18 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
 {	
+    SCTP_PathStatus pathStatus;
+    unsigned int i;
+    
     if (verbose) {  
         fprintf(stdout, "%-8x: Communication up (%u paths, %u In-Streams, %u Out-Streams)\n", assocID, noOfDestinations, noOfInStreams, noOfOutStreams);
         fflush(stdout);
+    }
+    if (vverbose) {
+        for (i=0; i < noOfDestinations; i++) {
+            SCTP_getPathStatus(assocID, i, &pathStatus);
+            fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
+        }
     }
     numberOutStreams = noOfOutStreams;
     return NULL;
