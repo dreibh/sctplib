@@ -1,5 +1,5 @@
 /*
- * $Id: streamengine.c,v 1.5 2003/10/06 09:44:56 ajung Exp $
+ * $Id: streamengine.c,v 1.6 2003/10/27 20:57:10 ajung Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -468,7 +468,8 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
 
   delivery_pdu  *d_pdu = NULL;
   unsigned int copiedBytes, residual, i;
-  guint32 r_pos, r_chunk, chunk_pos;
+  guint32 r_pos, r_chunk, chunk_pos, oldQueueLen = 0;
+
 
   StreamEngine* se = (StreamEngine *) mdi_readStreamEngine ();
 
@@ -500,6 +501,7 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
         }
       else
         {
+            oldQueueLen = se->queuedBytes;
             copiedBytes = 0;
 
             d_pdu = g_list_nth_data (se->RecvStreams[streamId].pduList, 0);
@@ -566,7 +568,7 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
                     for (i=0; i < d_pdu->number_of_chunks; i++) free(d_pdu->ddata[i]);
                     free(d_pdu->ddata);
                     free(d_pdu);
-                    rxc_start_sack_timer();
+                    rxc_start_sack_timer(oldQueueLen);
                 }
             }
 

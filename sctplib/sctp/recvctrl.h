@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.h,v 1.3 2003/07/01 13:58:27 ajung Exp $
+ *  $Id: recvctrl.h,v 1.4 2003/10/27 20:57:10 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -86,9 +86,12 @@ void rxc_all_chunks_processed(boolean new_data_received);
  */
 unsigned int rxc_read_cummulativeTSNacked(void);
 
-/* function to start SACK timer after ULP has read some data */
-/* this is to send timely ARWND updates...                   */
-int rxc_start_sack_timer(void);
+/**
+ * function to send SACK after ULP has read some data
+ * this is to send ARWND updates...                   
+ */
+int rxc_start_sack_timer(unsigned int oldQueueLen);
+
 /**
  * function called by bundling when a SACK is actually sent, to stop
  * a possibly running  timer

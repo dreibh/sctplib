@@ -1,5 +1,5 @@
 /*
- *  $Id: rbundling.c,v 1.5 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: rbundling.c,v 1.6 2003/10/27 20:57:10 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -500,7 +500,7 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             rxc_all_chunks_processed(TRUE);
         } else {
             /* update SACK structure and datagram counter */
-            rxc_all_chunks_processed(FALSE);      		
+            rxc_all_chunks_processed(FALSE);   
 		}
 		/* optionally also add a SACK chunk, at least for every second datagram
          * see section 6.2, second paragraph

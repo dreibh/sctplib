@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.7 2003/10/06 09:44:56 ajung Exp $
+ *  $Id: recvctrl.c,v 1.8 2003/10/27 20:57:10 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -461,6 +461,9 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
         current_rwnd = rxc->my_rwnd - bytesQueued;
     }
 
+    /* do SWS prevention */
+    if (current_rwnd >= 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 0;
+
     /*
      * if any received data chunks have not been acked, sender
      * should create a SACK and bundle it with the outbound data
@@ -644,7 +647,8 @@ boolean rxc_sack_timer_is_running(void)
 }
 
 /**
-  called by bundling, after new data has been processed (so we may start building a sack chunk)
+ * called by bundling, after new data has been processed (so we may start building a sack chunk)
+ * or by streamengine, when ULP has read some data, and we want to update the RWND.
  */
 void rxc_all_chunks_processed(boolean new_data_received)
 {
@@ -673,12 +677,12 @@ void rxc_all_chunks_processed(boolean new_data_received)
     if (new_data_received == TRUE) rxc->datagrams_received++;
 
     num_of_frags = g_list_length(rxc->frag_list);
-    num_of_dups = g_list_length(rxc->dup_list);
+    num_of_dups  = g_list_length(rxc->dup_list);
 
-    /* limit size of SACK to 400 bytes plus chunk header */
+    /* limit size of SACK to 80 bytes plus fixed size chunk and chunk header */
     /* FIXME : Limit number of Fragments/Duplicates according to ->PATH MTU<-  */
-    if (num_of_frags > 50) num_of_frags = 50;
-    if (num_of_dups > 50)  num_of_dups = 50;
+    if (num_of_frags > 10) num_of_frags = 10;
+    if (num_of_dups > 10)  num_of_dups = 10;
 
     event_logii(VVERBOSE, "len of frag_list==%u, len of dup_list==%u", num_of_frags, num_of_dups);
 
@@ -689,6 +693,8 @@ void rxc_all_chunks_processed(boolean new_data_received)
     } else {
         current_rwnd = rxc->my_rwnd - bytesQueued;
     }
+    /* do SWS prevention */
+    if (current_rwnd >= 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 0;
 
 
     sack = rxc->sack_chunk;
@@ -753,20 +759,33 @@ void rxc_all_chunks_processed(boolean new_data_received)
   Function starts a SACK timer after data has been read by the ULP, and the
   buffer is about to change...
  */
-int rxc_start_sack_timer(void)
+int rxc_start_sack_timer(unsigned int oldQueueLen)
 {
     rxc_buffer *rxc;
+    int bytesQueued = 0;
+
     rxc = (rxc_buffer *) mdi_readRX_control();
     if (!rxc) {
         error_log(ERROR_MINOR, "rxc_buffer instance not set - returning 0");
         return (-1);
     }
+
+    bytesQueued = se_getQueuedBytes();
+    if (bytesQueued < 0) bytesQueued = 0;
     /* no new data received, but we want updated SACK to be sent */
     rxc_all_chunks_processed(FALSE);
-    if (rxc->timer_running != TRUE) {
-        rxc->sack_timer = adl_startTimer(rxc->delay, &rxc_sack_timer_cb, TIMER_TYPE_SACK, &(rxc->my_association), NULL);
-        event_log(INTERNAL_EVENT_0, "Started SACK Timer !");
-        rxc->timer_running = TRUE;
+    if ((rxc->my_rwnd - oldQueueLen < 2 * MAX_SCTP_PDU) &&
+        (rxc->my_rwnd - bytesQueued >= 2 * MAX_SCTP_PDU)) {
+        /* send SACK at once */
+        rxc_create_sack(&rxc->last_address, TRUE);
+        send_result = bu_sendAllChunks(&rxc->last_address);
+        rxc_stop_sack_timer();
+    } else {    /* normal application read, no need to rush things */
+        if (rxc->timer_running != TRUE) {
+            rxc->sack_timer = adl_startTimer(rxc->delay, &rxc_sack_timer_cb, TIMER_TYPE_SACK, &(rxc->my_association), NULL);
+            event_log(INTERNAL_EVENT_0, "Started SACK Timer !");
+            rxc->timer_running = TRUE;
+        }
     }
     return 0;
 }
