@@ -48,20 +48,20 @@ AC_SUBST(glib_LIBS)
 # -----------------------------------------------------------------------
 # check for curses libraries, and if found, compile some more programs
 # -----------------------------------------------------------------------
-AC_CHECK_HEADERS(ncurses.h, AC_DEFINE(HAVE_NCURSES_H))
+#AC_CHECK_HEADERS(ncurses.h, AC_DEFINE(HAVE_NCURSES_H))
 # AC_CHECK_HEADERS(curses.h, AC_DEFINE(HAVE_CURSES_H))
-AC_CHECK_LIB(ncurses, initscr, found_ncurses_lib=yes,found_ncurses_lib=no)
-if test "x$found_ncurses_lib" = "xyes" -a "x$ac_cv_header_ncurses_h" = "xyes" ; then
-	curses_LIBS="-lncurses"
-	# CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses.h"
-	cursesprogs_BIN="monitor chat echo_monitor"
-else
-	cursesprogs_BIN=""
-	curses_LIBS=""
-	AC_MSG_WARN(nCurses libraries seem to be missing. Not compiling Curses-Programs!)
-fi
-AC_SUBST(cursesprogs_BIN)
-AC_SUBST(curses_LIBS)
+#AC_CHECK_LIB(ncurses, initscr, found_ncurses_lib=yes,found_ncurses_lib=no)
+#if test "x$found_ncurses_lib" = "xyes" -a "x$ac_cv_header_ncurses_h" = "xyes" ; then
+#	curses_LIBS="-lncurses"
+#	# CPPFLAGS="$CPPFLAGS -I/usr/include/ncurses.h"
+#	cursesprogs_BIN="monitor chat echo_monitor"
+#else
+#	cursesprogs_BIN=""
+#	curses_LIBS=""
+#	AC_MSG_WARN(nCurses libraries seem to be missing. Not compiling Curses-Programs!)
+#fi
+#AC_SUBST(cursesprogs_BIN)
+#AC_SUBST(curses_LIBS)
 
 
 # -----------------------------------------------------------------------

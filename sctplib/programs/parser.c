@@ -66,7 +66,8 @@ int getScriptCommand(FILE *scriptFile, struct sctptest_scriptCommand *scriptComm
                      unsigned int *line, unsigned int *column, int mode)
 {
     int i, termExp;
-    char ch, termCh, wordBuffer[MAX_WORD_LENGTH];
+    int ch;
+    char termCh, wordBuffer[MAX_WORD_LENGTH];
     enum { COMMAND, PARAM_KEY, PARAM_VALUE, PARAM_VALUE_STRING } state;
 
 
