@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.12 2003/10/28 22:00:15 tuexen Exp $
+ *  $Id: adaptation.c,v 1.13 2003/11/19 14:03:24 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -47,7 +47,6 @@
 #include <string.h>
 #include <netinet/in_systm.h>
 #include <netinet/ip.h>
-#include <netinet/ip.h>
 #ifdef HAVE_IPV6
     #if defined (LINUX)
         #include <netinet/ip6.h>
@@ -71,16 +70,6 @@
     #define LINUX_PROC_IPV6_FILE "/proc/net/if_inet6"
     #include <asm/types.h>
     #include <linux/rtnetlink.h>
-    #ifndef HAVE_PKTINFO
-    /* the definition from <bits/in.h> */
-    /* struct in_pktinfo */
-    /* { */
-    /*    int ipi_ifindex; */                   /* Interface index  */
-    /*    struct in_addr ipi_spec_dst;*/        /* Routing destination address  */
-    /*    struct in_addr ipi_addr;*/            /* Header destination address  */
-    /*}; */
-
-    #endif
 #else /* this may not be okay for SOLARIS !!! */
     #define USES_BSD_4_4_SOCKET
     #include <net/if.h>
@@ -134,9 +123,9 @@
 #define POLL_FD_UNUSED     -1
 #define NUM_FDS     20
 
-#define    EVENTCB_TYPE_SCTP        1
+#define    EVENTCB_TYPE_SCTP       1
 #define    EVENTCB_TYPE_UDP        2
-#define    EVENTCB_TYPE_USER        3
+#define    EVENTCB_TYPE_USER       3
 #define    EVENTCB_TYPE_ROUTING    4
 
 /**
@@ -344,7 +333,7 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
 
     memset((void*)su, 0, sizeof(union sockunion));
 
-    ret = inet_aton(str, &su->sin.sin_addr);
+    ret = inet_aton((const char *)str, &su->sin.sin_addr);
     if (ret > 0) {              /* Valid IPv4 address format. */
         su->sin.sin_family = AF_INET;
 #ifdef HAVE_SIN_LEN
@@ -353,7 +342,7 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
         return 0;
     }
 #ifdef HAVE_IPV6
-    ret = inet_pton(AF_INET6, str, &su->sin6.sin6_addr);
+    ret = inet_pton(AF_INET6, (const char *)str, &su->sin6.sin6_addr);
     if (ret > 0) {              /* Valid IPv6 address format. */
         su->sin6.sin6_family = AF_INET6;
 #ifdef SIN6_LEN
@@ -366,16 +355,16 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
 }
 
 
-const int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len)
+int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len)
 {
     if (su->sa.sa_family == AF_INET){
         if (len > 16) len = 16;
-        strncpy(buf, inet_ntoa(su->sin.sin_addr), len);
+        strncpy((char *)buf, inet_ntoa(su->sin.sin_addr), len);
         return(1);
     }
 #ifdef HAVE_IPV6
     else if (su->sa.sa_family == AF_INET6) {
-        if (inet_ntop(AF_INET6, &su->sin6.sin6_addr, buf, len)==NULL) return 0;
+        if (inet_ntop(AF_INET6, &su->sin6.sin6_addr, (char *)buf, len)==NULL) return 0;
         return (1);
     }
 #endif                          /* HAVE_IPV6 */
@@ -761,7 +750,7 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
 #ifdef HAVE_IPV6
     case AF_INET6:
         number_of_sendevents++;
-        inet_ntop(AF_INET6, sock2ip6(dest), hostname, MAX_MTU_SIZE);
+        inet_ntop(AF_INET6, sock2ip6(dest), (char *)hostname, MAX_MTU_SIZE);
 
         event_logiiii(VVERBOSE,
                      "AF_INET6: adl_send_message : sfd : %d, len %d, destination : %s, send_events: %u",
@@ -862,9 +851,10 @@ int adl_remove_poll_fd(gint sfd)
  * when these occur, the specified callback funtion is activated and passed the parameters
  * that are pointed to by the event_callback struct
  */
+ 
 int
 adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
-                   void *action, void* userData)
+                   void (*action) (), void* userData)
 {
      if (num_of_fds < NUM_FDS && sfd >= 0) {
         assign_poll_fd(num_of_fds, sfd, event_mask);
@@ -1838,7 +1828,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 #endif
         toUse = &ifrequest->ifr_addr;
 
-        adl_sockunion2str((union sockunion*)toUse, addrBuffer2, SCTP_MAX_IP_LEN);
+        adl_sockunion2str((union sockunion*)toUse, (guchar *)addrBuffer2, SCTP_MAX_IP_LEN);
         event_logi(VERBOSE, "we are talking about the address %s", addrBuffer2);
 
 
@@ -1935,7 +1925,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 
     event_logi(VERBOSE, "adl_gatherLocalAddresses: Found %d addresses", *numberOfNets);
     for(ii = 0; ii < (*numberOfNets); ii++) {
-        adl_sockunion2str(&(localAddresses[ii]), addrBuffer2, SCTP_MAX_IP_LEN);
+        adl_sockunion2str(&(localAddresses[ii]), (guchar *)addrBuffer2, SCTP_MAX_IP_LEN);
         event_logii(VERBOSE, "adl_gatherAddresses : Address %d: %s",ii, addrBuffer2);
 
     }

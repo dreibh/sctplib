@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.h,v 1.3 2003/10/23 16:48:11 tuexen Exp $
+ *  $Id: adaptation.h,v 1.4 2003/11/19 14:03:24 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -65,7 +65,7 @@ boolean adl_equal_address(union sockunion *one, union sockunion *two);
  */
 int adl_str2sockunion(guchar * str, union sockunion *su);
 
-const int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len);
+int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len);
 
 
 
