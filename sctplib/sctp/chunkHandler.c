@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.8 2003/11/20 10:01:26 tuexen Exp $
+ *  $Id: chunkHandler.c,v 1.9 2003/12/01 12:38:50 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -364,6 +364,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
 #endif
 
 
+
                         memcpy(addresses[nAddresses].sin6.sin6_addr.s6_addr,
                                address->dest_addr.sctp_ipv6, sizeof(struct in6_addr));
                         nAddresses++; v6found++;
@@ -489,6 +490,7 @@ ch_makeInitAck(unsigned int initTag,
 
     return freeChunkID;
 }
+
 
 
 
@@ -1020,7 +1022,8 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
             while ((curs % 4) != 0) curs++;
         } else if (pType == VLPARAM_IPV6_ADDRESS) {
             if (with_ipv6 != TRUE) {
-                ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr);
+             /*   ignore these parameters, even if we do not support IPv6 */
+             /*   ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr); */
             }
             curs += pLen;
             /* take care of padding */
@@ -1098,6 +1101,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
     }
     *destSet = FALSE;
     /* scan init chunk for unrecognized parameters ! */
+
     if ((supportedTypes & SUPPORT_ADDRESS_TYPE_IPV4) == 0)
         with_ipv4 = FALSE;
     else
@@ -1299,6 +1303,7 @@ unsigned int ch_initiateTag(ChunkID chunkID)
     } else {
         error_log(ERROR_MAJOR, "ch_initiateTag: chunk type not init or initAck");
         return 0;
+
     }
 }
 
@@ -1457,6 +1462,7 @@ unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
                     result |= SUPPORT_ADDRESS_TYPE_IPV6;
                 else if (ntohs(param->address_type[num]) == VLPARAM_HOST_NAME_ADDR)
                     result |= SUPPORT_ADDRESS_TYPE_DNS;
+
 
                 num++;
                 pos += sizeof(guint16);
@@ -1993,6 +1999,7 @@ gboolean ch_verifyHeartbeat(ChunkID chunkID)
         }
         if (memcmp(hbSignature, heartbeatChunk->hmac, HMAC_LEN) == 0) res = TRUE;
         else res = FALSE;
+
         return res;
         
     } else {
