@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.21 2003/11/24 19:04:34 tuexen Exp $
+ *  $Id: distribution.c,v 1.22 2004/05/03 10:29:30 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -664,6 +664,10 @@ static void mdi_removeAssociationData(Association * assoc)
             rtx_delete_reltransfer(assoc->reliableTransfer);
             rxc_delete_recvctrl(assoc->rx_control);
             se_delete_stream_engine(assoc->streamengine);
+            assoc->flowControl = NULL;
+            assoc->reliableTransfer = NULL;
+            assoc->rx_control = NULL;
+            assoc->streamengine = NULL;
         }
 
         pm_deletePathman(assoc->pathMan);
@@ -671,9 +675,15 @@ static void mdi_removeAssociationData(Association * assoc)
         sci_deleteSCTP_control(assoc->sctp_control);
         releasePort(assoc->localPort);
 
+        assoc->pathMan = NULL;
+        assoc->bundling = NULL;
+        assoc->sctp_control = NULL;
+
         /* free association data */
         free(assoc->destinationAddresses);
         free(assoc->localAddresses);
+        assoc->destinationAddresses = NULL;
+	assoc->localAddresses = NULL;
         free(assoc);
     } else {
         error_log(ERROR_MAJOR, "mdi_removeAssociationData: association does not exist");
