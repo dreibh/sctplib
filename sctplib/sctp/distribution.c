@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.31 2005/03/03 17:12:35 dreibh Exp $
+ *  $Id: distribution.c,v 1.32 2005/03/03 17:14:44 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1750,8 +1750,8 @@ sctp_registerInstance(unsigned short port,
 
         sctpInstance->noOfLocalAddresses = noOfLocalAddresses;
     } else {
+        sctpInstance->localAddressList   = NULL;
         sctpInstance->noOfLocalAddresses = 0;
-        sctpInstance->noOfLocalAddresses = NULL;
     }
 
 
