@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.10 2004/07/29 17:01:13 ajung Exp $
+ *  $Id: chunkHandler.c,v 1.11 2004/07/30 09:46:40 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -213,7 +213,7 @@ static gint32 retrieveVLParamFromString(guint16 paramType, guchar * mstring, gui
 */
 static gint32
 setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses[],
-                unsigned int* types, unsigned int myTypes, union sockunion* lastSource,
+                unsigned int* peerTypes, unsigned int myTypes, union sockunion* lastSource,
                 gboolean ignore_dups, gboolean ignoreLast)
 {
     gint32 cursabs = 0;
@@ -270,7 +270,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                         addresses[v4found].sin.sin_port = 0;
                         addresses[v4found].sin.sin_addr.s_addr = address->dest_addr.sctp_ipv4;
                         nAddresses++; v4found++;
-                        (*types) |= SUPPORT_ADDRESS_TYPE_IPV4;
+                        (*peerTypes) |= SUPPORT_ADDRESS_TYPE_IPV4;
                         event_logi(VERBOSE, "Found NEW IPv4 Address = %x", address->dest_addr.sctp_ipv4);
                     } else {
                         event_log(VERBOSE, "IPv4 was in the INIT or INIT ACK chunk more than once");
@@ -369,7 +369,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                         memcpy(addresses[nAddresses].sin6.sin6_addr.s6_addr,
                                address->dest_addr.sctp_ipv6, sizeof(struct in6_addr));
                         nAddresses++; v6found++;
-                        (*types) |= SUPPORT_ADDRESS_TYPE_IPV6;
+                        (*peerTypes) |= SUPPORT_ADDRESS_TYPE_IPV6;
 #if defined (LINUX)
                         event_logiiii(VERBOSE, "Found NEW IPv6 Address %x:%x:%x:%x !",
                                 tmp_su.sin6.sin6_addr.s6_addr32[0], tmp_su.sin6.sin6_addr.s6_addr32[1],
@@ -400,9 +400,9 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
             memcpy(&addresses[nAddresses], lastSource, sizeof(union sockunion));
             event_log(VERBOSE, "Added also lastFromAddress to the addresslist !");
             switch(sockunion_family(lastSource)) {
-                case AF_INET : (*types) |= SUPPORT_ADDRESS_TYPE_IPV4; break;
+                case AF_INET : (*peerTypes) |= SUPPORT_ADDRESS_TYPE_IPV4; break;
 #ifdef HAVE_IPV6
-                case AF_INET6 : (*types) |= SUPPORT_ADDRESS_TYPE_IPV6; break;
+                case AF_INET6 : (*peerTypes) |= SUPPORT_ADDRESS_TYPE_IPV6; break;
 #endif
                 default: break;
             }
@@ -1021,36 +1021,18 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
         event_logiii(VERBOSE, "Scan variable parameters: type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_COOKIE_PRESERV ||
-            pType == VLPARAM_SUPPORTED_ADDR_TYPES) {
-
+            pType == VLPARAM_SUPPORTED_ADDR_TYPES ||
+            pType == VLPARAM_IPV4_ADDRESS ||
+            pType == VLPARAM_IPV6_ADDRESS ||
+            pType == VLPARAM_HOST_NAME_ADDR ||
+            pType == VLPARAM_PRSCTP) {
+            
             curs += pLen;
             /* take care of padding */
             while ((curs % 4) != 0) curs++;
-        } else if (pType == VLPARAM_IPV4_ADDRESS) {
-            if (with_ipv4 != TRUE) {
-            /*    ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr); */
-            }
-            curs += pLen;
-            /* take care of padding */
-            while ((curs % 4) != 0) curs++;
-        } else if (pType == VLPARAM_IPV6_ADDRESS) {
-            if (with_ipv6 != TRUE) {
-             /*   ignore these parameters, even if we do not support IPv6 */
-             /*   ch_addUnrecognizedParameter(ack_string, AckCID, pLen, (unsigned char*)vl_initPtr); */
-            }
-            curs += pLen;
-            /* take care of padding */
-            while ((curs % 4) != 0) curs++;
-
-         } else if (pType == VLPARAM_SET_PRIMARY || pType == VLPARAM_PRSCTP || pType == VLPARAM_ADDIP
-                || pType ==VLPARAM_DELIP){
-            /* skip this for the time being - we will support this */
-            curs += pLen;
-            /* take care of padding */
-            while ((curs % 4) != 0) curs++;
-
+        
         } else {
-            event_logii(VERBOSE, "found unknown parameter type %u len %u in message",pType,pLen);
+            event_logii(VERBOSE, "found unknown parameter type %u len %u in message", pType, pLen);
 
             if (STOP_PARAM_PROCESSING(pType)) return -1;
 
@@ -1435,8 +1417,8 @@ unsigned int ch_cookieLifeTime(ChunkID chunkID)
 }
 
 /**
- *  ch_cookieLifeTime returns the suggested cookie lifespan increment if a cookie
- *  preservative is present in a init chunk.
+ *  ch_getSupportedAddressTypes() processes a INIT or INIT-ACK chunk and 
+ *  returns a value that indicates, which address types are supported by the peer.
  */
 unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
 {

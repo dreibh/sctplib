@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.13 2004/07/29 18:01:47 ajung Exp $
+ *  $Id: SCTP-control.c,v 1.14 2004/07/30 09:46:40 ajung Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -776,7 +776,7 @@ int scr_init(SCTP_init * init)
 
 
         if ((supportedTypes & peerSupportedTypes) == 0)
-            error_log(ERROR_FATAL, "BAKEOFF: Program error, no common address types");
+            error_log(ERROR_FATAL, "BAKEOFF: Program error, no common address types in scr_init()");
 
         /* enter variable length params initAck */
         mdi_readLocalAddresses(lAddresses, &nlAddresses, &last_source, 1, peerSupportedTypes,TRUE);
