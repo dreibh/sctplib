@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.34 2005/03/07 14:00:20 dreibh Exp $
+ *  $Id: distribution.c,v 1.35 2005/03/11 10:58:54 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -5037,3 +5037,41 @@ void mdi_deleteCurrentAssociation(void)
                   "mdi_deleteAssociation: current association does not exist, can not delete");
     }
 }
+
+
+#ifdef TD_DEBUG
+#undef calloc
+#undef malloc
+#undef free
+void* calloc(size_t nmemb, size_t size);
+void* malloc(size_t size);
+void free(void* p);
+
+void* my_calloc(size_t nmemb, size_t size)
+{
+   void* ptr = my_malloc(nmemb * size);
+   if(ptr) {
+      memset(ptr, 0, nmemb * size);
+   }
+   return(ptr);
+}
+
+void* my_malloc(size_t size)
+{
+   size_t* ptr = malloc(size + sizeof(size_t));
+   if(ptr) {
+      memset(ptr, 0xef, size + sizeof(size_t));
+      ptr[0] = size + sizeof(size_t);
+      return((void*)&ptr[1]);
+   }
+   return(NULL);
+}
+
+void my_free(void* p)
+{
+   size_t* ptr = &((size_t*)p)[-1];
+   size_t  l   = ptr[0];
+   memset(ptr, 0xba, l);
+   free(ptr);
+}
+#endif
