@@ -853,7 +853,7 @@ void timerCallback(unsigned int timerID, void *ptr1, void *ptr2)
 }
 
 
-void dataArriveNotif(unsigned int assoc, unsigned int stream, unsigned int len,
+void dataArriveNotif(unsigned int assoc, unsigned short stream, unsigned int len,
                      unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {

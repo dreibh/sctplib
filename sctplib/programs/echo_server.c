@@ -1,5 +1,5 @@
     /*
- *  $Id: echo_server.c,v 1.8 2003/11/20 19:23:00 tuexen Exp $
+ *  $Id: echo_server.c,v 1.9 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -56,7 +56,7 @@
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS        17
 
 struct ulp_data {
-    int maximumStreamID;
+    unsigned short maximumStreamID;
 };
 
 static unsigned char  localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
@@ -184,7 +184,7 @@ void checkArgs(void)
         exit(-1);
 }
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                      unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {
@@ -203,7 +203,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
     SCTP_receive(assocID, streamID, chunk, &length,&ssn, &tsn, SCTP_MSG_DEFAULT);
     /* and send it */
     SCTP_send(assocID,
-              min(streamID, (unsigned int)(((struct ulp_data *) ulpDataPtr)->maximumStreamID)),
+              min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
               chunk, length, 
               protoID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);

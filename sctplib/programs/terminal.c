@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.12 2004/07/22 10:30:22 tuexen Exp $
+ *  $Id: terminal.c,v 1.13 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -39,7 +39,11 @@
 #include "sctp_wrapper.h"
 
 
+#ifdef WIN32
+#include <winsock2.h>
+#else
 #include <unistd.h>
+#endif
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>         /* for atoi() under Linux */
@@ -48,13 +52,13 @@
 #define MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES     10
 #define MAXIMUM_NUMBER_OF_IN_STREAMS          10
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS         10
-#define min(x,y)                              (x)<(y)?(x):(y)
+/*#define min(x,y)                              (x)<(y)?(x):(y)*/
 
 #if defined SCTP_MAXIMUM_DATA_LENGTH
     #undef SCTP_MAXIMUM_DATA_LENGTH
 #endif
 
-#define SCTP_MAXIMUM_DATA_LENGTH    4500
+#define SCTP_MAXIMUM_DATA_LENGTH    450
 
 static unsigned char localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
 static unsigned char destinationAddress[SCTP_MAX_IP_LEN];
@@ -79,6 +83,8 @@ static int verbose  = 0;
 static int vverbose = 0;
 static int unknownCommand = 0;
 static int hasDestinationAddress = 0;
+
+
 
 char *
 pathStateName(unsigned int state)
@@ -127,13 +133,14 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int c;
-    extern char *optarg;
-    extern int optind;
+    int i;
+    char *opt;
+    
 
-    while ((c = getopt(argc, argv, "acd:l:r:s:q:t:ivVw:")) != -1)
-    {
-        switch (c) {
+     for(i=1; i < argc ;i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1])	
+      {
         case 'a':
             useAbort = 1;
             break;
@@ -141,29 +148,39 @@ void getArgs(int argc, char **argv)
             rotateStreams = 1;
             break;
         case 'd':
-            if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy((char *)destinationAddress, optarg);
+			opt=argv[++i];
+            if (strlen(opt) < SCTP_MAX_IP_LEN) {
+                strcpy((char *)destinationAddress, opt);
             }
             hasDestinationAddress = 1;
             break;
         case 'l':
-            localPort = atoi(optarg);
+			opt=argv[++i];
+            localPort = atoi(opt);
             break;
         case 'q':
-            tosByte = (unsigned char) atoi(optarg);
+			opt=argv[++i];
+            tosByte = (unsigned char) atoi(opt);
             break;
         case 'r':
-            remotePort = atoi(optarg);
+			opt=argv[++i];
+            remotePort = atoi(opt);
             break;
         case 's':
+			if (i+1 >= argc) {
+                        printUsage();
+				        exit(0);
+				    }
+			opt = argv[++i];
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(optarg) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
+                (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+                strcpy((char *)localAddressList[noOfLocalAddresses], opt);
                 noOfLocalAddresses++;
             }
             break;
         case 't':
-            timeToLive = atoi(optarg);
+			opt=argv[++i];
+            timeToLive = atoi(opt);
             break;
         case 'i':
             sendOOTBAborts = 0;
@@ -176,7 +193,8 @@ void getArgs(int argc, char **argv)
             vverbose = 1;
             break;
         case 'w':
-            myRwnd = atoi(optarg);
+			opt=argv[++i];
+            myRwnd = atoi(opt);
             myRwndSpecified = 1;
             break;
         default:
@@ -184,6 +202,7 @@ void getArgs(int argc, char **argv)
             break;
         }
     }
+}
 }
 
 void checkArgs(void)
@@ -218,7 +237,7 @@ void checkArgs(void)
         exit(-1);
 }
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                      unsigned short streamSN, unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {
@@ -296,7 +315,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
     }
     if (vverbose) {
         for (i=0; i < noOfDestinations; i++) {
-            SCTP_getPathStatus(assocID, i, &pathStatus);
+            SCTP_getPathStatus(assocID, (unsigned short)i, &pathStatus);
             fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
         }
     }
@@ -381,34 +400,36 @@ void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
     }
 }
 
-void stdinCallback(int fd, short int revents, short int* gotEvents,  void* dummy)
-{
-    unsigned char readBuffer[SCTP_MAXIMUM_DATA_LENGTH];
 
-    memset(readBuffer, (int)currentStream, sizeof(readBuffer));
-    
-    if (fgets((char *)readBuffer, sizeof(readBuffer), stdin) == NULL) {
+void
+stdinCallback(char *readBuffer, int length)
+{
+	if (length == 0) {
+		SCTP_unregisterStdinCallback();
         if (useAbort) {
             SCTP_abort(associationID);
         } else {
             SCTP_shutdown(associationID);
         }
-    } else {
-        SCTP_send(associationID,
+    }
+	if (length > 0) {
+		SCTP_send(associationID,
                   currentStream,
-                  readBuffer,  strlen((char *)readBuffer),
+                  readBuffer, length,
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
-                  timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
-    }
-    if (rotateStreams) currentStream = (currentStream + 1)%numberOutStreams;
+                  timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);	
+	}
+	if (rotateStreams) currentStream = (currentStream + 1)%numberOutStreams;	
 }
+
 
 int main(int argc, char **argv)
 {
     SCTP_ulpCallbacks terminalUlp;
     SCTP_InstanceParameters instanceParameters;
     SCTP_LibraryParameters params;
+	char buffer[2000];
 
     /* initialize the terminal_ulp variable */
     terminalUlp.dataArriveNotif           = &dataArriveNotif;
@@ -444,8 +465,7 @@ int main(int argc, char **argv)
       instanceParameters.myRwnd = myRwnd;
     SCTP_setAssocDefaults(sctpInstance, &instanceParameters);
 
-    SCTP_registerUserCallback(fileno(stdin), &stdinCallback, NULL);
-
+	SCTP_registerStdinCallback(&stdinCallback, buffer, sizeof(buffer));
     associationID=SCTP_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
     
     /* run the event handler forever */

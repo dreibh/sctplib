@@ -1,5 +1,5 @@
 /*
- *  $Id: combined_server.c,v 1.8 2004/07/22 10:30:46 tuexen Exp $
+ *  $Id: combined_server.c,v 1.9 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -189,7 +189,7 @@ void checkArgs(void)
         exit(-1);
 }
 
-void echoDataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void echoDataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                          unsigned short streamSN, unsigned int TSN, unsigned int protoID, unsigned int unordered, void* ulpDataPtr)
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
@@ -213,7 +213,7 @@ void echoDataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned i
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
 }
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                      unsigned short streamSN, unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {
@@ -292,7 +292,7 @@ void* echoCommunicationUpNotif(unsigned int assocID, int status,
     
     if (vverbose) {
         for (i=0; i < noOfPaths; i++) {
-            SCTP_getPathStatus(assocID, i, &pathStatus);
+            SCTP_getPathStatus(assocID, (short)i, &pathStatus);
             fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
         }
     }
@@ -320,7 +320,7 @@ void* daytimeCommunicationUpNotif(unsigned int assocID, int status,
     
     if (vverbose) {
         for (i=0; i < noOfPaths; i++) {
-            SCTP_getPathStatus(assocID, i, &pathStatus);
+            SCTP_getPathStatus(assocID, (short)i, &pathStatus);
             fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
         }
     }
@@ -364,7 +364,7 @@ void* chargenCommunicationUpNotif(unsigned int assocID, int status,
     
     if (vverbose) {
         for (i=0; i < noOfPaths; i++) {
-            SCTP_getPathStatus(assocID, i, &pathStatus);
+            SCTP_getPathStatus(assocID, (short)i, &pathStatus);
             fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
         }
     }
@@ -405,7 +405,7 @@ void* discardCommunicationUpNotif(unsigned int assocID, int status,
         
     if (vverbose) {
         for (i=0; i < noOfPaths; i++) {
-            SCTP_getPathStatus(assocID, i, &pathStatus);
+            SCTP_getPathStatus(assocID, (short)i, &pathStatus);
             fprintf(stdout, "%-8x: Path Status of path %u (towards %s): %s.\n", assocID, i, pathStatus.destinationAddress, pathStateName(pathStatus.state));
         }
     }

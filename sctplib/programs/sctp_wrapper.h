@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.h,v 1.4 2004/08/11 12:01:02 tuexen Exp $
+ *  $Id: sctp_wrapper.h,v 1.5 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -108,6 +108,13 @@ SCTP_associate(unsigned short SCTP_InstanceName,
                unsigned char destinationAddress[],
                unsigned short destinationPort,
                void* ulp_data);
+
+
+int
+SCTP_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length);
+
+int SCTP_unregisterStdinCallback();
+
 int
 SCTP_registerUserCallback(int fd, sctp_userCallback sdf, void* userData);
 

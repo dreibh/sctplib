@@ -1,5 +1,5 @@
 /*
- *  $Id: mini-ulp.h,v 1.3 2003/10/23 16:48:11 tuexen Exp $
+ *  $Id: mini-ulp.h,v 1.4 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -75,7 +75,7 @@ ulp_socket_error(gint sin_fd,
       params: 1. associationID
               2. streamID
 */
-void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned int len,
+void ulp_dataArriveNotif(unsigned int assoc_id, unsigned short stream_id, unsigned int len,
                         unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                         unsigned int unordered, void* dummy);
 

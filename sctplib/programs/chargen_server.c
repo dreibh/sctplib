@@ -1,5 +1,5 @@
 /*
- *  $Id: chargen_server.c,v 1.9 2004/01/08 17:04:28 tuexen Exp $
+ *  $Id: chargen_server.c,v 1.10 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -197,7 +197,7 @@ void checkArgs(void)
         exit(-1);
 }
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                      unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {

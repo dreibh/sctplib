@@ -576,7 +576,7 @@ void ncurses_display_AllStatus (unsigned int assocID)
   delwin(allWin);
 }
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                      unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {

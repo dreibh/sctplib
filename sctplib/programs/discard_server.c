@@ -1,5 +1,5 @@
 /*
- *  $Id: discard_server.c,v 1.7 2003/11/20 19:23:00 tuexen Exp $
+ *  $Id: discard_server.c,v 1.8 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -238,7 +238,7 @@ void readDataFunction(unsigned int timerID, void *parameter1, void *parameter2)
     myUlpDataPtr->readTimerID = SCTP_startTimer(period, readDataFunction, parameter1, parameter2);
 }
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
                      unsigned short streamSN, unsigned int TSN,  unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {

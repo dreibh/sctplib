@@ -95,7 +95,7 @@ char *getTimeString();
 
 void timerCallback(unsigned int, void *, void *);
 
-void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int length,
+void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int length,
                      unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void *ulpData);
 

@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: sctp_wrapper.c,v 1.5 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -445,12 +445,37 @@ SCTP_associate(unsigned short SCTP_InstanceName,
     return result;
 }
 
+
+
+int
+SCTP_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
+{
+    int result;
+    
+    if ((result = sctp_registerStdinCallback(sdf, buffer, length)) < 0) {
+        fprintf(stderr, "sctp_registerStdinCallback: error value (%i) returned.\n", result);
+        fflush(stderr);
+    }
+    return result;
+}
+
+int SCTP_unregisterStdinCallback()
+{
+    int result;
+    
+    if ((result = sctp_unregisterStdinCallback()) < 0) {
+        fprintf(stderr, "sctp_unregisterStdinCallback: error value (%i) returned.\n", result);
+        fflush(stderr);
+    }
+    return result;
+}
+
 int
 SCTP_registerUserCallback(int fd, sctp_userCallback sdf, void* userData)
 {
     int result;
     
-    if ((result = sctp_registerUserCallback(fd, sdf, userData, POLLIN|POLLPRI)) == 0) {
+    if ((result = sctp_registerUserCallback(fd, sdf, userData, POLLIN|POLLPRI)) < 0) {
         fprintf(stderr, "sctp_registerUserCallback: error value (%i) returned.\n", result);
         fflush(stderr);
     }

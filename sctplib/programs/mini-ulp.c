@@ -1,5 +1,5 @@
 /*
- *  $Id: mini-ulp.c,v 1.4 2003/11/20 08:43:09 tuexen Exp $
+ *  $Id: mini-ulp.c,v 1.5 2004/11/17 20:56:06 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -568,7 +568,7 @@ void timer_expired(unsigned int tID, void *associationIDvoid, void *unused)
               2. streamID
 */
 
-void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned int len,
+void ulp_dataArriveNotif(unsigned int assoc_id, unsigned short stream_id, unsigned int len,
                          unsigned short streamSN,unsigned int TSN, unsigned int protoID,
                          unsigned int unordered, void* dummy)
 {
@@ -611,7 +611,7 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned int stream_id, unsigned
 		 * the first 4 bytes to pong
 		 */
 		strncpy((char *)chunk, "pong", 4);
-        SID = (unsigned short) stream_id;
+        SID =  stream_id;
         i = sctp_send(assoc_id, SID, (unsigned char *) chunk,
             len, protoID, -1, 0, 0, 0, 0);
         if (i==-1) {
