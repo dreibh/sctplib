@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.21 2004/11/17 21:21:04 tuexen Exp $
+ *  $Id: adaptation.c,v 1.22 2005/04/29 17:42:17 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1299,13 +1299,24 @@ int adl_eventLoop()
 
 	int n, ret,i, j;
 	WSANETWORKEVENTS	ne;
-	int length=0, hlen=0;
-    union sockunion src, dest;
+	int length=0, hlen=0, msecs;
+	union sockunion src, dest;
 	struct ip *iph;
 	struct sockaddr_in *src_in;
 	unsigned short portnum;
 
-n = MsgWaitForMultipleObjects(2, handles, FALSE, INFINITE, QS_KEY);
+
+	msecs = get_msecs_to_nexttimer();
+
+	/* returns -1 if no timer in list */
+	if (msecs < 0)
+		msecs = GRANULARITY;
+	if (msecs == 0) {
+		dispatch_timer();
+	return (0);
+	}
+
+	n = MsgWaitForMultipleObjects(2, handles, FALSE, INFINITE, QS_KEY);
 		if (n==1 && idata.len>0)
 		{
 			for (i=0; i< NUM_FDS; i++)
