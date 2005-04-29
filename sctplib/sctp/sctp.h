@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.17 2005/03/11 10:58:54 dreibh Exp $
+ *  $Id: sctp.h,v 1.18 2005/04/29 19:54:18 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -755,7 +755,6 @@ int sctp_sendRawData(unsigned int associationID, short path_id,
 
 #endif
 
-#define TD_DEBUG
 #ifdef TD_DEBUG
 #warning Using memory allocation debugging functions!
 #include <sys/types.h>
