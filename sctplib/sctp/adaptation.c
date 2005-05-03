@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.22 2005/04/29 17:42:17 tuexen Exp $
+ *  $Id: adaptation.c,v 1.23 2005/05/03 15:36:51 tuexen Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1316,7 +1316,7 @@ int adl_eventLoop()
 	return (0);
 	}
 
-	n = MsgWaitForMultipleObjects(2, handles, FALSE, INFINITE, QS_KEY);
+	n = MsgWaitForMultipleObjects(2, handles, FALSE, msecs, QS_KEY);
 		if (n==1 && idata.len>0)
 		{
 			for (i=0; i< NUM_FDS; i++)
