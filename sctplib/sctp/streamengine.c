@@ -1,6 +1,6 @@
 
 /*
- * $Id: streamengine.c,v 1.15 2004/11/17 20:58:27 tuexen Exp $
+ * $Id: streamengine.c,v 1.16 2005/05/19 22:17:21 tuexen Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -50,7 +50,6 @@
 #include "flowcontrol.h"
 #include "streamengine.h"
 #include "distribution.h"
-#include "bundling.h"
 #include "errorhandler.h"
 #include "SCTP-control.h"
 
