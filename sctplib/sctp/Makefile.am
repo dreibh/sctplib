@@ -5,6 +5,7 @@
 
 ####### kdevelop will overwrite this part!!! (end)############
 # Build a libtool library, libsctp.la for installation in libdir.
+EXTRA_DIST             = Makefile.nmake
 
 lib_LTLIBRARIES        = libsctplib.la
 libsctplib_la_SOURCES  = adaptation.c adaptation.h \
