@@ -1,6 +1,10 @@
 
 No, this implementation is NOT CARRIER GRADE :-)
 
+- Get IPv6 support for Tiger running
+- Fix auto* problem on FC 4
+- Fix unsupported parameter reporting problem
+
 ======================================================================
  Things to do:
 ======================================================================
