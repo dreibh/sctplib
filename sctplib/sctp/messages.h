@@ -1,5 +1,5 @@
 /*
- *  $Id: messages.h,v 1.6 2004/07/05 12:36:33 rohde Exp $
+ *  $Id: messages.h,v 1.7 2005/07/19 09:35:16 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -35,7 +35,7 @@
  *
  *
  * Purpose: defines all message structures used in SCTP
- * 
+ *
  */
 
 #ifndef MESSAGES_H
@@ -60,6 +60,18 @@
 
 
 /**************************** SCTP common message definitions *********************************/
+
+#ifdef SCTP_OVER_UDP
+#define SCTP_OVER_UDP_UDPPORT 9899
+#warning Using SCTP over UDP!
+typedef struct UDP_HEADER {
+   gushort src_port;
+   gushort dest_port;
+   gushort length;
+   gushort checksum;
+} udp_header;
+#endif
+
 
 #define MAX_MTU_SIZE              1500
 #define IP_HEADERLENGTH             20
@@ -362,8 +374,8 @@ SCTP_heartbeat;
    CHUNK_SHUTDOWN_ACK
    CHUNK_COOKIE_ACK
    ? CHUNK_COOKIE_ECHO ?
-   
-   simple chunk can also be used for transfering chunks to/from bundling, since bundling 
+
+   simple chunk can also be used for transfering chunks to/from bundling, since bundling
    looks only on the chunk header.
 */
 #define MAX_SIMPLE_CHUNKDATA_LENGTH   (MAX_SCTP_PDU - sizeof(SCTP_chunk_header))

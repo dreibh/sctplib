@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.23 2005/05/03 15:36:51 tuexen Exp $
+ *  $Id: adaptation.c,v 1.24 2005/07/19 09:35:16 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -61,7 +61,7 @@
 #else
     #include <winsock2.h>
     #include <WS2tcpip.h>
-	
+
     #include <sys/timeb.h>
     #define ADDRESS_LIST_BUFFER_SIZE        4096
     struct ip
@@ -146,9 +146,6 @@
 #endif
 
 
-
-
-
 #define POLL_FD_UNUSED     -1
 #define NUM_FDS     20
 
@@ -156,6 +153,34 @@
 #define    EVENTCB_TYPE_UDP        2
 #define    EVENTCB_TYPE_USER       3
 #define    EVENTCB_TYPE_ROUTING    4
+
+
+#ifdef SCTP_OVER_UDP
+int dummy_sctp_udp;
+int dummy_sctpv6_udp;
+
+guint32 inet_checksum(const void* ptr, size_t count)
+{
+   guint16* addr = (guint16*)ptr;
+   guint32  sum  = 0;
+
+   while(count > 1)  {
+     sum += *(guint16*)addr++;
+     count -= 2;
+   }
+
+   if(count > 0) {
+      sum += *(unsigned char*)addr;
+   }
+
+   while(sum>>16) {
+      sum = (sum & 0xffff) + (sum >> 16);
+   }
+
+   return(~sum);
+}
+#endif
+
 
 /**
  *  Structure for callback events. The function "action" is called by the event-handler,
@@ -320,7 +345,7 @@ int extendedPoll(struct extendedpollfd* fdlist,
       }
 
       ret = select(n + 1, &readfdset, &writefdset, &exceptfdset, to);
-      
+
       if(lock) {
          lock(data);
       }
@@ -397,9 +422,9 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
 
     memset((void*)su, 0, sizeof(union sockunion));
 
-#ifndef WIN32 
+#ifndef WIN32
 	ret = inet_aton((const char *)str, &su->sin.sin_addr);
-#else		
+#else
 	if ((su->sin.sin_addr.s_addr = inet_addr(str)) == INADDR_NONE)
 		ret=0;
 	else {
@@ -493,19 +518,23 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
     struct sockaddr_in me;
 #endif
 
+#ifdef SCTP_OVER_UDP
+    if ((sfd = socket(af, SOCK_RAW, IPPROTO_UDP)) < 0) {
+#else
     if ((sfd = socket(af, SOCK_RAW, IPPROTO_SCTP)) < 0) {
+#endif
         return sfd;
     }
-    
+
 #ifdef WIN32
     /* binding to INADDR_ANY to make Windows happy... */
     memset((void *)&me, 0, sizeof(me));
-	me.sin_family      = AF_INET;
+    me.sin_family      = AF_INET;
 #ifdef HAVE_SIN_LEN
     me.sin_len         = sizeof(me);
 #endif
-	me.sin_addr.s_addr = INADDR_ANY;
-	bind(sfd, (const struct sockaddr *)&me, sizeof(me));
+    me.sin_addr.s_addr = INADDR_ANY;
+    bind(sfd, (const struct sockaddr *)&me, sizeof(me));
 #endif
 
     switch (af) {
@@ -696,9 +725,12 @@ int adl_sendUdpData(int sfd, unsigned char* buf, int length,
 int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigned char tos)
 {
     int txmt_len = 0;
-
     unsigned char old_tos;
     int opt_len, tmp;
+#ifdef SCTP_OVER_UDP
+    guchar      outBuffer[65536];
+    udp_header* udp;
+#endif
 
 #ifdef HAVE_IPV6
     guchar hostname[MAX_MTU_SIZE];
@@ -717,8 +749,27 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
                      "AF_INET : adl_send_message : sfd : %d, len %d, destination : %s, send_events %u",
                      sfd, len, inet_ntoa(dest->sin.sin_addr), number_of_sendevents);
 
+#ifdef SCTP_OVER_UDP
+        if(len + sizeof(udp_header) > sizeof(outBuffer)) {
+           error_log(ERROR_FATAL, "Data block too large ! bye !\n");
+        }
+        memcpy(&outBuffer[sizeof(udp_header)], buf, len);
+
+        udp = (udp_header*)&outBuffer;
+        udp->src_port = htons(SCTP_OVER_UDP_UDPPORT);
+        udp->dest_port = htons(SCTP_OVER_UDP_UDPPORT);
+        udp->length = htons(sizeof(udp_header) + len);
+        udp->checksum = 0x0000;
+
+        txmt_len = sendto(sfd, (char*)&outBuffer, sizeof(udp_header) + len,
+                          0, (struct sockaddr *) &(dest->sin), sizeof(struct sockaddr_in));
+        if(txmt_len >= sizeof(udp_header)) {
+           txmt_len -= sizeof(udp_header);
+        }
+#else
         txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *) &(dest->sin), sizeof(struct sockaddr_in));
-        
+#endif
+
         if (txmt_len < 0) {
             error_logi(ERROR_MAJOR, "AF_INET : sendto()=%d !", txmt_len);
         }
@@ -733,7 +784,26 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
                      "AF_INET6: adl_send_message : sfd : %d, len %d, destination : %s, send_events: %u",
                         sfd, len, hostname, number_of_sendevents);
 
+#ifdef SCTP_OVER_UDP
+        if(len + sizeof(udp_header) > sizeof(outBuffer)) {
+           error_log(ERROR_FATAL, "Data block too large ! bye !\n");
+        }
+        memcpy(&outBuffer[sizeof(udp_header)], buf, len);
+
+        udp = (udp_header*)&outBuffer;
+        udp->src_port = htons(SCTP_OVER_UDP_UDPPORT);
+        udp->dest_port = htons(SCTP_OVER_UDP_UDPPORT);
+        udp->length = htons(sizeof(udp_header) + len);
+        udp->checksum = 0x0000;
+
+        txmt_len = sendto(sfd, (char*)&outBuffer, sizeof(udp_header) + len,
+                          0, (struct sockaddr *) &(dest->sin6), sizeof(struct sockaddr_in6));
+        if(txmt_len >= sizeof(udp_header)) {
+           txmt_len -= sizeof(udp_header);
+        }
+#else
         txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), sizeof(struct sockaddr_in6));
+#endif
         break;
 #endif
     default:
@@ -827,7 +897,7 @@ int adl_remove_poll_fd(gint sfd)
  * when these occur, the specified callback funtion is activated and passed the parameters
  * that are pointed to by the event_callback struct
  */
- 
+
 int
 adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
                    void (*action) (void *, void *) , void* userData)
@@ -837,12 +907,12 @@ adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
 int ret, i;
 if (sfd!=0)
 {
-	
-	ret = WSAEventSelect(sfd, hEvent, FD_READ | FD_WRITE | 
+
+	ret = WSAEventSelect(sfd, hEvent, FD_READ | FD_WRITE |
 	FD_ACCEPT | FD_CLOSE | FD_CONNECT);
     if (ret == SOCKET_ERROR)
     {
-        error_log(ERROR_FATAL, "WSAEventSelect() failed\n");	
+        error_log(ERROR_FATAL, "WSAEventSelect() failed\n");
         return (-1);
     }
 	for (i=0; i<NUM_FDS;i++)
@@ -864,10 +934,10 @@ if (sfd!=0)
             error_log(ERROR_FATAL, "Could not allocate memory in  register_fd_cb \n");
         event_callbacks[num_of_fds]->sfd = sfd;
         event_callbacks[num_of_fds]->eventcb_type = eventcb_type;
-	
+
         event_callbacks[num_of_fds]->action = (void (*) (void))action;
         event_callbacks[num_of_fds]->userData = userData;
-        num_of_fds++;		
+        num_of_fds++;
         return num_of_fds;
     } else
         return (-1);
@@ -903,18 +973,22 @@ if (sfd!=0)
 int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, union sockunion *to)
 {
     int len;
+#ifdef SCTP_OVER_UDP
+    udp_header*    udp;
+    unsigned char* ptr;
+    int            i;
+#endif
 #ifdef HAVE_IPV6
     struct msghdr rmsghdr;
     struct cmsghdr *rcmsgp;
     struct iovec  data_vec;
 #endif
-
 #ifdef LINUX
     struct iphdr *iph;
 #else
     struct ip *iph;
 #endif
-    
+
 #ifdef HAVE_IPV6
     unsigned char m6buf[(CMSG_SPACE(sizeof (struct in6_pktinfo)))];
     struct in6_pktinfo *pkt6info;
@@ -936,13 +1010,29 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         to->sin.sin_addr.s_addr = iph->daddr;
 #else
         to->sin.sin_addr.s_addr = iph->ip_dst.s_addr;
-#endif        
+#endif
         from->sa.sa_family = AF_INET;
         from->sin.sin_port = htons(0);
 #ifdef LINUX
         from->sin.sin_addr.s_addr = iph->saddr;
 #else
         from->sin.sin_addr.s_addr = iph->ip_src.s_addr;
+#endif
+
+#ifdef SCTP_OVER_UDP
+        if(len < sizeof(struct iphdr) + sizeof(udp_header)) {
+            return -1;
+        }
+        udp = (udp_header*)((long)dest + (long)sizeof(struct iphdr));
+        if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
+            return -1;
+        }
+        ptr = (char*)udp;
+        for(i = 0;i < len - (sizeof(struct iphdr) + sizeof(udp_header));i++) {
+           *ptr = ptr[sizeof(udp_header)];
+           ptr++;
+        }
+        len -= sizeof(udp_header);
 #endif
     }
 #ifdef HAVE_IPV6
@@ -975,6 +1065,22 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         to->sin6.sin6_port = htons(0);
         to->sin6.sin6_flowinfo = htonl(0);
         memcpy(&(to->sin6.sin6_addr), &(pkt6info->ipi6_addr), sizeof(struct in6_addr));
+
+#ifdef SCTP_OVER_UDP
+        if(len < sizeof(udp_header)) {
+            return -1;
+        }
+        udp = (udp_header*)dest;
+        if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
+            return -1;
+        }
+        ptr = (char*)udp;
+        for(i = 0;i < len - sizeof(udp_header);i++) {
+           *ptr = ptr[sizeof(udp_header)];
+           ptr++;
+        }
+        len -= sizeof(udp_header);
+#endif
     }
 #endif
 
@@ -1030,7 +1136,7 @@ void dispatch_event(int num_of_events)
 
     if (!poll_fds[i].revents)
         continue;
-        
+
         if (poll_fds[i].revents & POLLERR) {
             /* We must have specified this callback funtion for treating/logging the error */
             if (event_callbacks[i]->eventcb_type == EVENTCB_TYPE_USER) {
@@ -1070,7 +1176,7 @@ void dispatch_event(int num_of_events)
 
             } else if (event_callbacks[i]->eventcb_type == EVENTCB_TYPE_SCTP) {
                 length = adl_receive_message(poll_fds[i].fd, rbuf, MAX_MTU_SIZE, &src, &dest);
-                
+
                 if(length < 0) break;
 
                 event_logiiii(VERBOSE, "SCTP-Message on socket %u , len=%d, portnum=%d, sockunion family %u",
@@ -1116,7 +1222,7 @@ void dispatch_event(int num_of_events)
                     break;
 
                 }
-            } 
+            }
         }
         poll_fds[i].revents = 0;
     }                       /*   for(i = 0; i < num_of_fds; i++) */
@@ -1221,7 +1327,7 @@ int init_poll_fds(void)
     num_of_fds = 0;
 #ifdef WIN32
 	fdnum=0;
-#endif    
+#endif
     return (0);
 }
 
@@ -1320,12 +1426,12 @@ int adl_eventLoop()
 		if (n==1 && idata.len>0)
 		{
 			for (i=0; i< NUM_FDS; i++)
-			{	
+			{
 
 				if (event_callbacks[i]->sfd==0)
 				{
-		
-					(*(event_callbacks[i]->action))(idata.buffer,idata.len);				
+
+					(*(event_callbacks[i]->action))(idata.buffer,idata.len);
 					SetEvent(idata.eventback);
 					memset(idata.buffer, 0, sizeof(idata.buffer));
 					idata.len=0;
@@ -1334,45 +1440,45 @@ int adl_eventLoop()
 			}
 		}
 		else if (n==0)
-		{	
+		{
 			for (i=0; i<fdnum; i++)
-			{				
+			{
 			ret = WSAEnumNetworkEvents(fds[i], hEvent, &ne);
 				if (ret == SOCKET_ERROR)
 				{
-					error_log(ERROR_FATAL, "WSAEnumNetworkEvents() failed!");					
+					error_log(ERROR_FATAL, "WSAEnumNetworkEvents() failed!");
 					return (-1);
 				}
 				if (ne.lNetworkEvents & (FD_READ | FD_ACCEPT | FD_CLOSE))
 				{
 					for (j=0; j<NUM_FDS; j++)
 						if (event_callbacks[i]->sfd==fds[i])
-						{							
-						length = adl_receive_message(fds[i], rbuf, MAX_MTU_SIZE, &src, &dest);	
+						{
+						length = adl_receive_message(fds[i], rbuf, MAX_MTU_SIZE, &src, &dest);
 						portnum = ntohs(src.sin.sin_port);
 						if(length < 0) break;
 						event_logiiii(VERBOSE, "SCTP-Message on socket %u , len=%d, portnum=%d, sockunion family %u",
                      fds[i], length, portnum, sockunion_family(&src));
-                
+
                     src_in = (struct sockaddr_in *) &src;
                     event_logi(VERBOSE, "IPv4/SCTP-Message from %s -> activating callback",
                                inet_ntoa(src_in->sin_addr));
 						iph = (struct ip *) rbuf;
                     hlen = (iph->ip_verlen & 0x0F) << 2;
-					if (length < hlen) 
+					if (length < hlen)
 					{
                         error_logii(ERROR_MINOR,
                                     "dispatch_event : packet too short (%d bytes) from %s",
                                     length, inet_ntoa(src_in->sin_addr));
-                    } else 
+                    } else
 					{
                         length -= hlen;
                         mdi_receiveMessage(fds[i], &rbuf[hlen], length, &src, &dest);
                     }
                     break;
 						}
-					
-				}							
+
+				}
 			}
 		}
 		return 1;
@@ -1435,7 +1541,7 @@ int adl_getEvents(void)
 static DWORD WINAPI stdin_read_thread(void *param)
 {
     struct input_data *indata = (struct input_data *) param;
-	
+
     HANDLE inhandle;
 
     inhandle = GetStdHandle(STD_INPUT_HANDLE);
@@ -1444,17 +1550,63 @@ static DWORD WINAPI stdin_read_thread(void *param)
 		    &indata->len, NULL) && indata->len > 0)
 	{
 	SetEvent(indata->event);
-	
+
 	WaitForSingleObject(indata->eventback, INFINITE);
 	memset(indata->buffer, 0, sizeof(indata->buffer));
     }
     indata->len = 0;
 	memset(indata->buffer, 0, sizeof(indata->buffer));
     SetEvent(indata->event);
-	
+
 	return 0;
 }
 #endif
+
+
+#ifdef SCTP_OVER_UDP
+int open_dummy_socket(int family)
+{
+   struct sockaddr_in in;
+   struct sockaddr_in6 in6;
+   int sd;
+   int on;
+
+   if(family == AF_INET6) {
+      memset(&in6, 0, sizeof(in6));
+      in6.sin6_family = AF_INET;
+      in6.sin6_port   = htons(SCTP_OVER_UDP_UDPPORT);
+   }
+   else {
+      memset(&in, 0, sizeof(in));
+      in.sin_family = AF_INET;
+      in.sin_port   = htons(SCTP_OVER_UDP_UDPPORT);
+   }
+
+   sd = socket(family, SOCK_DGRAM, IPPROTO_UDP);
+   if(sd < 0) {
+      return -1;
+   }
+
+   if(setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)) < 0) {
+      close(sd);
+      return -1;
+   }
+
+   if(family == AF_INET6) {
+      if(bind(sd, (struct sockaddr*)&in6, sizeof(in6)) < 0) {
+         return -1;
+      }
+   }
+   else {
+      if(bind(sd, (struct sockaddr*)&in, sizeof(in)) < 0) {
+         return -1;
+      }
+   }
+
+   return sd;
+}
+#endif
+
 
 int adl_init_adaptation_layer(int * myRwnd)
 {
@@ -1476,17 +1628,17 @@ int adl_init_adaptation_layer(int * myRwnd)
 	hEvent = WSACreateEvent();
     if (hEvent == NULL)
     {
-        error_log(ERROR_FATAL, "WSACreateEvent() of hEvent failed!");		
+        error_log(ERROR_FATAL, "WSACreateEvent() of hEvent failed!");
         return -1;
     }
 
 	stdinevent = WSACreateEvent();
     if (stdinevent == NULL)
     {
-        error_log(ERROR_FATAL, "WSACreateEvent() of stdinevent failed!");		
+        error_log(ERROR_FATAL, "WSACreateEvent() of stdinevent failed!");
         return -1;
     }
-    	
+
 	handles[0]=hEvent;
 	handles[1]=stdinevent;
 #endif
@@ -1511,6 +1663,15 @@ int adl_init_adaptation_layer(int * myRwnd)
     if (*myRwnd == -1) *myRwnd = 8192;
 
     if (sctp_sfd < 0) return sctp_sfd;
+
+#ifdef SCTP_OVER_UDP
+    dummy_sctp_udp = open_dummy_socket(AF_INET);
+    if(dummy_sctp_udp < 0) {
+        error_log(ERROR_MAJOR, "Could not open UDP dummy socket !");
+        sctpv6_sfd = -1;
+    }
+#endif
+
     /* we should - in a later revision - add back the a function that opens
        appropriate ICMP sockets (IPv4 and/or IPv6) and registers these with
        callback functions that also set PATH MTU correctly */
@@ -1520,6 +1681,15 @@ int adl_init_adaptation_layer(int * myRwnd)
     if (sctpv6_sfd < 0) {
         error_log(ERROR_MAJOR, "Could not open IPv6 socket - running IPv4 only !");
         sctpv6_sfd = -1;
+    }
+    else {
+#ifdef SCTP_OVER_UDP
+       dummy_sctpv6_udp = open_dummy_socket(AF_INET6);
+       if(dummy_sctpv6_udp < 0) {
+           error_log(ERROR_MAJOR, "Could not open UDP/IPv6 dummy socket !");
+           sctpv6_sfd = -1;
+       }
+#endif
     }
 
     /* adl_register_socket_cb(icmpv6_sfd, adl_icmpv6_cb); */
@@ -1547,8 +1717,8 @@ int adl_init_adaptation_layer(int * myRwnd)
  * @return new UDP socket file descriptor, or -1 if error ocurred
  */
 int adl_registerUdpCallback(unsigned char me[],
-                             unsigned short my_port,
-                             sctp_socketCallback scf)
+                            unsigned short my_port,
+                            sctp_socketCallback scf)
 {
     int result, new_sfd;
     union sockunion my_address;
@@ -1643,12 +1813,12 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
 {
     int result;
 
-	
+
 	#ifdef WIN32
 	unsigned long	in_threadid;
 	idata.event = stdinevent;
 	idata.eventback = CreateEvent(NULL, FALSE, FALSE, NULL);
-	
+
 	if (!(stdin_thread_handle=CreateThread(NULL, 0, stdin_read_thread,
 			      &idata, 0, &in_threadid))) {
 		fprintf(stderr, "Unable to create input thread\n");
@@ -1662,7 +1832,7 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
     memset(userData, 0, sizeof(struct data));
 	userData->dat=buffer;
 	userData->len=length;
-	userData->cb=(void (*) (void))sdf;	
+	userData->cb=(void (*) (void))sdf;
 	result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, POLLIN | POLLPRI, (void (*) (void *,void *))readCallback,userData);
 #endif
 	if (result != -1) {
@@ -1674,7 +1844,7 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
 
 int adl_unregisterStdinCallback()
 {
-    #ifdef WIN32	 
+    #ifdef WIN32
 	TerminateThread(stdin_thread_handle,0);
 	#endif
 	adl_remove_poll_fd(0);
@@ -1942,7 +2112,7 @@ typedef void (WINAPI *WSPIAPI_PFREEADDRINFO) (
 
 char *
 WspiapiStrdup (
-  const char *                    pszString) 
+  const char *                    pszString)
 {
     char    *pszMemory;
 
@@ -1956,7 +2126,7 @@ WspiapiStrdup (
     return(strcpy(pszMemory, pszString));
 }
 
-    
+
 BOOL
 WspiapiParseV4Address (
       const char *                    pszAddress,
@@ -2007,7 +2177,7 @@ WspiapiNewAddrInfo (
     ptAddress->sin_family       = AF_INET;
     ptAddress->sin_port         = wPort;
     ptAddress->sin_addr.s_addr  = dwAddress;
-    
+
     ptNew->ai_family            = PF_INET;
     ptNew->ai_socktype          = iSocketType;
     ptNew->ai_protocol          = iProtocol;
@@ -2022,8 +2192,8 @@ int
 WspiapiQueryDNS(
       const char                      *pszNodeName,
       int                             iSocketType,
-      int                             iProtocol,  
-      WORD                            wPort,      
+      int                             iProtocol,
+      WORD                            wPort,
      char                            pszAlias[NI_MAXHOST],
     struct addrinfo                 **pptResult)
 
@@ -2059,10 +2229,10 @@ WspiapiQueryDNS(
 
         strncpy(pszAlias, ptHost->h_name, NI_MAXHOST - 1);
         pszAlias[NI_MAXHOST - 1] = '\0';
-        
+
         return 0;
     }
-    
+
     switch (WSAGetLastError())
     {
         case WSAHOST_NOT_FOUND: return EAI_NONAME;
@@ -2078,8 +2248,8 @@ int
 WspiapiLookupNode(
       const char                      *pszNodeName,
       int                             iSocketType,
-      int                             iProtocol,  
-      WORD                            wPort,      
+      int                             iProtocol,
+      WORD                            wPort,
       BOOL                            bAI_CANONNAME,
      struct addrinfo                 **pptResult)
 {
@@ -2093,7 +2263,7 @@ WspiapiLookupNode(
     char    *pszScratch         = NULL;
     strncpy(pszName, pszNodeName, NI_MAXHOST - 1);
     pszName[NI_MAXHOST - 1] = '\0';
-    
+
     for (;;)
     {
         iError = WspiapiQueryDNS(pszNodeName,
@@ -2132,14 +2302,14 @@ WspiapiLookupNode(
 
 int
 WspiapiClone (
-      WORD                            wPort,      
+      WORD                            wPort,
       struct addrinfo                 *ptResult)
 {
     struct addrinfo *ptNext = NULL;
     struct addrinfo *ptNew  = NULL;
 
     for (ptNext = ptResult; ptNext != NULL; )
-    {     
+    {
         ptNew = WspiapiNewAddrInfo(
             SOCK_DGRAM,
             ptNext->ai_protocol,
@@ -2148,7 +2318,7 @@ WspiapiClone (
         if (!ptNew)
             break;
 
-      
+
         ptNew->ai_next  = ptNext->ai_next;
         ptNext->ai_next = ptNew;
         ptNext          = ptNew->ai_next;
@@ -2156,7 +2326,7 @@ WspiapiClone (
 
     if (ptNext != NULL)
         return EAI_MEMORY;
-    
+
     return 0;
 }
 
@@ -2171,7 +2341,7 @@ WspiapiLegacyFreeAddrInfo (
     {
         if (ptNext->ai_canonname)
             WspiapiFree(ptNext->ai_canonname);
-        
+
         if (ptNext->ai_addr)
             WspiapiFree(ptNext->ai_addr);
 
@@ -2188,7 +2358,7 @@ WspiapiLegacyGetAddrInfo(
      const char                       *pszServiceName,
      const struct addrinfo            *ptHints,
      struct addrinfo                 **pptResult)
- 
+
 {
     int                 iError      = 0;
     int                 iFlags      = 0;
@@ -2203,17 +2373,17 @@ WspiapiLegacyGetAddrInfo(
     BOOL                bClone      = FALSE;
     WORD                wTcpPort    = 0;
     WORD                wUdpPort    = 0;
-    
-    
+
+
     *pptResult  = NULL;
 
-  
+
     if ((!pszNodeName) && (!pszServiceName))
         return EAI_NONAME;
 
     if (ptHints)
     {
-       
+
         if ((ptHints->ai_addrlen    != 0)       ||
             (ptHints->ai_canonname  != NULL)    ||
             (ptHints->ai_addr       != NULL)    ||
@@ -2221,29 +2391,29 @@ WspiapiLegacyGetAddrInfo(
         {
             return EAI_FAIL;
         }
-        
-       
+
+
         iFlags      = ptHints->ai_flags;
         if ((iFlags & AI_CANONNAME) && !pszNodeName)
             return EAI_BADFLAGS;
 
-       
+
         iFamily     = ptHints->ai_family;
         if ((iFamily != PF_UNSPEC) && (iFamily != PF_INET))
             return EAI_FAMILY;
-       
+
         iSocketType = ptHints->ai_socktype;
         if ((iSocketType != 0)                  &&
             (iSocketType != SOCK_STREAM)        &&
             (iSocketType != SOCK_DGRAM)         &&
             (iSocketType != SOCK_RAW))
             return EAI_SOCKTYPE;
-       
+
         iProtocol   = ptHints->ai_protocol;
     }
 
 
-   
+
     if (pszServiceName)
     {
         wPort = (WORD) strtoul(pszServiceName, &pc, 10);
@@ -2271,7 +2441,7 @@ WspiapiLegacyGetAddrInfo(
                 if (ptService)
                     wPort = wTcpPort = ptService->s_port;
             }
-            
+
             // assumes 0 is an invalid service port...
             if (wPort == 0)     // no service exists
                 return (iSocketType ? EAI_SERVICE : EAI_NONAME);
@@ -2280,11 +2450,11 @@ WspiapiLegacyGetAddrInfo(
             {
                 // if both tcp and udp, process tcp now & clone udp later.
                 iSocketType = (wTcpPort) ? SOCK_STREAM : SOCK_DGRAM;
-                bClone      = (wTcpPort && wUdpPort); 
+                bClone      = (wTcpPort && wUdpPort);
             }
         }
     }
-    
+
 
     if ((!pszNodeName) || (WspiapiParseV4Address(pszNodeName, &dwAddress)))
     {
@@ -2294,38 +2464,38 @@ WspiapiLegacyGetAddrInfo(
                               ? INADDR_ANY
                               : INADDR_LOOPBACK);
         }
-        
+
         // create an addrinfo structure...
         *pptResult =
             WspiapiNewAddrInfo(iSocketType, iProtocol, wPort, dwAddress);
         if (!(*pptResult))
             iError = EAI_MEMORY;
-        
+
         if (!iError && pszNodeName)
         {
-           
+
             (*pptResult)->ai_flags |= AI_NUMERICHOST;
-            
+
             // return the numeric address string as the canonical name
             if (iFlags & AI_CANONNAME)
             {
                 (*pptResult)->ai_canonname =
                     WspiapiStrdup(inet_ntoa(*((struct in_addr *) &dwAddress)));
-                if (!(*pptResult)->ai_canonname)        
+                if (!(*pptResult)->ai_canonname)
                     iError = EAI_MEMORY;
             }
         }
     }
 
 
-   
+
     else if (iFlags & AI_NUMERICHOST)
     {
         iError = EAI_NONAME;
     }
-    
 
-    
+
+
     else
     {
         iError = WspiapiLookupNode(pszNodeName,
@@ -2344,7 +2514,7 @@ WspiapiLegacyGetAddrInfo(
     if (iError)
     {
         WspiapiLegacyFreeAddrInfo(*pptResult);
-        *pptResult  = NULL;        
+        *pptResult  = NULL;
     }
 
     return (iError);
@@ -2364,7 +2534,7 @@ WspiapiLegacyGetNameInfo(
 
 {
     struct servent  *ptService;
-    WORD            wPort;    
+    WORD            wPort;
     char            szBuffer[]  = "65535";
     char            *pszService = szBuffer;
 
@@ -2372,35 +2542,35 @@ WspiapiLegacyGetNameInfo(
     struct in_addr  tAddress;
     char            *pszNode    = NULL;
     char            *pc         = NULL;
-    
+
 
     // sanity check ptSocketAddress and tSocketLength.
     if ((!ptSocketAddress) || (tSocketLength < sizeof(struct sockaddr)))
         return EAI_FAIL;
-    
+
     if (ptSocketAddress->sa_family != AF_INET)
         return EAI_FAMILY;
 
     if (tSocketLength < sizeof(struct sockaddr_in))
         return EAI_FAIL;
-    
+
     if (!(pszNodeName && tNodeLength) &&
         !(pszServiceName && tServiceLength))
     {
-        return EAI_NONAME;    
+        return EAI_NONAME;
     }
 
-    
+
     if ((iFlags & NI_NUMERICHOST) && (iFlags & NI_NAMEREQD))
-    {                                                                       
+    {
         return EAI_BADFLAGS;
     }
-        
+
     // translate the port to a service name (if requested).
     if (pszServiceName && tServiceLength)
     {
         wPort = ((struct sockaddr_in *) ptSocketAddress)->sin_port;
-        
+
         if (iFlags & NI_NUMERICSERV)
         {
             // return numeric form of the address.
@@ -2422,18 +2592,18 @@ WspiapiLegacyGetNameInfo(
                 sprintf(szBuffer, "%u", ntohs(wPort));
             }
         }
-        
-        
+
+
         if (tServiceLength > strlen(pszService))
             strcpy(pszServiceName, pszService);
         else
             return EAI_FAIL;
     }
 
-    
+
     // translate the address to a node name (if requested).
     if (pszNodeName && tNodeLength)
-    {    
+    {
         // this is the IPv4-only version, so we have an IPv4 address.
         tAddress = ((struct sockaddr_in *) ptSocketAddress)->sin_addr;
 
@@ -2485,7 +2655,7 @@ WspiapiLegacyGetNameInfo(
 
 
 
-typedef struct 
+typedef struct
 {
     char const          *pszName;
     FARPROC             pfAddress;
@@ -2512,13 +2682,13 @@ WspiapiLoad(
     static WSPIAPI_FUNCTION rgtGlobal[]     = WSPIAPI_FUNCTION_ARRAY;
     static const int        iNumGlobal      = (sizeof(rgtGlobal) /
                                                sizeof(WSPIAPI_FUNCTION));
-    
+
     // we overwrite rgtGlobal only if all routines exist in library.
     WSPIAPI_FUNCTION        rgtLocal[]      = WSPIAPI_FUNCTION_ARRAY;
     FARPROC                 fScratch        = NULL;
     int                     i               = 0;
-    
-    
+
+
     if (bInitialized)           // WspiapiLoad has already been called once
         return (rgtGlobal[wFunction].pfAddress);
 
@@ -2527,7 +2697,7 @@ WspiapiLoad(
         CHAR SystemDir[MAX_PATH + 1];
         CHAR Path[MAX_PATH + 8];
 
-        if (GetSystemDirectoryA(SystemDir, MAX_PATH) == 0) 
+        if (GetSystemDirectoryA(SystemDir, MAX_PATH) == 0)
         {
             break;
         }
@@ -2549,9 +2719,9 @@ WspiapiLoad(
         }
         if (hLibrary != NULL)
             break;
-        
 
-        // in the IPv6 Technology Preview...        
+
+        // in the IPv6 Technology Preview...
         // the routines are present in the IPv6 WinSock library (wship6.dll).
         // printf("Looking in wship6 for getaddrinfo...\n");
         strcpy(Path, SystemDir);
@@ -2593,7 +2763,7 @@ WspiapiLoad(
                 rgtGlobal[i].pfAddress = rgtLocal[i].pfAddress;
         }
     }
-    
+
     bInitialized = TRUE;
     return (rgtGlobal[wFunction].pfAddress);
 }
@@ -2628,7 +2798,7 @@ WspiapiGetNameInfo (
       int                             flags)
 {
     static WSPIAPI_PGETNAMEINFO     pfGetNameInfo   = NULL;
-    
+
     if (!pfGetNameInfo)
         pfGetNameInfo   = (WSPIAPI_PGETNAMEINFO) WspiapiLoad(1);
     return ((*pfGetNameInfo)
@@ -2688,10 +2858,10 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     char             addrbuf[ADDRESS_LIST_BUFFER_SIZE],host[NI_MAXHOST],serv[NI_MAXSERV];
     int              socketcount=0,
                      addrbuflen=ADDRESS_LIST_BUFFER_SIZE,
-                     rc,i, j,hostlen = NI_MAXHOST,servlen = NI_MAXSERV;  
+                     rc,i, j,hostlen = NI_MAXHOST,servlen = NI_MAXSERV;
 	struct sockaddr_in Addr;
 
-   
+
     /* Enumerate the local bind addresses - to wait for changes we only need
         one socket but to enumerate the addresses for a particular address
       family, we need a socket of that type	*/
@@ -2702,13 +2872,13 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     hints.ai_socktype = SOCK_DGRAM;
     hints.ai_protocol = IPPROTO_UDP;
 
-    if ((rc = WspiapiLegacyGetAddrInfo(NULL,"0",&hints,&local))!=0)    
+    if ((rc = WspiapiLegacyGetAddrInfo(NULL,"0",&hints,&local))!=0)
     {
         local=NULL;
 		fprintf(stderr, "Unable to resolve the bind address!\n");
         return -1;
     }
-  
+
      /* Create a socket and event for each address returned*/
     ptr = local;
     while (ptr)
@@ -2743,7 +2913,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
             memset(&ol[i], 0, sizeof(WSAOVERLAPPED));
             ol[i].hEvent = hEvent[i];
             if ((rc = WSAIoctl(s[i],SIO_ADDRESS_LIST_QUERY,NULL,0,addrbuf,addrbuflen,
-                   &bytes,NULL, NULL))== SOCKET_ERROR)           
+                   &bytes,NULL, NULL))== SOCKET_ERROR)
             {
                 fprintf(stderr, "WSAIoctl: SIO_ADDRESS_LIST_QUERY failed: %d\n", WSAGetLastError());
                 return -1;
@@ -2752,17 +2922,17 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
             slist = (SOCKET_ADDRESS_LIST *)addrbuf;
 			localAddresses = calloc(slist->iAddressCount,sizeof(union sockunion));
             for(j=0; j < slist->iAddressCount ;j++)
-            {       
+            {
 				if ((rc = getnameinfo(slist->Address[j].lpSockaddr, slist->Address[j].iSockaddrLength,
 					host,hostlen,serv,servlen,NI_NUMERICHOST | NI_NUMERICSERV))!=0)
 					fprintf(stderr, "%s: getnameinfo failed: %d\n", __FILE__, rc);
 				Addr.sin_family=slist->Address[j].lpSockaddr->sa_family;
-				Addr.sin_addr.s_addr=inet_addr(host);             
-				memcpy(&((localAddresses)[j]),&Addr,sizeof(Addr));		
+				Addr.sin_addr.s_addr=inet_addr(host);
+				memcpy(&((localAddresses)[j]),&Addr,sizeof(Addr));
             }
-		
+
             /* Register for change notification*/
-           if ((rc = WSAIoctl(s[i],SIO_ADDRESS_LIST_CHANGE,NULL,0,NULL,0,&bytes,&ol[i],NULL))== SOCKET_ERROR)          
+           if ((rc = WSAIoctl(s[i],SIO_ADDRESS_LIST_CHANGE,NULL,0,NULL,0,&bytes,&ol[i],NULL))== SOCKET_ERROR)
             {
                 if (WSAGetLastError() != WSA_IO_PENDING)
                 {
@@ -2781,7 +2951,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 	 *numberOfNets=slist->iAddressCount;
 	*max_mtu=1500;
 	return TRUE;
-#else 
+#else
 #if defined (LINUX)
     int addedNets;
     char addrBuffer[256];
@@ -2878,7 +3048,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
                         sin6.sin6_addr.s6_addr32[0], sin6.sin6_family);
                     (*numberOfNets)++;
                 }
-                continue; 
+                continue;
             }
             memset(addrBuffer2,0,sizeof(addrBuffer2));
             strncpy(addrBuffer2,addrBuffer,4);
