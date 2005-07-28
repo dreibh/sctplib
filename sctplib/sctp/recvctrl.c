@@ -1,5 +1,5 @@
 /*
- *  $Id: recvctrl.c,v 1.13 2004/11/17 21:00:10 tuexen Exp $
+ *  $Id: recvctrl.c,v 1.14 2005/07/28 15:52:17 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -138,6 +138,11 @@ void rxc_delete_recvctrl(void *rxc_instance)
     tmp = (rxc_buffer *) rxc_instance;
     event_log(INTERNAL_EVENT_0, "deleting receivecontrol");
     free(tmp->sack_chunk);
+
+    if (tmp->timer_running == TRUE) {
+        sctp_stopTimer(tmp->sack_timer);
+        tmp->timer_running = FALSE;
+    }
 
     g_list_foreach(tmp->frag_list, &free_list_element, NULL);
     g_list_free(tmp->frag_list);
@@ -449,7 +454,7 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
         return (-1);
     }
 
-    
+
     /* resetting it */
     rxc->new_chunk_received = FALSE;
     rxc->last_address = ad_idx;
