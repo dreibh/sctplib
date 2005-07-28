@@ -108,7 +108,7 @@ linux*)
 	alpha* | hppa* | i*86 | ia64* | m68* | mips* | powerpc* | sparc* | s390* | sh*)
 		lt_cv_deplibs_check_method=pass_all ;;
 	esac
-	CFLAGS="$CFLAGS -Wall -DLINUX"
+	CFLAGS="$CFLAGS -Wall -DLINUX -DHAVE_SIN6_SCOPE_ID"
 	thread_LIBS="-lpthread"
 	;;
 solaris*)
