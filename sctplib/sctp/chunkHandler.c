@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.16 2004/11/17 21:07:57 tuexen Exp $
+ *  $Id: chunkHandler.c,v 1.17 2005/08/03 11:23:04 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -158,7 +158,7 @@ static gint32 retrieveVLParamFromString(guint16 paramType, guchar * mstring, gui
     while (curs < length) {
         param_header = (SCTP_vlparam_header *) & mstring[curs];
         pType = ntohs(param_header->param_type);
-        
+
         if (ntohs(param_header->param_length) < 4) {
             error_log(ERROR_MINOR, "Program/Peer implementation problem : parameter length 0");
             return -1;
@@ -364,8 +364,6 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                         addresses[nAddresses].sin6.sin6_scope_id = htonl(0);
 #endif
 
-
-
                         memcpy(addresses[nAddresses].sin6.sin6_addr.s6_addr,
                                address->dest_addr.sctp_ipv6, sizeof(struct in6_addr));
                         nAddresses++; v6found++;
@@ -375,7 +373,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                                 tmp_su.sin6.sin6_addr.s6_addr32[0], tmp_su.sin6.sin6_addr.s6_addr32[1],
                                 tmp_su.sin6.sin6_addr.s6_addr32[2],
                                 tmp_su.sin6.sin6_addr.s6_addr32[3]);
-#endif 
+#endif
 
                     }
                 }
@@ -702,13 +700,13 @@ gboolean ch_getPRSCTPfromCookie(ChunkID cookieCID)
         pType =  ntohs(vl_Ptr->param_type);
         pLen  =  ntohs(vl_Ptr->param_length);
         event_logiii(VERBOSE, "Scan variable parameters in cookie: Got type %u, len: %u, position %u",pType, pLen, curs);
-        
+
         /* peer error - ignore - should send an error notification */
-        if (pLen < 4) return FALSE; 
-        
+        if (pLen < 4) return FALSE;
+
         if (pType == VLPARAM_PRSCTP) {
             /* ha, we got one ! */
-            
+
             if (pLen >= 4){
                  event_log(VERBOSE, "Peer Supports PRSCTP");
                  result = TRUE; /* peer supports it  */
@@ -748,9 +746,9 @@ gboolean ch_getPRSCTPfromInitAck(ChunkID initAckCID)
         vl_Ptr = (SCTP_vlparam_header *) & ack_string[curs];
         pType =  ntohs(vl_Ptr->param_type);
         pLen  =  ntohs(vl_Ptr->param_length);
-        
+
         if (pLen < 4) return  FALSE; /* peer error - ignore - should send an error notification */
-        
+
         event_logiii(VERBOSE, "Scan variable parameters: Got type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_PRSCTP) {
@@ -793,9 +791,9 @@ int ch_enterPRSCTPfromInit(ChunkID initAckCID, ChunkID initCID)
         vl_initPtr = (SCTP_vlparam_header *) & init_string[curs];
         pType =  ntohs(vl_initPtr->param_type);
         pLen  =  ntohs(vl_initPtr->param_length);
-        
-        if (pLen < 4) result = -1; /* peer error - ignore - should send an error notification */        
-        
+
+        if (pLen < 4) result = -1; /* peer error - ignore - should send an error notification */
+
         event_logiii(VERBOSE, "Scan variable parameters: Got type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_PRSCTP) {
@@ -872,7 +870,7 @@ ch_enterCookieVLP(ChunkID initCID, ChunkID initAckID,
 
         cookie->ck.src_port = mdi_readLastFromPort();
         cookie->ck.dest_port = mdi_readLastDestPort();
-        
+
         for (count = 0; count <  num_local_Addresses; count++) {
             switch(sockunion_family(&(local_Addresses[count]))) {
                 case AF_INET :
@@ -1015,9 +1013,9 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
         vl_initPtr = (SCTP_vlparam_header *) & init_string[curs];
         pType = ntohs(vl_initPtr->param_type);
         pLen =   ntohs(vl_initPtr->param_length);
-        
+
         if (pLen < 4)  return -1;
-        
+
         event_logiii(VERBOSE, "Scan variable parameters: type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pType == VLPARAM_COOKIE_PRESERV ||
@@ -1025,7 +1023,7 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
             pType == VLPARAM_IPV4_ADDRESS ||
             pType == VLPARAM_IPV6_ADDRESS ||
             pType == VLPARAM_PRSCTP) {
-            
+
             curs += pLen;
             /* take care of padding */
             while ((curs % 4) != 0) curs++;
@@ -1049,7 +1047,7 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
             curs += pLen;
             /* take care of padding */
             while ((curs % 4) != 0) curs++;
-            
+
         }
     }
     return 0;
@@ -1083,7 +1081,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
     *peerSupportsADDIP = FALSE;
 
     /* this is the default */
-    *peerSupportsIPV4 = TRUE; 
+    *peerSupportsIPV4 = TRUE;
     *peerSupportsIPV6 = TRUE;
 
     if (chunks[initAckID] == NULL) {
@@ -1122,7 +1120,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
         event_logiii(VERBOSE, "Scan variable parameters: type %u, len: %u, position %u",pType, pLen, curs);
 
         if (pLen < 4) return -1;
-        
+
         if (pType == VLPARAM_COOKIE_PRESERV || pType == VLPARAM_COOKIE ||
             pType == VLPARAM_SUPPORTED_ADDR_TYPES) {
 
@@ -1135,7 +1133,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
             vl_optionsPtr = (SCTP_vlparam_header *) & ack_string[curs+sizeof(SCTP_vlparam_header)];
             oType =  ntohs(vl_optionsPtr->param_type);
             oLen =   ntohs(vl_optionsPtr->param_length);
-            
+
             if (oType ==  VLPARAM_PRSCTP) {
                 *peerSupportsPRSCTP = FALSE;
                 curs += pLen;
@@ -1418,7 +1416,7 @@ unsigned int ch_cookieLifeTime(ChunkID chunkID)
 }
 
 /**
- *  ch_getSupportedAddressTypes() processes a INIT or INIT-ACK chunk and 
+ *  ch_getSupportedAddressTypes() processes a INIT or INIT-ACK chunk and
  *  returns a value that indicates, which address types are supported by the peer.
  */
 unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
@@ -1447,11 +1445,11 @@ unsigned int ch_getSupportedAddressTypes(ChunkID chunkID)
             /* found supported address types parameter */
             param = (SCTP_supported_addresstypes*)
                         &((SCTP_init *)chunks[chunkID])->variableParams[vl_param_curs];
-                        
+
             pLen = ntohs(param->vlparam_header.param_length);
-            
+
             if (pLen < 4 || pLen > 12) return result;
-            
+
             while(pos < pLen) {
                 if (ntohs(param->address_type[num]) == VLPARAM_IPV4_ADDRESS)
                     result |= SUPPORT_ADDRESS_TYPE_IPV4;
@@ -1642,7 +1640,7 @@ ChunkID ch_cookieInitFixed(ChunkID chunkID)
 
 
 
-/* ch_cookieInitAckFixed creates an initAck chunk from the fixed part of an initAck contained in a 
+/* ch_cookieInitAckFixed creates an initAck chunk from the fixed part of an initAck contained in a
    cookie and returns its chunkID */
 ChunkID ch_cookieInitAckFixed(ChunkID chunkID)
 {
@@ -1938,7 +1936,7 @@ ChunkID ch_makeHeartbeat(unsigned int sendingTime, unsigned int pathID)
                       heartbeatChunk->hmac[i * 4], heartbeatChunk->hmac[i * 4 + 1],
                       heartbeatChunk->hmac[i * 4 + 2], heartbeatChunk->hmac[i * 4 + 3]);
     }
-    
+
     enterChunk((SCTP_simple_chunk *) heartbeatChunk, "created heartbeatChunk %u ");
 
     return freeChunkID;
@@ -1959,7 +1957,7 @@ gboolean ch_verifyHeartbeat(ChunkID chunkID)
 
     MD5_CTX ctx;
 
-    
+
     if (chunks[chunkID] == NULL) {
         error_log(ERROR_MAJOR, "Invalid chunk ID");
         return FALSE;
@@ -1973,13 +1971,13 @@ gboolean ch_verifyHeartbeat(ChunkID chunkID)
         memcpy(hbSignature, heartbeatChunk->hmac, HMAC_LEN);
 
         event_log(VERBOSE, "Got signature: ");
-        
+
         for (i = 0; i < 4; i++) {
             event_logiiii(VERBOSE, "%2.2x %2.2x %2.2x %2.2x",
                       heartbeatChunk->hmac[i * 4], heartbeatChunk->hmac[i * 4 + 1],
                       heartbeatChunk->hmac[i * 4 + 2], heartbeatChunk->hmac[i * 4 + 3]);
         }
-       
+
         memset(heartbeatChunk->hmac, 0, HMAC_LEN);
 
         MD5Init(&ctx);
@@ -1998,7 +1996,7 @@ gboolean ch_verifyHeartbeat(ChunkID chunkID)
         else res = FALSE;
 
         return res;
-        
+
     } else {
         error_log(ERROR_MINOR, "ch_verifyHeartbeat: chunk type not okay");
         return FALSE;

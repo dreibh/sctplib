@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.36 2005/03/11 12:32:39 dreibh Exp $
+ *  $Id: distribution.c,v 1.37 2005/08/03 11:23:04 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -88,8 +88,12 @@
 #define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
 #endif
 
-/*------------------------ Default Definitions --------------------------------------------------*/
+#ifndef CHECK
+#define CHECK(cond) if(!(cond)) { fprintf(stderr, "INTERNAL ERROR in %s, line %u: condition %s is not satisfied!\n", __FILE__, __LINE__, #cond); abort(); }
+#endif
 
+
+/*------------------------ Default Definitions --------------------------------------------------*/
 static int      myRWND                      = 0x7FFF;
 static union    sockunion *myAddressList    = NULL;
 static unsigned int myNumberOfAddresses     = 0;
@@ -718,7 +722,6 @@ static void mdi_removeAssociationData(Association * assoc)
         pm_deletePathman(assoc->pathMan);
         bu_delete(assoc->bundling);
         sci_deleteSCTP_control(assoc->sctp_control);
-        releasePort(assoc->localPort);
 
         assoc->pathMan = NULL;
         assoc->bundling = NULL;
@@ -4276,7 +4279,6 @@ void mdi_writeDestinationAddresses(union sockunion addresses[MAX_NUM_ADDRESSES],
         return;
     } else {
         if (currentAssociation->destinationAddresses != NULL) {
-            error_log(ERROR_MINOR, "mdi_writeDestinationAddresses: dest addresses already alloced");
             free(currentAssociation->destinationAddresses);
         }
 

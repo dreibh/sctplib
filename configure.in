@@ -100,7 +100,7 @@ CFLAGS="$CFLAGS -D_REENTRANT -D_THREAD_SAFE"
 
 case $host_os in
 freebsd*)
-	CFLAGS="$CFLAGS -DFreeBSD -Wall -pthread"
+	CFLAGS="$CFLAGS -DFreeBSD -Wall -pthread -DHAVE_SIN6_SCOPE_ID"
 	thread_LIBS=""
 	;;
 linux*)
