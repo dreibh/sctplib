@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.20 2005/03/11 11:34:29 dreibh Exp $
+ *  $Id: globals.h,v 1.21 2005/08/04 08:09:25 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -102,7 +102,7 @@
 #endif
 
 /** this parameter specifies the maximum number of addresses that an endpoint may have */
-#define MAX_NUM_ADDRESSES      20
+#define MAX_NUM_ADDRESSES      32
 
 
 #define SECRET_KEYSIZE  4096
@@ -188,6 +188,7 @@ typedef struct chunk_data_struct
 #define event_logiii(x,y,z,i,j)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j))
 #define event_logiiii(x,y,z,i,j,k)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j),(k))
 #define event_logiiiii(x,y,z,i,j,k,l)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j),(k),(l))
+#define event_logiiiiiiii(x,y,z,i,j,k,l,m,n,o)	  if (Current_event_log_ >= x) event_log1((x), __FILE__, (y), (z), (i), (j),(k),(l),(m),(n),(o))
 
 
 #define error_log(x,y)        if (Current_error_log_ >= x) error_log1((x), __FILE__, __LINE__, (y))

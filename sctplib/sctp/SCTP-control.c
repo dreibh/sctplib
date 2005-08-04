@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.18 2004/11/17 23:04:09 tuexen Exp $
+ *  $Id: SCTP-control.c,v 1.19 2005/08/04 08:09:25 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -79,10 +79,13 @@
 
 #include "sctp.h"
 
+#ifndef CHECK
+#define CHECK(cond) if(!(cond)) { fprintf(stderr, "INTERNAL ERROR in %s, line %u: condition %s is not satisfied!\n", __FILE__, __LINE__, #cond); abort(); }
+#endif
 
 
-/** @name SCTP State Machine Controller 
- 
+/** @name SCTP State Machine Controller
+
   \hline
    Used function prefixes:
    \begin{itemize}
@@ -427,7 +430,7 @@ void scu_associate(unsigned short noOfOutStreams,
 
         localData->initChunk = (SCTP_init *) ch_chunkString(initCID);
         ch_forgetChunk(initCID);
-        
+
         /* send init chunk */
         for (count = 0; count < numDestAddresses; count++) {
             bu_put_Ctrl_Chunk((SCTP_simple_chunk *) localData->initChunk, &count);
@@ -572,10 +575,10 @@ void sci_add_abort_error_cause(ChunkID abortChunk,
             break;
     }
     return;
-}                                                                    
+}
 
 /**
- * this function aborts this association. And optionally adds an error parameter 
+ * this function aborts this association. And optionally adds an error parameter
  * to the ABORT chunk that is sent out.
  */
 void scu_abort(short error_type, unsigned short error_param_length, unsigned char* error_param_data)
@@ -911,7 +914,7 @@ int sctlr_init(SCTP_init * init)
             if ((localData->local_tie_tag == 0) || (localData->peer_tie_tag == 0)) {
                 error_logiii(ERROR_MINOR, "Tie tags zero in state %u, local: %u, peer: %u --> Restart ?",
                              state, localData->local_tie_tag, localData->peer_tie_tag);
-            }                             
+            }
 
             inbound_streams = min(ch_noOutStreams(initCID), mdi_readLocalInStreams());
 
@@ -924,7 +927,7 @@ int sctlr_init(SCTP_init * init)
             /*
                localData->local_tie_tag = mdi_generateTag();
                localData->peer_tie_tag = mdi_generateTag();
-             */  
+             */
 
             /* retreive remote source addresses from message */
             nrAddresses = ch_IPaddresses(initCID, supportedTypes, rAddresses, &peerSupportedTypes, &last_source);
@@ -1059,7 +1062,7 @@ gboolean sctlr_initAck(SCTP_init * initAck)
             ch_enterErrorCauseData(abortCID, ECC_INVALID_MANDATORY_PARAM, 0, NULL);
             bu_put_Ctrl_Chunk(ch_chunkString(abortCID),NULL);
             ch_deleteChunk(abortCID);
-            
+
             bu_unlock_sender(NULL);
             bu_sendAllChunks(NULL);
             /* delete all data of this association */
@@ -1128,7 +1131,7 @@ gboolean sctlr_initAck(SCTP_init * initAck)
             }
             missing_params.numberOfParams = htonl(1);
             missing_params.params[0] = htons(VLPARAM_COOKIE);
-            
+
             scu_abort(ECC_MISSING_MANDATORY_PARAM, 6, (unsigned char*)&missing_params);
             bu_unlock_sender(NULL);
             /* delete this association */
@@ -1310,9 +1313,9 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
     remote_tag = mdi_readTagRemote();
 
     if ((mdi_readLastInitiateTag()   != cookie_local_tag) &&
-        (mdi_readLastFromPort()      != ch_CookieSrcPort(cookieCID)) && 
+        (mdi_readLastFromPort()      != ch_CookieSrcPort(cookieCID)) &&
         (mdi_readLastDestPort()      != ch_CookieDestPort(cookieCID)))  {
-            
+
         ch_forgetChunk(cookieCID);
         ch_deleteChunk(initCID);
         ch_deleteChunk(initAckCID);
@@ -1396,6 +1399,7 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         event_log(EXTERNAL_EVENT, "event: sctlr_cookie_echo in state CLOSED");
         mySupportedTypes = mdi_getSupportedAddressTypes();
         /* retrieve destination addresses from cookie */
+        CHECK(dAddresses != NULL);
         ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
 
         if (ndAddresses > 0) {
@@ -1470,6 +1474,7 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                 new_state = ESTABLISHED;
                 if (state == COOKIE_WAIT || state==COOKIE_ECHOED) {
                     mySupportedTypes = mdi_getSupportedAddressTypes();
+                    CHECK(dAddresses != NULL);
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
                     if (ndAddresses > 0) {
                         /* save addresses if initAck contained more then zero, otherwise the source address
@@ -1515,9 +1520,10 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     localData->initTimer = 0;
                 }
                 new_state = ESTABLISHED;
-                
+
                 if (state == COOKIE_WAIT || state==COOKIE_ECHOED) {
                     mySupportedTypes = mdi_getSupportedAddressTypes();
+                    CHECK(dAddresses != NULL);
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
                     if (ndAddresses > 0) {
                         /* save addresses if initAck contained more then zero, otherwise the source address
@@ -1573,6 +1579,7 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     event_logi(VERBOSE, "Peer Restart, case 5.2.4.A, state == %u", state);
 
                     mySupportedTypes = mdi_getSupportedAddressTypes();
+                    CHECK(dAddresses != NULL);
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses, &peerAddressTypes, &destAddress);
                     peerSupportsPRSCTP = ch_getPRSCTPfromCookie(cookieCID);
 
@@ -1918,7 +1925,7 @@ int sctlr_shutdownAck()
         shdcCID = ch_makeSimpleChunk(CHUNK_SHUTDOWN_COMPLETE, FLAG_NO_TCB);
 
         /* make sure the shutdown_complete is written to the peer with his tag */
-        if (mdi_readTagRemote() == 0) {      
+        if (mdi_readTagRemote() == 0) {
             tagWasZero = TRUE;
             lastTag = mdi_readLastInitiateTag();
             mdi_rewriteTagRemote(lastTag);
@@ -2034,7 +2041,7 @@ int sctlr_shutdownComplete()
                       "sctlr_shutdownComplete : Timer not running - problem in Program Logic!");
         }
         pm_disableAllHB();
-        
+
         bu_unlock_sender(&lastFromPath);
         /* delete all data of this association */
         mdi_deleteCurrentAssociation();

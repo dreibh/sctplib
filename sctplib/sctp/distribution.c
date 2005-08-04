@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.37 2005/08/03 11:23:04 dreibh Exp $
+ *  $Id: distribution.c,v 1.38 2005/08/04 08:09:25 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -4001,7 +4001,9 @@ void *mdi_readPathMan(void)
 void *mdi_readBundling(void)
 {
     if (currentAssociation == NULL) {
+        /*
         error_log(ERROR_MINOR, "mdi_readBundling: association not set");
+        */
         return NULL;
     } else {
         return currentAssociation->bundling;

@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.17 2005/08/03 11:23:04 dreibh Exp $
+ *  $Id: chunkHandler.c,v 1.18 2005/08/04 08:09:25 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -253,6 +253,10 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                 */
                 event_logii(VVERBOSE, "Got IPv4 address %x, discard: %s !",
                                         ntohl(address->dest_addr.sctp_ipv4), (discard==TRUE)?"TRUE":"FALSE");
+                if(nAddresses >= MAX_NUM_ADDRESSES) {
+                   error_log(ERROR_MINOR, "Too many addresses found during IPv4 reading");
+                   discard = TRUE;
+                }
 
                 if (discard == FALSE) {
                     new_found = TRUE;
@@ -271,7 +275,7 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                         addresses[v4found].sin.sin_addr.s_addr = address->dest_addr.sctp_ipv4;
                         nAddresses++; v4found++;
                         (*peerTypes) |= SUPPORT_ADDRESS_TYPE_IPV4;
-                        event_logi(VERBOSE, "Found NEW IPv4 Address = %x", address->dest_addr.sctp_ipv4);
+                        event_logi(VERBOSE, "Found NEW IPv4 Address = %x", ntohl(address->dest_addr.sctp_ipv4));
                     } else {
                         event_log(VERBOSE, "IPv4 was in the INIT or INIT ACK chunk more than once");
                     }
@@ -337,9 +341,15 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                 if (IN6_IS_ADDR_MULTICAST((struct in6_addr*)&(address->dest_addr.sctp_ipv6))) discard = TRUE;
                 if (IN6_IS_ADDR_V4COMPAT((struct in6_addr*)&(address->dest_addr))) discard = TRUE;
 #endif
-                if (adl_filterInetAddress(&tmp_su, filterFlags) == FALSE) discard = TRUE;
+                if (adl_filterInetAddress(&tmp_su, filterFlags) == FALSE) {
+                   discard = TRUE;
+                }
+                if(nAddresses >= MAX_NUM_ADDRESSES) {
+                   error_log(ERROR_MINOR, "Too many addresses found during IPv6 reading");
+                   discard = TRUE;
+                }
                 event_logiii(VERBOSE, "Found IPv6 Address - discard=%s - #v4=%d - #v6=%d !",
-                    (discard==TRUE)?"TRUE":"FALSE", v4found, v6found);
+                             (discard==TRUE)?"TRUE":"FALSE", v4found, v6found);
                 if (discard == FALSE) {
                     new_found = TRUE;
 
@@ -348,10 +358,15 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                             if (adl_equal_address(&tmp_su, &addresses[idx]) == TRUE) {
                                 new_found = FALSE;
 #if defined (LINUX)
-                                event_logiiii(VERBOSE, "Found OLD IPv6 Address %x:%x:%x:%x !",
-                                        tmp_su.sin6.sin6_addr.s6_addr32[0], tmp_su.sin6.sin6_addr.s6_addr32[1],
-                                        tmp_su.sin6.sin6_addr.s6_addr32[2],
-                                        tmp_su.sin6.sin6_addr.s6_addr32[3]);
+                                event_logiiiiiiii(VERBOSE, "Found OLD IPv6 Address %x:%x:%x:%x:%x:%x:%x:%x!",
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[0]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[1]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[2]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[3]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[4]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[5]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[6]),
+                                                  ntohs(tmp_su.sin6.sin6_addr.s6_addr16[7]));
 #endif
                             }
                     }
@@ -369,10 +384,15 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
                         nAddresses++; v6found++;
                         (*peerTypes) |= SUPPORT_ADDRESS_TYPE_IPV6;
 #if defined (LINUX)
-                        event_logiiii(VERBOSE, "Found NEW IPv6 Address %x:%x:%x:%x !",
-                                tmp_su.sin6.sin6_addr.s6_addr32[0], tmp_su.sin6.sin6_addr.s6_addr32[1],
-                                tmp_su.sin6.sin6_addr.s6_addr32[2],
-                                tmp_su.sin6.sin6_addr.s6_addr32[3]);
+                        event_logiiiiiiii(VERBOSE, "Found NEW IPv6 Address %x:%x:%x:%x:%x:%x:%x:%x!",
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[0]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[1]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[2]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[3]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[4]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[5]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[6]),
+                                          ntohs(tmp_su.sin6.sin6_addr.s6_addr16[7]));
 #endif
 
                     }
