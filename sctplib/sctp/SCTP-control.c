@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.19 2005/08/04 08:09:25 dreibh Exp $
+ *  $Id: SCTP-control.c,v 1.20 2005/08/04 10:49:29 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -78,10 +78,6 @@
 #include <errno.h>
 
 #include "sctp.h"
-
-#ifndef CHECK
-#define CHECK(cond) if(!(cond)) { fprintf(stderr, "INTERNAL ERROR in %s, line %u: condition %s is not satisfied!\n", __FILE__, __LINE__, #cond); abort(); }
-#endif
 
 
 /** @name SCTP State Machine Controller
@@ -1399,7 +1395,6 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         event_log(EXTERNAL_EVENT, "event: sctlr_cookie_echo in state CLOSED");
         mySupportedTypes = mdi_getSupportedAddressTypes();
         /* retrieve destination addresses from cookie */
-        CHECK(dAddresses != NULL);
         ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
 
         if (ndAddresses > 0) {
@@ -1474,7 +1469,6 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                 new_state = ESTABLISHED;
                 if (state == COOKIE_WAIT || state==COOKIE_ECHOED) {
                     mySupportedTypes = mdi_getSupportedAddressTypes();
-                    CHECK(dAddresses != NULL);
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
                     if (ndAddresses > 0) {
                         /* save addresses if initAck contained more then zero, otherwise the source address
@@ -1523,7 +1517,6 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
 
                 if (state == COOKIE_WAIT || state==COOKIE_ECHOED) {
                     mySupportedTypes = mdi_getSupportedAddressTypes();
-                    CHECK(dAddresses != NULL);
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses,&peerAddressTypes, &destAddress);
                     if (ndAddresses > 0) {
                         /* save addresses if initAck contained more then zero, otherwise the source address
@@ -1579,7 +1572,6 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
                     event_logi(VERBOSE, "Peer Restart, case 5.2.4.A, state == %u", state);
 
                     mySupportedTypes = mdi_getSupportedAddressTypes();
-                    CHECK(dAddresses != NULL);
                     ndAddresses = ch_cookieIPDestAddresses(cookieCID, mySupportedTypes, dAddresses, &peerAddressTypes, &destAddress);
                     peerSupportsPRSCTP = ch_getPRSCTPfromCookie(cookieCID);
 

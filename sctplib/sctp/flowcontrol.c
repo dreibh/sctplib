@@ -1,5 +1,5 @@
 /*
- * $Id: flowcontrol.c,v 1.16 2004/11/17 21:04:47 tuexen Exp $
+ * $Id: flowcontrol.c,v 1.17 2005/08/04 10:49:29 dreibh Exp $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -335,7 +335,7 @@ void fc_stop_timers(void)
     fc = (fc_data *) mdi_readFlowControl();
     event_log(INTERNAL_EVENT_0, "fc_stop_timers()... ");
     if (!fc) {
-        error_log(ERROR_MINOR, "fc_data instance not set !");
+        event_log(INTERNAL_EVENT_0, "fc_data instance not set !");
         return;
     }
     for (count = 0; count < fc->number_of_addresses; count++) {

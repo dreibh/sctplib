@@ -1,5 +1,5 @@
 /*
- *  $Id: reltransfer.c,v 1.12 2005/08/04 08:09:25 dreibh Exp $
+ *  $Id: reltransfer.c,v 1.13 2005/08/04 10:49:29 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -49,10 +49,6 @@
 
 #include <string.h>
 #include <stdio.h>
-
-#ifndef CHECK
-#define CHECK(cond) if(!(cond)) { fprintf(stderr, "INTERNAL ERROR in %s, line %u: condition %s is not satisfied!\n", __FILE__, __LINE__, #cond); abort(); }
-#endif
 
 #define MAX_NUM_OF_CHUNKS   500
 
@@ -1196,7 +1192,7 @@ unsigned int rtx_rcv_shutdown_ctsna(unsigned int ctsna)
                      ctsna, rtx->lowest_tsn, ctsna);
         result = rtx_dequeue_up_to(ctsna , 0);
         if (result < 0) {
-            error_log(ERROR_MAJOR, "Bad ctsna arrived in shutdown or no chunks in queue");
+            event_log(VVERBOSE, "Bad ctsna arrived in shutdown or no chunks in queue");
         }
         rtx->lowest_tsn = ctsna;
         event_logi(VVERBOSE, "Updated rtx->lowest_tsn==ctsna==%u", ctsna);

@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.h,v 1.21 2005/08/04 08:09:25 dreibh Exp $
+ *  $Id: globals.h,v 1.22 2005/08/04 10:49:29 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -344,5 +344,8 @@ typedef enum  {
 #define DEFAULT_MTU_CEILING     1500
 
 
+#ifndef CHECK
+#define CHECK(cond) if(!(cond)) { fprintf(stderr, "INTERNAL ERROR in %s, line %u: condition %s is not satisfied!\n", __FILE__, __LINE__, #cond); abort(); }
+#endif
 
 #endif

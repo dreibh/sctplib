@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.38 2005/08/04 08:09:25 dreibh Exp $
+ *  $Id: distribution.c,v 1.39 2005/08/04 10:49:29 dreibh Exp $
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -32,6 +32,7 @@
  * Contact: discussion@sctp.de
  *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
+ *          dreibh@exp-math.uni-essen.de
  *
  * Purpose: This modules implements the interface defined distribution.h and sctp.h
  *          and holds a private list of associations.
@@ -86,10 +87,6 @@
 
 #ifndef IN_BADCLASS
 #define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
-#endif
-
-#ifndef CHECK
-#define CHECK(cond) if(!(cond)) { fprintf(stderr, "INTERNAL ERROR in %s, line %u: condition %s is not satisfied!\n", __FILE__, __LINE__, #cond); abort(); }
 #endif
 
 
@@ -1377,10 +1374,9 @@ mdi_receiveMessage(gint socket_fd,
         }
 
         if (!cookieEchoFound && !initFound && !abortFound && lastInitiateTag != currentAssociation->tagLocal) {
-            error_logii(ERROR_MINOR,
+            event_logii(EXTERNAL_EVENT,
                         "Tag mismatch in receive DG, received Tag = %u, local Tag = %u -> discarding",
                         lastInitiateTag, currentAssociation->tagLocal);
-
             currentAssociation = NULL;
             sctpInstance = NULL;
             lastFromPort = 0;
@@ -2207,7 +2203,7 @@ int sctp_shutdown(unsigned int associationID)
         /* Forward shutdown to the addressed association */
         scu_shutdown();
     } else {
-        error_log(ERROR_MAJOR, "sctp_shutdown: addressed association does not exist");
+        event_log(VERBOSE, "sctp_shutdown: addressed association does not exist");
         sctpInstance = old_Instance;
         currentAssociation = old_assoc;
         LEAVE_LIBRARY("sctp_shutdown");
@@ -3918,7 +3914,7 @@ void mdi_queueStatusChangeNotif(int queueType, int queueId, int queueLen)
 void *mdi_readFlowControl(void)
 {
     if (currentAssociation == NULL) {
-        error_log(ERROR_MINOR, "mdi_readFlowControl: association not set");
+        event_log(VVERBOSE, "mdi_readFlowControl: association not set");
         return NULL;
     } else {
         return currentAssociation->flowControl;
