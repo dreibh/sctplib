@@ -1,5 +1,5 @@
 /*
- *  $Id: chunkHandler.c,v 1.18 2005/08/04 08:09:25 dreibh Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -73,11 +73,11 @@
 #define MAX_CHUNKS 8
 
 #ifndef IN_EXPERIMENTAL
-#define	IN_EXPERIMENTAL(a)	((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#define  IN_EXPERIMENTAL(a)   ((((long int) (a)) & 0xf0000000) == 0xf0000000)
 #endif
 
 #ifndef IN_BADCLASS
-#define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
+#define  IN_BADCLASS(a)    IN_EXPERIMENTAL((a))
 #endif
 
 /* Other constants */
@@ -1176,7 +1176,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
                 /* take care of padding */
                 while ((curs % 4) != 0) curs++;
             } else { /* this is an unknown unknwon parameter....very strange...ignore it */
-		    /* this is probably a bakeoff test.... :-)   */
+          /* this is probably a bakeoff test.... :-)   */
                 curs += pLen;
                 /* take care of padding */
                 while ((curs % 4) != 0) curs++;
@@ -1736,10 +1736,10 @@ int ch_cookieIPDestAddresses(ChunkID chunkID, unsigned int mySupportedTypes,
                                                    (guint16)vl_param_total_length, temp_addresses,
                                                    peerSupportedAddressTypes, mySupportedTypes,
                                                    lastSource, FALSE, TRUE);
-        if (nAddresses >
+        if (nAddresses !=
             no_loc_ipv4_addresses + no_remote_ipv4_addresses +
             no_loc_ipv6_addresses + no_remote_ipv6_addresses) {
-            error_log(ERROR_FATAL, "Found more addresses than should be in the cookie !");
+            error_log(ERROR_FATAL, "Found more or less addresses than should be in the cookie !");
         }
 
         memcpy(addresses, &temp_addresses[no_loc_ipv4_addresses],

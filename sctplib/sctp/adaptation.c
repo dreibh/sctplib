@@ -1,5 +1,5 @@
 /*
- *  $Id: adaptation.c,v 1.24 2005/07/19 09:35:16 dreibh Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -48,16 +48,16 @@
 #include <errno.h>
 
 #ifndef WIN32
-	#include <netinet/in_systm.h>
-	#include <netinet/ip.h>
-	#include <netdb.h>
-	#include <arpa/inet.h>      /* for inet_ntoa() under both SOLARIS/LINUX */
-	#include <sys/errno.h>
-	#include <sys/uio.h>        /* for struct iovec */
-	#include <sys/param.h>
-	#include <sys/ioctl.h>
-	#include <netinet/tcp.h>
-	#include <net/if.h>
+   #include <netinet/in_systm.h>
+   #include <netinet/ip.h>
+   #include <netdb.h>
+   #include <arpa/inet.h>      /* for inet_ntoa() under both SOLARIS/LINUX */
+   #include <sys/errno.h>
+   #include <sys/uio.h>        /* for struct iovec */
+   #include <sys/param.h>
+   #include <sys/ioctl.h>
+   #include <netinet/tcp.h>
+   #include <net/if.h>
 #else
     #include <winsock2.h>
     #include <WS2tcpip.h>
@@ -67,14 +67,14 @@
     struct ip
     {
         unsigned char ip_verlen;
-	    unsigned char ip_tos;			/* type of service */
-        u_short ip_len;					/* total length */
-        u_short ip_id;					/* identification */
-        u_short ip_off;					/* fragment offset field */
-        unsigned char ip_ttl;			/* time to live */
-        unsigned char ip_p;				/* protocol */
-        u_short ip_sum;					/* checksum */
-        struct in_addr ip_src, ip_dst;	/* source and dest address */
+       unsigned char ip_tos;        /* type of service */
+        u_short ip_len;             /* total length */
+        u_short ip_id;              /* identification */
+        u_short ip_off;             /* fragment offset field */
+        unsigned char ip_ttl;       /* time to live */
+        unsigned char ip_p;            /* protocol */
+        u_short ip_sum;             /* checksum */
+        struct in_addr ip_src, ip_dst; /* source and dest address */
     };
 
 #endif
@@ -105,11 +105,11 @@
     #define NEXT_SA(ap) ap = (struct sockaddr *) \
         ((caddr_t) ap + (ap->sa_len ? ROUNDUP(ap->sa_len, sizeof (u_long)) : sizeof(u_long)))
 #else
-	#include <sys/sockio.h>
-	#define NEXT_SA(ap) ap = (struct sockaddr *) ((caddr_t) ap + sizeof(struct sockaddr))
-	#define RTAX_MAX RTA_NUMBITS
-	#define RTAX_IFA 5
-	#define _NO_SIOCGIFMTU_
+   #include <sys/sockio.h>
+   #define NEXT_SA(ap) ap = (struct sockaddr *) ((caddr_t) ap + sizeof(struct sockaddr))
+   #define RTAX_MAX RTA_NUMBITS
+   #define RTAX_IFA 5
+   #define _NO_SIOCGIFMTU_
 #endif
 #endif
 #endif
@@ -117,11 +117,11 @@
 #define     IFA_BUFFER_LENGTH   1024
 
 #ifndef IN_EXPERIMENTAL
-#define	IN_EXPERIMENTAL(a)	((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#define  IN_EXPERIMENTAL(a)   ((((long int) (a)) & 0xf0000000) == 0xf0000000)
 #endif
 
 #ifndef IN_BADCLASS
-#define	IN_BADCLASS(a)		IN_EXPERIMENTAL((a))
+#define  IN_BADCLASS(a)    IN_EXPERIMENTAL((a))
 #endif
 
 #ifdef HAVE_SYS_POLL_H
@@ -198,9 +198,9 @@ struct event_cb
 };
 
 struct data {
-	char*	dat;
-	int	len;
-	void (*cb)();
+   char* dat;
+   int   len;
+   void (*cb)();
 };
 
 #ifdef HAVE_RANDOM
@@ -218,10 +218,10 @@ struct input_data {
 
 static int fds[NUM_FDS];
 static int fdnum;
-HANDLE				hEvent, handles[2];
-static HANDLE	stdin_thread_handle;
-WSAEVENT			stdinevent;
-static struct input_data	idata;
+HANDLE            hEvent, handles[2];
+static HANDLE  stdin_thread_handle;
+WSAEVENT       stdinevent;
+static struct input_data   idata;
 #endif
 
 unsigned int
@@ -423,13 +423,13 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
     memset((void*)su, 0, sizeof(union sockunion));
 
 #ifndef WIN32
-	ret = inet_aton((const char *)str, &su->sin.sin_addr);
+   ret = inet_aton((const char *)str, &su->sin.sin_addr);
 #else
-	if ((su->sin.sin_addr.s_addr = inet_addr(str)) == INADDR_NONE)
-		ret=0;
-	else {
-		ret=1;
-	}
+   if ((su->sin.sin_addr.s_addr = inet_addr(str)) == INADDR_NONE)
+      ret=0;
+   else {
+      ret=1;
+   }
 #endif
     if (ret > 0) {              /* Valid IPv4 address format. */
         su->sin.sin_family = AF_INET;
@@ -468,10 +468,42 @@ int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len)
     return 0;
 }
 
-boolean adl_equal_address(union sockunion * one, union sockunion * two)
+boolean adl_equal_address(union sockunion * a, union sockunion * b)
 {
 #ifdef HAVE_IPV6
-    unsigned int count;
+   union sockunion        my_a;
+   union sockunion        my_b;
+   const union sockunion* one;
+   const union sockunion* two;
+   unsigned int           count;
+
+   if(a->sa.sa_family == AF_INET) {
+      my_a.sin6.sin6_family = AF_INET6;
+      my_a.sin6.sin6_port   = a->sin.sin_port;
+      my_a.sin6.sin6_addr.s6_addr32[0] = 0x00000000;
+      my_a.sin6.sin6_addr.s6_addr32[1] = 0x00000000;
+      my_a.sin6.sin6_addr.s6_addr32[2] = 0x00000000;
+      my_a.sin6.sin6_addr.s6_addr32[3] = a->sin.sin_addr.s_addr;
+      one = &my_a;
+   }
+   else {
+      one = a;
+   }
+   if(b->sa.sa_family == AF_INET) {
+      my_b.sin6.sin6_family = AF_INET6;
+      my_b.sin6.sin6_port   = b->sin.sin_port;
+      my_b.sin6.sin6_addr.s6_addr32[0] = 0x00000000;
+      my_b.sin6.sin6_addr.s6_addr32[1] = 0x00000000;
+      my_b.sin6.sin6_addr.s6_addr32[2] = 0x00000000;
+      my_b.sin6.sin6_addr.s6_addr32[3] = b->sin.sin_addr.s_addr;
+      two = &my_b;
+   }
+   else {
+      two = b;
+   }
+#else   
+   const union sockunion* one = a;
+   const union sockunion* two = b;
 #endif
 
     switch (sockunion_family(one)) {
@@ -877,16 +909,16 @@ int adl_remove_poll_fd(gint sfd)
             counter++;
             num_of_fds -= 1;
         }
-		#ifdef WIN32
-		for (i = 0; i < NUM_FDS; i++)
-	{
-		if (fds[i]==sfd)
-		{
-			fds[i]=-1;
-			fdnum--;
-			break;
-		}
-	}
+      #ifdef WIN32
+      for (i = 0; i < NUM_FDS; i++)
+   {
+      if (fds[i]==sfd)
+      {
+         fds[i]=-1;
+         fdnum--;
+         break;
+      }
+   }
 #endif
     }
     return (counter);
@@ -902,32 +934,32 @@ int
 adl_register_fd_cb(int sfd, int eventcb_type, int event_mask,
                    void (*action) (void *, void *) , void* userData)
 {
-	#ifdef WIN32
+   #ifdef WIN32
 
 int ret, i;
 if (sfd!=0)
 {
 
-	ret = WSAEventSelect(sfd, hEvent, FD_READ | FD_WRITE |
-	FD_ACCEPT | FD_CLOSE | FD_CONNECT);
+   ret = WSAEventSelect(sfd, hEvent, FD_READ | FD_WRITE |
+   FD_ACCEPT | FD_CLOSE | FD_CONNECT);
     if (ret == SOCKET_ERROR)
     {
         error_log(ERROR_FATAL, "WSAEventSelect() failed\n");
         return (-1);
     }
-	for (i=0; i<NUM_FDS;i++)
-	{
-		if (fds[i]==-1)
-		{
-			fds[i]=sfd;
-			fdnum++;
-			break;
-		}
-	}
+   for (i=0; i<NUM_FDS;i++)
+   {
+      if (fds[i]==-1)
+      {
+         fds[i]=sfd;
+         fdnum++;
+         break;
+      }
+   }
 }
 #endif
 
-	 if (num_of_fds < NUM_FDS && sfd >= 0) {
+    if (num_of_fds < NUM_FDS && sfd >= 0) {
         assign_poll_fd(num_of_fds, sfd, event_mask);
         event_callbacks[num_of_fds] = malloc(sizeof(struct event_cb));
         if (!event_callbacks[num_of_fds])
@@ -1284,13 +1316,13 @@ void adl_add_msecs_totime(struct timeval *t, unsigned int msecs)
 int adl_gettime(struct timeval *tv)
 {
 #ifdef WIN32
-		struct timeb tb;
-		ftime(&tb);
-		tv->tv_sec=tb.time;
-		tv->tv_usec=tb.millitm*1000;
-	return 0;
+      struct timeb tb;
+      ftime(&tb);
+      tv->tv_sec=tb.time;
+      tv->tv_usec=tb.millitm*1000;
+   return 0;
 #else
-	return (gettimeofday(tv, (struct timezone *) NULL));
+   return (gettimeofday(tv, (struct timezone *) NULL));
 #endif
 }
 
@@ -1320,13 +1352,13 @@ int init_poll_fds(void)
     int i;
     for (i = 0; i < NUM_FDS; i++) {
         assign_poll_fd(i, POLL_FD_UNUSED, 0);
-		#ifdef WIN32
-		fds[i]=-1;
+      #ifdef WIN32
+      fds[i]=-1;
 #endif
     }
     num_of_fds = 0;
 #ifdef WIN32
-	fdnum=0;
+   fdnum=0;
 #endif
     return (0);
 }
@@ -1403,85 +1435,85 @@ int adl_eventLoop()
 {
 #ifdef WIN32
 
-	int n, ret,i, j;
-	WSANETWORKEVENTS	ne;
-	int length=0, hlen=0, msecs;
-	union sockunion src, dest;
-	struct ip *iph;
-	struct sockaddr_in *src_in;
-	unsigned short portnum;
+   int n, ret,i, j;
+   WSANETWORKEVENTS  ne;
+   int length=0, hlen=0, msecs;
+   union sockunion src, dest;
+   struct ip *iph;
+   struct sockaddr_in *src_in;
+   unsigned short portnum;
 
 
-	msecs = get_msecs_to_nexttimer();
+   msecs = get_msecs_to_nexttimer();
 
-	/* returns -1 if no timer in list */
-	if (msecs < 0)
-		msecs = GRANULARITY;
-	if (msecs == 0) {
-		dispatch_timer();
-	return (0);
-	}
+   /* returns -1 if no timer in list */
+   if (msecs < 0)
+      msecs = GRANULARITY;
+   if (msecs == 0) {
+      dispatch_timer();
+   return (0);
+   }
 
-	n = MsgWaitForMultipleObjects(2, handles, FALSE, msecs, QS_KEY);
-		if (n==1 && idata.len>0)
-		{
-			for (i=0; i< NUM_FDS; i++)
-			{
+   n = MsgWaitForMultipleObjects(2, handles, FALSE, msecs, QS_KEY);
+      if (n==1 && idata.len>0)
+      {
+         for (i=0; i< NUM_FDS; i++)
+         {
 
-				if (event_callbacks[i]->sfd==0)
-				{
+            if (event_callbacks[i]->sfd==0)
+            {
 
-					(*(event_callbacks[i]->action))(idata.buffer,idata.len);
-					SetEvent(idata.eventback);
-					memset(idata.buffer, 0, sizeof(idata.buffer));
-					idata.len=0;
-					break;
-				}
-			}
-		}
-		else if (n==0)
-		{
-			for (i=0; i<fdnum; i++)
-			{
-			ret = WSAEnumNetworkEvents(fds[i], hEvent, &ne);
-				if (ret == SOCKET_ERROR)
-				{
-					error_log(ERROR_FATAL, "WSAEnumNetworkEvents() failed!");
-					return (-1);
-				}
-				if (ne.lNetworkEvents & (FD_READ | FD_ACCEPT | FD_CLOSE))
-				{
-					for (j=0; j<NUM_FDS; j++)
-						if (event_callbacks[i]->sfd==fds[i])
-						{
-						length = adl_receive_message(fds[i], rbuf, MAX_MTU_SIZE, &src, &dest);
-						portnum = ntohs(src.sin.sin_port);
-						if(length < 0) break;
-						event_logiiii(VERBOSE, "SCTP-Message on socket %u , len=%d, portnum=%d, sockunion family %u",
+               (*(event_callbacks[i]->action))(idata.buffer,idata.len);
+               SetEvent(idata.eventback);
+               memset(idata.buffer, 0, sizeof(idata.buffer));
+               idata.len=0;
+               break;
+            }
+         }
+      }
+      else if (n==0)
+      {
+         for (i=0; i<fdnum; i++)
+         {
+         ret = WSAEnumNetworkEvents(fds[i], hEvent, &ne);
+            if (ret == SOCKET_ERROR)
+            {
+               error_log(ERROR_FATAL, "WSAEnumNetworkEvents() failed!");
+               return (-1);
+            }
+            if (ne.lNetworkEvents & (FD_READ | FD_ACCEPT | FD_CLOSE))
+            {
+               for (j=0; j<NUM_FDS; j++)
+                  if (event_callbacks[i]->sfd==fds[i])
+                  {
+                  length = adl_receive_message(fds[i], rbuf, MAX_MTU_SIZE, &src, &dest);
+                  portnum = ntohs(src.sin.sin_port);
+                  if(length < 0) break;
+                  event_logiiii(VERBOSE, "SCTP-Message on socket %u , len=%d, portnum=%d, sockunion family %u",
                      fds[i], length, portnum, sockunion_family(&src));
 
                     src_in = (struct sockaddr_in *) &src;
                     event_logi(VERBOSE, "IPv4/SCTP-Message from %s -> activating callback",
                                inet_ntoa(src_in->sin_addr));
-						iph = (struct ip *) rbuf;
+                  iph = (struct ip *) rbuf;
                     hlen = (iph->ip_verlen & 0x0F) << 2;
-					if (length < hlen)
-					{
+               if (length < hlen)
+               {
                         error_logii(ERROR_MINOR,
                                     "dispatch_event : packet too short (%d bytes) from %s",
                                     length, inet_ntoa(src_in->sin_addr));
                     } else
-					{
+               {
                         length -= hlen;
                         mdi_receiveMessage(fds[i], &rbuf[hlen], length, &src, &dest);
                     }
                     break;
-						}
+                  }
 
-				}
-			}
-		}
-		return 1;
+            }
+         }
+      }
+      return 1;
 #else
 
    return(adl_extendedEventLoop(NULL, NULL, NULL));
@@ -1546,19 +1578,19 @@ static DWORD WINAPI stdin_read_thread(void *param)
 
     inhandle = GetStdHandle(STD_INPUT_HANDLE);
 
-	while (ReadFile(inhandle, indata->buffer, sizeof(indata->buffer),
-		    &indata->len, NULL) && indata->len > 0)
-	{
-	SetEvent(indata->event);
+   while (ReadFile(inhandle, indata->buffer, sizeof(indata->buffer),
+          &indata->len, NULL) && indata->len > 0)
+   {
+   SetEvent(indata->event);
 
-	WaitForSingleObject(indata->eventback, INFINITE);
-	memset(indata->buffer, 0, sizeof(indata->buffer));
+   WaitForSingleObject(indata->eventback, INFINITE);
+   memset(indata->buffer, 0, sizeof(indata->buffer));
     }
     indata->len = 0;
-	memset(indata->buffer, 0, sizeof(indata->buffer));
+   memset(indata->buffer, 0, sizeof(indata->buffer));
     SetEvent(indata->event);
 
-	return 0;
+   return 0;
 }
 #endif
 
@@ -1612,7 +1644,7 @@ int adl_init_adaptation_layer(int * myRwnd)
 {
     struct timeval curTime;
 #ifdef WIN32
-	WSADATA					wsaData;
+   WSADATA              wsaData;
     int Ret;
 #endif
 #ifdef HAVE_IPV6
@@ -1625,22 +1657,22 @@ int adl_init_adaptation_layer(int * myRwnd)
         error_log(ERROR_FATAL, "WSAStartup failed.");
         return SCTP_SPECIFIC_FUNCTION_ERROR;
     }
-	hEvent = WSACreateEvent();
+   hEvent = WSACreateEvent();
     if (hEvent == NULL)
     {
         error_log(ERROR_FATAL, "WSACreateEvent() of hEvent failed!");
         return -1;
     }
 
-	stdinevent = WSACreateEvent();
+   stdinevent = WSACreateEvent();
     if (stdinevent == NULL)
     {
         error_log(ERROR_FATAL, "WSACreateEvent() of stdinevent failed!");
         return -1;
     }
 
-	handles[0]=hEvent;
-	handles[1]=stdinevent;
+   handles[0]=hEvent;
+   handles[1]=stdinevent;
 #endif
 
     /* initialize random number generator */
@@ -1724,10 +1756,10 @@ int adl_registerUdpCallback(unsigned char me[],
     union sockunion my_address;
 
 #ifdef WIN32
-	error_log(ERROR_MAJOR, "WIN32: Registering ULP-Callbacks for UDP not installed !");
+   error_log(ERROR_MAJOR, "WIN32: Registering ULP-Callbacks for UDP not installed !");
         return -1;
 #endif
-	if (ntohs(my_port) == 0) {
+   if (ntohs(my_port) == 0) {
         error_log(ERROR_MAJOR, "Port 0 is not allowed ! Fix your program !");
         return -1;
     }
@@ -1785,8 +1817,8 @@ int adl_unregisterUdpCallback(int udp_sfd)
 int adl_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, short int eventMask)
 {
     int result;
-	#ifdef WIN32
-	error_log(ERROR_MAJOR, "WIN32: Registering User Callbacks not installed !");
+   #ifdef WIN32
+   error_log(ERROR_MAJOR, "WIN32: Registering User Callbacks not installed !");
         return -1;
 #endif
     /* 0 is the standard input ! */
@@ -1800,12 +1832,12 @@ int adl_registerUserCallback(int fd, sctp_userCallback sdf, void* userData, shor
 #ifndef WIN32
 void readCallback(int fd, short int revents, short int* events, void* userData)
 {
-	int n;
+   int n;
 
-	struct data *udata=(struct data *)userData;
+   struct data *udata=(struct data *)userData;
 
-	n=read(0,(char *)udata->dat, udata->len);
-	((sctp_StdinCallback )udata->cb)(udata->dat, n);
+   n=read(0,(char *)udata->dat, udata->len);
+   ((sctp_StdinCallback )udata->cb)(udata->dat, n);
 }
 #endif
 
@@ -1814,28 +1846,28 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
     int result;
 
 
-	#ifdef WIN32
-	unsigned long	in_threadid;
-	idata.event = stdinevent;
-	idata.eventback = CreateEvent(NULL, FALSE, FALSE, NULL);
+   #ifdef WIN32
+   unsigned long  in_threadid;
+   idata.event = stdinevent;
+   idata.eventback = CreateEvent(NULL, FALSE, FALSE, NULL);
 
-	if (!(stdin_thread_handle=CreateThread(NULL, 0, stdin_read_thread,
-			      &idata, 0, &in_threadid))) {
-		fprintf(stderr, "Unable to create input thread\n");
-		exit(1);
-	 }
+   if (!(stdin_thread_handle=CreateThread(NULL, 0, stdin_read_thread,
+               &idata, 0, &in_threadid))) {
+      fprintf(stderr, "Unable to create input thread\n");
+      exit(1);
+    }
 
     result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, 0, (void (*) (void *,void *))sdf, NULL);
 #else
-	struct data *userData;
-	userData = malloc(sizeof (struct data));
+   struct data *userData;
+   userData = malloc(sizeof (struct data));
     memset(userData, 0, sizeof(struct data));
-	userData->dat=buffer;
-	userData->len=length;
-	userData->cb=(void (*) (void))sdf;
-	result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, POLLIN | POLLPRI, (void (*) (void *,void *))readCallback,userData);
+   userData->dat=buffer;
+   userData->len=length;
+   userData->cb=(void (*) (void))sdf;
+   result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, POLLIN | POLLPRI, (void (*) (void *,void *))readCallback,userData);
 #endif
-	if (result != -1) {
+   if (result != -1) {
         event_logii(EXTERNAL_EVENT,"----------> Registered Stdin Callback: fd=%d result=%d -------\n", 0, result);
     }
     return result;
@@ -1845,9 +1877,9 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
 int adl_unregisterStdinCallback()
 {
     #ifdef WIN32
-	TerminateThread(stdin_thread_handle,0);
-	#endif
-	adl_remove_poll_fd(0);
+   TerminateThread(stdin_thread_handle,0);
+   #endif
+   adl_remove_poll_fd(0);
     return 0;
 }
 
@@ -1969,7 +2001,7 @@ int adl_remove_cb(int sfd)
 {
     int result;
 #ifdef WIN32
-	result = closesocket(sfd);
+   result = closesocket(sfd);
 #else
     result = close(sfd);
 #endif
@@ -1997,7 +2029,7 @@ gboolean adl_filterInetAddress(union sockunion* newAddress, AddressScopingFlags 
                 ((INADDR_BROADCAST == ntohl(newAddress->sin.sin_addr.s_addr)) && (flags & flag_HideBroadcast))||
                 ((INADDR_LOOPBACK == ntohl(newAddress->sin.sin_addr.s_addr)) && (flags & flag_HideLoopback)) ||
                 ((INADDR_LOOPBACK != ntohl(newAddress->sin.sin_addr.s_addr)) && (flags & flag_HideAllExceptLoopback))||
-		(ntohl(newAddress->sin.sin_addr.s_addr) == INADDR_ANY)
+      (ntohl(newAddress->sin.sin_addr.s_addr) == INADDR_ANY)
                 ) {
             event_log(VERBOSE, "Filtering IPV4 address");
             return FALSE;
@@ -2053,8 +2085,8 @@ gboolean adl_filterInetAddress(union sockunion* newAddress, AddressScopingFlags 
 #define getaddrinfo             WspiapiGetAddrInfo
 #define getnameinfo             WspiapiGetNameInfo
 #define freeaddrinfo            WspiapiFreeAddrInfo
-#define socklen_t				unsigned int
-#define size_t					unsigned int
+#define socklen_t          unsigned int
+#define size_t             unsigned int
 #define NI_MAXHOST  1025  /* Max size of a fully-qualified domain name */
 #define NI_MAXSERV    32  /* Max size of a service name */
 
@@ -2846,9 +2878,9 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 {
 
 #ifdef WIN32
-	union sockunion *localAddresses=NULL;
+   union sockunion *localAddresses=NULL;
 
-	SOCKET           s[MAXIMUM_WAIT_OBJECTS];
+   SOCKET           s[MAXIMUM_WAIT_OBJECTS];
     WSAEVENT         hEvent[MAXIMUM_WAIT_OBJECTS];
     WSAOVERLAPPED    ol[MAXIMUM_WAIT_OBJECTS];
     struct addrinfo *local=NULL,hints,
@@ -2859,12 +2891,12 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     int              socketcount=0,
                      addrbuflen=ADDRESS_LIST_BUFFER_SIZE,
                      rc,i, j,hostlen = NI_MAXHOST,servlen = NI_MAXSERV;
-	struct sockaddr_in Addr;
+   struct sockaddr_in Addr;
 
 
     /* Enumerate the local bind addresses - to wait for changes we only need
         one socket but to enumerate the addresses for a particular address
-      family, we need a socket of that type	*/
+      family, we need a socket of that type  */
 
     memset(&hints, 0, sizeof(hints));
     hints.ai_flags  = AI_PASSIVE;
@@ -2875,7 +2907,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     if ((rc = WspiapiLegacyGetAddrInfo(NULL,"0",&hints,&local))!=0)
     {
         local=NULL;
-		fprintf(stderr, "Unable to resolve the bind address!\n");
+      fprintf(stderr, "Unable to resolve the bind address!\n");
         return -1;
     }
 
@@ -2920,15 +2952,15 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
             }
 
             slist = (SOCKET_ADDRESS_LIST *)addrbuf;
-			localAddresses = calloc(slist->iAddressCount,sizeof(union sockunion));
+         localAddresses = calloc(slist->iAddressCount,sizeof(union sockunion));
             for(j=0; j < slist->iAddressCount ;j++)
             {
-				if ((rc = getnameinfo(slist->Address[j].lpSockaddr, slist->Address[j].iSockaddrLength,
-					host,hostlen,serv,servlen,NI_NUMERICHOST | NI_NUMERICSERV))!=0)
-					fprintf(stderr, "%s: getnameinfo failed: %d\n", __FILE__, rc);
-				Addr.sin_family=slist->Address[j].lpSockaddr->sa_family;
-				Addr.sin_addr.s_addr=inet_addr(host);
-				memcpy(&((localAddresses)[j]),&Addr,sizeof(Addr));
+            if ((rc = getnameinfo(slist->Address[j].lpSockaddr, slist->Address[j].iSockaddrLength,
+               host,hostlen,serv,servlen,NI_NUMERICHOST | NI_NUMERICSERV))!=0)
+               fprintf(stderr, "%s: getnameinfo failed: %d\n", __FILE__, rc);
+            Addr.sin_family=slist->Address[j].lpSockaddr->sa_family;
+            Addr.sin_addr.s_addr=inet_addr(host);
+            memcpy(&((localAddresses)[j]),&Addr,sizeof(Addr));
             }
 
             /* Register for change notification*/
@@ -2947,10 +2979,10 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     for(i=0; i < socketcount ;i++)
         closesocket(s[i]);
 
-	*addresses = localAddresses;
-	 *numberOfNets=slist->iAddressCount;
-	*max_mtu=1500;
-	return TRUE;
+   *addresses = localAddresses;
+    *numberOfNets=slist->iAddressCount;
+   *max_mtu=1500;
+   return TRUE;
 #else
 #if defined (LINUX)
     int addedNets;
@@ -2989,7 +3021,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     for (pos = 0; pos < cf.ifc_len; ) {
         ifrequest = (struct ifreq *)&buffer[pos];
 #ifdef SOLARIS
-		pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
+      pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
 #else
         pos += (ifrequest->ifr_addr.sa_len + sizeof(ifrequest->ifr_name));
 
@@ -3089,7 +3121,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 #ifdef USES_BSD_4_4_SOCKET
         /* use the sa_len to calculate where the next one will be */
 #ifdef SOLARIS
-		pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
+      pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
 #else
         pos += (ifrequest->ifr_addr.sa_len + sizeof(ifrequest->ifr_name));
 
@@ -3134,6 +3166,12 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
         }
         /* Ok get the address and save the flags */
         /*        intf_flags = local.ifr_flags; */
+        
+        if(!(local.ifr_flags & IFF_UP)) {
+            /* Interface is down */
+            continue;
+        }
+        
 
         if (flags & flag_HideLoopback){
             if (adl_filterInetAddress((union sockunion*)toUse, flag_HideLoopback) == FALSE){
@@ -3160,45 +3198,23 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
           */
         event_logii(VERBOSE, "Starting checking for duplicates ! MTU = %d, nets: %d",saveMTU, *numberOfNets);
 
-        if(*numberOfNets){
+        if(*numberOfNets) {
             tmp = *numberOfNets;
             dup = 0;
             /* scan for the dup */
             for(xxx=0; xxx < tmp; xxx++) {
                 event_logi(VERBOSE, "duplicates loop xxx=%d",xxx);
-                /* family's must match */
-                if ((&(localAddresses[xxx]))->sa.sa_family != toUse->sa_family) {
-                    continue;
+                if(adl_equal_address(&localAddresses[xxx], (union sockunion*)toUse)) {
+                   event_log(VERBOSE, "Interface %d, found duplicate");
+                   dup = 1;
                 }
-
-                if ((&(localAddresses[xxx]))->sa.sa_family == AF_INET){
-                    event_logi(VERBOSE, "Tested address is Family AF_INET, %x", ((struct sockaddr_in *)(toUse))->sin_addr.s_addr);
-
-                    if ( ((struct sockaddr_in *)(toUse))->sin_addr.s_addr ==
-                        (&(localAddresses[xxx]))->sin.sin_addr.s_addr){
-                        /* set the flag and break, it is a dup */
-                        event_logi(VERBOSE, "Interface %d, found duplicate AF_INET",ii);
-                        dup = 1;
-                        break;
-                    }
-#ifdef HAVE_IPV6
-                } else {
-                    if(IN6_ARE_ADDR_EQUAL(&(((struct sockaddr_in6 *)(toUse))->sin6_addr),
-                       &((&(localAddresses[xxx]))->sin6.sin6_addr))){
-                        /* set the flag and break, it is a dup */
-                        dup = 1;
-                        event_logi(VERBOSE, "Interface %d, found duplicate AF_INET6",ii);
-                        break;
-                    }
-#endif
-                }
-
             }
-            if(dup){
+            if(dup) {
                 /* skip the duplicate name/address we already have it*/
                 continue;
             }
         }
+
         /* copy address */
                 event_logi(VVERBOSE, "Copying %d bytes",copSiz);
         memcpy(&localAddresses[*numberOfNets],(char *)toUse,copSiz);

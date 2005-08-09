@@ -1,5 +1,5 @@
 /*
- *  $Id: globals.c,v 1.5 2003/10/28 22:00:15 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -324,8 +324,9 @@ void error_log1(short error_log_level, char *module_name, int line_no, char *log
     } else {
        fflush(stderr);
     }
-    if (error_log_level == ERROR_FATAL)
-        exit(EXIT_FAILURE);
+    if (error_log_level == ERROR_FATAL) {
+        abort();
+    }
 }
 
 /**
