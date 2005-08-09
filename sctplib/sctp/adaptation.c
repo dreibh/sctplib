@@ -3205,8 +3205,18 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
             for(xxx=0; xxx < tmp; xxx++) {
                 event_logi(VERBOSE, "duplicates loop xxx=%d",xxx);
                 if(adl_equal_address(&localAddresses[xxx], (union sockunion*)toUse)) {
-                   event_log(VERBOSE, "Interface %d, found duplicate");
-                   dup = 1;
+                   if((localAddresses[xxx].sa.sa_family == AF_INET6) &&
+                      (toUse->sa_family == AF_INET) &&
+                      (IN6_IS_ADDR_V4MAPPED(&localAddresses[xxx].sin6.sin6_addr) ||
+                       IN6_IS_ADDR_V4COMPAT(&localAddresses[xxx].sin6.sin6_addr))) {
+                      /* There are multiple interfaces, one has ::ffff:a.b.c.d or
+                         ::a.b.c.d address. Use address which is IPv4 native instead. */
+                      memcpy(&localAddresses[xxx], toUse, sizeof(localAddresses[xxx]));
+                   }
+                   else {
+                      event_log(VERBOSE, "Interface %d, found duplicate");
+                      dup = 1;
+                   }
                 }
             }
             if(dup) {
