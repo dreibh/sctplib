@@ -29,4 +29,4 @@ libsctplib_la_SOURCES  = adaptation.c adaptation.h \
 
 include_HEADERS        = sctp.h
 libsctplib_la_LIBADD   = @glib_LIBS@
-libsctplib_la_LDFLAGS  = -version-info 1:3:0
+libsctplib_la_LDFLAGS  = -version-info 1:4:0
