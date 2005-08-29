@@ -477,6 +477,10 @@ boolean adl_equal_address(union sockunion * a, union sockunion * b)
    const union sockunion* two;
    unsigned int           count;
 
+#ifdef __APPLE__
+#define s6_addr32 __u6_addr.__u6_addr32
+#endif
+
    if(a->sa.sa_family == AF_INET) {
       my_a.sin6.sin6_family = AF_INET6;
       my_a.sin6.sin6_port   = a->sin.sin_port;
