@@ -5,4 +5,4 @@ GLIB_DIR=$(ETHEREAL_LIBS)\glib-1.2-dev\src\glib-1.2
 
 SH=bash
 
-PATH=c:\cygwin\bin;$(PATH)
+PATH=$(PATH);c:\cygwin\bin
