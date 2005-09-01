@@ -1,5 +1,5 @@
 /*
- *  $Id: echo_tool.c,v 1.10 2005/03/08 13:29:52 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -612,13 +612,13 @@ int main(int argc, char **argv)
 
     /* set the TOS field */
 
-    SCTP_getAssocDefaults(sctpInstance, &instanceParameters);
+    SCTP_getAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
     instanceParameters.maxSendQueue = 0;
     instanceParameters.ipTos=tosByte;
-    SCTP_setAssocDefaults(sctpInstance, &instanceParameters);
+    SCTP_setAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
     
     if (startAssociation) {
-        SCTP_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, &ulpData[0]);
+        SCTP_associate((unsigned short)sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, &ulpData[0]);
     }
     
     if (doMeasurements) {

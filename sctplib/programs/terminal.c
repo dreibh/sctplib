@@ -1,5 +1,5 @@
 /*
- *  $Id: terminal.c,v 1.15 2005/03/08 13:29:52 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -378,7 +378,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
                       
     /* delete the association, instace and terminate */
     SCTP_deleteAssociation(assocID);
-    SCTP_unregisterInstance(sctpInstance);
+    SCTP_unregisterInstance((unsigned short)sctpInstance);
     exit(0);
 }
 
@@ -407,7 +407,7 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
     
     /* delete the association, instance and terminate */
     SCTP_deleteAssociation(assocID);
-    SCTP_unregisterInstance(sctpInstance);
+    SCTP_unregisterInstance((unsigned short)sctpInstance);
     exit(0); 
 }
 
@@ -478,17 +478,17 @@ int main(int argc, char **argv)
                                        terminalUlp);
 
     /* set the TOS byte */
-    SCTP_getAssocDefaults(sctpInstance, &instanceParameters);
+    SCTP_getAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
     instanceParameters.ipTos               = tosByte;
     instanceParameters.rtoMin              = rto_min;
     instanceParameters.rtoMax              = rto_max;
     instanceParameters.rtoInitial          = rto_min;
     if (myRwndSpecified)
       instanceParameters.myRwnd = myRwnd;
-    SCTP_setAssocDefaults(sctpInstance, &instanceParameters);
+    SCTP_setAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
 
     SCTP_registerStdinCallback(&stdinCallback, buffer, sizeof(buffer));
-    associationID=SCTP_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
+    associationID=SCTP_associate((unsigned short)sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
     
     /* run the event handler forever */
     while (1){

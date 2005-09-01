@@ -1,5 +1,5 @@
 /*
- *  $Id: combined_server.c,v 1.11 2005/03/08 13:29:52 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -665,9 +665,9 @@ int main(int argc, char **argv)
                                          noOfLocalAddresses, localAddressList,
                                          chargenUlp);
     
-    SCTP_getAssocDefaults(sctpInstance, &instanceParameters);
+    SCTP_getAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
     instanceParameters.maxSendQueue = SEND_QUEUE_SIZE;
-    SCTP_setAssocDefaults(sctpInstance, &instanceParameters);
+    SCTP_setAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
 
     /* run the event handler forever */
     while (1) {
