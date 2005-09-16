@@ -477,7 +477,7 @@ boolean adl_equal_address(union sockunion * a, union sockunion * b)
    const union sockunion* two;
    unsigned int           count;
 
-#ifdef __APPLE__
+#if defined __APPLE__ || defined FreeBSD
 #define s6_addr32 __u6_addr.__u6_addr32
 #endif
 
