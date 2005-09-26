@@ -505,7 +505,7 @@ boolean adl_equal_address(union sockunion * a, union sockunion * b)
    else {
       two = b;
    }
-#else   
+#else
    const union sockunion* one = a;
    const union sockunion* two = b;
 #endif
@@ -1082,6 +1082,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         rcmsgp->cmsg_type = IPV6_PKTINFO;
         rcmsgp->cmsg_len = CMSG_LEN (sizeof (struct in6_pktinfo));
 
+        rmsghdr.msg_flags = 0;
         rmsghdr.msg_iov = &data_vec;
         rmsghdr.msg_iovlen = 1;
         rmsghdr.msg_name =      (caddr_t) &(from->sin6);
@@ -3170,12 +3171,12 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
         }
         /* Ok get the address and save the flags */
         /*        intf_flags = local.ifr_flags; */
-        
+
         if(!(local.ifr_flags & IFF_UP)) {
             /* Interface is down */
             continue;
         }
-        
+
 
         if (flags & flag_HideLoopback){
             if (adl_filterInetAddress((union sockunion*)toUse, flag_HideLoopback) == FALSE){
