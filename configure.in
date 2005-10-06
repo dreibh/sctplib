@@ -117,7 +117,7 @@ solaris*)
 	LDFLAGS="$LDFLAGS -lsocket -lnsl -lrt -lresolv"
 	;;
 darwin*)
-	CFLAGS="$CFLAGS -O0 -DDARWIN -Wall -ansi -Wformat"
+	CFLAGS="$CFLAGS -O0 -DDARWIN -Wall -Wformat"
 	thread_LIBS="-lpthread"
 	;;
 esac

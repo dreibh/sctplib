@@ -259,7 +259,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
                      unsigned short streamSN, unsigned int TSN, unsigned int protoID,
                      unsigned int unordered, void* ulpDataPtr)
 {
-    unsigned char chunk[SCTP_MAXIMUM_DATA_LENGTH + 1];
+    unsigned char chunk[SCTP_MAXIMUM_DATA_LENGTH];
     unsigned int length;
     unsigned short ssn;
     unsigned int the_tsn;
@@ -273,8 +273,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
         
     length = SCTP_MAXIMUM_DATA_LENGTH;
     SCTP_receive(assocID, streamID, chunk, &length, &ssn, &the_tsn, SCTP_MSG_DEFAULT);
-    chunk[length] = 0;
-    fprintf(stdout, "%s", chunk);
+    fprintf(stdout, "%.*s", length, chunk);
     fflush(stdout);
 }
 
@@ -359,8 +358,8 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnsent(assocID, buffer, &bufferLength, &tsn, &streamID, &streamSN, &protoID) >= 0){
         if (vverbose) {
-            fprintf(stdout, "%-8x: Unsent data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %s", 
-                            assocID, bufferLength, tsn, streamID, streamSN, protoID, buffer);
+            fprintf(stdout, "%-8x: Unsent data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %.*s", 
+                            assocID, bufferLength, tsn, streamID, streamSN, protoID, bufferLength, buffer);
             fflush(stdout);
         }
         bufferLength = sizeof(buffer);
@@ -369,8 +368,8 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnacked(assocID, buffer, &bufferLength, &tsn, &streamID, &streamSN, &protoID) >= 0){
         if (vverbose) {
-            fprintf(stdout, "%-8x: Unacked data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %s", 
-                            assocID, bufferLength, tsn, streamID, streamSN, protoID, buffer);
+            fprintf(stdout, "%-8x: Unacked data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %.*s", 
+                            assocID, bufferLength, tsn, streamID, streamSN, protoID, bufferLength, buffer);
             fflush(stdout);
         }
         bufferLength = sizeof(buffer);

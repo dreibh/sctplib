@@ -1,5 +1,5 @@
 /*
- *  $Id: auxiliary.c,v 1.5 2003/11/21 14:41:21 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -129,17 +129,17 @@ unsigned long  crc_c[256] =
     0xBE2DA0A5L, 0x4C4623A6L, 0x5F16D052L, 0xAD7D5351L,
 };
 
-int insert_adler32(unsigned char *buffer, int length);
-int insert_crc32(unsigned char *buffer, int length);
-int validate_adler32(unsigned char *header_start, int length);
-int validate_crc32(unsigned char *buffer, int length);
+static int insert_adler32(unsigned char *buffer, int length);
+static int insert_crc32(unsigned char *buffer, int length);
+static int validate_adler32(unsigned char *header_start, int length);
+static int validate_crc32(unsigned char *buffer, int length);
 
 
 static int (*insert_checksum) (unsigned char* buffer, int length) = insert_crc32;
 static int (*validate_checksum) (unsigned char* buffer, int length) = validate_crc32;
 
 
-unsigned int adler32(unsigned int adler, const unsigned char *buf, unsigned int len);
+static unsigned int sctp_adler32(unsigned int adler, const unsigned char *buf, unsigned int len);
 
 
 int set_checksum_algorithm(int algorithm){
@@ -187,7 +187,7 @@ int aux_insert_checksum(unsigned char *buffer, int length)
 }
 
 
-int insert_adler32(unsigned char *buffer, int length)
+static int insert_adler32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
     unsigned int a32;
@@ -199,7 +199,7 @@ int insert_adler32(unsigned char *buffer, int length)
 
     /* now compute the thingie */
     /* FIXME : sanity checks for size etc. */
-    a32 = adler32(1L, buffer, length);
+    a32 = sctp_adler32(1L, buffer, length);
 
     /* and insert it into the message */
     message->common_header.checksum = htonl(a32);
@@ -209,7 +209,7 @@ int insert_adler32(unsigned char *buffer, int length)
     return 1;
 }
 
-unsigned long generate_crc32c(unsigned char *buffer, int length)
+static unsigned long generate_crc32c(unsigned char *buffer, int length)
 {
     unsigned long crc32 = ~0L;
     int i;
@@ -233,7 +233,7 @@ unsigned long generate_crc32c(unsigned char *buffer, int length)
 
 }
 
-int insert_crc32(unsigned char *buffer, int length)
+static int insert_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
     unsigned long crc32c;
@@ -264,7 +264,7 @@ int validate_size(unsigned char *header_start, int length)
 
 
 
-int validate_adler32(unsigned char *header_start, int length)
+static int validate_adler32(unsigned char *header_start, int length)
 {
     SCTP_message *message;
     unsigned int old_crc32;
@@ -279,14 +279,14 @@ int validate_adler32(unsigned char *header_start, int length)
     message->common_header.checksum = htonl(0L);
 
     /* now compute the thingie */
-    a32 = adler32(1L, header_start, length);
+    a32 = sctp_adler32(1L, header_start, length);
 
     event_logi(VVERBOSE, "DEBUG Validation : my adler32 == %x", a32);
     if (a32 == old_crc32)  return 1;
     return 0;
 }
 
-int validate_crc32(unsigned char *buffer, int length)
+static int validate_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
     unsigned long original_crc32;
@@ -324,7 +324,7 @@ int validate_datagram(unsigned char *buffer, int length)
  * For conditions of distribution and use, see copyright notice in zlib.h
  * available, e.g. from  http://www.cdrom.com/pub/infozip/zlib/
  */
-unsigned int adler32(unsigned int adler, const unsigned char *buf, unsigned int len)
+static unsigned int sctp_adler32(unsigned int adler, const unsigned char *buf, unsigned int len)
 {
     unsigned int s1 = adler & 0xffff;
     unsigned int s2 = (adler >> 16) & 0xffff;
