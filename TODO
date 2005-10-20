@@ -2,6 +2,7 @@
 
 No, this implementation is NOT CARRIER GRADE :-)
 
+- Implement ICMP handling.
 - Fix SACK timer handling.
 - Get IPv6 support for Tiger running
 - Fix auto* problem on FC 4
