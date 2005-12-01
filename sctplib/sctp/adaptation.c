@@ -3210,6 +3210,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
             for(xxx=0; xxx < tmp; xxx++) {
                 event_logi(VERBOSE, "duplicates loop xxx=%d",xxx);
                 if(adl_equal_address(&localAddresses[xxx], (union sockunion*)toUse)) {
+#ifdef HAVE_IPV6
                    if((localAddresses[xxx].sa.sa_family == AF_INET6) &&
                       (toUse->sa_family == AF_INET) &&
                       (IN6_IS_ADDR_V4MAPPED(&localAddresses[xxx].sin6.sin6_addr) ||
@@ -3219,9 +3220,12 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
                       memcpy(&localAddresses[xxx], toUse, sizeof(localAddresses[xxx]));
                    }
                    else {
+#endif
                       event_log(VERBOSE, "Interface %d, found duplicate");
                       dup = 1;
+#ifdef HAVE_IPV6
                    }
+#endif
                 }
             }
             if(dup) {
@@ -3231,9 +3235,9 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
         }
 
         /* copy address */
-                event_logi(VVERBOSE, "Copying %d bytes",copSiz);
+        event_logi(VVERBOSE, "Copying %d bytes",copSiz);
         memcpy(&localAddresses[*numberOfNets],(char *)toUse,copSiz);
-                event_log(VVERBOSE, "Setting Family");
+        event_log(VVERBOSE, "Setting Family");
         /* set family */
         (&(localAddresses[*numberOfNets]))->sa.sa_family = toUse->sa_family;
 
