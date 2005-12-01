@@ -1,6 +1,6 @@
 
 /*
- * $Id: streamengine.c,v 1.16 2005/05/19 22:17:21 tuexen Exp $
+ * $ID: streamengine.c 633 2005-05-19 22:17:21Z tuexen $
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
@@ -662,6 +662,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
 
 
     se->List = g_list_insert_sorted(se->List, d_chunk, (GCompareFunc) sort_tsn_se);
+    se->queuedBytes += datalength;
 
     se->recvStreamActivated[d_chunk->stream_id] = TRUE;
     return 0;
