@@ -549,7 +549,7 @@ int adl_setReceiveBufferSize(int sfd,int new_size)
 gint adl_open_sctp_socket(int af, int* myRwnd)
 {
     int sfd, ch;
-    int opt_size;
+    size_t opt_size;
 #ifdef WIN32
     struct sockaddr_in me;
 #endif
@@ -762,7 +762,8 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
 {
     int txmt_len = 0;
     unsigned char old_tos;
-    int opt_len, tmp;
+    size_t opt_len;
+    int tmp;
 #ifdef SCTP_OVER_UDP
     guchar      outBuffer[65536];
     udp_header* udp;
@@ -1136,7 +1137,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
  * @param    from_len size of the address
  * @return returns number of bytes received with this call
  */
-int adl_get_message(int sfd, void *dest, int maxlen, union sockunion *from, int *from_len)
+int adl_get_message(int sfd, void *dest, int maxlen, union sockunion *from, size_t *from_len)
 {
     int len;
 
@@ -1156,7 +1157,8 @@ int adl_get_message(int sfd, void *dest, int maxlen, union sockunion *from, int 
 void dispatch_event(int num_of_events)
 {
     int i = 0;
-    int length=0, src_len;
+    int length=0;
+    size_t src_len;
     union sockunion src, dest;
     struct sockaddr_in *src_in;
     guchar src_address[SCTP_MAX_IP_LEN];
@@ -1705,7 +1707,7 @@ int adl_init_adaptation_layer(int * myRwnd)
     dummy_sctp_udp = open_dummy_socket(AF_INET);
     if(dummy_sctp_udp < 0) {
         error_log(ERROR_MAJOR, "Could not open UDP dummy socket !");
-        sctpv6_sfd = -1;
+        return dummy_sctp_udp;
     }
 #endif
 
