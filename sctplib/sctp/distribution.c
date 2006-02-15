@@ -1,5 +1,5 @@
 /*
- *  $Id: distribution.c,v 1.39 2005/08/04 10:49:29 dreibh Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -4516,7 +4516,9 @@ myNumberOfAddresses);
             sctpInstance->noOfLocalAddresses);
     }
     event_logi(INTERNAL_EVENT_0, "mdi_readLocalAddresses() : returning %u addresses !",count);
+    /*
     if (count == 0) exit(-100);
+    */
 
     *noOfAddresses = count;
 }
