@@ -1064,7 +1064,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
             return -1;
         }
-        ptr = (char*)udp;
+        ptr = (unsigned char*)udp;
         for(i = 0;i < len - (sizeof(struct iphdr) + sizeof(udp_header));i++) {
            *ptr = ptr[sizeof(udp_header)];
            ptr++;
@@ -1112,7 +1112,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
             return -1;
         }
-        ptr = (char*)udp;
+        ptr = (unsigned char*)udp;
         for(i = 0;i < len - sizeof(udp_header);i++) {
            *ptr = ptr[sizeof(udp_header)];
            ptr++;
