@@ -1626,6 +1626,7 @@ int open_dummy_socket(int family)
       return -1;
    }
 
+   on = 1;
    if(setsockopt(sd,SOL_SOCKET,SO_REUSEADDR,&on,sizeof(on)) < 0) {
       close(sd);
       return -1;
