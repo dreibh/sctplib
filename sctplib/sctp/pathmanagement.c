@@ -1,5 +1,5 @@
 /*
- *  $Id: pathmanagement.c,v 1.15 2004/11/17 21:10:12 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -184,14 +184,14 @@ static gboolean handleChunksRetransmitted(short pathID)
                  pathID, pmData->pathData[pathID].pathRetranscount, pmData->peerRetranscount);
 
     if (pmData->pathData[pathID].state == PM_PATH_UNCONFIRMED) {
-    
+
         pmData->pathData[pathID].pathRetranscount++;
-        
+
     } else if (pmData->pathData[pathID].state == PM_ACTIVE) {
-    
+
         pmData->pathData[pathID].pathRetranscount++;
         pmData->peerRetranscount++;
-        
+
     } else {
         event_log(INTERNAL_EVENT_0,
                   "handleChunksRetransmitted: ignored, because already inactive");
@@ -497,14 +497,14 @@ void pm_heartbeatAck(SCTP_heartbeat * heartbeatChunk)
         error_log(ERROR_FATAL, "pm_heartbeatAck: FALSE SIGNATURE !!!!!!!!!!!!!!!");
         return;
     }
-    
+
     ch_forgetChunk(heartbeatCID);
 
     if (!(pathID >= 0 && pathID < pmData->numberOfPaths)) {
         error_logi(ERROR_MAJOR, "pm_heartbeatAck: invalid path ID %d", pathID);
         return;
     }
-    
+
     /* this also resets error counters */
     handleChunksAcked(pathID, roundtripTime);
 
@@ -827,6 +827,7 @@ int pm_disableHB(short pathID)
 
     if (pmData->pathData[pathID].heartbeatEnabled) {
         sctp_stopTimer(pmData->pathData[pathID].hearbeatTimer);
+        pmData->pathData[pathID].hearbeatTimer = 0;
         pmData->pathData[pathID].heartbeatEnabled = FALSE;
         event_logi(INTERNAL_EVENT_0, "pm_disableHB: path %d disabled", (unsigned int) pathID);
     }
@@ -1119,7 +1120,7 @@ int  pm_getRtoMax(void)
 int  pm_setHBInterval(unsigned int new_interval)
 {
     int count;
-    
+
     pmData = (PathmanData *) mdi_readPathMan();
 
     if (pmData == NULL) {
@@ -1215,7 +1216,7 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
             pmData->pathData[i].pathID = i;
 
             b = mdi_getDefaultMaxBurst();
-            
+
             if (i != primaryPathID) {
                 j++;
                 if (j < b) {
@@ -1240,7 +1241,7 @@ short pm_setPaths(short noOfPaths, short primaryPathID)
                                     TIMER_TYPE_HEARTBEAT,
                                     (void *) &pmData->associationID,
                                     (void *) &pmData->pathData[i].pathID);
-            }                
+            }
             /* after RTO we can do next RTO update */
             adl_gettime(&(pmData->pathData[i].rto_update));
 
@@ -1302,8 +1303,10 @@ void pm_deletePathman(void *pathmanPtr)
 
     if (pmData != NULL && pmData->pathData != NULL) {
         for (i = 0; i < pmData->numberOfPaths; i++) {
-            if (pmData->pathData[i].state == PM_ACTIVE)
-                sctp_stopTimer(pmData->pathData[i].hearbeatTimer);
+            if (pmData->pathData[i].hearbeatTimer != 0) {
+                adl_stopTimer(pmData->pathData[i].hearbeatTimer);
+                pmData->pathData[i].hearbeatTimer = 0;
+            }
         }
     }
 
