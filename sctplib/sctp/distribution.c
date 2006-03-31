@@ -1910,6 +1910,8 @@ int sctp_unregisterInstance(unsigned short instance_name)
 {
     /* Look through the instance list, and delete instance, when
        found, else return error. */
+    Association* assoc;
+    GList* assocIterator = NULL;
     SCTP_instance temporary;
     SCTP_instance* instance;
     guint32 fds;
@@ -1933,7 +1935,6 @@ int sctp_unregisterInstance(unsigned short instance_name)
 #ifdef HAVE_IPV6
         with_ipv6 =  instance->uses_IPv6;
 #endif
-
         event_logi(INTERNAL_EVENT_0, "sctp_unregisterInstance: SCTP Instance %u found !!!", instance_name);
 #ifdef HAVE_IPV6
         event_logi(VERBOSE, "sctp_unregisterInstance : with_ipv6: %s ",(with_ipv6==TRUE)?"TRUE":"FALSE" );
@@ -1943,6 +1944,16 @@ int sctp_unregisterInstance(unsigned short instance_name)
         if (with_ipv4 == TRUE) ipv4_users--;
         event_logi(VERBOSE, "sctp_unregisterInstance : with_ipv4: %s ",(with_ipv4==TRUE)?"TRUE":"FALSE" );
         event_logi(VERBOSE, "sctp_unregisterInstance : ipv4_users: %u ",ipv4_users);
+
+        assocIterator = g_list_first(AssociationList);
+        while(assocIterator) {
+           assoc = assocIterator->data;
+           if(assoc->sctpInstance == instance) {
+              event_logi(ERROR_FATAL, "sctp_unregisterInstance : instance still used by assoc %u !!!", assoc->assocId);
+              abort();
+           }
+           assocIterator = g_list_next(assocIterator);
+        }
 
         if (sctp_socket != 0 &&  ipv4_users == 0) {
             fds = adl_remove_poll_fd(sctp_socket);
@@ -3692,7 +3703,7 @@ void mdi_peerShutdownReceivedNotif(void)
         if(sctpInstance->ULPcallbackFunctions.peerShutdownReceivedNotif) {
             ENTER_CALLBACK("shutdownCompleteNotif");
             sctpInstance->ULPcallbackFunctions.peerShutdownReceivedNotif(currentAssociation->assocId,
-                                                                     currentAssociation->ulp_dataptr);
+                                                                         currentAssociation->ulp_dataptr);
             LEAVE_CALLBACK("peerShutdownReceivedNotif");
         }
     } else {
