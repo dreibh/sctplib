@@ -703,6 +703,8 @@ static void mdi_removeAssociationData(Association * assoc)
     if (assoc != NULL) {
         event_logi(INTERNAL_EVENT_0, "Deleting association %08x ", assoc->assocId);
 
+printf("REMOVE-ASSOC: i=%d assoc=%d\n", assoc->sctpInstance->sctpInstanceName, assoc->assocId);
+
         /* free module data */
         if (assoc->tagRemote != 0) {
             /* association init was already completed */
@@ -1949,6 +1951,7 @@ int sctp_unregisterInstance(unsigned short instance_name)
         while(assocIterator) {
            assoc = assocIterator->data;
            if(assoc->sctpInstance == instance) {
+              printf("Scheiße!   i=%d assoc=%d\n", assoc->sctpInstance->sctpInstanceName, assoc->assocId);
               event_logi(ERROR_FATAL, "sctp_unregisterInstance : instance still used by assoc %u !!!", assoc->assocId);
               abort();
            }
@@ -2036,6 +2039,8 @@ int sctp_deleteAssociation(unsigned int associationID)
             return SCTP_SPECIFIC_FUNCTION_ERROR;
         }
         /* remove the association from the list */
+        printf("DELETE-ASSOC: i=%d assoc=%d\n", assoc->sctpInstance->sctpInstanceName, assoc->assocId);
+
         AssociationList = g_list_remove(AssociationList, assoc);
         event_log(INTERNAL_EVENT_0, "sctp_deleteAssociation: Deleted Association from list");
         /* free all association data */
