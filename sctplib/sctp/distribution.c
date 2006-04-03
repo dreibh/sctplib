@@ -1877,6 +1877,7 @@ sctp_registerInstance(unsigned short port,
         LEAVE_LIBRARY("sctp_registerInstance");
         return SCTP_OUT_OF_RESOURCES;
     }
+printf("INSTANCE-NEW i=%d\n",sctpInstance->sctpInstanceName);
 
     sctpInstance->ULPcallbackFunctions = ULPcallbackFunctions;
 
@@ -1928,6 +1929,8 @@ int sctp_unregisterInstance(unsigned short instance_name)
     CHECK_LIBRARY;
 
     event_logi(INTERNAL_EVENT_0, "Removing SCTP Instance %u from list", instance_name);
+
+printf("INSTANCE-UNREG i=%d\n",instance_name);
 
     temporary.sctpInstanceName = instance_name;
     result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
