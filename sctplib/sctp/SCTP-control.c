@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.c,v 1.20 2005/08/04 10:49:29 dreibh Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -1934,15 +1934,15 @@ int sctlr_shutdownAck()
         }
         break;
     case ESTABLISHED:
-        error_log(ERROR_FATAL,
+        error_log(ERROR_MAJOR,
                   "sctlr_shutdownAck in state ESTABLISHED, peer not standard conform ! ");
         break;
     case SHUTDOWNPENDING:
-        error_log(ERROR_FATAL,
+        error_log(ERROR_MAJOR,
                   "sctlr_shutdownAck in state SHUTDOWNPENDING, peer not standard conform ! ");
         break;
     case SHUTDOWNRECEIVED:
-        error_log(ERROR_FATAL,
+        error_log(ERROR_MAJOR,
                   "sctlr_shutdownAck in state SHUTDOWNRECEIVED, peer not standard conform ! ");
         break;
 
