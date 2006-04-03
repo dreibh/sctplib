@@ -1928,7 +1928,7 @@ int sctp_unregisterInstance(unsigned short instance_name)
     event_logi(INTERNAL_EVENT_0, "Removing SCTP Instance %u from list", instance_name);
 
     temporary.sctpInstanceName = instance_name;
-    result = g_list_find_custom(InstanceList, &temporary,&CompareInstanceNames);
+    result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
     if (result != NULL) {
         instance =  result->data;
         with_ipv4 =  instance->uses_IPv4;
@@ -2137,6 +2137,7 @@ unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
     withPRSCTP = librarySupportsPRSCTP;
 
     /* Create new association */
+    puts("NEW associate() ...");
     if (mdi_newAssociation(sctpInstance,
                            zlocalPort, /* local client port */
                            destinationPort, /* remote server port */
@@ -4867,6 +4868,9 @@ mdi_newAssociation(void*  sInstance,
     event_logi(INTERNAL_EVENT_0, "entering association %08x into list", currentAssociation->assocId);
 
     AssociationList = g_list_insert_sorted(AssociationList,currentAssociation, &compareAssociationIDs);
+
+
+printf("NEW-ASSOC: i=%d assoc=%d\n", currentAssociation->sctpInstance->sctpInstanceName, currentAssociation->assocId);
 
     return 0;
 

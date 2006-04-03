@@ -1359,6 +1359,7 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         primaryDestinationAddress = 0;
 
         /* why is INSTANCE_NAME here zero ? */
+        puts("NEW accept ...");
         noSuccess = mdi_newAssociation(NULL, mdi_readLastDestPort(),
                                         mdi_readLastFromPort(),
                                         cookie_local_tag, /* this is MY tag */
