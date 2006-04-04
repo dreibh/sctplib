@@ -158,7 +158,6 @@ static SCTP_controlData *localData;
 static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *unused)
 {
     unsigned int state;
-    boolean initFailed;
     ChunkID shutdownCID;
     ChunkID shutdownAckCID;
     guint primary;
@@ -179,8 +178,6 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
     }
 
     state = localData->association_state;
-    initFailed = FALSE;
-
     primary = pm_readPrimaryPath();
 
     event_logiii(VERBOSE, "sci_timer_expired(AssocID=%u,  state=%u, Primary=%u",
@@ -208,13 +205,12 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
             event_log(EXTERNAL_EVENT,
                       "init retransmission counter exeeded threshold in state COOKIE_WAIT");
             /* report error to ULP tbd: status */
+            mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
             /* free memory for initChunk */
             free(localData->initChunk);
             localData->initTimer = 0;
             localData->initChunk = NULL;
-            /* delete this association */
-            initFailed = TRUE;
         }
         break;
 
@@ -240,13 +236,12 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
             event_log(EXTERNAL_EVENT,
                       "init retransmission counter exeeded threshold; state: COOKIE_ECHOED");
             /* report error to ULP tbd: status */
+            mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
             /* free memory for cookieChunk */
             free(localData->cookieChunk);
             localData->initTimer = 0;
             localData->cookieChunk = NULL;
-            /* delete this association */
-            initFailed = TRUE;
         }
         break;
 
@@ -275,10 +270,10 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
                 adl_startTimer(localData->initTimerDuration, &sci_timer_expired, TIMER_TYPE_SHUTDOWN,
                                 (void *) &localData->associationID, NULL);
         } else {
+            /* shut down failed, delete current association. */
+            mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
             localData->initTimer = 0;
-            /* shut down failed, delete current association. */
-            initFailed = TRUE;
         }
         break;
 
@@ -311,10 +306,9 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
                 adl_startTimer(localData->initTimerDuration, &sci_timer_expired, TIMER_TYPE_SHUTDOWN,
                                 (void *) &localData->associationID, NULL);
         } else {
+            mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
             localData->initTimer = 0;
-            /* shut down failed, delete current association. */
-            initFailed = TRUE;
         }
         break;
 
@@ -326,10 +320,6 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
     }
 
     localData = NULL;
-    if (initFailed == TRUE) {
-        mdi_deleteCurrentAssociation();
-    }
-
     mdi_clearAssociationData();
 }
 

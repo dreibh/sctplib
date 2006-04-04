@@ -3812,8 +3812,8 @@ void mdi_communicationLostNotif(unsigned short status)
         if(sctpInstance->ULPcallbackFunctions.communicationLostNotif) {
             ENTER_CALLBACK("communicationLostNotif");
             sctpInstance->ULPcallbackFunctions.communicationLostNotif(currentAssociation->assocId,
-                                                                       status,
-                                                                       currentAssociation->ulp_dataptr);
+                                                                      status,
+                                                                      currentAssociation->ulp_dataptr);
             LEAVE_CALLBACK("communicationLostNotif");
         }
     } else {
