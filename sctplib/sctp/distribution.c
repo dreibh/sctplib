@@ -703,8 +703,6 @@ static void mdi_removeAssociationData(Association * assoc)
     if (assoc != NULL) {
         event_logi(INTERNAL_EVENT_0, "Deleting association %08x ", assoc->assocId);
 
-printf("REMOVE-ASSOC: i=%d assoc=%d\n", assoc->sctpInstance->sctpInstanceName, assoc->assocId);
-
         /* free module data */
         if (assoc->tagRemote != 0) {
             /* association init was already completed */
@@ -1620,6 +1618,7 @@ gboolean mdi_checkForCorrectAddress(union sockunion* su)
     return found;
 }
 
+/*
 static void printAssocList()
 {
    Association* assoc;
@@ -1632,7 +1631,7 @@ static void printAssocList()
       iterator = g_list_next(iterator);
    }
 }
-
+*/
 
 /**
  *  sctp_registerInstance is called to initialize one SCTP-instance.
@@ -1890,7 +1889,6 @@ sctp_registerInstance(unsigned short port,
         LEAVE_LIBRARY("sctp_registerInstance");
         return SCTP_OUT_OF_RESOURCES;
     }
-printf("INSTANCE-NEW i=%d\n",sctpInstance->sctpInstanceName);
 
     sctpInstance->ULPcallbackFunctions = ULPcallbackFunctions;
 
@@ -1942,8 +1940,6 @@ int sctp_unregisterInstance(unsigned short instance_name)
     CHECK_LIBRARY;
 
     event_logi(INTERNAL_EVENT_0, "Removing SCTP Instance %u from list", instance_name);
-
-printf("INSTANCE-UNREG i=%d\n",instance_name);
 
     temporary.sctpInstanceName = instance_name;
     result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
@@ -2046,12 +2042,8 @@ int sctp_deleteAssociation(unsigned int associationID)
     assocFindP = &tmpAssoc;
     assoc = NULL;
 
-printf("DELETE-1: assoc=%d\n", associationID);
-printAssocList();
-
     result = g_list_find_custom(AssociationList, assocFindP, &compareAssociationIDs);
     if (result != NULL) {
-printf("DELETE-2: assoc=%d\n", associationID);
         assoc = (Association *)result->data;
         if (!assoc->deleted) {
             error_log(ERROR_MAJOR, "Deleted-Flag not set, returning from sctp_deleteAssociation !");
@@ -2059,16 +2051,11 @@ printf("DELETE-2: assoc=%d\n", associationID);
             return SCTP_SPECIFIC_FUNCTION_ERROR;
         }
         /* remove the association from the list */
-        printf("DELETE-ASSOC: i=%d assoc=%d\n", assoc->sctpInstance->sctpInstanceName, assoc->assocId);
-
         AssociationList = g_list_remove(AssociationList, assoc);
         event_log(INTERNAL_EVENT_0, "sctp_deleteAssociation: Deleted Association from list");
         /* free all association data */
         mdi_removeAssociationData(assoc);
         LEAVE_LIBRARY("sctp_deleteAssociation");
-
-printAssocList();
-
         return SCTP_SUCCESS;
     } else {
         event_logi(INTERNAL_EVENT_0, "association %08x not in list", associationID);
@@ -2165,7 +2152,6 @@ unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
     withPRSCTP = librarySupportsPRSCTP;
 
     /* Create new association */
-    puts("NEW associate() ...");
     if (mdi_newAssociation(sctpInstance,
                            zlocalPort, /* local client port */
                            destinationPort, /* remote server port */
@@ -4897,12 +4883,7 @@ mdi_newAssociation(void*  sInstance,
 
     AssociationList = g_list_insert_sorted(AssociationList,currentAssociation, &compareAssociationIDs);
 
-
-printf("NEW-ASSOC: i=%d assoc=%d\n", currentAssociation->sctpInstance->sctpInstanceName, currentAssociation->assocId);
-printAssocList();
-
     return 0;
-
 }                               /* end: mdi_newAssociation */
 
 
