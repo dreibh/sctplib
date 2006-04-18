@@ -5004,12 +5004,22 @@ mdi_restartAssociation(unsigned short noOfInStreams,
     currentAssociation->peerSupportsPRSCTP = withPRSCTP;
     currentAssociation->supportsPRSCTP     = withPRSCTP;
 
-    se_delete_stream_engine(currentAssociation->streamengine);
+    if(currentAssociation->streamengine) {
+       se_delete_stream_engine(currentAssociation->streamengine);
+    }
+    else {
+       error_log(ERROR_MAJOR, "mdi_restartAssociation: currentAssociation->streamengine is NULL !");
+    }
     currentAssociation->streamengine = (void *) se_new_stream_engine(noOfInStreams,
                                                                      noOfOutStreams,withPRSCTP);
 
-    pm_deletePathman(currentAssociation->pathMan);
-    currentAssociation->pathMan = NULL;
+    if(currentAssociation->pathMan) {
+       pm_deletePathman(currentAssociation->pathMan);
+       currentAssociation->pathMan = NULL;
+    }
+    else {
+       error_log(ERROR_MAJOR, "mdi_restartAssociation: currentAssociation->pathMan is NULL !");
+    }
 
     /* frees old address-list before assigning new one */
     mdi_writeDestinationAddresses(destinationAddressList, noOfPaths);

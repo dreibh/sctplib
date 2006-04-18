@@ -1,5 +1,5 @@
 /*
- *  $Id: SCTP-control.h,v 1.6 2004/11/17 23:04:09 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -64,20 +64,20 @@
 #include "sctp.h"
 
 /* The states of SCTP-control */
-#define CLOSED           0
-#define COOKIE_WAIT      1
-#define COOKIE_ECHOED      2
-#define ESTABLISHED      3
-#define SHUTDOWNPENDING  4
-#define SHUTDOWNRECEIVED 5
-#define SHUTDOWNSENT     6
-#define SHUTDOWNACKSENT  7
+#define CLOSED           SCTP_CLOSED
+#define COOKIE_WAIT      SCTP_COOKIE_WAIT
+#define COOKIE_ECHOED    SCTP_COOKIE_ECHOED
+#define ESTABLISHED      SCTP_ESTABLISHED
+#define SHUTDOWNPENDING  SCTP_SHUTDOWN_PENDING
+#define SHUTDOWNRECEIVED SCTP_SHUTDOWN_RECEIVED
+#define SHUTDOWNSENT     SCTP_SHUTDOWN_SENT
+#define SHUTDOWNACKSENT  SCTP_SHUTDOWNACK_SENT
 
 /* Return codes for a number of functions that treat incoming chunks */
 /* these are used in the rbundling module !                          */
 #define STATE_STOP_PARSING_REMOVED  -1
-#define STATE_OK        0
-#define STATE_STOP_PARSING  1
+#define STATE_OK                     0
+#define STATE_STOP_PARSING           1
 
 /******************** Function Definitions ********************************************************/
 
@@ -126,7 +126,7 @@ void scu_abort(short error_type, unsigned short error_param_length, unsigned cha
      and a signature.
    - local tag: randomly generated, is included in the cookie and the initiate tag field of the
                 init acknowledgement.
-   - inititial TSN: randomly generated, is included in the cookie and the initial TSN field of the 
+   - inititial TSN: randomly generated, is included in the cookie and the initial TSN field of the
                     init acknowledgement.
    Params: init:    data of init-chunk including optional parameters without chunk header
 */
@@ -141,7 +141,7 @@ int sctlr_init(SCTP_init * init);
    - # of send streams of the peer, must be lower or equal the # of receive streams this host
      has 'announced' with the init-chunk.
    - # of receive streams the peer allows the receiver of this initAck to use.
-   
+
    The initAck must contain a cookie which is returned to the peer with the cookie acknowledgement.
 
    Params: initAck: data of initAck-chunk including optional parameters without chunk header
@@ -212,7 +212,7 @@ void sctlr_staleCookie(SCTP_simple_chunk * error_chunk);
 /*------------------- Functions called by reliable transfer --------------------------------------*/
 
 /* This function is called by reliable transfer if all sent chunks in its retransmission queue have
-   been acked. 
+   been acked.
 */
 void sci_allChunksAcked(void);
 
