@@ -1963,9 +1963,9 @@ int sctp_unregisterInstance(unsigned short instance_name)
         while(assocIterator) {
            assoc = assocIterator->data;
            if(assoc->sctpInstance == instance) {
-              printf("Scheiße!   i=%d assoc=%d\n", assoc->sctpInstance->sctpInstanceName, assoc->assocId);
-              event_logi(ERROR_FATAL, "sctp_unregisterInstance : instance still used by assoc %u !!!", assoc->assocId);
-              abort();
+              event_logi(ERROR_MINOR, "sctp_unregisterInstance : instance still used by assoc %u !!!",
+                         assoc->assocId);
+              return SCTP_INSTANCE_IN_USE;
            }
            assocIterator = g_list_next(assocIterator);
         }

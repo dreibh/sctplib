@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp.h,v 1.18 2005/04/29 19:54:18 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
@@ -142,6 +142,7 @@ extern "C" {
 #define SCTP_WRONG_STATE                    -13
 #define SCTP_BUFFER_TOO_SMALL               -14
 #define SCTP_NO_CHUNKS_IN_QUEUE             -15
+#define SCTP_INSTANCE_IN_USE                -16
 #define SCTP_SPECIFIC_FUNCTION_ERROR        1
 
 /* some constants for return codes from COMMUNICATION LOST or COMMUNICATION UP callbacks */
