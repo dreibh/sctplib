@@ -8,8 +8,8 @@
  * and University of Essen, Institute of Computer Networking Technology.
  *
  * Acknowledgement
- * This work was partially funded by the Bundesministerium für Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * This work was partially funded by the Bundesministerium fr Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany (Fï¿½derkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -116,8 +116,8 @@
 /* Definition of levels for the logging of events */
 #define ByteString_log_    0    /* set to != 0 if byte string logging should be done */
 
-#define VVERBOSE	   6           /* very verbose logging of events   */
-#define VERBOSE		   5           /* more verbose logging of events   */
+#define VVERBOSE           6    /* very verbose logging of events   */
+#define VERBOSE            5    /* more verbose logging of events   */
 #define INTERNAL_EVENT_0   4    /* pure execution flow trace */
 #define INTERNAL_EVENT_1   3    /* important internal events */
 #define EXTERNAL_EVENT     2    /* for events from ULP, peer or Timers */
@@ -233,7 +233,7 @@ void perr_exit(const char *infostring);
    @param log_info :        the info that is printed with the modulename.
    @param anyno :           optional pointer to unsigned int, which is printed along with log_info.
                             The conversion specification must be contained in log_info.
-   @author     Hölzlwimmer
+   @author     Hï¿½zlwimmer
 */
 void event_log1(short event_log_level, char *module_name, char *log_info, ...);
 
@@ -245,7 +245,7 @@ void event_log1(short event_log_level, char *module_name, char *log_info, ...);
    @param module_name :     the name of the module that received the event.
    @param line_no :         the line number within above module.
    @param log_info :        the info that is printed with the modulename.
-   @author     Hölzlwimmer
+   @author     Hï¿½zlwimmer
 */
 void error_log1(short error_log_level, char *module_name, int line_no, char *log_info, ...);
 
@@ -258,7 +258,7 @@ void error_log1(short error_log_level, char *module_name, int line_no, char *log
    @param line_no :         the line number within above module.
    @param errnumber :       the errno from systemlibrary.
    @param log_info :        the info that is printed with the modulename and error text.
-   @author     Hölzlwimmer
+   @author     Hï¿½zlwimmer
 */
 void error_log_sys1(short error_log_level, char *module_name, int line_no, short errnumber);
 
