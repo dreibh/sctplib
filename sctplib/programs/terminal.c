@@ -126,26 +126,26 @@ void printUsage(void)
     printf("-h       Heartbeat Interval in ms (default = 30000)\n");
     printf("-m       RTO.min in ms (default = 1000)\n");
     printf("-M       RTO.max in ms (default = 60000)\n");
-    printf("-l       local port\n");   
+    printf("-l       local port\n");
     printf("-q       type of service\n");
     printf("-r       remote port (default echoport = %u)\n", ECHO_PORT);
-    printf("-s       source address\n");   
+    printf("-s       source address\n");
     printf("-i       ignore OOTB packets\n");
     printf("-t       time to live in ms\n");
     printf("-v       verbose mode\n");
     printf("-V       very verbose mode\n");
-    printf("-w       receiver Window\n");   
+    printf("-w       receiver Window\n");
 }
 
 void getArgs(int argc, char **argv)
 {
     int i;
     char *opt;
-    
+
 
      for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
-            switch (argv[i][1]) 
+            switch (argv[i][1])
       {
         case 'a':
             useAbort = 1;
@@ -227,10 +227,10 @@ void checkArgs(void)
 {
     int abortProgram;
     int printUsageInfo;
-    
+
     abortProgram = 0;
     printUsageInfo = 0;
-    
+
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
         strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
@@ -248,7 +248,7 @@ void checkArgs(void)
          printf("Error:   Unkown options in command.\n");
          printUsageInfo = 1;
     }
-    
+
     if (printUsageInfo == 1)
         printUsage();
     if (abortProgram == 1)
@@ -263,14 +263,14 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     unsigned int length;
     unsigned short ssn;
     unsigned int the_tsn;
- 
-    if (vverbose) {  
+
+    if (vverbose) {
       fprintf(stdout, "%-8x: Data arrived (%u bytes on stream %u, %s)\n",
                       assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
       fflush(stdout);
     }
     /* read it */
-        
+
     length = SCTP_MAXIMUM_DATA_LENGTH;
     SCTP_receive(assocID, streamID, chunk, &length, &ssn, &the_tsn, SCTP_MSG_DEFAULT);
     fprintf(stdout, "%.*s", length, chunk);
@@ -280,7 +280,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 void sendFailureNotif(unsigned int assocID,
                       unsigned char *unsent_data, unsigned int dataLength, unsigned int *context, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Send failure\n", assocID);
     fflush(stdout);
   }
@@ -291,26 +291,26 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
     SCTP_AssociationStatus assocStatus;
     SCTP_PathStatus pathStatus;
     unsigned short pathID;
-    
-    if (verbose) {  
+
+    if (verbose) {
         SCTP_getPathStatus(assocID, destAddrIndex, &pathStatus);
-        fprintf(stdout, "%-8x: Network status change: path %u (towards %s) is now %s\n", 
+        fprintf(stdout, "%-8x: Network status change: path %u (towards %s) is now %s\n",
                 assocID, destAddrIndex, pathStatus.destinationAddress, pathStateName(newState));
         fflush(stdout);
     }
-    
+
     /* if the primary path has become inactive */
     if ((newState == SCTP_PATH_UNREACHABLE) &&
         (destAddrIndex == SCTP_getPrimary(assocID))) {
-        
-        /* select a new one */ 
+
+        /* select a new one */
         SCTP_getAssocStatus(assocID, &assocStatus);
         for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
             SCTP_getPathStatus(assocID, pathID, &pathStatus);
             if (pathStatus.state == SCTP_PATH_OK)
                 break;
         }
-        
+
         /* and use it */
         if (pathID < assocStatus.numberOfAddresses) {
             SCTP_setPrimary(assocID, pathID);
@@ -322,11 +322,11 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{   
+{
     SCTP_PathStatus pathStatus;
     unsigned int i;
-    
-    if (verbose) {  
+
+    if (verbose) {
         fprintf(stdout, "%-8x: Communication up (%u paths, %u In-Streams, %u Out-Streams)\n", assocID, noOfDestinations, noOfInStreams, noOfOutStreams);
         fflush(stdout);
     }
@@ -342,7 +342,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{   
+{
     unsigned char buffer[SCTP_MAXIMUM_DATA_LENGTH];
     unsigned int bufferLength;
     unsigned short streamID, streamSN;
@@ -353,28 +353,28 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         fprintf(stdout, "%-8x: Communication lost (status %u)\n", assocID, status);
         fflush(stdout);
     }
-    
+
     /* retrieve data */
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnsent(assocID, buffer, &bufferLength, &tsn, &streamID, &streamSN, &protoID) >= 0){
         if (vverbose) {
-            fprintf(stdout, "%-8x: Unsent data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %.*s", 
+            fprintf(stdout, "%-8x: Unsent data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %.*s",
                             assocID, bufferLength, tsn, streamID, streamSN, protoID, bufferLength, buffer);
             fflush(stdout);
         }
         bufferLength = sizeof(buffer);
     }
-    
+
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnacked(assocID, buffer, &bufferLength, &tsn, &streamID, &streamSN, &protoID) >= 0){
         if (vverbose) {
-            fprintf(stdout, "%-8x: Unacked data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %.*s", 
+            fprintf(stdout, "%-8x: Unacked data (%u bytes) retrieved (TSN = %u, SID = %u, SSN = %u, PPI = %u): %.*s",
                             assocID, bufferLength, tsn, streamID, streamSN, protoID, bufferLength, buffer);
             fflush(stdout);
         }
         bufferLength = sizeof(buffer);
     }
-                      
+
     /* delete the association, instace and terminate */
     SCTP_deleteAssociation(assocID);
     SCTP_unregisterInstance((unsigned short)sctpInstance);
@@ -383,15 +383,15 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 
 void communicationErrorNotif(unsigned int assocID, unsigned short status, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Communication error (status %u)\n", assocID, status);
     fflush(stdout);
   }
 }
 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
-{    
-    if (verbose) {  
+{
+    if (verbose) {
         fprintf(stdout, "%-8x: Restart\n", assocID);
         fflush(stdout);
     }
@@ -399,20 +399,20 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Shutdown complete\n", assocID);
         fflush(stdout);
     }
-    
+
     /* delete the association, instance and terminate */
     SCTP_deleteAssociation(assocID);
     SCTP_unregisterInstance((unsigned short)sctpInstance);
-    exit(0); 
+    exit(0);
 }
 
 void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Shutdown received\n", assocID);
         fflush(stdout);
     }
@@ -433,9 +433,9 @@ stdinCallback(char *readBuffer, int length)
     if (length > 0) {
         SCTP_send(associationID,
                   currentStream,
-                  readBuffer, length,
+                  (unsigned char*)readBuffer, length,
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
-                  SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
+                  SCTP_USE_PRIMARY, SCTP_NO_CONTEXT,
                   timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
     }
     if (rotateStreams) currentStream = (currentStream + 1)%numberOutStreams;
@@ -463,7 +463,7 @@ int main(int argc, char **argv)
     /* handle all command line options */
     getArgs(argc, argv);
     checkArgs();
-    
+
     SCTP_initLibrary();
     SCTP_getLibraryParameters(&params);
     params.sendOotbAborts    = sendOOTBAborts;
@@ -488,7 +488,7 @@ int main(int argc, char **argv)
 
     SCTP_registerStdinCallback(&stdinCallback, buffer, sizeof(buffer));
     associationID=SCTP_associate((unsigned short)sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
-    
+
     /* run the event handler forever */
     while (1){
         SCTP_eventLoop();
