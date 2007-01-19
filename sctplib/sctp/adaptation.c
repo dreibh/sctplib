@@ -609,8 +609,12 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
             event_logi(INTERNAL_EVENT_0, "receive buffer size is : %d",*myRwnd);
             /* also receive packetinfo on IPv6 sockets, for getting dest address */
             ch = 1;
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_PKTINFO,  &ch, sizeof(ch)) < 0) {
-                error_log(ERROR_FATAL, "setsockopt: IPV6_PKTINFO failed");
+            /* IMPORTANT:
+               The new option name is now IPV6_RECVPKTINFO!
+               IPV6_PKTINFO expects an extended parameter structure now
+               and had to be replaced to provide the original functionality! */
+            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVPKTINFO,  &ch, sizeof(ch)) < 0) {
+                error_log(ERROR_FATAL, "setsockopt: IPV6_RECVPKTINFO failed");
             }
             break;
 #endif
@@ -1078,6 +1082,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
     if (sfd == sctpv6_sfd) {
         rcmsgp = (struct cmsghdr *)m6buf;
         pkt6info = (struct in6_pktinfo *)(CMSG_DATA(rcmsgp));
+
         /* receive control msg */
         rcmsgp->cmsg_level = IPPROTO_IPV6;
         rcmsgp->cmsg_type = IPV6_PKTINFO;
