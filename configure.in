@@ -97,36 +97,34 @@ AC_CHECK_FUNCS([gettimeofday inet_ntoa memset select socket strerror strtol strt
 # Check for IPV6_PKTINFO.
 # -----------------------------------------------------------------------
 AC_MSG_CHECKING(for IPV6_PKTINFO)
-AC_TRY_COMPILE([
-#include <arpa/inet.h>
-#include <netinet/in.h>
+AC_TRY_COMPILE([#include <arpa/inet.h>
+#include <netinet/in.h>], [
+    int level = IPV6_PKTINFO;
 ], [
-        # Yes, we have it...
-        AC_MSG_RESULT(yes)
-        AC_DEFINE([HAVE_IPV6_PKTINFO], [1], [IPV6_PKTINFO has been found!])
+    # Yes, we have it...
+    AC_MSG_RESULT(yes)
+    AC_DEFINE([HAVE_IPV6_PKTINFO], [], [IPV6_PKTINFO has been found!])
 ], [
-        AC_MSG_RESULT(no)
+    AC_MSG_RESULT(no)
 ])
 
 # -----------------------------------------------------------------------
 # Check for IPV6_RECVPKTINFO.
 # -----------------------------------------------------------------------
 AC_MSG_CHECKING(for IPV6_RECVPKTINFO)
-AC_TRY_COMPILE([
-#include <arpa/inet.h>
-#include <netinet/in.h>
+AC_TRY_COMPILE([#include <arpa/inet.h>
+#include <netinet/in.h>], [
+    int level = IPV6_RECVPKTINFO;
 ], [
-        int level = IPV6_RECVPKTINFO;
+    # Yes, we have it...
+    AC_MSG_RESULT(yes)
+    AC_DEFINE([HAVE_IPV6_RECVPKTINFO], [], [IPV6_RECVPKTINFO has been found!])
 ], [
-        # Yes, we have it...
-        AC_MSG_RESULT(yes)
-        AC_DEFINE([HAVE_IPV6_RECVPKTINFO], [1], [IPV6_RECVPKTINFO has been found!])
-], [
-        AC_MSG_RESULT(no)
+    AC_MSG_RESULT(no)
 ])
 
 # -----------------------------------------------------------------------
-# check for operating system specialities.....
+# Check for operating system specialities.
 # -----------------------------------------------------------------------
 CFLAGS="$CFLAGS -D_REENTRANT -D_THREAD_SAFE"
 
