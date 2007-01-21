@@ -609,13 +609,21 @@ gint adl_open_sctp_socket(int af, int* myRwnd)
             event_logi(INTERNAL_EVENT_0, "receive buffer size is : %d",*myRwnd);
             /* also receive packetinfo on IPv6 sockets, for getting dest address */
             ch = 1;
+#ifdef HAVE_IPV6_RECVPKTINFO
             /* IMPORTANT:
                The new option name is now IPV6_RECVPKTINFO!
                IPV6_PKTINFO expects an extended parameter structure now
                and had to be replaced to provide the original functionality! */
-            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVPKTINFO,  &ch, sizeof(ch)) < 0) {
+            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_RECVPKTINFO, &ch, sizeof(ch)) < 0) {
                 error_log(ERROR_FATAL, "setsockopt: IPV6_RECVPKTINFO failed");
+                abort();
             }
+#else
+            if (setsockopt(sfd, IPPROTO_IPV6, IPV6_PKTINFO, &ch, sizeof(ch)) < 0) {
+                error_log(ERROR_FATAL, "setsockopt: IPV6_PKTINFO failed");
+                abort();
+            }
+#endif
             break;
 #endif
         default:
