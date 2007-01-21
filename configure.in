@@ -97,8 +97,9 @@ AC_CHECK_FUNCS([gettimeofday inet_ntoa memset select socket strerror strtol strt
 # Check for IPV6_PKTINFO.
 # -----------------------------------------------------------------------
 AC_MSG_CHECKING(for IPV6_PKTINFO)
-AC_TRY_COMPILE([#include <netinet/in.h>], [
-        int level = IPV6_PKTINFO;
+AC_TRY_COMPILE([
+#include <arpa/inet.h>
+#include <netinet/in.h>
 ], [
         # Yes, we have it...
         AC_MSG_RESULT(yes)
@@ -111,7 +112,10 @@ AC_TRY_COMPILE([#include <netinet/in.h>], [
 # Check for IPV6_RECVPKTINFO.
 # -----------------------------------------------------------------------
 AC_MSG_CHECKING(for IPV6_RECVPKTINFO)
-AC_TRY_COMPILE([#include <netinet/in.h>], [
+AC_TRY_COMPILE([
+#include <arpa/inet.h>
+#include <netinet/in.h>
+], [
         int level = IPV6_RECVPKTINFO;
 ], [
         # Yes, we have it...
