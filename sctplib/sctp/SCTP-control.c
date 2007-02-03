@@ -8,8 +8,8 @@
  * and University of Essen, Institute of Computer Networking Technology.
  *
  * Acknowledgement
- * This work was partially funded by the Bundesministerium für Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * This work was partially funded by the Bundesministerium fr Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany (FÃ¶rderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -30,6 +30,7 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
+ *          dreibh@exp-math.uni-essen.de
  *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
  *
@@ -306,9 +307,12 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
                 adl_startTimer(localData->initTimerDuration, &sci_timer_expired, TIMER_TYPE_SHUTDOWN,
                                 (void *) &localData->associationID, NULL);
         } else {
+            /* mdi_communicationLostNotif() may call sctp_deleteAssociation().
+               This would invalidate localData and therefore localData->initTimer
+               has to be reset before! */
+            localData->initTimer = 0;
             mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
-            localData->initTimer = 0;
         }
         break;
 
@@ -2302,7 +2306,7 @@ void sci_allChunksAcked()
         if (localData->initTimer != 0) sctp_stopTimer(localData->initTimer);
 
         localData->initTimer =  adl_startTimer(localData->initTimerDuration, &sci_timer_expired,TIMER_TYPE_SHUTDOWN,
-                                (void *) &localData->associationID, NULL);
+                                   (void *) &localData->associationID, NULL);
 
         state = SHUTDOWNACKSENT;
         break;

@@ -8,8 +8,8 @@
  * and University of Essen, Institute of Computer Networking Technology.
  *
  * Acknowledgement
- * This work was partially funded by the Bundesministerium für Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * This work was partially funded by the Bundesministerium fr Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany (FÃ¶rderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -30,9 +30,9 @@
  * used for any discussion related to this implementation.
  *
  * Contact: discussion@sctp.de
+ *          dreibh@exp-math.uni-essen.de
  *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
- *          dreibh@exp-math.uni-essen.de
  *
  * Purpose: This modules implements the interface defined distribution.h and sctp.h
  *          and holds a private list of associations.
@@ -728,7 +728,7 @@ static void mdi_removeAssociationData(Association * assoc)
         free(assoc->destinationAddresses);
         free(assoc->localAddresses);
         assoc->destinationAddresses = NULL;
-	assoc->localAddresses = NULL;
+        assoc->localAddresses = NULL;
         free(assoc);
     } else {
         error_log(ERROR_MAJOR, "mdi_removeAssociationData: association does not exist");
@@ -4293,7 +4293,7 @@ short mdi_getIndexForAddress(union sockunion* address)
 /**
  * copies destination addresses from the array passed as parameter to  the current association
  * @param addresses array that will hold the destination addresses after returning
- * @þaram noOfAddresses number of addresses that the peer has (and sends along in init/initAck)
+ * @param noOfAddresses number of addresses that the peer has (and sends along in init/initAck)
  */
 void mdi_writeDestinationAddresses(union sockunion addresses[MAX_NUM_ADDRESSES], int noOfAddresses)
 {
@@ -4415,7 +4415,7 @@ currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find
  * --> Under what conditions can we NOT find the SCTP instance ?
  *
  * @param addresses array that will hold the local host's addresses after returning
- * @þaram noOfAddresses number of addresses that local host/current association has
+ * @param noOfAddresses number of addresses that local host/current association has
  */
 void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                             guint16 * noOfAddresses,
