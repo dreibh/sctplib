@@ -271,10 +271,13 @@ static void sci_timer_expired(TimerID timerID, void *associationIDvoid, void *un
                 adl_startTimer(localData->initTimerDuration, &sci_timer_expired, TIMER_TYPE_SHUTDOWN,
                                 (void *) &localData->associationID, NULL);
         } else {
+            /* mdi_communicationLostNotif() may call sctp_deleteAssociation().
+               This would invalidate localData and therefore localData->initTimer
+               has to be reset before! */
+            localData->initTimer = 0;
             /* shut down failed, delete current association. */
             mdi_deleteCurrentAssociation();
             mdi_communicationLostNotif(SCTP_COMM_LOST_EXCEEDED_RETRANSMISSIONS);
-            localData->initTimer = 0;
         }
         break;
 

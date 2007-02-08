@@ -219,6 +219,22 @@ void* se_new_stream_engine (unsigned int numberReceiveStreams,        /* max of 
 }
 
 
+/* Free all chunks in list */
+static void free_delivery_pdu(gpointer list_element, gpointer user_data)
+{
+   delivery_pdu* d_pdu = (delivery_pdu*)list_element;
+   int           i;
+
+   if(d_pdu->ddata != NULL) {
+      for (i=0; i < d_pdu->number_of_chunks; i++) {
+         free(d_pdu->ddata[i]);
+         d_pdu->ddata[i] = NULL;
+      }
+      free(d_pdu->ddata);
+      free(d_pdu);
+   }
+}
+
 
 /* Deletes the instance pointed to by streamengine.
 */
@@ -232,14 +248,15 @@ se_delete_stream_engine (void *septr)
   event_log (INTERNAL_EVENT_0, "delete streamengine: freeing send streams");
   free(se->SendStreams);
 
-    for (i = 0; i < se->numReceiveStreams; i++) {
-        event_logi (VERBOSE, "delete streamengine: freeing data for receive stream %d",i);
-        /* whatever is still in these lists, delete it before freeing the lists */
-        g_list_foreach(se->RecvStreams[i].pduList, &free_list_element, NULL);
-        g_list_foreach(se->RecvStreams[i].prePduList, &free_list_element, NULL);
-        g_list_free(se->RecvStreams[i].pduList);
-        g_list_free(se->RecvStreams[i].prePduList);
-    }
+  for (i = 0; i < se->numReceiveStreams; i++) {
+     event_logi (VERBOSE, "delete streamengine: freeing data for receive stream %d",i);
+     /* whatever is still in these lists, delete it before freeing the lists */
+     g_list_foreach(se->RecvStreams[i].pduList, &free_delivery_pdu, NULL);
+     g_list_foreach(se->RecvStreams[i].prePduList, &free_delivery_pdu, NULL);
+     g_list_free(se->RecvStreams[i].pduList);
+     g_list_free(se->RecvStreams[i].prePduList);
+  }
+
   event_log (INTERNAL_EVENT_0, "delete streamengine: freeing receive streams");
   free(se->RecvStreams);
   free(se->recvStreamActivated);
