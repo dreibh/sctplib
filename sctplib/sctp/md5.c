@@ -1,5 +1,5 @@
 /*
- *  $Id: md5.c,v 1.3 2003/10/28 18:28:47 tuexen Exp $
+ *  $Id$
  *
  *   MD5C.C - RSA Data Security, Inc., MD5 message-digest algorithm
  */

@@ -82,7 +82,7 @@
 #endif
 
 #ifndef IN_EXPERIMENTAL
-#define	IN_EXPERIMENTAL(a)	((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#define	IN_EXPERIMENTAL(a)	((((gint32_t) (a)) & 0xf0000000) == 0xf0000000)
 #endif
 
 #ifndef IN_BADCLASS

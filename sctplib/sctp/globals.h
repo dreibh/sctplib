@@ -9,7 +9,7 @@
  *
  * Acknowledgement
  * This work was partially funded by the Bundesministerium fr Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (F�derkennzeichen 01AK045).
+ * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or

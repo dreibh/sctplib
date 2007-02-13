@@ -8,7 +8,7 @@
  * and University of Essen, Institute of Computer Networking Technology.
  * Acknowledgement
  * This work was partially funded by the Bundesministerium fuer Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Foerderkennzeichen 01AK045).
+ * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -117,7 +117,7 @@
 #define     IFA_BUFFER_LENGTH   1024
 
 #ifndef IN_EXPERIMENTAL
-#define  IN_EXPERIMENTAL(a)   ((((long int) (a)) & 0xf0000000) == 0xf0000000)
+#define  IN_EXPERIMENTAL(a)   ((((gint32_t) (a)) & 0xf0000000) == 0xf0000000)
 #endif
 
 #ifndef IN_BADCLASS
@@ -267,7 +267,7 @@ struct extendedpollfd {
    int       fd;
    short int events;
    short int revents;
-   long revision;
+   long      revision;
 };
 
 int extendedPoll(struct extendedpollfd* fdlist,
@@ -549,7 +549,7 @@ int adl_setReceiveBufferSize(int sfd,int new_size)
 gint adl_open_sctp_socket(int af, int* myRwnd)
 {
     int sfd, ch;
-    size_t opt_size;
+    socklen_t opt_size;
 #ifdef WIN32
     struct sockaddr_in me;
 #endif
@@ -774,7 +774,7 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
 {
     int txmt_len = 0;
     unsigned char old_tos;
-    size_t opt_len;
+    socklen_t opt_len;
     int tmp;
 #ifdef SCTP_OVER_UDP
     guchar      outBuffer[65536];
@@ -1150,7 +1150,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
  * @param    from_len size of the address
  * @return returns number of bytes received with this call
  */
-int adl_get_message(int sfd, void *dest, int maxlen, union sockunion *from, size_t *from_len)
+int adl_get_message(int sfd, void *dest, int maxlen, union sockunion *from, socklen_t *from_len)
 {
     int len;
 
@@ -1171,7 +1171,7 @@ void dispatch_event(int num_of_events)
 {
     int i = 0;
     int length=0;
-    size_t src_len;
+    socklen_t src_len;
     union sockunion src, dest;
     struct sockaddr_in *src_in;
     guchar src_address[SCTP_MAX_IP_LEN];
@@ -1867,8 +1867,8 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
     int result;
 
 
-   #ifdef WIN32
-   unsigned long  in_threadid;
+#ifdef WIN32
+   unsigned long in_threadid;
    idata.event = stdinevent;
    idata.eventback = CreateEvent(NULL, FALSE, FALSE, NULL);
 

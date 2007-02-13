@@ -8,8 +8,8 @@
  * and University of Essen, Institute of Computer Networking Technology.
  *
  * Acknowledgement
- * This work was partially funded by the Bundesministerium für Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * This work was partially funded by the Bundesministerium fr Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany (FÃ¶rderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This program is free software; you can redistribute it and/or
@@ -341,36 +341,6 @@ void error_log_sys1(short error_log_level, char *module_name, int line_no, short
 {
     error_log1(error_log_level, module_name, line_no, strerror(errnumber));
 }
-
-
-
-/* this function is taken from the reference implementation written 
-   by Randy Stewart. I did not want to reinvent the wheel :-) */
-unsigned short
-in_check(unsigned char *buf, int sz)
-{
-  u_short *psh;
-  u_long sum;
-  int i;
-  
-  sum = 0;
-  psh = (u_short *)buf;
-
-  if(sz & 0x1){
-    /* odd byte boundary pad up 1 byte */
-    /* this cheats, but it should be ok :-> */
-    buf[sz] = 0;
-    sz++;
-  }
-  sz /= 2;
-  for(i=0;i<sz;i++){
-    sum += *psh++;
-  }
-  sum = (sum >> 16) + (sum & 0xffff);
-  sum += (sum >> 16);
-  return((unsigned short) (~sum & 0x0000ffff));
-}
-
 
 
 /**

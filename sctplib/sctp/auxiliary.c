@@ -8,8 +8,8 @@
  * and University of Essen, Institute of Computer Networking Technology.
  *
  * Acknowledgement
- * This work was partially funded by the Bundesministerium für Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * This work was partially funded by the Bundesministerium fr Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany (FÃ¶rderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -32,6 +32,7 @@
  * Contact: discussion@sctp.de
  *          tuexen@fh-muenster.de
  *          ajung@exp-math.uni-essen.de
+ *          dreibh@exp-math.uni-essen.de
  *
  * This module offers functions needed for validation and
  * other purposes.
@@ -61,7 +62,7 @@
 
 #define CRC32C(c,d) (c=(c>>8)^crc_c[(c^(d))&0xFF])
 
-unsigned long  crc_c[256] =
+uint32_t crc_c[256] =
 {
     0x00000000L, 0xF26B8303L, 0xE13B70F7L, 0x1350F3F4L,
     0xC79A971FL, 0x35F1141CL, 0x26A1E7E8L, 0xD4CA64EBL,
@@ -190,7 +191,7 @@ int aux_insert_checksum(unsigned char *buffer, int length)
 static int insert_adler32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    unsigned int a32;
+    uint32_t      a32;
     /* save crc value from PDU */
     if (length > NMAX || length < NMIN)
         return -1;
@@ -209,11 +210,11 @@ static int insert_adler32(unsigned char *buffer, int length)
     return 1;
 }
 
-static unsigned long generate_crc32c(unsigned char *buffer, int length)
+static uint32_t generate_crc32c(unsigned char *buffer, int length)
 {
-    unsigned long crc32 = ~0L;
-    int i;
     unsigned char byte0, byte1, byte2, byte3, swap;
+    uint32_t      crc32 = ~0L;
+    int           i;
 
     for (i = 0; i < length; i++)
     {
@@ -236,8 +237,7 @@ static unsigned long generate_crc32c(unsigned char *buffer, int length)
 static int insert_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    unsigned long crc32c;
-
+    uint32_t      crc32c;
 
     /* check packet length */
     if (length > NMAX  || length < NMIN)
@@ -289,8 +289,8 @@ static int validate_adler32(unsigned char *header_start, int length)
 static int validate_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    unsigned long original_crc32;
-    unsigned long crc32 = ~0L;
+    uint32_t      original_crc32;
+    uint32_t      crc32 = ~0L;
 
     /* check packet length */
 

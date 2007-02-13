@@ -1,5 +1,5 @@
 /*
- *  $Id: md5.h,v 1.3 2003/10/30 12:41:38 tuexen Exp $
+ *  $Id$
  *
  * MD5.H - header file for MD5C.C
  */
@@ -36,15 +36,16 @@
  */
 
 #include <string.h>
+#include <glib.h>
 
 /* POINTER defines a generic pointer type */
 typedef unsigned char *POINTER;
 
 /* UINT2 defines a two byte word */
-typedef unsigned short int UINT2;
+typedef guint16 UINT2;
 
 /* UINT4 defines a four byte word */
-typedef unsigned long int UINT4;
+typedef guint32 UINT4;
 
 /* PROTO_LIST is defined depending on how PROTOTYPES is defined above.
 If using PROTOTYPES, then PROTO_LIST returns the list, otherwise it
