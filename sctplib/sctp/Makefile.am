@@ -1,10 +1,3 @@
-####### kdevelop will overwrite this part!!! (begin)##########
-
-# noinst_LIBRARIES = libsctplib.a
-
-
-####### kdevelop will overwrite this part!!! (end)############
-# Build a libtool library, libsctp.la for installation in libdir.
 EXTRA_DIST             = Makefile.nmake
 
 lib_LTLIBRARIES        = libsctplib.la
@@ -29,4 +22,6 @@ libsctplib_la_SOURCES  = adaptation.c adaptation.h \
 
 include_HEADERS        = sctp.h
 libsctplib_la_LIBADD   = @glib_LIBS@
-libsctplib_la_LDFLAGS  = -version-info 1:5:0
+libsctplib_la_LDFLAGS  = \
+   -version-info $(SCTPLIB_CURRENT):$(SCTPLIB_REVISION):$(SCTPLIB_AGE) \
+   -release $(SCTPLIB_RELEASE)

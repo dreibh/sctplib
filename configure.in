@@ -8,7 +8,7 @@ AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AC_CONFIG_SRCDIR(sctplib/programs/discard_server.c)
 AM_CONFIG_HEADER(config.h)
 
-AM_INIT_AUTOMAKE(sctplib,1.0.6)
+AM_INIT_AUTOMAKE(sctplib,1.0.7)
 
 AC_CANONICAL_HOST
 
@@ -23,6 +23,10 @@ dnl AC_ENABLE_STATIC(yes)
 AC_ARG_ENABLE([sctp-over-udp],
 [  --enable-sctp-over-udp            enable SCTP over UDP mode ],
 AC_DEFINE(SCTP_OVER_UDP, 1, "Define to 1 if you want SCTP over UDP"), )
+
+AC_ARG_ENABLE([maintainer-mode],
+[  --enable-maintainer-mode            enable maintainer mode ]
+[default=yes]],enable_maintainer_mode=$enableval,enable_maintainer_mode=yes)
 
 # -----------------------------------------------------------------------
 # Checks for programs.
@@ -126,7 +130,13 @@ AC_TRY_COMPILE([#include <arpa/inet.h>
 # -----------------------------------------------------------------------
 # Check for operating system specialities.
 # -----------------------------------------------------------------------
-CFLAGS="$CFLAGS -D_REENTRANT -D_THREAD_SAFE"
+if test "$enable_maintainer_mode" = "yes"; then
+   CFLAGS="$CFLAGS -Wall -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
+   CXXFLAGS="$CXXFLAGS -Wall -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
+else
+   CFLAGS="$CFLAGS -Wall -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
+   CXXFLAGS="$CXXFLAGS -Wall -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
+fi
 
 case $host_os in
 freebsd*)
@@ -235,9 +245,15 @@ AC_SUBST(LIB_IPV6)
 fi
 
 
+SCTPLIB_CURRENT=0
+SCTPLIB_REVISION=0
+SCTPLIB_AGE=0
+SCTPLIB_RELEASE=1070
 
-
-
+AC_SUBST(SCTPLIB_CURRENT)
+AC_SUBST(SCTPLIB_REVISION)
+AC_SUBST(SCTPLIB_AGE)
+AC_SUBST(SCTPLIB_RELEASE)
 
 
 AC_CONFIG_FILES([Makefile
