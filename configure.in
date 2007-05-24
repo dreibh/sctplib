@@ -165,8 +165,15 @@ AC_TRY_COMPILE([#include <arpa/inet.h>
 ])
 
 
-# ###### Check for glib-2.0 #################################################
-PKG_CHECK_MODULES(GLIB, glib-2.0)
+# ###### Check for glib #####################################################
+AM_PATH_GLIB_2_0(2.0.0, [ glib_is_okay=yes ], [ glib_is_okay=no ])
+if test "x$glib_is_okay" = "xno"; then
+   AM_PATH_GLIB(1.2.0, [ glib_is_okay=yes ], [ glib_is_okay=no ])
+fi
+if test "x$glib_is_okay" = "xno"; then
+   AC_MSG_ERROR(GLib distribution not found.)
+fi
+
 CFLAGS="$CFLAGS $GLIB_CFLAGS"
 CPPFLAGS="$CPPFLAGS $GLIB_CFLAGS"
 glib_LIBS="$GLIB_LIBS"
