@@ -49,6 +49,7 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <sys/time.h>
 
 #define MAX_NUM_OF_CHUNKS   500
 

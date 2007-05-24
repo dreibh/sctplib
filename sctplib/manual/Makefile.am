@@ -1,10 +1,7 @@
-####### kdevelop will overwrite this part!!! (begin)##########
-
 EXTRA_DIST = fixunder.sty functions.sty sctp-api-1.0-1.pdf \
              sctp-api-1.0-1.ps sctp-api-1.0-1.tex commands.doc \
              commands.html commands.pdf 
 
-####### kdevelop will overwrite this part!!! (end)############
 all:
 
 clean:
@@ -29,4 +26,3 @@ dis: sctp-api-1.0-1.pdf
 pdf: sctp-api-1.0-1.pdf
 
 ps: sctp-api-1.0-1.ps
-

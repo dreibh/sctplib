@@ -46,6 +46,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <errno.h>
+#include <sys/time.h>
 
 #ifndef WIN32
    #include <netinet/in_systm.h>

@@ -47,6 +47,7 @@
 #include "adaptation.h"
 #include "recvctrl.h"
 
+#include <sys/time.h>
 #include <stdio.h>
 #include <glib.h>
 

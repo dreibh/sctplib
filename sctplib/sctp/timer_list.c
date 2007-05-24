@@ -45,6 +45,7 @@
 #include "timer_list.h"
 #include "adaptation.h"
 
+#include <sys/time.h>
 #include <stdio.h>
 #include <glib.h>
 

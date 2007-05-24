@@ -1,2 +1,2 @@
 #!/bin/sh
-./bootstrap && ./configure --enable-static --disable-shared $@ && make
+./bootstrap && ./configure --enable-static --disable-shared --enable-maintainer-mode $@ && make
