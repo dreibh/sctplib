@@ -2,5 +2,8 @@
  Inhalt des Parameters wird nicht korrekt eingetragen. Wireshark meldet
  Malformed Packet.
 
+   PROBLEM BEHOBEN!
+
+
 2. Interface mit 2 globalen IPv6-Adressen, INIT auf 1. Adresse
  => INIT_ACK geht über 2. Adresse hinaus.
