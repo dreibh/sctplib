@@ -1032,7 +1032,7 @@ int ch_enterUnrecognizedParameters(ChunkID initCID, ChunkID AckCID, unsigned int
         ack_string =  &((SCTP_init *)chunks[AckCID])->variableParams[writeCursor[AckCID]];
         vl_initPtr = (SCTP_vlparam_header *) & init_string[curs];
         pType = ntohs(vl_initPtr->param_type);
-        pLen =   ntohs(vl_initPtr->param_length);
+        pLen  = ntohs(vl_initPtr->param_length);
 
         if (pLen < 4)  return -1;
 
@@ -2129,10 +2129,11 @@ ch_addUnrecognizedParameter(unsigned char* pos, ChunkID cid,
     ec = (SCTP_error_cause*) pos;
     ec->cause_code = htons(VLPARAM_UNRECOGNIZED_PARAM);
     ec->cause_length = htons((unsigned short)(length+2*sizeof(unsigned short)));
-    if (length>0) memcpy(ec->cause_information, data, length);
+    if (length > 0) {
+        memcpy(&ec->cause_information, data, length);
+    }
     writeCursor[cid] += (length + 2*sizeof(unsigned short));
     while ((writeCursor[cid] % 4) != 0) writeCursor[cid]++;
-
 }
 
 
