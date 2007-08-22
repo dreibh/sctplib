@@ -213,7 +213,7 @@ void getArgs(int argc, char **argv)
                    exit(0);
                 }
                 opt = argv[++i];
-                remotePort =  atoi(opt);
+                remotePort = atoi(opt);
                 optcount+=2;
               break;
              case 'L':
@@ -261,13 +261,7 @@ void getArgs(int argc, char **argv)
       }
    }
 
-   if (optcount == argc) {
-      localPort  = DEFAULT_PORT;
-      remotePort = 0;
-   } else {
-      localPort  = 0;
-      remotePort = DEFAULT_PORT;
-
+   if (optcount != argc) {
       opt = argv[optcount];
       if (strlen(opt) < SCTP_MAX_IP_LEN) {
          strcpy((char *)destinationAddress, opt);

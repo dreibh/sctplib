@@ -15,7 +15,7 @@ echo "Target   = $TARGET"
 echo "Duration = $DURATION [s]"
 echo ""
 
-SIZES=1500 # "1 10 100 1000 10000"
+SIZES="1 10 100 1000 10000"
 for SIZE in $SIZES ; do
    ./testsctp -i -T $DURATION -l $SIZE $@ $TARGET
    echo ""
