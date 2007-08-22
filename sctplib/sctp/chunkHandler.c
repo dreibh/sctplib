@@ -1227,7 +1227,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
 #ifdef HAVE_SIN6_SCOPE_ID
                     preferredDest->sin6.sin6_scope_id = htonl(0);
 #endif
-                    memcpy(preferredDest->sin6.sin6_addr.s6_addr,
+                    memcpy(&preferredDest->sin6.sin6_addr.s6_addr,
                            address->dest_addr.sctp_ipv6, sizeof(struct in6_addr));
                     /* FIXME: check if we got the correct address ! */
                 }
@@ -2118,7 +2118,7 @@ ch_makeErrorChunk(void)
 
 void
 ch_addUnrecognizedParameter(unsigned char* pos, ChunkID cid,
-                 unsigned short length, unsigned char* data)
+                            unsigned short length, unsigned char* data)
 
 {
     SCTP_error_cause * ec;
@@ -2141,7 +2141,7 @@ ch_addUnrecognizedParameter(unsigned char* pos, ChunkID cid,
 
 void
 ch_addParameterToInitChunk(ChunkID initChunkID, unsigned short pCode,
-                       unsigned short dataLength, unsigned char* data)
+                           unsigned short dataLength, unsigned char* data)
 {
     SCTP_UnrecognizedParams *vlPtr = NULL;
     unsigned short index;
@@ -2189,6 +2189,9 @@ ch_enterErrorCauseData(ChunkID chunkID, unsigned short code,
     ec = (SCTP_error_cause*) &(chunks[chunkID]->simple_chunk_data[index]);
     ec->cause_code = htons(code);
     ec->cause_length = htons((unsigned short)(length+2*sizeof(unsigned short)));
+    if (length > 0) {
+        memcpy(&ec->cause_information, data, length);
+    }
     writeCursor[chunkID] += (length + 2*sizeof(unsigned short));
     while ((writeCursor[chunkID] % 4) != 0) writeCursor[chunkID]++;
 

@@ -1,15 +1,21 @@
-1. Unrecognised Parameter im COOKIE_ECHO:
+1. Unrecognised Parameter in ch_addUnrecognizedParameter():
+ Inhalt des Parameters wird nicht korrekt eingetragen. Wireshark meldet
+ Malformed Packet.
+
+   PROBLEM BEHOBEN!
+
+2. Unrecognised Parameter in ch_enterErrorCauseData():
  Inhalt des Parameters wird nicht korrekt eingetragen. Wireshark meldet
  Malformed Packet.
 
    PROBLEM BEHOBEN!
 
 
-2. Interface mit 2 globalen IPv6-Adressen, INIT auf 1. Adresse
+3. Interface mit 2 globalen IPv6-Adressen, INIT auf 1. Adresse
  => INIT_ACK geht über 2. Adresse hinaus.
 
 
-3. Bulk Transfer mit Fragmentierung:
+4. Bulk Transfer mit Fragmentierung:
 Abbruch nach SACK von letztem Fragment eines langen Chunks
 Grund: QueueStatusChange Notification wird bei SACK nicht gegeben.
 
