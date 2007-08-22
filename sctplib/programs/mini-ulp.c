@@ -1,5 +1,5 @@
 /*
- *  $Id: mini-ulp.c,v 1.6 2004/11/19 21:25:00 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.

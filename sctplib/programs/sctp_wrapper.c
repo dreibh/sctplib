@@ -1,5 +1,5 @@
 /*
- *  $Id: sctp_wrapper.c,v 1.8 2005/03/08 13:29:52 tuexen Exp $
+ *  $Id$
  *
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
