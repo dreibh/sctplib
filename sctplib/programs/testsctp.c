@@ -59,7 +59,7 @@ sudo ./testsctp -i -T 10 -l 300 127.0.0.1   (Start in client mode, send 300 byte
 #define MAXIMUM_NUMBER_OF_ASSOCIATIONS        5
 #define MAXIMUM_NUMBER_OF_IN_STREAMS         17
 #define MAXIMUM_NUMBER_OF_OUT_STREAMS        17
-#define MAXIMUM_PAYLOAD_LENGTH             8192
+#define MAXIMUM_PAYLOAD_LENGTH          1000000
 #define SEND_QUEUE_SIZE                     100
 
 #ifndef min
