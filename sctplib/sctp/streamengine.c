@@ -1,6 +1,6 @@
 
 /*
- * $ID: streamengine.c 633 2005-05-19 22:17:21Z tuexen $
+ * $Id$
  * SCTP implementation according to RFC 2960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
