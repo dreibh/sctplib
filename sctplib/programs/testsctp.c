@@ -615,7 +615,7 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
          ((struct ulp_data *)ulpDataPtr)->nrOfSentBytes  += chunkLength;
       }
    }
-   if (stopSending == 1) {
+   if ((stopSending == 1) && (queueLength == 0)) {
       SCTP_shutdown(assocID);
       gettimeofday(&now, NULL);
       timersub(&now, &startTime, &diffTime);

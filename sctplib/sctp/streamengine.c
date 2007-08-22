@@ -1,4 +1,3 @@
-
 /*
  * $Id$
  * SCTP implementation according to RFC 2960.

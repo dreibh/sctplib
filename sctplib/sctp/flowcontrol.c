@@ -1283,7 +1283,11 @@ void fc_sack_info(unsigned int address_index, unsigned int arwnd,unsigned int ct
 
     else {
         if (fc->maxQueueLen != 0) {
-            mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, fc->list_length);
+            /* Bugfix: Without this, no queueStatusChangeNotif would be
+                       called if there are fragmented chunks! */
+            if (fc->outstanding_bytes == 0) {
+                mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, fc->list_length);
+            }
         }
     }
 
