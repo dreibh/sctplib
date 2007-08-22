@@ -846,7 +846,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
         if (len < fc->maxQueueLen && oldListLen >= fc->maxQueueLen) {
             mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, len);
         } else if (len > fc->maxQueueLen && oldListLen <= fc->maxQueueLen) {
-             mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, len);
+            mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, len);
         }
     }
 
@@ -1280,6 +1280,13 @@ void fc_sack_info(unsigned int address_index, unsigned int arwnd,unsigned int ct
     if (fc->chunk_list != NULL) {
         fc_check_for_txmit(fc, oldListLen, FALSE);
     }
+
+    else {
+        if (fc->maxQueueLen != 0) {
+            mdi_queueStatusChangeNotif(SCTP_SEND_QUEUE, 0, fc->list_length);
+        }
+    }
+
     return;
 }    /* end: fc_sack_info  */
 
@@ -1321,8 +1328,6 @@ int fc_dequeueUnackedChunk(unsigned int tsn)
     }
     /* else */
     return 0;
-
-
 }
 
 int fc_dequeueOldestUnsentChunk(unsigned char *buf, unsigned int *len, unsigned int *tsn,

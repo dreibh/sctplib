@@ -64,10 +64,10 @@
 
 typedef struct
 {
-    GList *pduList;          /* list of PDUs waiting for pickup (after notification has been called) */
-    GList *prePduList;       /* list of PDUs waiting for transfer to pduList and doing mdi arrive notification */
-    guint16 nextSSN;
-    guint16 highestSSN;      /* used to detect Protocol violations in se_searchReadyPdu */
+    GList   *pduList;         /* list of PDUs waiting for pickup (after notification has been called) */
+    GList   *prePduList;      /* list of PDUs waiting for transfer to pduList and doing mdi arrive notification */
+    guint16  nextSSN;
+    guint16  highestSSN;      /* used to detect Protocol violations in se_searchReadyPdu */
     gboolean highestSSNused;
     int index;
 }ReceiveStream;
@@ -79,8 +79,8 @@ typedef struct
 
 typedef struct
 {
-    unsigned int numSendStreams;
-    unsigned int numReceiveStreams;
+    unsigned int    numSendStreams;
+    unsigned int    numReceiveStreams;
     ReceiveStream*  RecvStreams;
     SendStream*     SendStreams;
     gboolean*       recvStreamActivated;
@@ -95,14 +95,14 @@ typedef struct
  */
 typedef struct _delivery_data
 {
-    guint8 chunk_flags;
+    guint8  chunk_flags;
     guint16 data_length;
     guint32 tsn;
     guint16 stream_id;
     guint16 stream_sn;
     guint32 protocolId;
-    guint32  fromAddressIndex;
-    guchar data[MAX_DATACHUNK_PDU_LENGTH];
+    guint32 fromAddressIndex;
+    guchar  data[MAX_DATACHUNK_PDU_LENGTH];
 }
 delivery_data;
 

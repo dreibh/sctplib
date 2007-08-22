@@ -7,3 +7,10 @@
 
 2. Interface mit 2 globalen IPv6-Adressen, INIT auf 1. Adresse
  => INIT_ACK geht über 2. Adresse hinaus.
+
+
+3. Bulk Transfer mit Fragmentierung:
+Abbruch nach SACK von letztem Fragment eines langen Chunks
+Grund: QueueStatusChange Notification wird bei SACK nicht gegeben.
+
+   PROBLEM BEHOBEN!
