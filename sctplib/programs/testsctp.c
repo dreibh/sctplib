@@ -574,6 +574,8 @@ void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
       fflush(stdout);
    }
 
+   stopSending = 1;
+
    ((struct ulp_data *)ulpDataPtr)->ShutdownReceived = 1;
    gettimeofday(&now, NULL);
    timersub(&now, &startTime, &diffTime);
@@ -596,7 +598,6 @@ void queueStatusChangeNotif(unsigned int assocID, int queueType, int queueID, in
        fflush(stdout);
    }
 
-   /* if (queueType == SCTP_SEND_QUEUE) { */
    if (queueType == SCTP_SEND_QUEUE && queueLength <= SEND_QUEUE_SIZE) {
       memset(chunk, 0, sizeof(chunk));
 
