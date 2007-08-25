@@ -1,0 +1,100 @@
+Source: sctplib
+Section: net
+Priority: optional
+Maintainer: Debian QA Group <packages@qa.debian.org>
+Build-Depends: libglib2.0-dev, bzip2, autotools-dev
+Standards-Version: 3.6.2
+
+Package: sctplib2
+Section: libs
+Priority: optional
+Architecture: any
+Depends: ${shlibs:Depends}
+Conflicts: sctplib1
+Replaces: sctplib1
+Provides: sctplib1
+Description: userland implementation of the SCTP protocol RFC 2960
+ This is the userland implementation of the SCTP protocol (RFC 2960).
+ .
+ The sctplib library is a fairly complete prototype implementation of the
+ Stream Control Transmission Protocol (SCTP), a message-oriented reliable
+ transport protocol that supports multi-homing, and multiple message streams
+ multiplexed within an SCTP connection (also named association). SCTP is
+ described in RFC 2960, RFC 3309 and RFC 3286. This implementation is the
+ product of a cooperation between Siemens AG (ICN), Munich, Germany and the
+ Computer Networking Technology Group at the IEM of the University of Essen,
+ Germany.
+ .
+ The API of the library was modeled after section 10 of RFC 2960, and most
+ parameters and functions should be self-explanatory to the user familiar with
+ this document. In addition to these interface functions between an Upper
+ Layer Protocol (ULP) and an SCTP instance, the library also provides a number
+ of helper functions that can be used to manage callback function routines to
+ make them execute at a certain point of time (i.e. timer-based) or open and
+ bind  UDP sockets on a configurable port, which may then be used for an
+ asynchronous interprocess communication.
+ .
+  Homepage: http://www.sctp.de/
+
+Package: sctplib-doc
+Section: doc
+Priority: optional
+Architecture: all
+Depends: bzip2
+Conflicts: sctplib-stable-doc
+Replaces: sctplib-stable-doc
+Provides: sctplib-stable-doc
+Description: userland implementation of the SCTP protocol RFC 2960
+ This package contains the sctplib documentation.
+ .
+ The sctplib library is a fairly complete prototype implementation of the
+ Stream Control Transmission Protocol (SCTP), a message-oriented reliable
+ transport protocol that supports multi-homing, and multiple message streams
+ multiplexed within an SCTP connection (also named association). SCTP is
+ described in RFC 2960, RFC 3309 and RFC 3286. This implementation is the
+ product of a cooperation between Siemens AG (ICN), Munich, Germany and the
+ Computer Networking Technology Group at the IEM of the University of Essen,
+ Germany.
+ .
+ The API of the library was modeled after section 10 of RFC 2960, and most
+ parameters and functions should be self-explanatory to the user familiar with
+ this document. In addition to these interface functions between an Upper
+ Layer Protocol (ULP) and an SCTP instance, the library also provides a number
+ of helper functions that can be used to manage callback function routines to
+ make them execute at a certain point of time (i.e. timer-based) or open and
+ bind  UDP sockets on a configurable port, which may then be used for an
+ asynchronous interprocess communication.
+ .
+  Homepage: http://www.sctp.de/
+
+Package: sctplib-dev
+Section: libdevel
+Priority: optional
+Architecture: any
+Depends: ${shlibs:Depends}, sctplib1 (= ${Source-Version})
+Conflicts: sctplib-stable-dev
+Replaces: sctplib-stable-dev
+Provides: sctplib-stable-dev
+Description: userland implementation of the SCTP protocol RFC 2960
+ This package contains the header file and static library needed
+ to build applications based on sctplib.
+ .
+ The sctplib library is a fairly complete prototype implementation of the
+ Stream Control Transmission Protocol (SCTP), a message-oriented reliable
+ transport protocol that supports multi-homing, and multiple message streams
+ multiplexed within an SCTP connection (also named association). SCTP is
+ described in RFC 2960, RFC 3309 and RFC 3286. This implementation is the
+ product of a cooperation between Siemens AG (ICN), Munich, Germany and the
+ Computer Networking Technology Group at the IEM of the University of Essen,
+ Germany.
+ .
+ The API of the library was modeled after section 10 of RFC 2960, and most
+ parameters and functions should be self-explanatory to the user familiar with
+ this document. In addition to these interface functions between an Upper
+ Layer Protocol (ULP) and an SCTP instance, the library also provides a number
+ of helper functions that can be used to manage callback function routines to
+ make them execute at a certain point of time (i.e. timer-based) or open and
+ bind  UDP sockets on a configurable port, which may then be used for an
+ asynchronous interprocess communication.
+ .
+  Homepage: http://www.sctp.de/

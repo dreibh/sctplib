@@ -1,0 +1,19 @@
+This is rsplib, written and maintained by Dr. Thomas Dreibholz <dreibh@iem.uni-due.de>
+on Fri, 24 Aug 2007 06:13:18 +0200.
+
+The original source can always be found at:
+   http://tdrwww.exp-math.uni-essen.de/dreibholz/rserpool/
+
+Main upstream authors:
+
+Thomas Dreibholz     <dreibh@iem.uni-due.de>
+Andreas Jungmaier    <andreas.jungmaier@vodafone.com>
+Michael Tuexen       <tuexen@fh-muenster.de>
+
+Copyright: LGPL Version 2.1
+
+Copyright (C) 2001-2004 Andreas Jungmaier
+Copyright (C) 2004-2007 Thomas Dreibholz
+
+See /usr/share/common-licenses/LGPL or http://www.gnu.org/licenses/lgpl.html
+for details.

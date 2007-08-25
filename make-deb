@@ -1,0 +1,48 @@
+#!/bin/bash
+# $Id$
+#
+# Copyright (C) 2002-2007 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@iem.uni-due.de
+
+
+# ---------------------------------------------------------
+INPUT=~/src/sctplib1
+PACKAGE=sctplib
+CONFOPT=
+# ---------------------------------------------------------
+
+
+# Nur einmalig erforderlich!
+# dh_make -c gpl -n -e dreibh@iem.uni-due.de -m
+
+rm -f rsplib-*.gz
+
+./bootstrap && \
+./configure $CONFOPT && \
+make dist && \
+VERSION=`ls $PACKAGE-*.gz|sed -e "s/$PACKAGE-//g" -e "s/.tar.gz//g"` && \
+rm -rf $PACKAGE-$VERSION && \
+tar xzf $INPUT/$PACKAGE-$VERSION.tar.gz && \
+cd $PACKAGE-$VERSION && \
+cp -r $INPUT/debian . && \
+rm -rf debian/.svn && \
+debuild -us -uc
+
+
+# Wichtig: In /etc/pbuilderrc COMPONENTS="main universe" setzen!
+# Wichtig: Jetzt Update mit Option "--override-config"!
+# sudo pbuilder update --override-config
