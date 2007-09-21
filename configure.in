@@ -41,6 +41,21 @@ AC_ARG_ENABLE([sctp-over-udp],
 [  --enable-sctp-over-udp            enable SCTP over UDP mode ],
 AC_DEFINE(SCTP_OVER_UDP, 1, "Define to 1 if you want SCTP over UDP"), )
 
+if test "$enable_sctp_over_udp" = "yes" ; then
+   AC_MSG_CHECKING([port number for SCTP over UDP])
+   AC_ARG_WITH(sctp_over_udp_port,AC_HELP_STRING(
+      [--with-sctp-over-udp-port=FLAGS],
+      [SCTP over UDO port (default: 9899).]),
+      sctp_over_udp_port="$withval", sctp_over_udp_port="9899")
+   if test "$sctp_over_udp_port" -lt 1 ; then
+      AC_ERROR([SCTP over UDP port too small!])
+   elif test "$sctp_over_udp_port" -gt 65535 ; then
+      AC_ERROR([SCTP over UDP port too large!])
+   fi
+   AC_MSG_RESULT($sctp_over_udp_port)
+   AC_DEFINE_UNQUOTED(SCTP_OVER_UDP_UDPPORT, $sctp_over_udp_port, [UDP port for SCTP over UDP tunneling])
+fi
+
 AC_ARG_ENABLE([maintainer-mode],
 [  --enable-maintainer-mode            enable maintainer mode ]
 [default=yes]],enable_maintainer_mode=$enableval,enable_maintainer_mode=yes)

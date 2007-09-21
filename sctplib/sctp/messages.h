@@ -62,8 +62,8 @@
 /**************************** SCTP common message definitions *********************************/
 
 #ifdef SCTP_OVER_UDP
-#define SCTP_OVER_UDP_UDPPORT 9899
-/*#warning Using SCTP over UDP!*/
+/* #define SCTP_OVER_UDP_UDPPORT 9899 */
+/* #warning Using SCTP over UDP! */
 typedef struct UDP_HEADER {
    gushort src_port;
    gushort dest_port;
