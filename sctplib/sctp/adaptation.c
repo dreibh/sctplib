@@ -59,6 +59,9 @@
    #include <sys/ioctl.h>
    #include <netinet/tcp.h>
    #include <net/if.h>
+#ifdef SCTP_OVER_UDP
+   #include <netinet/udp.h>
+#endif
 #else
     #include <winsock2.h>
     #include <WS2tcpip.h>
@@ -1024,7 +1027,11 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
 {
     int len;
 #ifdef SCTP_OVER_UDP
+#ifdef LINUX
     udp_header*    udp;
+#else
+    struct udphdr * udp;
+#endif
     unsigned char* ptr;
     int            i;
 #endif
@@ -1070,19 +1077,40 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
 #endif
 
 #ifdef SCTP_OVER_UDP
+#ifdef LINUX
         if(len < sizeof(struct iphdr) + sizeof(udp_header)) {
+#else
+        if(len < sizeof(struct ip) + sizeof(struct udphdr)) {
+#endif
             return -1;
         }
+#ifdef LINUX
         udp = (udp_header*)((long)dest + (long)sizeof(struct iphdr));
+#else
+        udp = (struct udphdr *)((long)dest + (long)sizeof(struct ip));
+#endif
+#ifdef LINUX
         if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
+#else
+       if(ntohs(udp->uh_dport) != SCTP_OVER_UDP_UDPPORT) {
+#endif
             return -1;
         }
         ptr = (unsigned char*)udp;
+#ifdef LINUX
         for(i = 0;i < len - (sizeof(struct iphdr) + sizeof(udp_header));i++) {
            *ptr = ptr[sizeof(udp_header)];
+#else
+        for(i = 0;i < len - (sizeof(struct ip) + sizeof(struct udphdr));i++) {
+           *ptr = ptr[sizeof(struct udphdr)];
+#endif
            ptr++;
         }
+#ifdef LINUX
         len -= sizeof(udp_header);
+#else
+        len -= sizeof(struct udphdr);
+#endif
 #endif
     }
 #ifdef HAVE_IPV6
@@ -1119,19 +1147,40 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         memcpy(&(to->sin6.sin6_addr), &(pkt6info->ipi6_addr), sizeof(struct in6_addr));
 
 #ifdef SCTP_OVER_UDP
+#ifdef LINUX
         if(len < sizeof(udp_header)) {
+#else
+        if(len < sizeof(struct udphdr)) {
+#endif
             return -1;
         }
+#ifdef LINUX
         udp = (udp_header*)dest;
-        if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
+#else
+        udp = (struct udphdr *)dest;
+#endif
+#ifdef LINUX
+	if(ntohs(udp->dest_port) != SCTP_OVER_UDP_UDPPORT) {
+#else
+	if(ntohs(udp->uh_dport) != SCTP_OVER_UDP_UDPPORT) {
+#endif
             return -1;
         }
         ptr = (unsigned char*)udp;
+#ifdef LINUX
         for(i = 0;i < len - sizeof(udp_header);i++) {
            *ptr = ptr[sizeof(udp_header)];
+#else
+        for(i = 0;i < len - sizeof(struct udphdr);i++) {
+           *ptr = ptr[sizeof(struct udphdr)];
+#endif
            ptr++;
         }
+#ifdef LIMUX
         len -= sizeof(udp_header);
+#else
+        len -= sizeof(struct udphdr);
+#endif
 #endif
     }
 #endif
