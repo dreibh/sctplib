@@ -5,7 +5,7 @@
 
 include ..\..\config.nmake
 
-CFLAGS=/Od /I$(GLIB_DIR)
+CFLAGS=/Od /I$(GLIB_DIR) /I$(GLIB_DIR2) /w /W0
 
 CVARSDLL=-DWIN32 -DMBCS
 

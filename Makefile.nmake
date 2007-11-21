@@ -11,7 +11,7 @@ all:
 	cd programs
 	nmake all -f Makefile.nmake
 	cd .. 
-
+	
 clean:
 	cd sctplib\sctp
 	nmake clean -f Makefile.nmake
@@ -29,8 +29,14 @@ verify_apps:
 	@$(SH) win32-setup.sh --appverify $(REQUIRED_APPS)
 
 setup: verify_apps
-	@$(SH) win32-setup.sh --download "$(ETHEREAL_LIBS)" \
-		glib-1.2-lib glib-19990228.zip
-	@$(SH) win32-setup.sh --download "$(ETHEREAL_LIBS)" \
-		glib-1.2-dev glib-1.2-dev-19990228.zip
-
+	@$(SH) win32-setup.sh --download "$(WIN32_LIBS)" \
+		glib gtk2.12/glib-2.14.3.zip
+	@$(SH) win32-setup.sh --download "$(WIN32_LIBS)" \
+		glib gtk2.12/glib-dev-2.14.3.zip
+	@$(SH) win32-setup.sh --download "$(WIN32_LIBS)" \
+		libiconv-1.9.1.bin.woe32 libiconv-1.9.1.bin.woe32.zip
+    @$(SH) win32-setup.sh --download "$(WIN32_LIBS)" \
+		gettext-0.14.5 gettext-0.14.5.zip
+	copy $(WIN32_LIBS)\glib\bin\libglib-2.0-0.dll C:\WINDOWS\system32
+	copy $(ICONV_DIR)\bin\iconv.dll C:\WINDOWS\system32
+    copy $(GETTEXT_DIR)\bin\intl.dll C:\WINDOWS\system32

@@ -1,8 +1,8 @@
-	08/12/04
+	11/20/07
 
 Sctplib for Windows
 
-* Download the latest sctplib sources (sctplib-1.0.5) and unpack them
+* Download the latest sctplib sources (sctplib-1.0.8) and unpack them
   in a directory of your choice
 
 * In addition you need some files of the glib library. 
@@ -11,28 +11,30 @@ Sctplib for Windows
 
   1. If you have already Cygwin installed:
      o Make sure that Cygwin is installed with bash, wget and unzip
-     o Go to sctplib-1.0.5 and type 
+     o Go to sctplib-1.0.8 and type 
        nmake setup -f Makefile.nmake
-     o The glib files will be downloaded and unzipped in thei
-       directory C:\ethereal-win32-libs
+     o The glib files will be downloaded and unzipped in the
+       directory C:\win32-libs
      o In case you want them unzipped in a different directory, you
-       have to change the Variable ETHEREAL_LIBS in config.nmake
+       have to change the Variable WIN32_LIBS in config.nmake
   
   2. If Cygwin is not installed on your computer:
-     o Make a directory C:\ethereal-win32-libs
-     o Download glib-1.2-dev-19990228.zip preferably
-       from http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/
-     o Unzip the files in C:\ethereal-win32-libs\glib-1.2-dev
-     o Download glib-19990228.zip preferably
-       from http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/
-     o Unzip the files in C:\ethereal-win32-libs\glib-1.2-lib
+     o Make a directory C:\win32-libs
+     o Download gtk2.12/glib-2.14.3.zip and gtk2.12/glib-dev-2.14.3.zip preferably
+       from http://anonsvn.wireshark.org/wireshark-win32-libs/tags/2007-11-20/packages
+     o Unzip the files in C:\win32-libs\glib
+     o Download libiconv-1.9.1.bin.woe32.zip and gettext-0.14.5.zip preferably
+       from http://anonsvn.wireshark.org/wireshark-win32-libs/tags/2007-11-20/packages
+     o Unzip the files in C:\win32-libs\libiconv-1.9.1.bin.woe32 and 
+       C:\win32-libs\gettext-0.14.5 respectively
      o In case you want them unzipped in a different directory, you have
-       to change the Variable ETHEREAL_LIBS in config.nmake
+       to change the Variable WIN32_LIBS in config.nmake
+     o Copy glib\bin\libglib-2.0-0.dll libiconv-1.9.1.bin.woe32\bin\iconv.dll 
+
+       gettext-0.14.5\bin\intl.dll to C:\WINDOWS\system32
 
 * Now you can compile the sctplib and additional programs with
   nmake all -f Makefile.nmake. 
 
-* In order to run the programs you have to copy glib-1.2.dll
-  from C:\ethereal-win32-libs\glib-1.2-lib to C:\windows\system32
-  or add C:\ethereal-win32-libs\glib-1.2-lib to your path variable.
+
 

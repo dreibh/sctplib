@@ -1,7 +1,8 @@
 #!/bin/sh
 
-DOWNLOAD_PREFIX="http://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/"
-err_exit () {
+DOWNLOAD_PREFIX="http://anonsvn.wireshark.org/wireshark-win32-libs/tags/2007-11-20/packages"
+
+        err_exit () {
 	echo "ERROR: $1"
 	echo ""
 	exit 1
