@@ -62,7 +62,7 @@
 
 #define CRC32C(c,d) (c=(c>>8)^crc_c[(c^(d))&0xFF])
 
-uint32_t crc_c[256] =
+unsigned int crc_c[256] =
 {
     0x00000000L, 0xF26B8303L, 0xE13B70F7L, 0x1350F3F4L,
     0xC79A971FL, 0x35F1141CL, 0x26A1E7E8L, 0xD4CA64EBL,
@@ -191,7 +191,7 @@ int aux_insert_checksum(unsigned char *buffer, int length)
 static int insert_adler32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    uint32_t      a32;
+    unsigned int a32;
     /* save crc value from PDU */
     if (length > NMAX || length < NMIN)
         return -1;
@@ -210,10 +210,10 @@ static int insert_adler32(unsigned char *buffer, int length)
     return 1;
 }
 
-static uint32_t generate_crc32c(unsigned char *buffer, int length)
+static unsigned int generate_crc32c(unsigned char *buffer, int length)
 {
     unsigned char byte0, byte1, byte2, byte3, swap;
-    uint32_t      crc32 = ~0L;
+    unsigned int crc32 = ~0;
     int           i;
 
     for (i = 0; i < length; i++)
@@ -237,7 +237,7 @@ static uint32_t generate_crc32c(unsigned char *buffer, int length)
 static int insert_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    uint32_t      crc32c;
+    unsigned int crc32c;
 
     /* check packet length */
     if (length > NMAX  || length < NMIN)
@@ -289,8 +289,8 @@ static int validate_adler32(unsigned char *header_start, int length)
 static int validate_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    uint32_t      original_crc32;
-    uint32_t      crc32 = ~0L;
+    unsigned int original_crc32;
+    unsigned int crc32 = ~0;
 
     /* check packet length */
 
