@@ -992,7 +992,8 @@ int se_deliver_unreliably(unsigned int up_to_tsn, SCTP_forward_tsn_chunk* chk)
         {
              d_chunk = (delivery_data*)(tmp->data);
 
-             g_list_remove (se->List, d_chunk);
+             se->List = g_list_remove (se->List, d_chunk);
+             se->queuedBytes -= d_chunk->data_length;
              free(d_chunk);
              tmp = g_list_first(se->List);
         }
