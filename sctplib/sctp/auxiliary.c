@@ -46,7 +46,7 @@
 
 #include <stdio.h>
 
-#define BASE 65521             /* largest prime smaller than 65536 */
+#define BASE 65521L             /* largest prime smaller than 65536 */
 #define NMAX 5552
 #define NMIN 16
 
@@ -62,7 +62,7 @@
 
 #define CRC32C(c,d) (c=(c>>8)^crc_c[(c^(d))&0xFF])
 
-unsigned int crc_c[256] =
+uint32_t crc_c[256] =
 {
     0x00000000, 0xF26B8303, 0xE13B70F7, 0x1350F3F4,
     0xC79A971F, 0x35F1141C, 0x26A1E7E8, 0xD4CA64EB,
@@ -191,7 +191,7 @@ int aux_insert_checksum(unsigned char *buffer, int length)
 static int insert_adler32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    unsigned int a32;
+    uint32_t      a32;
     /* save crc value from PDU */
     if (length > NMAX || length < NMIN)
         return -1;
@@ -210,10 +210,10 @@ static int insert_adler32(unsigned char *buffer, int length)
     return 1;
 }
 
-static unsigned int generate_crc32c(unsigned char *buffer, int length)
+static uint32_t generate_crc32c(unsigned char *buffer, int length)
 {
     unsigned char byte0, byte1, byte2, byte3, swap;
-    unsigned int crc32 = ~0;
+    uint32_t      crc32 = ~0L;
     int           i;
 
     for (i = 0; i < length; i++)
@@ -221,7 +221,7 @@ static unsigned int generate_crc32c(unsigned char *buffer, int length)
       CRC32C(crc32, buffer[i]);
     }
     crc32 =~ crc32;
-    /* do the swap */	
+    /* do the swap */
     byte0 = (unsigned char) crc32 & 0xff;
     byte1 = (unsigned char) (crc32>>8) & 0xff;
     byte2 = (unsigned char) (crc32>>16) & 0xff;
@@ -237,14 +237,14 @@ static unsigned int generate_crc32c(unsigned char *buffer, int length)
 static int insert_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    unsigned int crc32c;
+    uint32_t      crc32c;
 
     /* check packet length */
     if (length > NMAX  || length < NMIN)
       return -1;
 
     message = (SCTP_message *) buffer;
-    message->common_header.checksum = 0;
+    message->common_header.checksum = 0L;
     crc32c =  generate_crc32c(buffer, length);
     /* and insert it into the message */
     message->common_header.checksum = htonl(crc32c);
@@ -255,7 +255,7 @@ static int insert_crc32(unsigned char *buffer, int length)
 
 int validate_size(unsigned char *header_start, int length)
 {
-    if ((length % 4) != 0)
+    if ((length % 4) != 0L)
         return 0;
     if (length > NMAX  || length < NMIN)
         return 0;
@@ -279,7 +279,7 @@ static int validate_adler32(unsigned char *header_start, int length)
     message->common_header.checksum = htonl(0L);
 
     /* now compute the thingie */
-    a32 = sctp_adler32(1L, header_start, length);
+    a32 = sctp_adler32(1, header_start, length);
 
     event_logi(VVERBOSE, "DEBUG Validation : my adler32 == %x", a32);
     if (a32 == old_crc32)  return 1;
@@ -289,8 +289,8 @@ static int validate_adler32(unsigned char *header_start, int length)
 static int validate_crc32(unsigned char *buffer, int length)
 {
     SCTP_message *message;
-    unsigned int original_crc32;
-    unsigned int crc32 = ~0;
+    uint32_t      original_crc32;
+    uint32_t      crc32 = ~0;
 
     /* check packet length */
 
@@ -318,7 +318,7 @@ int validate_datagram(unsigned char *buffer, int length)
     return 1;
 }
 
-/** 
+/**
  * adler32.c -- compute the Adler-32 checksum of a data stream
  * Copyright (C) 1995-1996 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
