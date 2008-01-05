@@ -1177,7 +1177,7 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
 #endif
            ptr++;
         }
-#ifdef LIMUX
+#ifdef LINUX
         len -= sizeof(udp_header);
 #else
         len -= sizeof(struct udphdr);
