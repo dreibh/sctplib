@@ -1,0 +1,4 @@
+#!/bin/bash
+# $Id: clean-deb 1601 2007-10-24 11:05:17Z dreibh $
+
+rm -f *.deb *.dsc *.asc *.changes *.build *.upload *.tar.gz stamp-h* svn-commit* *~

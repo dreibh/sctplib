@@ -1,0 +1,4 @@
+debian/tmp/usr/lib/lisctplib*.so
+debian/tmp/usr/lib/lisctplib*.a
+debian/tmp/usr/lib/lisctplib*.la
+debian/tmp/usr/include/sctp.h

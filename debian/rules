@@ -1,15 +1,44 @@
 #!/usr/bin/make -f
-# Copyright 2003-2005 Anibal Monsalve Salazar <anibal@debian.org>
+# $Id: rules 1578 2007-10-09 07:32:46Z dreibh $
+# --------------------------------------------------------------------------
+#
+#              //===//   //=====   //===//   //       //   //===//
+#             //    //  //        //    //  //       //   //    //
+#            //===//   //=====   //===//   //       //   //===<<
+#           //   \\         //  //        //       //   //    //
+#          //     \\  =====//  //        //=====  //   //===//    Version II
+#
+# ------------- An Efficient RSerPool Prototype Implementation -------------
+#
+# Copyright (C) 2002-2007 by Thomas Dreibholz
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Contact: dreibh@iem.uni-due.de
 
-package    = sctplib
 
-namelib    = libsctplib
-libname    = sctplib
-libversion = 1
-plib    = $(libname)$(libversion)
-plibdev = $(libname)-dev
-docdir = debian/tmp/usr/share/doc/$(package)
-ldocdir = debian/$(plib)/usr/share/doc/$(plib)
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
 
 CFLAGS = -Wall -g
 
@@ -19,98 +48,108 @@ else
 	CFLAGS += -O2
 endif
 
-STRIP = strip --remove-section=.comment --remove-section=.note
+config.status: configure
+	dh_testdir
+	# Add here commands to configure the package.
+	./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info CFLAGS="$(CFLAGS)" LDFLAGS="-Wl,-z,defs"
 
-build:
-	$(checkdir)
-	ln -sf /usr/share/misc/config.sub /usr/share/misc/config.guess .
-	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --enable-shared --disable-static
-	$(MAKE) install DESTDIR=$(CURDIR)/shared
-	-$(MAKE) distclean
-	CFLAGS="$(CFLAGS)" ./configure --prefix=/usr --enable-static --disable-shared
-	$(MAKE) install DESTDIR=$(CURDIR)/static
-	touch build
+
+#Architecture
+build: build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp:  config.status
+
+	# Add here commands to compile the arch part of the package.
+	#$(MAKE)
+	touch $@
+
+build-indep: build-indep-stamp
+build-indep-stamp:  config.status
+
+	# Add here commands to compile the indep part of the package.
+	#$(MAKE) doc
+	touch $@
 
 clean:
-	$(checkdir)
-	-$(MAKE) distclean
-	rm -f config.sub config.guess
-	-rm -f build `find . -name "*~"`
-	-rm -rf shared static debian/tmp debian/files* core debian/substvars debian/$(plib) debian/$(plibdev)
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
 
-binary-indep: checkroot build
-	$(checkdir)
-	-rm -rf debian/tmp
-	install -d debian/tmp/DEBIAN $(docdir)-doc $(docdir)-doc/sctplib
-	cd sctplib && tar cf $(CURDIR)/$(docdir)-doc/sctplib/docs.tar --exclude Makefile.in docs
-	cd sctplib && tar cf $(CURDIR)/$(docdir)-doc/sctplib/manual.tar --exclude Makefile.in manual
-	cd sctplib && tar cf $(CURDIR)/$(docdir)-doc/sctplib/programs.tar --exclude .libs programs/{*.h,*.c,script*}
-	cp -p debian/copyright $(docdir)-doc
-	cp -p ChangeLog $(docdir)-doc/changelog
-	cp -p debian/changelog $(docdir)-doc/changelog.Debian
-	cd $(docdir)-doc && bzip2 -9 sctplib/*.tar
-	cd $(docdir)-doc && gzip -9 changelog changelog.Debian
-	dpkg-gencontrol -isp -p$(package)-doc
-	cd debian/tmp && md5sum `find * -type f ! -regex "DEBIAN/.*"` > DEBIAN/md5sums
-	chown -R root.root debian/tmp
-	chmod -R go=rX debian/tmp
-	dpkg --build debian/tmp ..
+	# Add here commands to clean up after the build process.
+	[ ! -f Makefile ] || $(MAKE) distclean
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
 
-binary-arch: checkroot build
-	$(checkdir)
-	-rm -rf debian/tmp
-	-rm -rf debian/$(plib) debian/$(plibdev)
-	install -d debian/tmp/DEBIAN $(docdir) $(ldocdir)
-	cd debian && install -d $(plib) $(plibdev)
-	cd debian/$(plib)    && install -d DEBIAN usr/share/doc usr/lib
-	cd debian/$(plibdev) && install -d DEBIAN usr/share/doc usr/lib
-	cd debian/tmp && install -d usr/bin usr/man/man1
-	cp -p ChangeLog $(docdir)/changelog
-	cp -p debian/changelog $(docdir)/changelog.Debian
-	cd $(docdir) && gzip -9 changelog changelog.Debian
 
-	cd debian && install -m 644 shlibs $(plib)/DEBIAN
+	dh_clean
 
-	cd shared/usr/lib && $(STRIP) --strip-unneeded $(namelib).so.*
-	cd static/usr/lib && strip --strip-debug $(namelib).a
+install: install-indep install-arch
+install-indep:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -i
+	dh_installdirs -i
 
-	mv shared/usr/lib/$(namelib).so.* debian/$(plib)/usr/lib
-	mv shared/usr/lib/$(namelib).so debian/$(plibdev)/usr/lib
-	mv shared/usr/lib/$(namelib).la debian/$(plibdev)/usr/lib
-	mv static/usr/lib/$(namelib).a debian/$(plibdev)/usr/lib
-	mv static/usr/include debian/$(plibdev)/usr
+	# Add here commands to install the indep part of the package into
+	# debian/<package>-doc.
+	#INSTALLDOC#
 
-	cp -p debian/copyright $(ldocdir)
-	cp -p ChangeLog $(ldocdir)/changelog
-	cp -p debian/changelog $(ldocdir)/changelog.Debian
-	cd $(ldocdir) && gzip -9 changelog changelog.Debian
+	dh_install -i
 
-	ln -s $(plib) debian/$(plibdev)/usr/share/doc/$(plibdev)
+install-arch:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -s
+	dh_installdirs -s
 
-	dpkg-shlibdeps debian/$(plib)/usr/lib/*
-	dpkg-gencontrol -isp -p$(plib) -Pdebian/$(plib)
-	cd debian/$(plib) && md5sum `find * -type f ! -regex "DEBIAN/.*"` > DEBIAN/md5sums
-	chown -R root.root debian/$(plib)
-	chmod -x debian/$(plib)/usr/lib/*
-	chmod -x debian/$(plibdev)/usr/lib/$(namelib).a
-	chmod -x debian/$(plibdev)/usr/lib/$(namelib).la
-	chmod -R go=rX debian/$(plib)
-	dpkg --build debian/$(plib) ..
+	# Add here commands to install the arch part of the package into
+	# debian/tmp.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
 
-	dpkg-gencontrol -isp -p$(plibdev) -Pdebian/$(plibdev)
-	cd debian/$(plibdev) && md5sum `find * -type f ! -regex "DEBIAN/.*"` > DEBIAN/md5sums
-	chown -R root.root debian/$(plibdev)
-	chmod -R go=rX debian/$(plibdev)
-	dpkg --build debian/$(plibdev) ..
+	dh_install -s
+# Must not depend on anything. This is to be called by
+# binary-arch/binary-indep
+# in another 'make' thread.
+binary-common:
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+#	dh_installdocs
+	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installemacsen
+#	dh_installpam
+#	dh_installmime
+#	dh_python
+	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+#	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_perl
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+# Build architecture independant packages using the common target.
+binary-indep: build-indep install-indep
+	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
 
-define checkdir
-	test -f debian/rules
-endef
+# Build architecture dependant packages using the common target.
+binary-arch: build-arch install-arch
+	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
 
-binary: binary-indep binary-arch
-
-checkroot:
-	$(checkdir)
-	test root = "`whoami`"
-
-.PHONY: binary binary-arch binary-indep clean checkroot
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch
