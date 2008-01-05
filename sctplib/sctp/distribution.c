@@ -4849,6 +4849,7 @@ mdi_newAssociation(void*  sInstance,
     if (checkForExistingAssociations(currentAssociation) == 1) {
         error_log(ERROR_MAJOR, "tried to establish an existing association");
         /* FIXME : also free bundling, pathmanagement,sctp_control */
+        free(currentAssociation->localAddresses);
         free(currentAssociation->destinationAddresses);
         free(currentAssociation);
         currentAssociation = NULL;
