@@ -140,7 +140,7 @@ static int (*insert_checksum) (unsigned char* buffer, int length) = insert_crc32
 static int (*validate_checksum) (unsigned char* buffer, int length) = validate_crc32;
 
 
-static unsigned int sctp_adler32(unsigned int adler, const unsigned char *buf, unsigned int len);
+static uint32_t sctp_adler32(uint32_t adler, const unsigned char *buf, unsigned int len);
 
 
 int set_checksum_algorithm(int algorithm){
@@ -160,7 +160,7 @@ int set_checksum_algorithm(int algorithm){
 unsigned char* key_operation(int operation_code)
 {
     static unsigned char *secret_key = NULL;
-    unsigned int count = 0, tmp;
+    uint32_t              count = 0, tmp;
 
     if (operation_code == KEY_READ) return secret_key;
     else if (operation_code == KEY_INIT) {
@@ -172,8 +172,8 @@ unsigned char* key_operation(int operation_code)
         while (count < SECRET_KEYSIZE){
             /* if you care for security, you need to use a cryptographically secure PRNG */
             tmp = adl_random();
-            memcpy(&secret_key[count], &tmp, sizeof(unsigned int));
-            count += 4;
+            memcpy(&secret_key[count], &tmp, sizeof(uint32_t));
+            count += sizeof(uint32_t);
         }
     } else {
         error_log(ERROR_MAJOR, "unknown key operation code !");
@@ -267,8 +267,8 @@ int validate_size(unsigned char *header_start, int length)
 static int validate_adler32(unsigned char *header_start, int length)
 {
     SCTP_message *message;
-    unsigned int old_crc32;
-    unsigned int a32;
+    uint32_t      old_crc32;
+    uint32_t      a32;
 
     /* save crc value from PDU */
     message = (SCTP_message *) header_start;
@@ -324,11 +324,11 @@ int validate_datagram(unsigned char *buffer, int length)
  * For conditions of distribution and use, see copyright notice in zlib.h
  * available, e.g. from  http://www.cdrom.com/pub/infozip/zlib/
  */
-static unsigned int sctp_adler32(unsigned int adler, const unsigned char *buf, unsigned int len)
+static uint32_t sctp_adler32(uint32_t adler, const unsigned char *buf, unsigned int len)
 {
-    unsigned int s1 = adler & 0xffff;
-    unsigned int s2 = (adler >> 16) & 0xffff;
-    int k;
+    uint32_t s1 = adler & 0xffff;
+    uint32_t s2 = (adler >> 16) & 0xffff;
+    int      k;
 
     if (buf == NULL)
         return 1L;
