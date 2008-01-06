@@ -2027,7 +2027,6 @@ int sctp_unregisterInstance(unsigned short instance_name)
  */
 int sctp_deleteAssociation(unsigned int associationID)
 {
-    Association *assoc;
     Association *assocFindP;
     GList* result = NULL;
 
@@ -2040,21 +2039,23 @@ int sctp_deleteAssociation(unsigned int associationID)
     tmpAssoc.assocId = associationID;
     tmpAssoc.deleted = FALSE;
     assocFindP = &tmpAssoc;
-    assoc = NULL;
+    currentAssociation = NULL;
 
     result = g_list_find_custom(AssociationList, assocFindP, &compareAssociationIDs);
     if (result != NULL) {
-        assoc = (Association *)result->data;
-        if (!assoc->deleted) {
+        currentAssociation = (Association *)result->data;
+        if (!currentAssociation->deleted) {
+            currentAssociation = NULL;
             error_log(ERROR_MAJOR, "Deleted-Flag not set, returning from sctp_deleteAssociation !");
             LEAVE_LIBRARY("sctp_deleteAssociation");
             return SCTP_SPECIFIC_FUNCTION_ERROR;
         }
         /* remove the association from the list */
-        AssociationList = g_list_remove(AssociationList, assoc);
+        AssociationList = g_list_remove(AssociationList, currentAssociation);
         event_log(INTERNAL_EVENT_0, "sctp_deleteAssociation: Deleted Association from list");
         /* free all association data */
-        mdi_removeAssociationData(assoc);
+        mdi_removeAssociationData(currentAssociation);
+        currentAssociation = NULL;
         LEAVE_LIBRARY("sctp_deleteAssociation");
         return SCTP_SUCCESS;
     } else {
