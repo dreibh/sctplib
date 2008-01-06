@@ -511,9 +511,13 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
 
     event_logi(VVERBOSE, "rxc_data_chunk_rx: after rxc_bubbleup_ctsna, rxc->ctsna=%u", rxc->ctsna);
 
-    if (rxc->new_chunk_received == TRUE) se_recvDataChunk(se_chk, chunk_len, ad_idx);
-    /* resetting it */
-    rxc->new_chunk_received = FALSE;
+    if (rxc->new_chunk_received == TRUE) {
+        if(se_recvDataChunk(se_chk, chunk_len, ad_idx) == SCTP_SUCCESS) {
+            /* resetting it */
+            rxc->new_chunk_received = FALSE;
+        }
+        /* else: ABORT has been sent and the association (possibly) removed in callback! */
+    }
     return 1;
 }
 

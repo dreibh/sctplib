@@ -681,7 +681,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
     se->queuedBytes += datalength;
 
     se->recvStreamActivated[d_chunk->stream_id] = TRUE;
-    return 0;
+    return SCTP_SUCCESS;
 }
 
   int se_searchReadyPdu(StreamEngine* se)
