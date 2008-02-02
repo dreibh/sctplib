@@ -225,7 +225,7 @@ static void free_delivery_pdu(gpointer list_element, gpointer user_data)
    int           i;
 
    if(d_pdu->ddata != NULL) {
-      for (i=0; i < d_pdu->number_of_chunks; i++) {
+      for (i = 0; i < (int)d_pdu->number_of_chunks; i++) {
          free(d_pdu->ddata[i]);
          d_pdu->ddata[i] = NULL;
       }
@@ -329,7 +329,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
     {
         error_logii (ERROR_MAJOR, "STREAM ID OVERFLOW in se_ulpsend: wanted %u, got only %u",
             streamId, se->numSendStreams);
-        mdi_sendFailureNotif (buffer, byteCount, context);
+        mdi_sendFailureNotif (buffer, byteCount, (unsigned int*)context);
         return SCTP_PARAMETER_PROBLEM;
     }
 
@@ -346,7 +346,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
          if ((1 + fc_readNumberOfQueuedChunks()) > maxQueueLen) return SCTP_QUEUE_EXCEEDED;
        }
 
-        cdata = malloc(sizeof(chunk_data));
+        cdata = (chunk_data*)malloc(sizeof(chunk_data));
         if (cdata == NULL) {
             return SCTP_OUT_OF_RESOURCES;
         }
@@ -401,7 +401,7 @@ se_ulpsend (unsigned short streamId, unsigned char *buffer,
 
       for (i = 1; i <= numberOfSegments; i++)
       {
-            cdata = malloc(sizeof(chunk_data));
+            cdata = (chunk_data*)malloc(sizeof(chunk_data));
             if (cdata == NULL) {
                 /* FIXME: this is unclean, as we have already assigned some TSNs etc, and
                  * maybe queued parts of this message in the queue, this should be cleaned
@@ -520,7 +520,7 @@ short se_ulpreceivefrom(unsigned char *buffer, unsigned int *byteCount,
             oldQueueLen = se->queuedBytes;
             copiedBytes = 0;
 
-            d_pdu = g_list_nth_data (se->RecvStreams[streamId].pduList, 0);
+            d_pdu = (delivery_pdu*)g_list_nth_data (se->RecvStreams[streamId].pduList, 0);
 
             r_pos       = d_pdu->read_position;
             r_chunk     = d_pdu->read_chunk;
@@ -643,7 +643,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
 
     event_log (INTERNAL_EVENT_0, "SE_RECVDATACHUNK CALLED");
 
-    d_chunk = malloc (sizeof (delivery_data));
+    d_chunk = (delivery_data*)malloc (sizeof (delivery_data));
     if (d_chunk == NULL) return SCTP_OUT_OF_RESOURCES;
 
     datalength =  byteCount - FIXED_DATA_CHUNK_SIZE;
@@ -654,7 +654,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
         error_info.stream_id = htons(d_chunk->stream_id);
         error_info.reserved = htons(0);
 
-        scu_abort(ECC_INVALID_STREAM_ID, sizeof(error_info), (void*)&error_info);
+        scu_abort(ECC_INVALID_STREAM_ID, sizeof(error_info), (unsigned char*)&error_info);
         free(d_chunk);
         return SCTP_UNSPECIFIED_ERROR;
     }
@@ -662,7 +662,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
     d_chunk->tsn = ntohl (dataChunk->tsn);     /* for efficiency */
 
     if (datalength <= 0) {
-        scu_abort(ECC_NO_USER_DATA, sizeof(unsigned int), (void*)&(dataChunk->tsn));
+        scu_abort(ECC_NO_USER_DATA, sizeof(unsigned int), (unsigned char*)&(dataChunk->tsn));
 
         free(d_chunk);
         return SCTP_UNSPECIFIED_ERROR;
@@ -700,7 +700,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
     guint32 itemPosition = 0;
     event_log (INTERNAL_EVENT_0, " ================> se_searchReadyPdu <=============== ");
     event_logi (VVERBOSE, "List has %u elements", g_list_length(se->List));
-    for (i = 0; i < se->numReceiveStreams; i++) {
+    for (i = 0; i < (int)se->numReceiveStreams; i++) {
         se->RecvStreams[i].highestSSN = 0;
         se->RecvStreams[i].highestSSNused = FALSE;
     }
@@ -796,7 +796,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
                 {
                       event_log (VVERBOSE, "handling complete PDU");
 
-                      d_pdu = malloc(sizeof(delivery_pdu));
+                      d_pdu = (delivery_pdu*)malloc(sizeof(delivery_pdu));
                       if (d_pdu == NULL) {
                           return SCTP_OUT_OF_RESOURCES;
                       }
@@ -807,7 +807,7 @@ int se_recvDataChunk (SCTP_data_chunk * dataChunk, unsigned int byteCount, unsig
                       d_pdu->chunk_position = 0;
                       d_pdu->total_length = 0;
 
-                      d_pdu->ddata = malloc(nrOfChunks*sizeof(delivery_data*));
+                      d_pdu->ddata = (delivery_data**)malloc(nrOfChunks*sizeof(delivery_data*));
                       if (d_pdu->ddata == NULL) {
                           free(d_pdu);
                           return SCTP_OUT_OF_RESOURCES;

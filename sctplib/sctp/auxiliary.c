@@ -168,7 +168,7 @@ unsigned char* key_operation(int operation_code)
             error_log(ERROR_MAJOR, "tried to init secret key, but key already created !");
             return secret_key;
         }
-        secret_key = malloc(SECRET_KEYSIZE);
+        secret_key = (unsigned char*)malloc(SECRET_KEYSIZE);
         while (count < SECRET_KEYSIZE){
             /* if you care for security, you need to use a cryptographically secure PRNG */
             tmp = adl_random();

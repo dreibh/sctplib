@@ -101,7 +101,7 @@ static bundling_instance *global_buffer;
 
 void bu_init_bundling(void)
 {
-    global_buffer = bu_new();
+    global_buffer = (bundling_instance*)bu_new();
 }
 
 /**
@@ -113,7 +113,7 @@ gpointer bu_new(void)
     /* Alloc new bundling_instance data struct */
     bundling_instance *ptr;
 
-    ptr = malloc(sizeof(bundling_instance));
+    ptr = (bundling_instance*)malloc(sizeof(bundling_instance));
     if (!ptr) {
         error_log(ERROR_MAJOR, "Malloc failed");
         return 0;

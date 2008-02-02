@@ -136,7 +136,7 @@ void *fc_new_flowcontrol(unsigned int peer_rwnd,
     fc_data *tmp;
     unsigned int count;
 
-    tmp = malloc(sizeof(fc_data));
+    tmp = (fc_data*)malloc(sizeof(fc_data));
     if (!tmp)
         error_log(ERROR_FATAL, "Malloc failed");
     tmp->current_tsn = my_iTSN;
@@ -145,15 +145,15 @@ void *fc_new_flowcontrol(unsigned int peer_rwnd,
                "Flowcontrol: ===== Num of number_of_destination_addresses = %d ",
                number_of_destination_addresses);
 
-    tmp->cparams = malloc(number_of_destination_addresses * sizeof(cparm));
+    tmp->cparams = (cparm*)malloc(number_of_destination_addresses * sizeof(cparm));
     if (!tmp->cparams)
         error_log(ERROR_FATAL, "Malloc failed");
 
-    tmp->T3_timer = malloc(number_of_destination_addresses * sizeof(TimerID));
+    tmp->T3_timer = (TimerID*)malloc(number_of_destination_addresses * sizeof(TimerID));
     if (!tmp->T3_timer)
         error_log(ERROR_FATAL, "Malloc failed");
 
-    tmp->addresses = malloc(number_of_destination_addresses * sizeof(unsigned int));
+    tmp->addresses = (unsigned int*)malloc(number_of_destination_addresses * sizeof(unsigned int));
     if (!tmp->addresses)
         error_log(ERROR_FATAL, "Malloc failed");
 
@@ -500,7 +500,7 @@ void fc_timer_cb_t3_timeout(TimerID tid, void *assoc, void *data2)
         return;
     }
 
-    chunks = malloc(num_of_chunks * sizeof(chunk_data *));
+    chunks = (chunk_data**)malloc(num_of_chunks * sizeof(chunk_data *));
     num_of_chunks = rtx_t3_timeout(&(fc->my_association), ad_idx, fc->cparams[ad_idx].mtu, chunks);
     if (num_of_chunks <= 0) {
         event_log(VERBOSE, "No Chunks to re-transmit - AFTER calling rtx_t3_timeout - returning");
@@ -675,7 +675,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
     fc = (fc_data *) fc_instance;
 
     if (fc->chunk_list != NULL) {
-        dat = g_list_nth_data(fc->chunk_list, 0);
+        dat = (chunk_data*)g_list_nth_data(fc->chunk_list, 0);
     } else {
         return -1;
     }
@@ -762,7 +762,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
         fc->chunk_list = g_list_remove(fc->chunk_list, (gpointer) dat);
         fc->list_length--;
 
-        dat = g_list_nth_data(fc->chunk_list, 0);
+        dat = (chunk_data*)g_list_nth_data(fc->chunk_list, 0);
         if (dat != NULL) {
             if (dat->num_of_transmissions >= 1)    data_is_retransmitted = TRUE;
             else if (dat->num_of_transmissions == 0) data_is_retransmitted = FALSE;
@@ -1306,7 +1306,7 @@ int fc_dequeueUnackedChunk(unsigned int tsn)
         error_log(ERROR_MAJOR, "flow control instance not set !");
         return SCTP_MODULE_NOT_FOUND;
     }
-    dat = g_list_nth_data(fc->chunk_list, 0);
+    dat = (chunk_data*)g_list_nth_data(fc->chunk_list, 0);
     tmp = fc->chunk_list;
     while (dat != NULL && tmp != NULL) {
         event_logii(VVERBOSE, "fc_dequeueOldestUnsentChunks(): checking chunk tsn=%u, num_rtx=%u ", dat->chunk_tsn, dat->num_of_transmissions);
@@ -1353,7 +1353,7 @@ int fc_dequeueOldestUnsentChunk(unsigned char *buf, unsigned int *len, unsigned 
 
     if (listlen <= 0)               return SCTP_UNSPECIFIED_ERROR;
     if (fc->chunk_list == NULL) return  SCTP_UNSPECIFIED_ERROR;
-    dat = g_list_nth_data(fc->chunk_list, 0);
+    dat = (chunk_data*)g_list_nth_data(fc->chunk_list, 0);
     tmp = fc->chunk_list;
     while (dat != NULL && tmp != NULL) {
         event_logii(VVERBOSE, "fc_dequeueOldestUnsentChunks(): checking chunk tsn=%u, num_rtx=%u ", dat->chunk_tsn, dat->num_of_transmissions);

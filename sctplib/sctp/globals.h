@@ -325,7 +325,7 @@ union sockunion
 #define SUPPORT_ADDRESS_TYPE_IPV6        0x00000002
 #define SUPPORT_ADDRESS_TYPE_DNS         0x00000004
 
-typedef enum  {
+typedef enum {
       flag_HideLoopback           = (1 << 0),
       flag_HideLinkLocal          = (1 << 1),
       flag_HideSiteLocal          = (1 << 2),
@@ -338,7 +338,7 @@ typedef enum  {
       flag_HideAllExceptLoopback  = (1 << 7),
       flag_HideAllExceptLinkLocal = (1 << 8),
       flag_HideAllExceptSiteLocal = (1 << 9)
-}AddressScopingFlags;
+} AddressScopingFlags;
 
 
 #define DEFAULT_MTU_CEILING     1500

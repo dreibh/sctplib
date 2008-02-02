@@ -127,7 +127,7 @@ void *rtx_new_reltransfer(unsigned int number_of_destination_addresses, unsigned
 {
     rtx_buffer *tmp;
 
-    tmp = malloc(sizeof(rtx_buffer));
+    tmp = (rtx_buffer*)malloc(sizeof(rtx_buffer));
     if (!tmp)
         error_log(ERROR_FATAL, "Malloc failed");
 
@@ -298,7 +298,7 @@ int rtx_dequeue_up_to(unsigned int ctsna, unsigned int addr_index)
     tmp = g_list_first(rtx->chunk_list);
 
     while (tmp) {
-        dat = g_list_nth_data(rtx->chunk_list, 0);
+        dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, 0);
         if (!dat) return -1;
 
         chunk_tsn = dat->chunk_tsn;
@@ -399,7 +399,7 @@ static int rtx_advancePeerAckPoint(rtx_buffer *rtx)
     tmp = g_list_first(rtx->chunk_list);
 
     while (tmp) {
-        dat = g_list_nth_data(tmp, 0);
+        dat = (chunk_data*)g_list_nth_data(tmp, 0);
         if (!dat) return -1;
         if (!dat->hasBeenDropped) return 0;
         event_logi(VVERBOSE, "rtx_advancePeerAckPoint: Set advancedPeerAckPoint to %u", dat->chunk_tsn);
@@ -461,7 +461,7 @@ int rtx_get_obpa(unsigned int adIndex, unsigned int *totalInFlight)
         return 0;
     }
     for (count = 0; count < len; count++) {
-        dat = g_list_nth_data(rtx->chunk_list, count);
+        dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, count);
         if (dat == NULL) break;
         /* do not count chunks that were retransmitted by T3 timer              */
         /* dat->hasBeenRequeued will be set to FALSE when these are sent again  */
@@ -579,7 +579,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
         } else {
             /* this may become expensive !!!!!!!!!!!!!!!! */
             pos = 0;
-            dat = g_list_nth_data(rtx->chunk_list, i);
+            dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, i);
             if (rtx->chunk_list != NULL && dat != NULL) {
                 do {
                 frag = (fragment *) & (sack->fragments_and_dups[pos]);
@@ -624,7 +624,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         }     /*  if (dat->gap_reports == 4) */
                         /* read next chunk */
                         i++;
-                        dat = g_list_nth_data(rtx->chunk_list, i);
+                        dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, i);
                         if (dat == NULL)
                             break; /* was the last chunk in the list */
                         if (chunks_to_rtx == MAX_NUM_OF_CHUNKS)
@@ -656,7 +656,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
                         dat->gap_reports = 0;
 
                         i++;
-                        dat = g_list_nth_data(rtx->chunk_list, i);
+                        dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, i);
                         if (dat == NULL)
                             break; /* was the last chunk in the list or chunk is empty*/
                         else continue;
@@ -684,7 +684,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
             event_log(VVERBOSE, "rtx_process_sack: resetting all *hasBeenAcked* attributes");
             tmp_list = g_list_first(rtx->chunk_list);
             while (tmp_list) {
-                dat = g_list_nth_data(tmp_list, 0);
+                dat = (chunk_data*)g_list_nth_data(tmp_list, 0);
                 if (!dat) break;
                 if (dat->hasBeenAcked == TRUE && dat->hasBeenDropped == FALSE) {
                     dat->hasBeenAcked = FALSE;
@@ -731,7 +731,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
     } else {
         /* there are still chunks in that queue */
         if (rtx->chunk_list != NULL)
-            dat = g_list_nth_data(rtx->chunk_list, 0);
+            dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, 0);
         if (dat == NULL) {
             error_log(ERROR_FATAL, "Problem with RTX-chunklist, CHECK Program and List Handling");
             return -1;
@@ -828,7 +828,7 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
                         /* chunk has expired, maybe send FORWARD_TSN */
                         ((chunk_data *)(tmp->data))->hasBeenDropped = TRUE;
                     } else { /* chunk has not yet expired */
-                        chunks[chunks_to_rtx] = tmp->data;
+                        chunks[chunks_to_rtx] = (chunk_data*)tmp->data;
                         size += chunks[chunks_to_rtx]->chunk_len;
                         event_logii(VVERBOSE, "Scheduling chunk (tsn==%u), len==%u for rtx",
                                     chunks[chunks_to_rtx]->chunk_tsn, chunks[chunks_to_rtx]->chunk_len);
@@ -837,7 +837,7 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
                         chunks_to_rtx++;
                     }
                 } else {
-                    chunks[chunks_to_rtx] = tmp->data;
+                    chunks[chunks_to_rtx] = (chunk_data*)tmp->data;
                     size += chunks[chunks_to_rtx]->chunk_len;
                     event_logii(VVERBOSE, "Scheduling chunk (tsn==%u), len==%u for rtx",
                             chunks[chunks_to_rtx]->chunk_tsn, chunks[chunks_to_rtx]->chunk_len);
@@ -853,7 +853,7 @@ int rtx_t3_timeout(void *assoc_id, unsigned int address, unsigned int mtu, chunk
     event_logi(VVERBOSE, "Scheduled %d chunks for rtx", chunks_to_rtx);
 
     if (rtx->chunk_list != NULL) {
-        dat = g_list_nth_data(rtx->chunk_list, 0);
+        dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, 0);
         if (dat == NULL) {
            error_log(ERROR_FATAL, "Problem with RTX-chunklist, CHECK Program and List Handling");
            return chunks_to_rtx;
@@ -934,12 +934,12 @@ void chunk_list_debug(short event_log_level, GList * chunk_list)
             event_log(event_log_level, " Size of List == 0 ! ");
         } else if (size <= 200) {
             event_logi(event_log_level, " Size of List == %u ! Printing first 10 chunks....", size);
-            dat = g_list_nth_data(chunk_list, 0);
+            dat = (chunk_data*)g_list_nth_data(chunk_list, 0);
             last_tsn = dat->chunk_tsn - 1;
             if (size > 10) counter = 10;
             else counter = size;
             for (i=0; i<counter; i++) {
-                dat = g_list_nth_data(chunk_list, i);
+                dat = (chunk_data*)g_list_nth_data(chunk_list, i);
                 event_logii(event_log_level,
                             "________________ Chunk _________________\nChunk Size %u  -- TSN : %u  ",
                             dat->chunk_len, dat->chunk_tsn);
@@ -957,7 +957,7 @@ void chunk_list_debug(short event_log_level, GList * chunk_list)
                 last_tsn = dat->chunk_tsn;
             }
             for (i=counter; i<size; i++) {
-                dat = g_list_nth_data(chunk_list, i);
+                dat = (chunk_data*)g_list_nth_data(chunk_list, i);
                 if (! after(dat->chunk_tsn, last_tsn))
                     error_log(ERROR_FATAL, "Higher TSNs not in sequence ! Terminate");
                 if (dat->chunk_tsn - last_tsn > 10000)
@@ -1053,7 +1053,7 @@ int rtx_dequeueOldestUnackedChunk(unsigned char *buf, unsigned int *len, unsigne
     if (rtx->chunk_list == NULL) return  SCTP_UNSPECIFIED_ERROR;
     listlen = g_list_length(rtx->chunk_list);
     if (listlen <= 0) return SCTP_UNSPECIFIED_ERROR;
-    dat = g_list_nth_data(rtx->chunk_list, 0);
+    dat = (chunk_data*)g_list_nth_data(rtx->chunk_list, 0);
     if (dat->num_of_transmissions == 0) return SCTP_UNSPECIFIED_ERROR;
     if ((*len) <  (dat->chunk_len - FIXED_DATA_CHUNK_SIZE)) return SCTP_BUFFER_TOO_SMALL;
 

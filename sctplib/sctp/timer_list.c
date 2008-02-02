@@ -67,7 +67,7 @@ void init_timer_list()
 gint timercompare(gconstpointer a, gconstpointer b)
 {
     AlarmTimer *one, *two;
-    
+
     one = (AlarmTimer *) a;
     two = (AlarmTimer *) b;
     if (timercmp(&(one->action_time), &(two->action_time), ==))
@@ -85,10 +85,10 @@ int idcompare(gconstpointer a, gconstpointer b)
 {
     AlarmTimer *one;
     unsigned int *two;
-    
+
     one = (AlarmTimer *) a;
     two = (unsigned int *) b;
-    
+
     if (one->timer_id == *two)
         return 0;
     else if (one->timer_id < *two)
@@ -204,7 +204,7 @@ int remove_timer(AlarmTimer* item)
     result=g_list_find(timer_list,item);
     if (result!=NULL)
      	return 0;
-		
+
    	error_log(ERROR_FATAL, "No valid result in  get_item !\n");
     return -1;
 }
@@ -239,7 +239,7 @@ unsigned int update_item(unsigned int id, unsigned int msecs)
 
     if (tmp == NULL) return 0;
 
-    tmp_item = tmp->data;
+    tmp_item = (AlarmTimer*)tmp->data;
     timer_list = g_list_remove(timer_list, tmp->data);
 
     /* update action time, and  write back to the list */
@@ -271,7 +271,7 @@ unsigned int micro_update_item(unsigned int id, unsigned int seconds, unsigned i
 
     if (tmp == NULL) return 0;
 
-    tmp_item = tmp->data;
+    tmp_item = (AlarmTimer*)tmp->data;
     timer_list = g_list_remove(timer_list, tmp->data);
     delta.tv_sec = seconds;
     delta.tv_sec += (microseconds / 1000000); /* usually 0 */
@@ -338,7 +338,7 @@ void print_debug_list(short event_log_level)
 
         for (i=0; i < j; i++)
         {
-            print_item_info(event_log_level, tmp->data);
+            print_item_info(event_log_level, (AlarmTimer*)tmp->data);
             tmp = g_list_next(tmp);
         }
         event_log(event_log_level,"-------------Leaving print_debug_list() ------------------------");
@@ -365,7 +365,7 @@ int get_msecs_to_nexttimer()
     if (result == NULL) return -1;
 
     adl_gettime(&now);
-    next = result->data;
+    next = (AlarmTimer*)result->data;
 
     secs = next->action_time.tv_sec - now.tv_sec;
     usecs = next->action_time.tv_usec - now.tv_usec;
@@ -391,7 +391,7 @@ int get_next_event(AlarmTimer ** dest)
 
     if (g_list_first(timer_list) == NULL) return -1;
     result = g_list_first(timer_list);
-    *dest=result->data;
+    *dest = (AlarmTimer*)result->data;
 
     return 0;
 }

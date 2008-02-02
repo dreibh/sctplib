@@ -388,7 +388,7 @@ SCTP_instance* retrieveInstance(unsigned short instance_name)
     temporary.sctpInstanceName = instance_name;
     result = g_list_find_custom(InstanceList, &temporary,&CompareInstanceNames);
     if (result != NULL) {
-       instance = result->data;
+       instance = (SCTP_instance*)result->data;
     }
     else {
        event_logi(INTERNAL_EVENT_0, "instance %u not in list", instance_name);
@@ -1011,7 +1011,7 @@ mdi_receiveMessage(gint socket_fd,
             supportedAddressTypes = SUPPORT_ADDRESS_TYPE_IPV4;
 #endif
         } else {
-            sctpInstance = result->data;
+            sctpInstance = (SCTP_instance*)result->data;
             supportedAddressTypes = sctpInstance->supportedAddressTypes;
             event_logii(VERBOSE, "Found an SCTP Instance for Port %u and Address in the list, types: %d !",
                                 lastDestPort, supportedAddressTypes);
@@ -1474,7 +1474,7 @@ int sctp_initLibrary(void)
 
 #if defined(HAVE_GETEUID)
     /* check privileges. Must be root or setuid-root for now ! */
-     if (geteuid() != 0) {
+    if (geteuid() != 0) {
         error_log(ERROR_MAJOR, "You must be root to use the SCTPLIB-functions (or make your program SETUID-root !).");
         LEAVE_LIBRARY("sctp_initLibrary");
         return SCTP_INSUFFICIENT_PRIVILEGES;
@@ -1944,10 +1944,10 @@ int sctp_unregisterInstance(unsigned short instance_name)
     temporary.sctpInstanceName = instance_name;
     result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
     if (result != NULL) {
-        instance =  result->data;
-        with_ipv4 =  instance->uses_IPv4;
+        instance  = (SCTP_instance*)result->data;
+        with_ipv4 = instance->uses_IPv4;
 #ifdef HAVE_IPV6
-        with_ipv6 =  instance->uses_IPv6;
+        with_ipv6 = instance->uses_IPv6;
 #endif
         event_logi(INTERNAL_EVENT_0, "sctp_unregisterInstance: SCTP Instance %u found !!!", instance_name);
 #ifdef HAVE_IPV6
@@ -1961,7 +1961,7 @@ int sctp_unregisterInstance(unsigned short instance_name)
 
         assocIterator = g_list_first(AssociationList);
         while(assocIterator) {
-           assoc = assocIterator->data;
+           assoc = (Association*)assocIterator->data;
            if(assoc->sctpInstance == instance) {
               event_logi(ERROR_MINOR, "sctp_unregisterInstance : instance still used by assoc %u !!!",
                          assoc->assocId);
@@ -2141,7 +2141,7 @@ unsigned int sctp_associatex(unsigned int SCTP_InstanceName,
         LEAVE_LIBRARY("sctp_associate");
         return 0;
     }
-    sctpInstance = result->data;
+    sctpInstance = (SCTP_instance*)result->data;
 
     if (((SCTP_instance*)result->data)->localPort == 0)
        zlocalPort = seizePort();
@@ -2908,7 +2908,7 @@ int sctp_setAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParamet
     temporary.sctpInstanceName = SCTP_InstanceName;
     result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
     if (result != NULL) {
-        instance =  result->data;
+        instance = (SCTP_instance*)result->data;
     } else {
         error_logi(ERROR_MINOR, "sctp_setAssocDefaults : Did not find Instance Number %u", SCTP_InstanceName);
         LEAVE_LIBRARY("sctp_setAssocDefaults");
@@ -2962,7 +2962,7 @@ int sctp_getAssocDefaults(unsigned short SCTP_InstanceName, SCTP_InstanceParamet
     temporary.sctpInstanceName = SCTP_InstanceName;
     result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
     if (result != NULL) {
-        instance =  result->data;
+        instance = (SCTP_instance*)result->data;
     } else {
         error_logi(ERROR_MINOR, "sctp_getAssocDefaults : Did not find Instance Number %u", SCTP_InstanceName);
         LEAVE_LIBRARY("sctp_getAssocDefaults");
@@ -3600,7 +3600,7 @@ int mdi_send_message(SCTP_message * message, unsigned int length, short destAddr
     event_logiii(INTERNAL_EVENT_0, "sent SCTP message of %d bytes to %s, result was %d",
                     length, hoststring, txmit_len);
 
-    return (txmit_len == length) ? 0 : -1;
+    return (txmit_len == (int)length) ? 0 : -1;
 
 }                               /* end: mdi_send_message */
 
@@ -4351,17 +4351,17 @@ unsigned short mdi_readLocalInStreams(void)
         if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance for Port %u in List, FIXME !",lastDestPort);
         }
-        sctpInstance = result->data;
+        sctpInstance = (SCTP_instance*)result->data;
     } else {
         /* retrieve SCTP-instance with SCTP-instance name in current association */
         temporary.sctpInstanceName = currentAssociation->sctpInstance->sctpInstanceName;
-        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ",
-currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary,
-&CompareInstanceNames);        if (result == NULL) {
+        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", currentAssociation->sctpInstance->sctpInstanceName);
+        result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
+        if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance with name %u in List, FIXME !",
                 currentAssociation->sctpInstance->sctpInstanceName);
         }
-        sctpInstance = result->data;
+        sctpInstance = (SCTP_instance*)result->data;
     }
     return  sctpInstance->noOfInStreams;
 }
@@ -4394,17 +4394,17 @@ unsigned short mdi_readLocalOutStreams(void)
         if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance for Port %u in List, FIXME !",lastDestPort);
         }
-        sctpInstance = result->data;
+        sctpInstance = (SCTP_instance*)result->data;
     } else {
         /* retrieve SCTP-instance with SCTP-instance name in current association */
         temporary.sctpInstanceName = currentAssociation->sctpInstance->sctpInstanceName;
-        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ",
-currentAssociation->sctpInstance->sctpInstanceName);        result = g_list_find_custom(InstanceList, &temporary,
-&CompareInstanceNames);        if (result == NULL) {
+        event_logi(VERBOSE, "Searching for SCTP Instance with Name %u ", currentAssociation->sctpInstance->sctpInstanceName);
+        result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
+        if (result == NULL) {
             error_logi(ERROR_FATAL, "Could not find SCTP Instance with name %u in List, FIXME !",
-                currentAssociation->sctpInstance->sctpInstanceName);
+                       currentAssociation->sctpInstance->sctpInstanceName);
         }
-        sctpInstance = result->data;
+        sctpInstance = (SCTP_instance*)result->data;
     }
     return  sctpInstance->noOfOutStreams;
 }
@@ -4426,8 +4426,8 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
                             gboolean receivedFromPeer)
 {
 
-    unsigned int count=0, tmp;
-    AddressScopingFlags filterFlags=0;
+    unsigned int        count = 0, tmp;
+    AddressScopingFlags filterFlags = (AddressScopingFlags)0;
     gboolean localHostFound=FALSE, linkLocalFound = FALSE, siteLocalFound = FALSE;
 
 
@@ -4453,17 +4453,17 @@ void mdi_readLocalAddresses(union sockunion laddresses[MAX_NUM_ADDRESSES],
         filterFlags = flag_Default;
     } else if ((receivedFromPeer == FALSE) && (localHostFound == FALSE)) {
         /* only add loopback, if sending to a loopback */
-        filterFlags = flag_Default|flag_HideLoopback;
+        filterFlags = (AddressScopingFlags)(flag_Default|flag_HideLoopback);
 
     /* if (receivedFromPeer == TRUE) I got an INIT with addresses from the peer */
     } else if ((receivedFromPeer == TRUE) && (localHostFound == FALSE)) {
         /* this is from a normal address, get all except loopback */
         if (linkLocalFound) {
-            filterFlags =  flag_Default|flag_HideLoopback;
+            filterFlags = (AddressScopingFlags)(flag_Default|flag_HideLoopback);
         } else if (siteLocalFound) {
-            filterFlags =  flag_Default| flag_HideLinkLocal|flag_HideLoopback;
+            filterFlags = (AddressScopingFlags)(flag_Default| flag_HideLinkLocal|flag_HideLoopback);
         } else {
-            filterFlags = flag_Default|flag_HideLocal;
+            filterFlags = (AddressScopingFlags)(flag_Default|flag_HideLocal);
         }
     } else  /* if ((receivedFromPeer == TRUE) && (localHostFound == TRUE)) */ {
         /* this is from a loopback, get all loopbacks */

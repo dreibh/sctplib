@@ -491,7 +491,7 @@ int processScriptCommand(struct sctptest_scriptCommand *sc, unsigned int lineNum
                     while (pauseTimerID != 0)
                         sctp_eventLoop();
                 }
-                /* unnötig(?) sctp_getEvents(); */
+                /* unnï¿½tig(?) sctp_getEvents(); */
             }
         }
     }
@@ -728,7 +728,7 @@ char *getStrParam(struct sctptest_scriptCommand *sc, char *key, unsigned int *er
                   int paramType, unsigned int lineNum)
 {
     int i;
-    for (i = 0; i < sc->numOfParams; i++)
+    for (i = 0; i < (int)sc->numOfParams; i++)
         if (strcmp(sc->param[i].key, key) == 0)
             return sc->param[i].value;
 

@@ -283,7 +283,6 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
             } else {
                 error_log(ERROR_MAJOR, "parameter problem, abort scanning in setIPAddresses");
                 break;
-
             }
             cursabs += cursrel;
             cursabs += 8;
@@ -306,11 +305,11 @@ setIPAddresses(unsigned char *mstring, guint16 length, union sockunion addresses
         if (localHostFound == FALSE) {
             /* this is from a normal address, get all except loopback */
             if (linkLocalFound) {
-                filterFlags =  flag_Default|flag_HideLoopback;
+                filterFlags = (AddressScopingFlags)(flag_Default|flag_HideLoopback);
             } else if (siteLocalFound) {
-                filterFlags =  flag_Default| flag_HideLinkLocal|flag_HideLoopback;
+                filterFlags = (AddressScopingFlags)(flag_Default|flag_HideLinkLocal|flag_HideLoopback);
             } else {
-                filterFlags = flag_Default|flag_HideLocal;
+                filterFlags = (AddressScopingFlags)(flag_Default|flag_HideLocal);
             }
         } else  /* if localHostFound == TRUE) */ {
              /* this is from a loopback, get all */

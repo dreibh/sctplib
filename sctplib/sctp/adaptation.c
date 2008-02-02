@@ -817,8 +817,8 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
 
         txmt_len = sendto(sfd, (char*)&outBuffer, sizeof(udp_header) + len,
                           0, (struct sockaddr *) &(dest->sin), sizeof(struct sockaddr_in));
-        if(txmt_len >= sizeof(udp_header)) {
-           txmt_len -= sizeof(udp_header);
+        if(txmt_len >= (int)sizeof(udp_header)) {
+           txmt_len -= (int)sizeof(udp_header);
         }
 #else
         txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *) &(dest->sin), sizeof(struct sockaddr_in));
@@ -852,8 +852,8 @@ int adl_send_message(int sfd, void *buf, int len, union sockunion *dest, unsigne
 
         txmt_len = sendto(sfd, (char*)&outBuffer, sizeof(udp_header) + len,
                           0, (struct sockaddr *) &(dest->sin6), sizeof(struct sockaddr_in6));
-        if(txmt_len >= sizeof(udp_header)) {
-           txmt_len -= sizeof(udp_header);
+        if(txmt_len >= (int)sizeof(udp_header)) {
+           txmt_len -= (int)sizeof(udp_header);
         }
 #else
         txmt_len = sendto(sfd, buf, len, 0, (struct sockaddr *)&(dest->sin6), sizeof(struct sockaddr_in6));
@@ -983,7 +983,7 @@ if (sfd!=0)
 
     if (num_of_fds < NUM_FDS && sfd >= 0) {
         assign_poll_fd(num_of_fds, sfd, event_mask);
-        event_callbacks[num_of_fds] = malloc(sizeof(struct event_cb));
+        event_callbacks[num_of_fds] = (struct event_cb*)malloc(sizeof(struct event_cb));
         if (!event_callbacks[num_of_fds])
             error_log(ERROR_FATAL, "Could not allocate memory in  register_fd_cb \n");
         event_callbacks[num_of_fds]->sfd = sfd;
@@ -1079,9 +1079,9 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
 
 #ifdef SCTP_OVER_UDP
 #ifdef LINUX
-        if(len < sizeof(struct iphdr) + sizeof(udp_header)) {
+        if(len < (int)sizeof(struct iphdr) + (int)sizeof(udp_header)) {
 #else
-        if(len < sizeof(struct ip) + sizeof(struct udphdr)) {
+        if(len < (int)sizeof(struct ip) + (int)sizeof(struct udphdr)) {
 #endif
             return -1;
         }
@@ -1099,10 +1099,10 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         }
         ptr = (unsigned char*)udp;
 #ifdef LINUX
-        for(i = 0;i < len - (sizeof(struct iphdr) + sizeof(udp_header));i++) {
+        for(i = 0;i < len - (int)(sizeof(struct iphdr) + sizeof(udp_header));i++) {
            *ptr = ptr[sizeof(udp_header)];
 #else
-        for(i = 0;i < len - (sizeof(struct ip) + sizeof(struct udphdr));i++) {
+        for(i = 0;i < len - (int)(sizeof(struct ip) + sizeof(struct udphdr));i++) {
            *ptr = ptr[sizeof(struct udphdr)];
 #endif
            ptr++;
@@ -1149,9 +1149,9 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
 
 #ifdef SCTP_OVER_UDP
 #ifdef LINUX
-        if(len < sizeof(udp_header)) {
+        if(len < (int)sizeof(udp_header)) {
 #else
-        if(len < sizeof(struct udphdr)) {
+        if(len < (int)sizeof(struct udphdr)) {
 #endif
             return -1;
         }
@@ -1169,10 +1169,10 @@ int adl_receive_message(int sfd, void *dest, int maxlen, union sockunion *from, 
         }
         ptr = (unsigned char*)udp;
 #ifdef LINUX
-        for(i = 0;i < len - sizeof(udp_header);i++) {
+        for(i = 0;i < len - (int)sizeof(udp_header);i++) {
            *ptr = ptr[sizeof(udp_header)];
 #else
-        for(i = 0;i < len - sizeof(struct udphdr);i++) {
+        for(i = 0;i < len - (int)sizeof(struct udphdr);i++) {
            *ptr = ptr[sizeof(struct udphdr)];
 #endif
            ptr++;
@@ -1716,8 +1716,8 @@ int adl_init_adaptation_layer(int * myRwnd)
 {
     struct timeval curTime;
 #ifdef WIN32
-   WSADATA              wsaData;
-    int Ret;
+    WSADATA        wsaData;
+    int            Ret;
 #endif
 #ifdef HAVE_IPV6
     int myRwnd6 = 32767;
@@ -1932,7 +1932,7 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
     result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, 0, (void (*) (void *,void *))sdf, NULL);
 #else
    struct data *userData;
-   userData = malloc(sizeof (struct data));
+   userData = (struct data*)malloc(sizeof (struct data));
     memset(userData, 0, sizeof(struct data));
    userData->dat=buffer;
    userData->len=length;
@@ -1992,7 +1992,7 @@ unsigned int adl_startMicroTimer(unsigned int seconds, unsigned int microseconds
     delta.tv_usec = (microseconds % 1000000);
 
     adl_gettime(&now);
-    item = malloc(sizeof(AlarmTimer));
+    item = (AlarmTimer*)malloc(sizeof(AlarmTimer));
     if (item == NULL) return 0;
 
     timeradd(&now, &delta, &talarm);
@@ -2351,7 +2351,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
     event_logii(VERBOSE, "Found additional %d v6 addresses, total now %d\n",addedNets,numAlocAddr);
 #endif
     /* now allocate the appropriate memory */
-    localAddresses = calloc(numAlocAddr,sizeof(union sockunion));
+    localAddresses = (union sockunion*)calloc(numAlocAddr,sizeof(union sockunion));
 
     if(localAddresses == NULL){
         error_log(ERROR_MAJOR, "Out of Memory in adl_gatherLocalAddresses() !");

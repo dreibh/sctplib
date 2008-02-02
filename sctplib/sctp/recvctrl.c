@@ -104,7 +104,7 @@ void *rxc_new_recvctrl(unsigned int remote_initial_TSN, unsigned int number_of_d
 /*
     unsigned int count;
 */
-    tmp = malloc(sizeof(rxc_buffer));
+    tmp = (rxc_buffer*)malloc(sizeof(rxc_buffer));
     if (!tmp) error_log(ERROR_FATAL, "Malloc failed");
 
     tmp->frag_list = NULL;
@@ -270,7 +270,7 @@ void rxc_update_duplicates(rxc_buffer * rbuf, unsigned int ch_tsn)
         current = g_list_next(current);
     }
     /* its new - add it to the list */
-    match = malloc(sizeof(duplicate));
+    match = (duplicate*)malloc(sizeof(duplicate));
     match->duplicate_tsn = ch_tsn;
     rbuf->dup_list =  g_list_insert_sorted(rbuf->dup_list, match, (GCompareFunc) rxc_sort_duplicates);
 
@@ -357,7 +357,7 @@ boolean rxc_update_fragments(rxc_buffer * rbuf, unsigned int ch_tsn)
                     rbuf->new_chunk_received = TRUE;
                     return TRUE;
                 } else {    /* a fragment in between */
-                    new_frag = malloc(sizeof(fragment32));
+                    new_frag = (fragment32*)malloc(sizeof(fragment32));
                     new_frag->start_tsn = new_frag->stop_tsn = ch_tsn;
                     event_log(VVERBOSE, "Inserting new fragment....");
                     rbuf->frag_list = g_list_insert_sorted(rbuf->frag_list, new_frag, (GCompareFunc) rxc_sort_fragments);
@@ -420,7 +420,7 @@ boolean rxc_update_fragments(rxc_buffer * rbuf, unsigned int ch_tsn)
         return FALSE;
     } else {                    /* a new fragment altogether */
         current = g_list_last(rbuf->frag_list);
-        new_frag = malloc(sizeof(fragment32));
+        new_frag = (fragment32*)malloc(sizeof(fragment32));
         new_frag->start_tsn = ch_tsn;
         new_frag->stop_tsn = ch_tsn;
         rbuf->frag_list = g_list_append(rbuf->frag_list, new_frag);
@@ -560,7 +560,7 @@ boolean rxc_create_sack(unsigned int *destination_address, boolean force_sack)
     /* first sack is sent at once, since datagrams_received==-1 */
     if (force_sack == TRUE) {
         rxc->lowest = rxc->ctsna;
-        result = bu_put_SACK_Chunk(rxc->sack_chunk, destination_address);
+        result = bu_put_SACK_Chunk((SCTP_sack_chunk*)rxc->sack_chunk, destination_address);
         return TRUE;
     } else {
 
@@ -573,7 +573,7 @@ boolean rxc_create_sack(unsigned int *destination_address, boolean force_sack)
                 return FALSE;
         }
         rxc->lowest = rxc->ctsna;
-        result = bu_put_SACK_Chunk(rxc->sack_chunk,destination_address);
+        result = bu_put_SACK_Chunk((SCTP_sack_chunk*)rxc->sack_chunk,destination_address);
         return TRUE;
     }
     return FALSE;
@@ -709,7 +709,7 @@ void rxc_all_chunks_processed(boolean new_data_received)
     if (current_rwnd > 0 && current_rwnd <= 2 * MAX_SCTP_PDU) current_rwnd = 1;
 
 
-    sack = rxc->sack_chunk;
+    sack = (SCTP_sack_chunk*)rxc->sack_chunk;
     sack->chunk_header.chunk_id = CHUNK_SACK;
     sack->chunk_header.chunk_flags = 0;
     len16 = sizeof(SCTP_chunk_header) + (2 + num_of_dups) * sizeof(unsigned int) +

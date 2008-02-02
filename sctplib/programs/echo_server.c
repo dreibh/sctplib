@@ -104,14 +104,14 @@ void printUsage(void)
     printf("-s       source address\n");
     printf("-t       time to live in ms\n");
     printf("-v       verbose mode\n");
-    printf("-V       very verbose mode\n");   
+    printf("-V       very verbose mode\n");
 }
 
 void getArgs(int argc, char **argv)
 {
     int i;
     char *opt;
-    
+
     for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
             switch (argv[i][1]) {
@@ -161,10 +161,10 @@ void checkArgs(void)
 {
     int abortProgram;
     int printUsageInfo;
-    
+
     abortProgram = 0;
     printUsageInfo = 0;
-    
+
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
         strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
@@ -177,7 +177,7 @@ void checkArgs(void)
          printf("Error:   Unkown options in command.\n");
          printUsageInfo = 1;
     }
-    
+
     if (printUsageInfo == 1)
         printUsage();
     if (abortProgram == 1)
@@ -193,7 +193,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     unsigned short ssn;
     unsigned int tsn;
 
-    if (vverbose) {  
+    if (vverbose) {
       fprintf(stdout, "%-8x: Data arrived (%u bytes on stream %u, %s)\n",
                       assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
       fflush(stdout);
@@ -204,7 +204,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     /* and send it */
     SCTP_send(assocID,
               (unsigned short)min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
-              chunk, length, 
+              chunk, length,
               protoID,
               SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, timeToLive, unordered, SCTP_BUNDLING_DISABLED);
 }
@@ -212,7 +212,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 void sendFailureNotif(unsigned int assocID,
                       unsigned char *unsent_data, unsigned int dataLength, unsigned int *context, void* ulpDataPtr)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8u: Send failure\n", assocID);
     fflush(stdout);
   }
@@ -223,17 +223,17 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
     SCTP_AssociationStatus assocStatus;
     SCTP_PathStatus pathStatus;
     unsigned short pathID;
-    
-    if (verbose) {  
-        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n", 
+
+    if (verbose) {
+        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n",
                         assocID, destAddrIndex, pathStateName(newState));
         fflush(stdout);
     }
-    
+
     /* if the primary path has become inactive */
     if ((newState == SCTP_PATH_UNREACHABLE) &&
         (destAddrIndex == SCTP_getPrimary(assocID))) {
-        
+
         /* select a new one */ /* should we have a sctp_get_primary()? */
         SCTP_getAssocStatus(assocID, &assocStatus);
         for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
@@ -241,7 +241,7 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
             if (pathStatus.state == SCTP_PATH_OK)
                 break;
         }
-        
+
         /* and use it */
         if (pathID < assocStatus.numberOfAddresses) {
             SCTP_setPrimary(assocID, pathID);
@@ -253,21 +253,21 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{	
+{
     struct ulp_data *ulpDataPtr;
-    
-    if (verbose) {  
+
+    if (verbose) {
         fprintf(stdout, "%-8x: Communication up (%u In-Streams, %u Out-Streams)\n", assocID, noOfInStreams, noOfOutStreams);
         fflush(stdout);
     }
-  
-    ulpDataPtr                  = malloc(sizeof(struct ulp_data));
+
+    ulpDataPtr                  = (ulp_data*)malloc(sizeof(struct ulp_data));
     ulpDataPtr->maximumStreamID = noOfOutStreams - 1;
     return((void *) ulpDataPtr);
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{	
+{
     unsigned char buffer[MAXIMUM_PAYLOAD_LENGTH];
     unsigned int bufferLength;
     unsigned short streamID, streamSN;
@@ -278,7 +278,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         fprintf(stdout, "%-8x: Communication lost (status %u)\n", assocID, status);
         fflush(stdout);
     }
-  
+
     /* retrieve data */
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnsent(assocID, buffer, &bufferLength,  &tsn,
@@ -287,7 +287,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-    
+
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnacked(assocID, buffer, &bufferLength, &tsn,
 			       &streamID, &streamSN, &protoID) >= 0){
@@ -295,17 +295,17 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-                      
+
     /* free ULP data */
     free((struct ulp_data *) ulpDataPtr);
-    
+
     /* delete the association */
     SCTP_deleteAssociation(assocID);
 }
 
 void communicationErrorNotif(unsigned int assocID, unsigned short status, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Communication error (status %u)\n", assocID, status);
     fflush(stdout);
   }
@@ -314,8 +314,8 @@ void communicationErrorNotif(unsigned int assocID, unsigned short status, void* 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
 {
     SCTP_AssociationStatus assocStatus;
-    
-    if (verbose) {  
+
+    if (verbose) {
         fprintf(stdout, "%-8x: Restart\n", assocID);
         fflush(stdout);
     }
@@ -326,7 +326,7 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Shutdown complete\n", assocID);
     fflush(stdout);
   }
@@ -338,7 +338,7 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Shutdown received\n", assocID);
         fflush(stdout);
     }
@@ -349,7 +349,7 @@ int main(int argc, char **argv)
     SCTP_ulpCallbacks echoUlp;
     /* SCTP_InstanceParameters instanceParameters; */
     SCTP_LibraryParameters params;
-    
+
     /* initialize the echo_ulp variable */
     echoUlp.dataArriveNotif           = &dataArriveNotif;
     echoUlp.sendFailureNotif          = &sendFailureNotif;
@@ -377,7 +377,7 @@ int main(int argc, char **argv)
                           MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
                           noOfLocalAddresses, localAddressList,
                           echoUlp);
- 
+
     /* run the event handler forever */
     while (1) {
         SCTP_eventLoop();
