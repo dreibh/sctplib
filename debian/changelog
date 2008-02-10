@@ -1,8 +1,8 @@
-sctplib (2:2.1.0) unstable; urgency=low
+sctplib (1:1.0.8~beta3-1) unstable; urgency=low
 
   * Packaged latest version.
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Sat, 25 Aug 2007 14:22:12 +0800
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Sun, 10 Feb 2008 14:22:12 +0800
 
 sctplib (1:1.0.4-5) unstable; urgency=low
 

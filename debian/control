@@ -3,9 +3,9 @@ Section: net
 Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Build-Depends: debhelper (>= 5), autotools-dev, libglib2.0-dev
-Standards-Version: 3.7.2
+Standards-Version: 3.7.3
 
-Package: libsctplib2
+Package: libsctplib1
 Section: libs
 Priority: optional
 Architecture: any
@@ -39,7 +39,7 @@ Package: sctplib-doc
 Section: doc
 Priority: optional
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib2
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1
 Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
 Provides: sctplib-stable-doc
@@ -69,7 +69,7 @@ Package: libsctplib-dev
 Section: libdevel
 Priority: optional
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib2
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Provides: sctplib-stable-dev
