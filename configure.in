@@ -263,15 +263,13 @@ fi
 
 
 # ###### Version information ################################################
-SCTPLIB_CURRENT=0
-SCTPLIB_REVISION=0
+SCTPLIB_CURRENT=1
+SCTPLIB_REVISION=8
 SCTPLIB_AGE=0
-SCTPLIB_RELEASE=2100
 
 AC_SUBST(SCTPLIB_CURRENT)
 AC_SUBST(SCTPLIB_REVISION)
 AC_SUBST(SCTPLIB_AGE)
-AC_SUBST(SCTPLIB_RELEASE)
 
 
 # ###### Makefiles ##########################################################
