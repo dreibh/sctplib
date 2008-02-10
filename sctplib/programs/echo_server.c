@@ -261,7 +261,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
         fflush(stdout);
     }
 
-    ulpDataPtr                  = (ulp_data*)malloc(sizeof(struct ulp_data));
+    ulpDataPtr                  = (struct ulp_data*)malloc(sizeof(struct ulp_data));
     ulpDataPtr->maximumStreamID = noOfOutStreams - 1;
     return((void *) ulpDataPtr);
 }

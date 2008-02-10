@@ -297,7 +297,7 @@ void* echoCommunicationUpNotif(unsigned int assocID, int status,
         }
     }
 
-    ulpDataPtr                   = (ulp_data*)malloc(sizeof(struct ulp_data));
+    ulpDataPtr                   = (struct ulp_data*)malloc(sizeof(struct ulp_data));
     ulpDataPtr->maximumStreamID  = noOfOutStreams - 1;
     ulpDataPtr->ShutdownReceived = 0;
     return((void *) ulpDataPtr);
@@ -384,7 +384,7 @@ void* chargenCommunicationUpNotif(unsigned int assocID, int status,
       memset(buffer, 'A', length);
       buffer[length-1] = '\n';
     }
-    ulpDataPtr                   = (ulp_data*)malloc(sizeof(struct ulp_data));
+    ulpDataPtr                   = (struct ulp_data*)malloc(sizeof(struct ulp_data));
     ulpDataPtr->maximumStreamID  = noOfOutStreams - 1;
     ulpDataPtr->ShutdownReceived = 0;
     return((void *) ulpDataPtr);

@@ -295,7 +295,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
         buffer[length-1] = '\n';
     }
 
-    ulpDataPtr = (ulp_data*)malloc(sizeof(struct ulp_data));
+    ulpDataPtr = (struct ulp_data*)malloc(sizeof(struct ulp_data));
     ulpDataPtr->ShutdownReceived = 0;
     return (void *)ulpDataPtr;
 }
