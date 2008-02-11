@@ -33,7 +33,7 @@ rm -rf debian/.svn || exit
 # debuild -b
 
 # Mit Signatur!
-debuild -us -uc  # -S -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
+debuild -S -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
 
 
 # Wichtig: In /etc/pbuilderrc COMPONENTS="main universe" setzen!
