@@ -1,15 +1,25 @@
-/*
- *  $Id$
+/* $Id$
+ * --------------------------------------------------------------------------
  *
- * SCTP implementation according to RFC 2960.
+ *           //=====   //===== ===//=== //===//  //       //   //===//
+ *          //        //         //    //    // //       //   //    //
+ *         //====//  //         //    //===//  //       //   //===<<
+ *              //  //         //    //       //       //   //    //
+ *       ======//  //=====    //    //       //=====  //   //===//
+ *
+ * ---------------A SCTP implementation according to RFC 2960 ---------------
+ *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
+ * Copyright (C) 2001-2004 Andreas Jungmaier
+ * Copyright (C) 2004-2008 Thomas Dreibholz
  *
- * Realized in co-operation between Siemens AG
- * and University of Essen, Institute of Computer Networking Technology.
- *
- * Acknowledgement
- * This work was partially funded by the Bundesministerium fr Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * Acknowledgements:
+ * Realized in co-operation between Siemens AG and the University of
+ * Duisburg-Essen, Institute for Experimental Mathematics, Computer
+ * Networking Technology group.
+ * This work was partially funded by the Bundesministerium fuer Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany
+ * (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,38 +36,12 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * There are two mailinglists available at http://www.sctp.de which should be
- * used for any discussion related to this implementation.
- *
- * Contact: discussion@sctp.de
- *          dreibh@exp-math.uni-essen.de
+ * Contact: sctp-discussion@sctp.de
+ *          dreibh@iem.uni-due.de
  *          tuexen@fh-muenster.de
- *          ajung@exp-math.uni-essen.de
- *
- * Purpose: This modules implements the interface defined distribution.h and sctp.h
- *          and holds a private list of associations.
- *          As an SCTP-instance has usually more than one associations, the main purpose
- *          of this module is the  distribution of signals from the ULP and from the
- *          peer (via the socket and unix-interface) to the addressed association.
- *          Signals from the UNIX-interface are always forwarded to
- *          the bundling module of the addressed association.
- *          The corresponding function receive_msg is not defined here but in distribution.c,
- *          because it is called via a function-pointer that is registered at the
- *          UNIX-interface when SCTP is initialized.
- *          Signals from the ULP are forwarded to SCTP-Control, Pathmanagement or
- *          Streamengine of the addressed association depending on the chunk type.
- *          All signals from the ULP contain the association ID, which is used to
- *          identify the association.
- *
- * Remarks: Host and network byte order (HBO and NBO):
- *          In this module all data are data are HBO, except the IP-Addresses and message strings.
- *          Thus everything entered into a message string must be converted to NBO and
- *          everthing extracted from a message string must be converted to HBO (except the
- *          IP-addresses).
- *
- * function prefixes: sctp_    for interface-defs imported from sctp.h
- *                    mdi_     for interface-defs imported from distribution.h
+ *          andreas.jungmaier@web.de
  */
+
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif

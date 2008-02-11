@@ -1,19 +1,20 @@
 This is sctplib, maintained by Dr. Thomas Dreibholz <dreibh@iem.uni-due.de>
-on Fri, 27 Oct 2007 06:13:18 +0200.
+on Mon, 11 Feb 2008 13:31:18 +0200.
 
 The original source can always be found at:
-   http://tdrwww.exp-math.uni-essen.de/dreibholz/rserpool/
+http://tdrwww.exp-math.uni-essen.de/dreibholz/rserpool/
 
 Main upstream authors:
 
 Thomas Dreibholz     <dreibh@iem.uni-due.de>
-Andreas Jungmaier    <andreas.jungmaier@vodafone.com>
 Michael Tuexen       <tuexen@fh-muenster.de>
+Andreas Jungmaier    <andreas.jungmaier@web.de>
 
 Copyright: LGPL Version 2.1
 
+Copyright (C) 2000 Siemens AG, Munich, Germany.
 Copyright (C) 2001-2004 Andreas Jungmaier
-Copyright (C) 2004-2007 Thomas Dreibholz
+Copyright (C) 2004-2008 Thomas Dreibholz
 
 See /usr/share/common-licenses/LGPL or http://www.gnu.org/licenses/lgpl.html
 for details.

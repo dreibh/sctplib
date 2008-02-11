@@ -1,14 +1,25 @@
-/*
- *  $Id$
+/* $Id$
+ * --------------------------------------------------------------------------
  *
- * SCTP implementation according to RFC 2960.
+ *           //=====   //===== ===//=== //===//  //       //   //===//
+ *          //        //         //    //    // //       //   //    //
+ *         //====//  //         //    //===//  //       //   //===<<
+ *              //  //         //    //       //       //   //    //
+ *       ======//  //=====    //    //       //=====  //   //===//
+ *
+ * ---------------A SCTP implementation according to RFC 2960 ---------------
+ *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
+ * Copyright (C) 2001-2004 Andreas Jungmaier
+ * Copyright (C) 2004-2008 Thomas Dreibholz
  *
- * Realized in co-operation between Siemens AG
- * and University of Essen, Institute of Computer Networking Technology.
- * Acknowledgement
+ * Acknowledgements:
+ * Realized in co-operation between Siemens AG and the University of
+ * Duisburg-Essen, Institute for Experimental Mathematics, Computer
+ * Networking Technology group.
  * This work was partially funded by the Bundesministerium fuer Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * Forschung (BMBF) of the Federal Republic of Germany
+ * (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -25,19 +36,10 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * There are two mailinglists available at http://www.sctp.de which should be
- * used for any discussion related to this implementation.
- *
- * Contact: discussion@sctp.de
+ * Contact: sctp-discussion@sctp.de
+ *          dreibh@iem.uni-due.de
  *          tuexen@fh-muenster.de
- *          ajung@exp-math.uni-essen.de
- *
- * Purpose: The adaption-module encapsulates the socket-interface.
- *          The adaption-module also handles timers in the SCTP and its ULP.
- *
- *          Changes by  Alfred Lupper (added defines for solaris, 27/06/01) and
- *          Gerd Bohnenstengel (added new socket API (RFC2292BIS) for Solaris8
- *          and FreeBSD 4.2 KAME, 04/07/01)
+ *          andreas.jungmaier@web.de
  */
 
 #include "adaptation.h"

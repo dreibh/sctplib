@@ -1,15 +1,25 @@
-/*
- *  $Id$
+/* $Id$
+ * --------------------------------------------------------------------------
  *
- * SCTP implementation according to RFC 2960.
+ *           //=====   //===== ===//=== //===//  //       //   //===//
+ *          //        //         //    //    // //       //   //    //
+ *         //====//  //         //    //===//  //       //   //===<<
+ *              //  //         //    //       //       //   //    //
+ *       ======//  //=====    //    //       //=====  //   //===//
+ *
+ * ---------------A SCTP implementation according to RFC 2960 ---------------
+ *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
+ * Copyright (C) 2001-2004 Andreas Jungmaier
+ * Copyright (C) 2004-2008 Thomas Dreibholz
  *
- * Realized in co-operation between Siemens AG
- * and University of Essen, Institute of Computer Networking Technology.
- *
- * Acknowledgement
- * This work was partially funded by the Bundesministerium fr Bildung und
- * Forschung (BMBF) of the Federal Republic of Germany (Förderkennzeichen 01AK045).
+ * Acknowledgements:
+ * Realized in co-operation between Siemens AG and the University of
+ * Duisburg-Essen, Institute for Experimental Mathematics, Computer
+ * Networking Technology group.
+ * This work was partially funded by the Bundesministerium fuer Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany
+ * (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
  * This library is free software; you can redistribute it and/or
@@ -26,39 +36,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * There are two mailinglists available at http://www.sctp.de which should be
- * used for any discussion related to this implementation.
- *
- * Contact: discussion@sctp.de
- *          dreibh@exp-math.uni-essen.de
+ * Contact: sctp-discussion@sctp.de
+ *          dreibh@iem.uni-due.de
  *          tuexen@fh-muenster.de
- *          ajung@exp-math.uni-essen.de
- *
- * Purpose: This module implements SCTP-control.
- *          SCTP-control controls the setup and shutdown of an association.
- *          For this purpose it receives primitives from the ULP (via message-distribution)
- *          and the peer (via (de-)bundling). In response to this input-signals, SCTP-Control
- *          sends control-primitives to the ULP and the peer. It also stores the state of
- *          an association.
- *
- * function prefixes: scu_ for  primitives originating from the ULP
- *                    sctlr_ for primitives originating from the peer
- *                    sci_ for SCTP-internal calls
- *
- * Remarks: Host and network byte order (HBO and NBO):
- *          In this module all data are data are HBO, except the IP-Addresses and message strings.
- *          Thus everything entered into a message string must be converted to NBO and
- *          everthing extracted from a message string must be converted to HBO (except the
- *          IP-addresses).
- *
+ *          andreas.jungmaier@web.de
  */
-
-
-/* TODO : check that in SHUTDOWN states we reset the retransmission counters, any time we
-            get a valid datagram from our peer. This must also be done for SACKs, DATA, etc.
-            we get from peer !
- */
-
 
 #include "SCTP-control.h"
 

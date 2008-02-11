@@ -1,35 +1,45 @@
-/*
- *  $Id$
+/* $Id$
+ * --------------------------------------------------------------------------
  *
- * SCTP implementation according to RFC 2960.
+ *           //=====   //===== ===//=== //===//  //       //   //===//
+ *          //        //         //    //    // //       //   //    //
+ *         //====//  //         //    //===//  //       //   //===<<
+ *              //  //         //    //       //       //   //    //
+ *       ======//  //=====    //    //       //=====  //   //===//
+ *
+ * ---------------A SCTP implementation according to RFC 2960 ---------------
+ *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
+ * Copyright (C) 2001-2004 Andreas Jungmaier
+ * Copyright (C) 2004-2008 Thomas Dreibholz
  *
- * Realized in co-operation between Siemens AG
- * and University of Essen, Institute of Computer Networking Technology.
+ * Acknowledgements:
+ * Realized in co-operation between Siemens AG and the University of
+ * Duisburg-Essen, Institute for Experimental Mathematics, Computer
+ * Networking Technology group.
+ * This work was partially funded by the Bundesministerium fuer Bildung und
+ * Forschung (BMBF) of the Federal Republic of Germany
+ * (Förderkennzeichen 01AK045).
+ * The authors alone are responsible for the contents.
  *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * There are two mailinglists available at http://www.sctp.de which should be
- * used for any discussion related to this implementation.
- *
- * Contact: discussion@sctp.de
+ * Contact: sctp-discussion@sctp.de
+ *          dreibh@iem.uni-due.de
  *          tuexen@fh-muenster.de
- *          dreibh@exp-math.uni-essen.de
- *
- * testsctp.c  - main program module
- *
+ *          andreas.jungmaier@web.de
  */
 
 /*
