@@ -1,3 +1,9 @@
+sctplib (1:1.0.8~beta3-3) unstable; urgency=low
+
+  * Version update.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Tue, 12 Feb 2008 14:22:12 +0800
+
 sctplib (1:1.0.8~beta3-2) unstable; urgency=low
 
   * Debian script updates.

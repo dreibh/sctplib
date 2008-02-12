@@ -67,7 +67,7 @@ extern "C" {
 
 #define SCTP_MAJOR_VERSION      1
 #define SCTP_MINOR_VERSION      0
-#define SCTP_TINY_VERSION       7
+#define SCTP_TINY_VERSION       8
 
 /* the maximum length of an IP address string (IPv4 or IPv6, NULL terminated) */
 /* see RFC 1884 (mixed IPv6/Ipv4 addresses)   */
