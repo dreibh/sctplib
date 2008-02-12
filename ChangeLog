@@ -1,8 +1,77 @@
 ------------------------------------------------------------------------
-r1701 | dreibh | 2008-02-10 17:57:41 +0100 (So, 10 Feb 2008) | 2 lines
-Geänderte Pfade:
+r1703 | dreibh | 2008-02-11 15:16:54 +0100 (Mon, 11 Feb 2008) | 1 line
+Changed paths:
+   M /trunk/sctplib1/AUTHORS
+   M /trunk/sctplib1/ChangeLog
+   M /trunk/sctplib1/debian/copyright
+
+
+------------------------------------------------------------------------
+r1702 | dreibh | 2008-02-11 14:11:13 +0100 (Mon, 11 Feb 2008) | 3 lines
+Changed paths:
+   M /trunk/sctplib1/debian/control
+   M /trunk/sctplib1/debian/copyright
+   M /trunk/sctplib1/debian/libsctplib-dev.install
+   M /trunk/sctplib1/debian/libsctplib1.install
+   M /trunk/sctplib1/debian/rules
+   D /trunk/sctplib1/debian/shlibs
+   M /trunk/sctplib1/sctplib/programs/chargen_server.c
+   M /trunk/sctplib1/sctplib/programs/chat.c
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/daytime_server.c
+   M /trunk/sctplib1/sctplib/programs/discard_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_monitor.c
+   M /trunk/sctplib1/sctplib/programs/echo_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_tool.c
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+   M /trunk/sctplib1/sctplib/programs/main.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.c
+   M /trunk/sctplib1/sctplib/programs/monitor.c
+   M /trunk/sctplib1/sctplib/programs/parser.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
+   M /trunk/sctplib1/sctplib/programs/terminal.c
+   M /trunk/sctplib1/sctplib/programs/testsctp.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+   M /trunk/sctplib1/sctplib/sctp/adaptation.h
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.c
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.h
+   M /trunk/sctplib1/sctplib/sctp/bundling.h
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.h
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+   M /trunk/sctplib1/sctplib/sctp/distribution.h
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.c
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.h
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.h
+   M /trunk/sctplib1/sctplib/sctp/globals.c
+   M /trunk/sctplib1/sctplib/sctp/globals.h
+   M /trunk/sctplib1/sctplib/sctp/messages.h
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.h
+   M /trunk/sctplib1/sctplib/sctp/rbundling.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.h
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.c
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.h
+   M /trunk/sctplib1/sctplib/sctp/sbundling.c
+   M /trunk/sctplib1/sctplib/sctp/sctp.h
+   M /trunk/sctplib1/sctplib/sctp/streamengine.c
+   M /trunk/sctplib1/sctplib/sctp/streamengine.h
+   M /trunk/sctplib1/sctplib/sctp/timer_list.c
+   M /trunk/sctplib1/sctplib/sctp/timer_list.h
+
+- Header updates.
+- Debian script updates.
+
+------------------------------------------------------------------------
+r1701 | dreibh | 2008-02-10 17:57:41 +0100 (Sun, 10 Feb 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
-   A /trunk/sctplib1/debian/libsctplib1.install (von /trunk/sctplib1/debian/libsctplib2.install:1698)
+   A /trunk/sctplib1/debian/libsctplib1.install (from /trunk/sctplib1/debian/libsctplib2.install:1698)
    D /trunk/sctplib1/debian/libsctplib2.install
    M /trunk/sctplib1/debian/shlibs
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
@@ -10,8 +79,8 @@ Geänderte Pfade:
 Debian scripts updates.
 
 ------------------------------------------------------------------------
-r1700 | dreibh | 2008-02-10 17:48:50 +0100 (So, 10 Feb 2008) | 2 lines
-Geänderte Pfade:
+r1700 | dreibh | 2008-02-10 17:48:50 +0100 (Sun, 10 Feb 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/AUTHORS
    M /trunk/sctplib1/clean-deb
    M /trunk/sctplib1/configure.in
@@ -24,8 +93,8 @@ Geänderte Pfade:
 Debian script updates.
 
 ------------------------------------------------------------------------
-r1699 | dreibh | 2008-02-10 17:48:29 +0100 (So, 10 Feb 2008) | 2 lines
-Geänderte Pfade:
+r1699 | dreibh | 2008-02-10 17:48:29 +0100 (Sun, 10 Feb 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/echo_server.c
@@ -33,15 +102,15 @@ Geänderte Pfade:
 Fixed compile problem: "ulp_data" -> "struct ulp_data".
 
 ------------------------------------------------------------------------
-r1661 | dreibh | 2008-02-03 14:30:50 +0100 (So, 03 Feb 2008) | 2 lines
-Geänderte Pfade:
+r1661 | dreibh | 2008-02-03 14:30:50 +0100 (Sun, 03 Feb 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Version update to 1.0.8beta2
 
 ------------------------------------------------------------------------
-r1660 | dreibh | 2008-02-02 11:32:33 +0100 (Sa, 02 Feb 2008) | 2 lines
-Geänderte Pfade:
+r1660 | dreibh | 2008-02-02 11:32:33 +0100 (Sat, 02 Feb 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/echo_server.c
@@ -61,14 +130,14 @@ Geänderte Pfade:
 Added casts to make sctplib compile with C++ compiler.
 
 ------------------------------------------------------------------------
-r1653 | dreibh | 2008-01-30 09:40:23 +0100 (Mi, 30 Jan 2008) | 1 line
-Geänderte Pfade:
+r1653 | dreibh | 2008-01-30 09:40:23 +0100 (Wed, 30 Jan 2008) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1638 | dreibh | 2008-01-06 15:21:01 +0100 (So, 06 Jan 2008) | 3 lines
-Geänderte Pfade:
+r1638 | dreibh | 2008-01-06 15:21:01 +0100 (Sun, 06 Jan 2008) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
@@ -76,29 +145,29 @@ Fixed bug in rxc_data_chunk_rx:
 If se_recvDataChunk() aborts the assoc, rxc will point to freed memory and may not be used any more!
 
 ------------------------------------------------------------------------
-r1636 | dreibh | 2008-01-06 13:53:25 +0100 (So, 06 Jan 2008) | 3 lines
-Geänderte Pfade:
+r1636 | dreibh | 2008-01-06 13:53:25 +0100 (Sun, 06 Jan 2008) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 sctp_deleteAssociation() fix:
 currentAssociation must be set, otherwise disposal of flow control, etc. will use current setting, which may be another association. This problem may occur when sctp_deleteAssociation() is not invoked within a callback (e.g. destructor of SCTPAssociation).
 
 ------------------------------------------------------------------------
-r1635 | dreibh | 2008-01-05 15:29:39 +0100 (Sa, 05 Jan 2008) | 2 lines
-Geänderte Pfade:
+r1635 | dreibh | 2008-01-05 15:29:39 +0100 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Fixed memory leak.
 
 ------------------------------------------------------------------------
-r1633 | dreibh | 2008-01-05 11:25:25 +0100 (Sa, 05 Jan 2008) | 1 line
-Geänderte Pfade:
+r1633 | dreibh | 2008-01-05 11:25:25 +0100 (Sat, 05 Jan 2008) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1632 | dreibh | 2008-01-05 11:24:46 +0100 (Sa, 05 Jan 2008) | 2 lines
-Geänderte Pfade:
+r1632 | dreibh | 2008-01-05 11:24:46 +0100 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
    A /trunk/sctplib1/clean-deb
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/debian/control
@@ -112,38 +181,38 @@ Geänderte Pfade:
 Debian scripts (not fully working yet).
 
 ------------------------------------------------------------------------
-r1631 | dreibh | 2008-01-05 11:10:48 +0100 (Sa, 05 Jan 2008) | 2 lines
-Geänderte Pfade:
+r1631 | dreibh | 2008-01-05 11:10:48 +0100 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
 
 auxilary.c fixes for x64.
 
 ------------------------------------------------------------------------
-r1630 | dreibh | 2008-01-05 11:05:01 +0100 (Sa, 05 Jan 2008) | 2 lines
-Geänderte Pfade:
+r1630 | dreibh | 2008-01-05 11:05:01 +0100 (Sat, 05 Jan 2008) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Typo fix: LIMUX -> LINUX
 
 ------------------------------------------------------------------------
-r1629 | dreibh | 2008-01-05 11:04:29 +0100 (Sa, 05 Jan 2008) | 3 lines
-Geänderte Pfade:
+r1629 | dreibh | 2008-01-05 11:04:29 +0100 (Sat, 05 Jan 2008) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
 
 Reverted auxillary.c replacements of uint32_t to unsigned int! This had broken x64 support!
 unsigned int is 8 bytes on x64.
 
 ------------------------------------------------------------------------
-r1619 | tuexen | 2007-11-25 10:00:58 +0100 (So, 25 Nov 2007) | 3 lines
-Geänderte Pfade:
+r1619 | tuexen | 2007-11-25 10:00:58 +0100 (Sun, 25 Nov 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 Fix from Oleg in se_deliver_unreliably().
 
 
 ------------------------------------------------------------------------
-r1618 | tuexen | 2007-11-21 23:15:02 +0100 (Mi, 21 Nov 2007) | 2 lines
-Geänderte Pfade:
+r1618 | tuexen | 2007-11-21 23:15:02 +0100 (Wed, 21 Nov 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/Makefile.nmake
    M /trunk/sctplib1/README.win32
    M /trunk/sctplib1/config.nmake
@@ -155,22 +224,22 @@ Geänderte Pfade:
 More Windows fixes.
 
 ------------------------------------------------------------------------
-r1617 | tuexen | 2007-11-21 23:07:05 +0100 (Mi, 21 Nov 2007) | 2 lines
-Geänderte Pfade:
+r1617 | tuexen | 2007-11-21 23:07:05 +0100 (Wed, 21 Nov 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
 
 No longs.
 
 ------------------------------------------------------------------------
-r1616 | tuexen | 2007-11-21 10:35:25 +0100 (Mi, 21 Nov 2007) | 2 lines
-Geänderte Pfade:
+r1616 | tuexen | 2007-11-21 10:35:25 +0100 (Wed, 21 Nov 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Test for sys/time.h
 
 ------------------------------------------------------------------------
-r1615 | tuexen | 2007-11-21 10:16:39 +0100 (Mi, 21 Nov 2007) | 3 lines
-Geänderte Pfade:
+r1615 | tuexen | 2007-11-21 10:16:39 +0100 (Wed, 21 Nov 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
@@ -181,8 +250,8 @@ Do not incluide sys/time.h. It does not exists on Windows...
 
 
 ------------------------------------------------------------------------
-r1614 | tuexen | 2007-11-21 09:40:38 +0100 (Mi, 21 Nov 2007) | 3 lines
-Geänderte Pfade:
+r1614 | tuexen | 2007-11-21 09:40:38 +0100 (Wed, 21 Nov 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
@@ -191,44 +260,44 @@ gint32_t -> int
 for Windows compatibility
 
 ------------------------------------------------------------------------
-r1613 | tuexen | 2007-11-21 09:37:04 +0100 (Mi, 21 Nov 2007) | 3 lines
-Geänderte Pfade:
+r1613 | tuexen | 2007-11-21 09:37:04 +0100 (Wed, 21 Nov 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
 
 uint32_t -> unsigned int
 for windows compatibility
 
 ------------------------------------------------------------------------
-r1607 | tuexen | 2007-11-04 22:53:33 +0100 (So, 04 Nov 2007) | 3 lines
-Geänderte Pfade:
+r1607 | tuexen | 2007-11-04 22:53:33 +0100 (Sun, 04 Nov 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Get it compiling on Mac OS X.
 
 
 ------------------------------------------------------------------------
-r1575 | dreibh | 2007-09-21 10:52:34 +0200 (Fr, 21 Sep 2007) | 2 lines
-Geänderte Pfade:
+r1575 | dreibh | 2007-09-21 10:52:34 +0200 (Fri, 21 Sep 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/messages.h
 
 Added configure option to set SCTP over UDP port.
 
 ------------------------------------------------------------------------
-r1539 | dreibh | 2007-08-25 14:31:47 +0200 (Sa, 25 Aug 2007) | 1 line
-Geänderte Pfade:
+r1539 | dreibh | 2007-08-25 14:31:47 +0200 (Sat, 25 Aug 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib.lsm
 
 
 ------------------------------------------------------------------------
-r1537 | dreibh | 2007-08-25 08:22:51 +0200 (Sa, 25 Aug 2007) | 1 line
-Geänderte Pfade:
+r1537 | dreibh | 2007-08-25 08:22:51 +0200 (Sat, 25 Aug 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib.lsm
 
 
 ------------------------------------------------------------------------
-r1536 | dreibh | 2007-08-25 07:42:41 +0200 (Sa, 25 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1536 | dreibh | 2007-08-25 07:42:41 +0200 (Sat, 25 Aug 2007) | 2 lines
+Changed paths:
    A /trunk/sctplib1/debian
    A /trunk/sctplib1/debian/changelog
    A /trunk/sctplib1/debian/control
@@ -241,30 +310,30 @@ Geänderte Pfade:
 Added initial version of Debian packaging stuff.
 
 ------------------------------------------------------------------------
-r1529 | dreibh | 2007-08-23 15:59:08 +0200 (Do, 23 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1529 | dreibh | 2007-08-23 15:59:08 +0200 (Thu, 23 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/testsctp.c
 
 Do not enqueue new packets after SHUTDOWN in queueStatusChangeNotif() of testsctp.c.
 
 ------------------------------------------------------------------------
-r1525 | dreibh | 2007-08-23 05:34:05 +0200 (Do, 23 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1525 | dreibh | 2007-08-23 05:34:05 +0200 (Thu, 23 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/sctp.h
 
 Version update.
 
 ------------------------------------------------------------------------
-r1522 | dreibh | 2007-08-22 13:50:03 +0200 (Mi, 22 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1522 | dreibh | 2007-08-22 13:50:03 +0200 (Wed, 22 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/testsctp.c
 
 testsctp updates.
 
 ------------------------------------------------------------------------
-r1519 | dreibh | 2007-08-22 11:00:33 +0200 (Mi, 22 Aug 2007) | 3 lines
-Geänderte Pfade:
+r1519 | dreibh | 2007-08-22 11:00:33 +0200 (Wed, 22 Aug 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/testsctp.c
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
@@ -273,30 +342,30 @@ queueStatusChangeNotif() bugfix modified:
 Only call notification if there are 0 outstanding bytes.
 
 ------------------------------------------------------------------------
-r1518 | dreibh | 2007-08-22 10:04:14 +0200 (Mi, 22 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1518 | dreibh | 2007-08-22 10:04:14 +0200 (Wed, 22 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/BUGS
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
 
 Unrecognised Parameter handling bugfix.
 
 ------------------------------------------------------------------------
-r1517 | dreibh | 2007-08-22 08:11:25 +0200 (Mi, 22 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1517 | dreibh | 2007-08-22 08:11:25 +0200 (Wed, 22 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/testsctp-batch
    M /trunk/sctplib1/sctplib/programs/testsctp.c
 
 testsctp bugfix (option handling).
 
 ------------------------------------------------------------------------
-r1516 | dreibh | 2007-08-22 06:05:04 +0200 (Mi, 22 Aug 2007) | 1 line
-Geänderte Pfade:
+r1516 | dreibh | 2007-08-22 06:05:04 +0200 (Wed, 22 Aug 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 
 ------------------------------------------------------------------------
-r1515 | dreibh | 2007-08-22 05:57:59 +0200 (Mi, 22 Aug 2007) | 1 line
-Geänderte Pfade:
+r1515 | dreibh | 2007-08-22 05:57:59 +0200 (Wed, 22 Aug 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/chat.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
@@ -353,18 +422,18 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r1514 | dreibh | 2007-08-22 05:45:49 +0200 (Mi, 22 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1514 | dreibh | 2007-08-22 05:45:49 +0200 (Wed, 22 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/BUGS
    A /trunk/sctplib1/sctplib/programs/testsctp-batch
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
-Queue Status Change wird bei SACK von fragmentiertem Chunk nun erzeugt => Bulk-Transfer-Problem mit großen Chunks behoben.
+Queue Status Change wird bei SACK von fragmentiertem Chunk nun erzeugt => Bulk-Transfer-Problem mit gro?\195?\159en Chunks behoben.
 
 ------------------------------------------------------------------------
-r1511 | dreibh | 2007-08-21 05:01:50 +0200 (Di, 21 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1511 | dreibh | 2007-08-21 05:01:50 +0200 (Tue, 21 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/BUGS
    M /trunk/sctplib1/sctplib/programs/Makefile.am
    A /trunk/sctplib1/sctplib/programs/testsctp.c
@@ -372,21 +441,21 @@ Geänderte Pfade:
 Added testsctp program.
 
 ------------------------------------------------------------------------
-r1510 | dreibh | 2007-08-21 03:13:21 +0200 (Di, 21 Aug 2007) | 2 lines
-Geänderte Pfade:
+r1510 | dreibh | 2007-08-21 03:13:21 +0200 (Tue, 21 Aug 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
 
 Fixed sending of "unrecognised parameter": the offending parameter is now copied.
 
 ------------------------------------------------------------------------
-r1507 | dreibh | 2007-08-20 04:10:49 +0200 (Mo, 20 Aug 2007) | 1 line
-Geänderte Pfade:
+r1507 | dreibh | 2007-08-20 04:10:49 +0200 (Mon, 20 Aug 2007) | 1 line
+Changed paths:
    A /trunk/sctplib1/BUGS
 
 
 ------------------------------------------------------------------------
-r1424 | dreibh | 2007-05-28 18:36:38 +0200 (Mo, 28 Mai 2007) | 1 line
-Geänderte Pfade:
+r1424 | dreibh | 2007-05-28 18:36:38 +0200 (Mon, 28 May 2007) | 1 line
+Changed paths:
    D /trunk/sctplib1/.cvsignore
    D /trunk/sctplib1/sctplib/.cvsignore
    D /trunk/sctplib1/sctplib/docs/.cvsignore
@@ -398,20 +467,20 @@ Geänderte Pfade:
 
 
 ------------------------------------------------------------------------
-r1406 | dreibh | 2007-05-24 11:52:48 +0200 (Do, 24 Mai 2007) | 1 line
-Geänderte Pfade:
+r1406 | dreibh | 2007-05-24 11:52:48 +0200 (Thu, 24 May 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/Makefile.am
 
 
 ------------------------------------------------------------------------
-r1405 | dreibh | 2007-05-24 11:31:00 +0200 (Do, 24 Mai 2007) | 1 line
-Geänderte Pfade:
+r1405 | dreibh | 2007-05-24 11:31:00 +0200 (Thu, 24 May 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1399 | dreibh | 2007-05-24 10:47:19 +0200 (Do, 24 Mai 2007) | 3 lines
-Geänderte Pfade:
+r1399 | dreibh | 2007-05-24 10:47:19 +0200 (Thu, 24 May 2007) | 3 lines
+Changed paths:
    M /trunk/sctplib1/Makefile.am
    A /trunk/sctplib1/admin
    M /trunk/sctplib1/autogen.sh
@@ -435,16 +504,16 @@ configure.in improvements.
 Used glib-2.0 now.
 
 ------------------------------------------------------------------------
-r1396 | dreibh | 2007-05-23 23:19:50 +0200 (Mi, 23 Mai 2007) | 2 lines
-Geänderte Pfade:
+r1396 | dreibh | 2007-05-23 23:19:50 +0200 (Wed, 23 May 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 configure.in improvements.
 
 ------------------------------------------------------------------------
-r1333 | dreibh | 2007-02-13 13:14:04 +0100 (Di, 13 Feb 2007) | 2 lines
-Geänderte Pfade:
+r1333 | dreibh | 2007-02-13 13:14:04 +0100 (Tue, 13 Feb 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/adaptation.h
@@ -481,80 +550,80 @@ Geänderte Pfade:
 Replaced "unsigned long", "long int", etc. with 32-bit types in order to allow correct operation on 64-bit system.
 
 ------------------------------------------------------------------------
-r1329 | dreibh | 2007-02-08 16:06:18 +0100 (Do, 08 Feb 2007) | 1 line
-Geänderte Pfade:
+r1329 | dreibh | 2007-02-08 16:06:18 +0100 (Thu, 08 Feb 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
 
 
 ------------------------------------------------------------------------
-r1328 | dreibh | 2007-02-08 15:51:21 +0100 (Do, 08 Feb 2007) | 1 line
-Geänderte Pfade:
+r1328 | dreibh | 2007-02-08 15:51:21 +0100 (Thu, 08 Feb 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 
 ------------------------------------------------------------------------
-r1313 | dreibh | 2007-02-03 21:24:59 +0100 (Sa, 03 Feb 2007) | 2 lines
-Geänderte Pfade:
+r1313 | dreibh | 2007-02-03 21:24:59 +0100 (Sat, 03 Feb 2007) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Bugfix for access to already-free data.
 
 ------------------------------------------------------------------------
-r1306 | dreibh | 2007-01-21 22:04:10 +0100 (So, 21 Jan 2007) | 1 line
-Geänderte Pfade:
+r1306 | dreibh | 2007-01-21 22:04:10 +0100 (Sun, 21 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1305 | dreibh | 2007-01-21 20:15:13 +0100 (So, 21 Jan 2007) | 1 line
-Geänderte Pfade:
+r1305 | dreibh | 2007-01-21 20:15:13 +0100 (Sun, 21 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1304 | dreibh | 2007-01-21 20:06:15 +0100 (So, 21 Jan 2007) | 1 line
-Geänderte Pfade:
+r1304 | dreibh | 2007-01-21 20:06:15 +0100 (Sun, 21 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1302 | dreibh | 2007-01-21 15:46:45 +0100 (So, 21 Jan 2007) | 1 line
-Geänderte Pfade:
+r1302 | dreibh | 2007-01-21 15:46:45 +0100 (Sun, 21 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 
 ------------------------------------------------------------------------
-r1299 | dreibh | 2007-01-19 17:19:48 +0100 (Fr, 19 Jan 2007) | 1 line
-Geänderte Pfade:
+r1299 | dreibh | 2007-01-19 17:19:48 +0100 (Fri, 19 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 
 ------------------------------------------------------------------------
-r1298 | dreibh | 2007-01-19 17:14:08 +0100 (Fr, 19 Jan 2007) | 1 line
-Geänderte Pfade:
+r1298 | dreibh | 2007-01-19 17:14:08 +0100 (Fri, 19 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/sctp.h
 
 
 ------------------------------------------------------------------------
-r1297 | dreibh | 2007-01-19 17:03:56 +0100 (Fr, 19 Jan 2007) | 1 line
-Geänderte Pfade:
+r1297 | dreibh | 2007-01-19 17:03:56 +0100 (Fri, 19 Jan 2007) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 
 ------------------------------------------------------------------------
-r1219 | dreibh | 2006-10-27 10:52:35 +0200 (Fr, 27 Okt 2006) | 1 line
-Geänderte Pfade:
+r1219 | dreibh | 2006-10-27 10:52:35 +0200 (Fri, 27 Oct 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/manual/sctp-api-1.0-1.ps
    M /trunk/sctplib1/sctplib/programs/terminal.c
 
 
 ------------------------------------------------------------------------
-r1216 | tuexen | 2006-09-24 18:42:14 +0200 (So, 24 Sep 2006) | 3 lines
-Geänderte Pfade:
+r1216 | tuexen | 2006-09-24 18:42:14 +0200 (Sun, 24 Sep 2006) | 3 lines
+Changed paths:
    M /trunk/sctplib1/README.win32
    M /trunk/sctplib1/configure.in
 
@@ -562,59 +631,59 @@ Version number.
 
 
 ------------------------------------------------------------------------
-r1215 | tuexen | 2006-09-24 18:39:34 +0200 (So, 24 Sep 2006) | 2 lines
-Geänderte Pfade:
+r1215 | tuexen | 2006-09-24 18:39:34 +0200 (Sun, 24 Sep 2006) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Update number.
 
 ------------------------------------------------------------------------
-r1214 | tuexen | 2006-09-24 18:34:36 +0200 (So, 24 Sep 2006) | 1 line
-Geänderte Pfade:
+r1214 | tuexen | 2006-09-24 18:34:36 +0200 (Sun, 24 Sep 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 
 ------------------------------------------------------------------------
-r1192 | dreibh | 2006-08-29 11:02:41 +0200 (Di, 29 Aug 2006) | 1 line
-Geänderte Pfade:
+r1192 | dreibh | 2006-08-29 11:02:41 +0200 (Tue, 29 Aug 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 
 ------------------------------------------------------------------------
-r1168 | dreibh | 2006-07-31 17:54:23 +0200 (Mo, 31 Jul 2006) | 1 line
-Geänderte Pfade:
+r1168 | dreibh | 2006-07-31 17:54:23 +0200 (Mon, 31 Jul 2006) | 1 line
+Changed paths:
    R /trunk/sctplib1/sctplib/manual/sctp-api-1.0-1.pdf
 
 
 ------------------------------------------------------------------------
-r1158 | dreibh | 2006-06-19 17:35:19 +0200 (Mo, 19 Jun 2006) | 1 line
-Geänderte Pfade:
+r1158 | dreibh | 2006-06-19 17:35:19 +0200 (Mon, 19 Jun 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/autogen.sh
 
 
 ------------------------------------------------------------------------
-r1147 | dreibh | 2006-05-24 15:45:36 +0200 (Mi, 24 Mai 2006) | 1 line
-Geänderte Pfade:
+r1147 | dreibh | 2006-05-24 15:45:36 +0200 (Wed, 24 May 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 
 ------------------------------------------------------------------------
-r1090 | dreibh | 2006-05-05 10:17:29 +0200 (Fr, 05 Mai 2006) | 1 line
-Geänderte Pfade:
+r1090 | dreibh | 2006-05-05 10:17:29 +0200 (Fri, 05 May 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/sctp.h
 
 
 ------------------------------------------------------------------------
-r1080 | dreibh | 2006-04-18 11:12:09 +0200 (Di, 18 Apr 2006) | 1 line
-Geänderte Pfade:
+r1080 | dreibh | 2006-04-18 11:12:09 +0200 (Tue, 18 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r1071 | dreibh | 2006-04-06 10:33:25 +0200 (Do, 06 Apr 2006) | 12 lines
-Geänderte Pfade:
+r1071 | dreibh | 2006-04-06 10:33:25 +0200 (Thu, 06 Apr 2006) | 12 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
@@ -631,149 +700,149 @@ expiring timers, etc. of these associations caused segfaults.
 
 
 ------------------------------------------------------------------------
-r1065 | dreibh | 2006-04-04 11:54:08 +0200 (Di, 04 Apr 2006) | 1 line
-Geänderte Pfade:
+r1065 | dreibh | 2006-04-04 11:54:08 +0200 (Tue, 04 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r1064 | dreibh | 2006-04-04 10:33:56 +0200 (Di, 04 Apr 2006) | 1 line
-Geänderte Pfade:
+r1064 | dreibh | 2006-04-04 10:33:56 +0200 (Tue, 04 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r1063 | dreibh | 2006-04-03 21:25:51 +0200 (Mo, 03 Apr 2006) | 1 line
-Geänderte Pfade:
+r1063 | dreibh | 2006-04-03 21:25:51 +0200 (Mon, 03 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r1061 | dreibh | 2006-04-03 14:26:55 +0200 (Mo, 03 Apr 2006) | 1 line
-Geänderte Pfade:
+r1061 | dreibh | 2006-04-03 14:26:55 +0200 (Mon, 03 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r1059 | dreibh | 2006-04-03 14:18:46 +0200 (Mo, 03 Apr 2006) | 1 line
-Geänderte Pfade:
+r1059 | dreibh | 2006-04-03 14:18:46 +0200 (Mon, 03 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r1056 | dreibh | 2006-04-03 12:46:41 +0200 (Mo, 03 Apr 2006) | 1 line
-Geänderte Pfade:
+r1056 | dreibh | 2006-04-03 12:46:41 +0200 (Mon, 03 Apr 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
 
 
 ------------------------------------------------------------------------
-r1050 | dreibh | 2006-03-31 10:46:15 +0200 (Fr, 31 Mär 2006) | 1 line
-Geänderte Pfade:
+r1050 | dreibh | 2006-03-31 10:46:15 +0200 (Fri, 31 Mar 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 
 ------------------------------------------------------------------------
-r1032 | tuexen | 2006-03-17 11:36:32 +0100 (Fr, 17 Mär 2006) | 1 line
-Geänderte Pfade:
+r1032 | tuexen | 2006-03-17 11:36:32 +0100 (Fri, 17 Mar 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/NEWS
 
 
 ------------------------------------------------------------------------
-r1031 | dreibh | 2006-03-17 11:35:08 +0100 (Fr, 17 Mär 2006) | 1 line
-Geänderte Pfade:
+r1031 | dreibh | 2006-03-17 11:35:08 +0100 (Fri, 17 Mar 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/NEWS
 
 
 ------------------------------------------------------------------------
-r1030 | tuexen | 2006-03-17 11:34:12 +0100 (Fr, 17 Mär 2006) | 2 lines
-Geänderte Pfade:
+r1030 | tuexen | 2006-03-17 11:34:12 +0100 (Fri, 17 Mar 2006) | 2 lines
+Changed paths:
    M /trunk/sctplib1/NEWS
 
 Testing again.
 
 ------------------------------------------------------------------------
-r1029 | tuexen | 2006-03-17 11:30:23 +0100 (Fr, 17 Mär 2006) | 2 lines
-Geänderte Pfade:
+r1029 | tuexen | 2006-03-17 11:30:23 +0100 (Fri, 17 Mar 2006) | 2 lines
+Changed paths:
    M /trunk/sctplib1/NEWS
 
 Testing.
 
 ------------------------------------------------------------------------
-r1025 | dreibh | 2006-03-16 12:22:24 +0100 (Do, 16 Mär 2006) | 1 line
-Geänderte Pfade:
+r1025 | dreibh | 2006-03-16 12:22:24 +0100 (Thu, 16 Mar 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
 
 
 ------------------------------------------------------------------------
-r949 | dreibh | 2006-02-20 18:33:26 +0100 (Mo, 20 Feb 2006) | 2 lines
-Geänderte Pfade:
+r949 | dreibh | 2006-02-20 18:33:26 +0100 (Mon, 20 Feb 2006) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Fixed compiler warnings (wrong cast).
 
 ------------------------------------------------------------------------
-r948 | dreibh | 2006-02-20 18:31:13 +0100 (Mo, 20 Feb 2006) | 2 lines
-Geänderte Pfade:
+r948 | dreibh | 2006-02-20 18:31:13 +0100 (Mon, 20 Feb 2006) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Bugfix in open_dummy_socket() (uninitialized variable "on").
 
 ------------------------------------------------------------------------
-r937 | dreibh | 2006-02-15 14:48:11 +0100 (Mi, 15 Feb 2006) | 1 line
-Geänderte Pfade:
+r937 | dreibh | 2006-02-15 14:48:11 +0100 (Wed, 15 Feb 2006) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 
 ------------------------------------------------------------------------
-r895 | dreibh | 2005-12-23 13:19:07 +0100 (Fr, 23 Dez 2005) | 3 lines
-Geänderte Pfade:
+r895 | dreibh | 2005-12-23 13:19:07 +0100 (Fri, 23 Dec 2005) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 Turned error logging off.
 
 
 ------------------------------------------------------------------------
-r894 | dreibh | 2005-12-23 13:16:48 +0100 (Fr, 23 Dez 2005) | 3 lines
-Geänderte Pfade:
+r894 | dreibh | 2005-12-23 13:16:48 +0100 (Fri, 23 Dec 2005) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Fixed some compiler warnings related to usage of int instead of size_t.
 
 
 ------------------------------------------------------------------------
-r893 | tuexen | 2005-12-01 16:06:12 +0100 (Do, 01 Dez 2005) | 2 lines
-Geänderte Pfade:
+r893 | tuexen | 2005-12-01 16:06:12 +0100 (Thu, 01 Dec 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 Fix accounting bug.
 
 ------------------------------------------------------------------------
-r892 | tuexen | 2005-12-01 03:16:34 +0100 (Do, 01 Dez 2005) | 2 lines
-Geänderte Pfade:
+r892 | tuexen | 2005-12-01 03:16:34 +0100 (Thu, 01 Dec 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Fix IPv6 compile problem.
 
 ------------------------------------------------------------------------
-r861 | tuexen | 2005-10-20 09:45:11 +0200 (Do, 20 Okt 2005) | 2 lines
-Geänderte Pfade:
+r861 | tuexen | 2005-10-20 09:45:11 +0200 (Thu, 20 Oct 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/TODO
 
 ICMP handling
 
 ------------------------------------------------------------------------
-r860 | tuexen | 2005-10-19 21:58:11 +0200 (Mi, 19 Okt 2005) | 2 lines
-Geänderte Pfade:
+r860 | tuexen | 2005-10-19 21:58:11 +0200 (Wed, 19 Oct 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/TODO
 
 Add note on SACK timer.
 
 ------------------------------------------------------------------------
-r846 | tuexen | 2005-10-06 22:16:43 +0200 (Do, 06 Okt 2005) | 2 lines
-Geänderte Pfade:
+r846 | tuexen | 2005-10-06 22:16:43 +0200 (Thu, 06 Oct 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/terminal.c
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
@@ -781,48 +850,48 @@ Geänderte Pfade:
 Fix things reported by Andreas Fink.
 
 ------------------------------------------------------------------------
-r835 | tuexen | 2005-10-04 10:15:49 +0200 (Di, 04 Okt 2005) | 1 line
-Geänderte Pfade:
+r835 | tuexen | 2005-10-04 10:15:49 +0200 (Tue, 04 Oct 2005) | 1 line
+Changed paths:
    M /trunk/sctplib1/TODO
 
 
 ------------------------------------------------------------------------
-r800 | dreibh | 2005-09-26 10:18:17 +0200 (Mo, 26 Sep 2005) | 1 line
-Geänderte Pfade:
+r800 | dreibh | 2005-09-26 10:18:17 +0200 (Mon, 26 Sep 2005) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 
 ------------------------------------------------------------------------
-r759 | tuexen | 2005-09-16 12:01:42 +0200 (Fr, 16 Sep 2005) | 2 lines
-Geänderte Pfade:
+r759 | tuexen | 2005-09-16 12:01:42 +0200 (Fri, 16 Sep 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump version to 1.0.4.
 
 ------------------------------------------------------------------------
-r758 | tuexen | 2005-09-16 12:01:12 +0200 (Fr, 16 Sep 2005) | 2 lines
-Geänderte Pfade:
+r758 | tuexen | 2005-09-16 12:01:12 +0200 (Fri, 16 Sep 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/README.win32
 
 Update to 1.0.4.
 
 ------------------------------------------------------------------------
-r757 | tuexen | 2005-09-16 11:59:51 +0200 (Fr, 16 Sep 2005) | 2 lines
-Geänderte Pfade:
+r757 | tuexen | 2005-09-16 11:59:51 +0200 (Fri, 16 Sep 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Get it copiling on FreeBSD.
 
 ------------------------------------------------------------------------
-r743 | tuexen | 2005-09-01 17:44:51 +0200 (Do, 01 Sep 2005) | 2 lines
-Geänderte Pfade:
+r743 | tuexen | 2005-09-01 17:44:51 +0200 (Thu, 01 Sep 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump version.
 
 ------------------------------------------------------------------------
-r742 | tuexen | 2005-09-01 17:44:24 +0200 (Do, 01 Sep 2005) | 2 lines
-Geänderte Pfade:
+r742 | tuexen | 2005-09-01 17:44:24 +0200 (Thu, 01 Sep 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/discard_server.c
@@ -832,49 +901,49 @@ Geänderte Pfade:
 Cast to correct type.
 
 ------------------------------------------------------------------------
-r741 | tuexen | 2005-09-01 17:43:26 +0200 (Do, 01 Sep 2005) | 2 lines
-Geänderte Pfade:
+r741 | tuexen | 2005-09-01 17:43:26 +0200 (Thu, 01 Sep 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/config.nmake
 
 Right sequence.
 
 ------------------------------------------------------------------------
-r740 | tuexen | 2005-08-30 15:51:22 +0200 (Di, 30 Aug 2005) | 2 lines
-Geänderte Pfade:
+r740 | tuexen | 2005-08-30 15:51:22 +0200 (Tue, 30 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump version.
 
 ------------------------------------------------------------------------
-r739 | tuexen | 2005-08-30 12:02:41 +0200 (Di, 30 Aug 2005) | 2 lines
-Geänderte Pfade:
+r739 | tuexen | 2005-08-30 12:02:41 +0200 (Tue, 30 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Add SCTP-control.h.
 
 ------------------------------------------------------------------------
-r738 | tuexen | 2005-08-29 19:05:23 +0200 (Mo, 29 Aug 2005) | 2 lines
-Geänderte Pfade:
+r738 | tuexen | 2005-08-29 19:05:23 +0200 (Mon, 29 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Version 1.0.4
 
 ------------------------------------------------------------------------
-r737 | tuexen | 2005-08-29 19:04:25 +0200 (Mo, 29 Aug 2005) | 2 lines
-Geänderte Pfade:
+r737 | tuexen | 2005-08-29 19:04:25 +0200 (Mon, 29 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Get it compiling on Mac OS X.
 
 ------------------------------------------------------------------------
-r705 | dreibh | 2005-08-09 19:09:05 +0200 (Di, 09 Aug 2005) | 1 line
-Geänderte Pfade:
+r705 | dreibh | 2005-08-09 19:09:05 +0200 (Tue, 09 Aug 2005) | 1 line
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 
 ------------------------------------------------------------------------
-r704 | dreibh | 2005-08-09 18:40:18 +0200 (Di, 09 Aug 2005) | 3 lines
-Geänderte Pfade:
+r704 | dreibh | 2005-08-09 18:40:18 +0200 (Tue, 09 Aug 2005) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/globals.c
@@ -883,8 +952,8 @@ Fixed problem with duplicate address detection:
 ::a.b.c.d on sit0 and a.b.c.d on eth0 -> duplicate!
 
 ------------------------------------------------------------------------
-r686 | dreibh | 2005-08-04 12:49:29 +0200 (Do, 04 Aug 2005) | 2 lines
-Geänderte Pfade:
+r686 | dreibh | 2005-08-04 12:49:29 +0200 (Thu, 04 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
@@ -894,8 +963,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r683 | dreibh | 2005-08-04 10:09:25 +0200 (Do, 04 Aug 2005) | 2 lines
-Geänderte Pfade:
+r683 | dreibh | 2005-08-04 10:09:25 +0200 (Thu, 04 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
@@ -905,15 +974,15 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r682 | dreibh | 2005-08-03 13:24:31 +0200 (Mi, 03 Aug 2005) | 2 lines
-Geänderte Pfade:
+r682 | dreibh | 2005-08-03 13:24:31 +0200 (Wed, 03 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r681 | dreibh | 2005-08-03 13:23:45 +0200 (Mi, 03 Aug 2005) | 2 lines
-Geänderte Pfade:
+r681 | dreibh | 2005-08-03 13:23:45 +0200 (Wed, 03 Aug 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
@@ -923,37 +992,37 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r672 | tuexen | 2005-07-28 17:57:39 +0200 (Do, 28 Jul 2005) | 2 lines
-Geänderte Pfade:
+r672 | tuexen | 2005-07-28 17:57:39 +0200 (Thu, 28 Jul 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/TODO
 
 IPv6 under Linux does also not work.
 
 ------------------------------------------------------------------------
-r671 | tuexen | 2005-07-28 17:56:36 +0200 (Do, 28 Jul 2005) | 2 lines
-Geänderte Pfade:
+r671 | tuexen | 2005-07-28 17:56:36 +0200 (Thu, 28 Jul 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Version is still 1.0.4a
 
 ------------------------------------------------------------------------
-r670 | dreibh | 2005-07-28 17:53:38 +0200 (Do, 28 Jul 2005) | 2 lines
-Geänderte Pfade:
+r670 | dreibh | 2005-07-28 17:53:38 +0200 (Thu, 28 Jul 2005) | 2 lines
+Changed paths:
    M /trunk/rsplib2/rsplib/fractalexample/fractalpooluser.cc
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r668 | dreibh | 2005-07-28 16:53:54 +0200 (Do, 28 Jul 2005) | 2 lines
-Geänderte Pfade:
+r668 | dreibh | 2005-07-28 16:53:54 +0200 (Thu, 28 Jul 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r654 | dreibh | 2005-07-19 11:35:16 +0200 (Di, 19 Jul 2005) | 2 lines
-Geänderte Pfade:
+r654 | dreibh | 2005-07-19 11:35:16 +0200 (Tue, 19 Jul 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/messages.h
@@ -961,100 +1030,100 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r651 | tuexen | 2005-07-18 22:39:57 +0200 (Mo, 18 Jul 2005) | 2 lines
-Geänderte Pfade:
+r651 | tuexen | 2005-07-18 22:39:57 +0200 (Mon, 18 Jul 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/TODO
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r634 | tuexen | 2005-05-20 00:30:15 +0200 (Fr, 20 Mai 2005) | 2 lines
-Geänderte Pfade:
+r634 | tuexen | 2005-05-20 00:30:15 +0200 (Fri, 20 May 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Include Makefile.nmake in distribution
 
 ------------------------------------------------------------------------
-r633 | tuexen | 2005-05-20 00:17:21 +0200 (Fr, 20 Mai 2005) | 2 lines
-Geänderte Pfade:
+r633 | tuexen | 2005-05-20 00:17:21 +0200 (Fri, 20 May 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 Remove include file.
 
 ------------------------------------------------------------------------
-r632 | tuexen | 2005-05-20 00:13:09 +0200 (Fr, 20 Mai 2005) | 2 lines
-Geänderte Pfade:
+r632 | tuexen | 2005-05-20 00:13:09 +0200 (Fri, 20 May 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/Makefile.am
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Now it works with gcc 4.0
 
 ------------------------------------------------------------------------
-r631 | tuexen | 2005-05-19 23:15:33 +0200 (Do, 19 Mai 2005) | 2 lines
-Geänderte Pfade:
+r631 | tuexen | 2005-05-19 23:15:33 +0200 (Thu, 19 May 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 First try to get it running again.
 
 ------------------------------------------------------------------------
-r630 | tuexen | 2005-05-03 17:36:51 +0200 (Di, 03 Mai 2005) | 2 lines
-Geänderte Pfade:
+r630 | tuexen | 2005-05-03 17:36:51 +0200 (Tue, 03 May 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Another fix for Windows. Now timers should work.
 
 ------------------------------------------------------------------------
-r629 | tuexen | 2005-04-29 21:54:18 +0200 (Fr, 29 Apr 2005) | 2 lines
-Geänderte Pfade:
+r629 | tuexen | 2005-04-29 21:54:18 +0200 (Fri, 29 Apr 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/sctp.h
 
 Do not put debug code in CVS
 
 ------------------------------------------------------------------------
-r628 | tuexen | 2005-04-29 19:42:17 +0200 (Fr, 29 Apr 2005) | 2 lines
-Geänderte Pfade:
+r628 | tuexen | 2005-04-29 19:42:17 +0200 (Fri, 29 Apr 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Fix a timer problem in windows.
 
 ------------------------------------------------------------------------
-r620 | dreibh | 2005-03-11 13:32:39 +0100 (Fr, 11 Mär 2005) | 2 lines
-Geänderte Pfade:
+r620 | dreibh | 2005-03-11 13:32:39 +0100 (Fri, 11 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r619 | dreibh | 2005-03-11 12:34:29 +0100 (Fr, 11 Mär 2005) | 2 lines
-Geänderte Pfade:
+r619 | dreibh | 2005-03-11 12:34:29 +0100 (Fri, 11 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r618 | dreibh | 2005-03-11 12:34:14 +0100 (Fr, 11 Mär 2005) | 2 lines
-Geänderte Pfade:
+r618 | dreibh | 2005-03-11 12:34:14 +0100 (Fri, 11 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r617 | dreibh | 2005-03-11 11:59:49 +0100 (Fr, 11 Mär 2005) | 2 lines
-Geänderte Pfade:
+r617 | dreibh | 2005-03-11 11:59:49 +0100 (Fri, 11 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r616 | dreibh | 2005-03-11 11:59:31 +0100 (Fr, 11 Mär 2005) | 2 lines
-Geänderte Pfade:
+r616 | dreibh | 2005-03-11 11:59:31 +0100 (Fri, 11 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r615 | dreibh | 2005-03-11 11:58:54 +0100 (Fr, 11 Mär 2005) | 2 lines
-Geänderte Pfade:
+r615 | dreibh | 2005-03-11 11:58:54 +0100 (Fri, 11 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/globals.h
    M /trunk/sctplib1/sctplib/sctp/sctp.h
@@ -1062,8 +1131,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r608 | tuexen | 2005-03-08 14:29:52 +0100 (Di, 08 Mär 2005) | 2 lines
-Geänderte Pfade:
+r608 | tuexen | 2005-03-08 14:29:52 +0100 (Tue, 08 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/chat.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
@@ -1079,8 +1148,8 @@ Geänderte Pfade:
 Update for sctp_registerInstance returning an int.
 
 ------------------------------------------------------------------------
-r605 | dreibh | 2005-03-08 13:51:03 +0100 (Di, 08 Mär 2005) | 2 lines
-Geänderte Pfade:
+r605 | dreibh | 2005-03-08 13:51:03 +0100 (Tue, 08 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/rsplib2/configure.in
    M /trunk/rsplib2/rsplib/asapinstance.c
    M /trunk/rsplib2/rsplib/asapinstance.h
@@ -1112,15 +1181,15 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r603 | dreibh | 2005-03-07 15:05:13 +0100 (Mo, 07 Mär 2005) | 2 lines
-Geänderte Pfade:
+r603 | dreibh | 2005-03-07 15:05:13 +0100 (Mon, 07 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/sctp.h
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r602 | dreibh | 2005-03-07 15:00:20 +0100 (Mo, 07 Mär 2005) | 2 lines
-Geänderte Pfade:
+r602 | dreibh | 2005-03-07 15:00:20 +0100 (Mon, 07 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/globals.h
    M /trunk/sctplib1/sctplib/sctp/sctp.h
@@ -1129,15 +1198,15 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r601 | dreibh | 2005-03-07 10:35:05 +0100 (Mo, 07 Mär 2005) | 2 lines
-Geänderte Pfade:
+r601 | dreibh | 2005-03-07 10:35:05 +0100 (Mon, 07 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r600 | tuexen | 2005-03-05 01:06:12 +0100 (Sa, 05 Mär 2005) | 2 lines
-Geänderte Pfade:
+r600 | tuexen | 2005-03-05 01:06:12 +0100 (Sat, 05 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/rsplib2/rsplib/ext_socket.h
    M /trunk/rsplib2/rsplib/netutilities.c
    M /trunk/sctplib1/configure.in
@@ -1148,29 +1217,29 @@ Geänderte Pfade:
 Update for release.
 
 ------------------------------------------------------------------------
-r598 | dreibh | 2005-03-03 18:14:44 +0100 (Do, 03 Mär 2005) | 2 lines
-Geänderte Pfade:
+r598 | dreibh | 2005-03-03 18:14:44 +0100 (Thu, 03 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r597 | dreibh | 2005-03-03 18:12:35 +0100 (Do, 03 Mär 2005) | 2 lines
-Geänderte Pfade:
+r597 | dreibh | 2005-03-03 18:12:35 +0100 (Thu, 03 Mar 2005) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r594 | tuexen | 2004-12-24 15:28:56 +0100 (Fr, 24 Dez 2004) | 2 lines
-Geänderte Pfade:
+r594 | tuexen | 2004-12-24 15:28:56 +0100 (Fri, 24 Dec 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump Version to 1.0.2
 
 ------------------------------------------------------------------------
-r593 | tuexen | 2004-12-24 15:25:13 +0100 (Fr, 24 Dez 2004) | 2 lines
-Geänderte Pfade:
+r593 | tuexen | 2004-12-24 15:25:13 +0100 (Fri, 24 Dec 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
    M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
    M /trunk/sctplib1/sctplib/programs/terminal.c
@@ -1178,15 +1247,15 @@ Geänderte Pfade:
 Add stuff for HEARTBEAT checking.
 
 ------------------------------------------------------------------------
-r574 | dreibh | 2004-12-08 15:53:16 +0100 (Mi, 08 Dez 2004) | 2 lines
-Geänderte Pfade:
+r574 | dreibh | 2004-12-08 15:53:16 +0100 (Wed, 08 Dec 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r554 | dreibh | 2004-11-23 11:16:14 +0100 (Di, 23 Nov 2004) | 2 lines
-Geänderte Pfade:
+r554 | dreibh | 2004-11-23 11:16:14 +0100 (Tue, 23 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/autogen.sh
    M /trunk/sctplib1/sctplib/sctp/globals.h
    M /trunk/socketapi/admin/config.guess
@@ -1202,16 +1271,16 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r551 | dreibh | 2004-11-22 16:49:30 +0100 (Mo, 22 Nov 2004) | 2 lines
-Geänderte Pfade:
+r551 | dreibh | 2004-11-22 16:49:30 +0100 (Mon, 22 Nov 2004) | 2 lines
+Changed paths:
    A /trunk/sctplib1/autogen.sh
    M /trunk/socketapi/autogen.sh
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r548 | tuexen | 2004-11-21 15:06:33 +0100 (So, 21 Nov 2004) | 2 lines
-Geänderte Pfade:
+r548 | tuexen | 2004-11-21 15:06:33 +0100 (Sun, 21 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/Makefile.nmake
    M /trunk/sctplib1/README.win32
    M /trunk/sctplib1/config.nmake
@@ -1223,8 +1292,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r545 | tuexen | 2004-11-19 22:48:33 +0100 (Fr, 19 Nov 2004) | 2 lines
-Geänderte Pfade:
+r545 | tuexen | 2004-11-19 22:48:33 +0100 (Fri, 19 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/Makefile.am
    M /trunk/sctplib1/sctplib/programs/parser.c
@@ -1232,16 +1301,16 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r544 | tuexen | 2004-11-19 22:25:00 +0100 (Fr, 19 Nov 2004) | 2 lines
-Geänderte Pfade:
+r544 | tuexen | 2004-11-19 22:25:00 +0100 (Fri, 19 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/main.c
    M /trunk/sctplib1/sctplib/programs/mini-ulp.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r543 | tuexen | 2004-11-19 22:13:27 +0100 (Fr, 19 Nov 2004) | 2 lines
-Geänderte Pfade:
+r543 | tuexen | 2004-11-19 22:13:27 +0100 (Fri, 19 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/Makefile.nmake
    M /trunk/sctplib1/sctplib/programs/localcom.c
@@ -1252,8 +1321,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r542 | tuexen | 2004-11-19 21:12:32 +0100 (Fr, 19 Nov 2004) | 2 lines
-Geänderte Pfade:
+r542 | tuexen | 2004-11-19 21:12:32 +0100 (Fri, 19 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/Makefile.nmake
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/echo_server.c
@@ -1262,8 +1331,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r535 | tuexen | 2004-11-18 00:04:09 +0100 (Do, 18 Nov 2004) | 2 lines
-Geänderte Pfade:
+r535 | tuexen | 2004-11-18 00:04:09 +0100 (Thu, 18 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/Makefile.am
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
@@ -1275,23 +1344,23 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r534 | tuexen | 2004-11-17 23:46:17 +0100 (Mi, 17 Nov 2004) | 2 lines
-Geänderte Pfade:
+r534 | tuexen | 2004-11-17 23:46:17 +0100 (Wed, 17 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r533 | tuexen | 2004-11-17 22:21:04 +0100 (Mi, 17 Nov 2004) | 2 lines
-Geänderte Pfade:
+r533 | tuexen | 2004-11-17 22:21:04 +0100 (Wed, 17 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r532 | tuexen | 2004-11-17 22:11:53 +0100 (Mi, 17 Nov 2004) | 2 lines
-Geänderte Pfade:
+r532 | tuexen | 2004-11-17 22:11:53 +0100 (Wed, 17 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/adaptation.h
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
@@ -1306,8 +1375,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r531 | tuexen | 2004-11-17 21:56:06 +0100 (Mi, 17 Nov 2004) | 2 lines
-Geänderte Pfade:
+r531 | tuexen | 2004-11-17 21:56:06 +0100 (Wed, 17 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/daytime_server.c
@@ -1328,8 +1397,8 @@ Geänderte Pfade:
 Update for Windows.
 
 ------------------------------------------------------------------------
-r521 | dreibh | 2004-11-12 15:32:59 +0100 (Fr, 12 Nov 2004) | 2 lines
-Geänderte Pfade:
+r521 | dreibh | 2004-11-12 15:32:59 +0100 (Fri, 12 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/reltransfer.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
@@ -1337,8 +1406,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r493 | dreibh | 2004-11-10 20:25:12 +0100 (Mi, 10 Nov 2004) | 2 lines
-Geänderte Pfade:
+r493 | dreibh | 2004-11-10 20:25:12 +0100 (Wed, 10 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/rsplib2/rsplib/netutilities.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/sctp.h
@@ -1351,45 +1420,45 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r486 | tuexen | 2004-11-07 20:18:00 +0100 (So, 07 Nov 2004) | 2 lines
-Geänderte Pfade:
+r486 | tuexen | 2004-11-07 20:18:00 +0100 (Sun, 07 Nov 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/README.win32
    M /trunk/sctplib1/configure.in
 
 Bump version and modify Darwin flags.
 
 ------------------------------------------------------------------------
-r462 | dreibh | 2004-08-25 15:25:14 +0200 (Mi, 25 Aug 2004) | 2 lines
-Geänderte Pfade:
+r462 | dreibh | 2004-08-25 15:25:14 +0200 (Wed, 25 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r448 | tuexen | 2004-08-17 18:51:30 +0200 (Di, 17 Aug 2004) | 2 lines
-Geänderte Pfade:
+r448 | tuexen | 2004-08-17 18:51:30 +0200 (Tue, 17 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/win32-setup.sh
 
 Be liberal for HTTP_PROXY settings.
 
 ------------------------------------------------------------------------
-r447 | tuexen | 2004-08-16 09:49:00 +0200 (Mo, 16 Aug 2004) | 2 lines
-Geänderte Pfade:
+r447 | tuexen | 2004-08-16 09:49:00 +0200 (Mon, 16 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/Makefile.nmake
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r446 | tuexen | 2004-08-14 20:30:45 +0200 (Sa, 14 Aug 2004) | 2 lines
-Geänderte Pfade:
+r446 | tuexen | 2004-08-14 20:30:45 +0200 (Sat, 14 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 next test version.
 
 ------------------------------------------------------------------------
-r445 | tuexen | 2004-08-14 20:29:59 +0200 (Sa, 14 Aug 2004) | 2 lines
-Geänderte Pfade:
+r445 | tuexen | 2004-08-14 20:29:59 +0200 (Sat, 14 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/Makefile.nmake
    M /trunk/sctplib1/README.win32
    M /trunk/sctplib1/config.nmake
@@ -1400,22 +1469,22 @@ Geänderte Pfade:
 The Windows version also uses glib12.
 
 ------------------------------------------------------------------------
-r444 | ajung | 2004-08-13 17:05:46 +0200 (Fr, 13 Aug 2004) | 2 lines
-Geänderte Pfade:
+r444 | ajung | 2004-08-13 17:05:46 +0200 (Fri, 13 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
 
 Fixed incorrect fix... sorry
 
 ------------------------------------------------------------------------
-r443 | ajung | 2004-08-13 17:04:56 +0200 (Fr, 13 Aug 2004) | 2 lines
-Geänderte Pfade:
+r443 | ajung | 2004-08-13 17:04:56 +0200 (Fri, 13 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
 
 Fixed incorrect computation
 
 ------------------------------------------------------------------------
-r442 | ajung | 2004-08-13 16:21:28 +0200 (Fr, 13 Aug 2004) | 2 lines
-Geänderte Pfade:
+r442 | ajung | 2004-08-13 16:21:28 +0200 (Fri, 13 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/distribution.h
@@ -1423,23 +1492,23 @@ Geänderte Pfade:
 Fixed some minor typos
 
 ------------------------------------------------------------------------
-r441 | ajung | 2004-08-13 14:15:15 +0200 (Fr, 13 Aug 2004) | 2 lines
-Geänderte Pfade:
+r441 | ajung | 2004-08-13 14:15:15 +0200 (Fri, 13 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
 
 Fixed typo (argument to if statement appeared twice)
 
 ------------------------------------------------------------------------
-r440 | tuexen | 2004-08-12 19:35:20 +0200 (Do, 12 Aug 2004) | 2 lines
-Geänderte Pfade:
+r440 | tuexen | 2004-08-12 19:35:20 +0200 (Thu, 12 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp
    M /trunk/sctplib1/sctplib/sctp/.cvsignore
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r439 | tuexen | 2004-08-12 16:58:56 +0200 (Do, 12 Aug 2004) | 2 lines
-Geänderte Pfade:
+r439 | tuexen | 2004-08-12 16:58:56 +0200 (Thu, 12 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp
    M /trunk/sctplib1/sctplib/sctp/.cvsignore
    D /trunk/sctplib1/sctplib/tracelevels.in
@@ -1447,22 +1516,22 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r438 | tuexen | 2004-08-12 13:49:54 +0200 (Do, 12 Aug 2004) | 2 lines
-Geänderte Pfade:
+r438 | tuexen | 2004-08-12 13:49:54 +0200 (Thu, 12 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/Makefile.am
 
 Only one line EXTRA_DIST is allowed...
 
 ------------------------------------------------------------------------
-r437 | tuexen | 2004-08-12 13:37:46 +0200 (Do, 12 Aug 2004) | 2 lines
-Geänderte Pfade:
+r437 | tuexen | 2004-08-12 13:37:46 +0200 (Thu, 12 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump version to 1.0.2c
 
 ------------------------------------------------------------------------
-r436 | tuexen | 2004-08-12 13:36:58 +0200 (Do, 12 Aug 2004) | 2 lines
-Geänderte Pfade:
+r436 | tuexen | 2004-08-12 13:36:58 +0200 (Thu, 12 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/Makefile.am
    M /trunk/sctplib1/sctplib/programs/Makefile.am
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
@@ -1470,8 +1539,8 @@ Geänderte Pfade:
 Include Windows CLI compilation files in the distribution.
 
 ------------------------------------------------------------------------
-r435 | tuexen | 2004-08-12 13:28:50 +0200 (Do, 12 Aug 2004) | 2 lines
-Geänderte Pfade:
+r435 | tuexen | 2004-08-12 13:28:50 +0200 (Thu, 12 Aug 2004) | 2 lines
+Changed paths:
    A /trunk/sctplib1/Makefile.nmake
    A /trunk/sctplib1/README.win32
    A /trunk/sctplib1/config.nmake
@@ -1482,22 +1551,22 @@ Geänderte Pfade:
 Add Windows CLI support for compiling.
 
 ------------------------------------------------------------------------
-r434 | tuexen | 2004-08-11 14:01:55 +0200 (Mi, 11 Aug 2004) | 2 lines
-Geänderte Pfade:
+r434 | tuexen | 2004-08-11 14:01:55 +0200 (Wed, 11 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Bump version to 1.0.2
 
 ------------------------------------------------------------------------
-r433 | tuexen | 2004-08-11 14:01:02 +0200 (Mi, 11 Aug 2004) | 2 lines
-Geänderte Pfade:
+r433 | tuexen | 2004-08-11 14:01:02 +0200 (Wed, 11 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
 
 Fix a Windows include problem.
 
 ------------------------------------------------------------------------
-r432 | ajung | 2004-08-10 11:00:17 +0200 (Di, 10 Aug 2004) | 2 lines
-Geänderte Pfade:
+r432 | ajung | 2004-08-10 11:00:17 +0200 (Tue, 10 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/docs/Makefile.am
    M /trunk/sctplib1/sctplib/docs/sctplib/Makefile.am
    M /trunk/sctplib1/sctplib.kdevprj
@@ -1506,44 +1575,44 @@ Geänderte Pfade:
 Minor fixes for new release version
 
 ------------------------------------------------------------------------
-r431 | ajung | 2004-08-10 10:45:44 +0200 (Di, 10 Aug 2004) | 2 lines
-Geänderte Pfade:
+r431 | ajung | 2004-08-10 10:45:44 +0200 (Tue, 10 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Updates for new version and removed documentation
 
 ------------------------------------------------------------------------
-r430 | ajung | 2004-08-10 10:37:05 +0200 (Di, 10 Aug 2004) | 2 lines
-Geänderte Pfade:
+r430 | ajung | 2004-08-10 10:37:05 +0200 (Tue, 10 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/docs/Makefile.am
 
 Added sctplibDoxy.txt to the install/distro targets
 
 ------------------------------------------------------------------------
-r429 | ajung | 2004-08-10 10:35:57 +0200 (Di, 10 Aug 2004) | 2 lines
-Geänderte Pfade:
+r429 | ajung | 2004-08-10 10:35:57 +0200 (Tue, 10 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/TODO
 
 Updated the "TODO" list
 
 ------------------------------------------------------------------------
-r428 | ajung | 2004-08-10 10:28:08 +0200 (Di, 10 Aug 2004) | 2 lines
-Geänderte Pfade:
+r428 | ajung | 2004-08-10 10:28:08 +0200 (Tue, 10 Aug 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/ChangeLog
 
 Updated Changelog
 
 ------------------------------------------------------------------------
-r425 | ajung | 2004-07-30 15:25:31 +0200 (Fr, 30 Jul 2004) | 3 lines
-Geänderte Pfade:
+r425 | ajung | 2004-07-30 15:25:31 +0200 (Fri, 30 Jul 2004) | 3 lines
+Changed paths:
    A /trunk/sctplib1/sctplib/docs/en/index.sgml
 
 Added index.sgml file that can be used for documentation purposes.
 We should later use this as a basis for creating a documentation.
 
 ------------------------------------------------------------------------
-r424 | ajung | 2004-07-30 15:21:06 +0200 (Fr, 30 Jul 2004) | 4 lines
-Geänderte Pfade:
+r424 | ajung | 2004-07-30 15:21:06 +0200 (Fri, 30 Jul 2004) | 4 lines
+Changed paths:
    A /trunk/sctplib1/sctplib/docs/sctplibDoxy.txt
 
 Added doxygen file. Users with installed doxygen can now go to the
@@ -1551,22 +1620,22 @@ sctplib/docs directory and type "make doxygen" in order to create
 online documentation.
 
 ------------------------------------------------------------------------
-r423 | ajung | 2004-07-30 15:19:28 +0200 (Fr, 30 Jul 2004) | 2 lines
-Geänderte Pfade:
+r423 | ajung | 2004-07-30 15:19:28 +0200 (Fri, 30 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/docs/sctplib/Makefile.am
 
 Added new rfcs, and adapted the Makefile to include this
 
 ------------------------------------------------------------------------
-r422 | ajung | 2004-07-30 15:16:19 +0200 (Fr, 30 Jul 2004) | 2 lines
-Geänderte Pfade:
+r422 | ajung | 2004-07-30 15:16:19 +0200 (Fri, 30 Jul 2004) | 2 lines
+Changed paths:
    D /trunk/sctplib1/sctplib/docs/html
 
 removed old file
 
 ------------------------------------------------------------------------
-r421 | ajung | 2004-07-30 15:04:19 +0200 (Fr, 30 Jul 2004) | 2 lines
-Geänderte Pfade:
+r421 | ajung | 2004-07-30 15:04:19 +0200 (Fri, 30 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/ChangeLog
    M /trunk/sctplib1/sctplib/docs/Makefile.am
    D /trunk/sctplib1/sctplib/docs/html/ASSOCIATION.html
@@ -1888,8 +1957,8 @@ Geänderte Pfade:
 Removed old documentation and added new target
 
 ------------------------------------------------------------------------
-r420 | ajung | 2004-07-30 14:06:52 +0200 (Fr, 30 Jul 2004) | 3 lines
-Geänderte Pfade:
+r420 | ajung | 2004-07-30 14:06:52 +0200 (Fri, 30 Jul 2004) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
 
@@ -1897,23 +1966,23 @@ In the case of a hostname parameter sent to us in an INIT, we now send an ABORT
 with a error parameter back.
 
 ------------------------------------------------------------------------
-r418 | ajung | 2004-07-30 11:46:40 +0200 (Fr, 30 Jul 2004) | 2 lines
-Geänderte Pfade:
+r418 | ajung | 2004-07-30 11:46:40 +0200 (Fri, 30 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
 
 some minor cleaning up
 
 ------------------------------------------------------------------------
-r417 | ajung | 2004-07-29 20:01:47 +0200 (Do, 29 Jul 2004) | 2 lines
-Geänderte Pfade:
+r417 | ajung | 2004-07-29 20:01:47 +0200 (Thu, 29 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
 
 Removed old comment
 
 ------------------------------------------------------------------------
-r416 | ajung | 2004-07-29 19:01:13 +0200 (Do, 29 Jul 2004) | 5 lines
-Geänderte Pfade:
+r416 | ajung | 2004-07-29 19:01:13 +0200 (Thu, 29 Jul 2004) | 5 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/rbundling.c
@@ -1925,24 +1994,24 @@ Functions were changed in rbundling.c (all scan functions) and in
 chunkHandler.c as well.
 
 ------------------------------------------------------------------------
-r414 | ajung | 2004-07-29 17:20:45 +0200 (Do, 29 Jul 2004) | 2 lines
-Geänderte Pfade:
+r414 | ajung | 2004-07-29 17:20:45 +0200 (Thu, 29 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/rbundling.c
 
 Catch zero length chunk and ignore the rest of the SCTP packet.
 
 ------------------------------------------------------------------------
-r411 | ajung | 2004-07-28 12:35:19 +0200 (Mi, 28 Jul 2004) | 3 lines
-Geänderte Pfade:
+r411 | ajung | 2004-07-28 12:35:19 +0200 (Wed, 28 Jul 2004) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/rbundling.c
 
 Fixed bug with unrecognized chunk handling (used incorrect 0x20 instead of
 0x40 - I must have been asleep while coding this :-)
 
 ------------------------------------------------------------------------
-r409 | ajung | 2004-07-27 09:56:35 +0200 (Di, 27 Jul 2004) | 3 lines
-Geänderte Pfade:
+r409 | ajung | 2004-07-27 09:56:35 +0200 (Tue, 27 Jul 2004) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
@@ -1950,8 +2019,8 @@ Added an if-clause for the sctp_getPathStatus function, to return
 a proper error code, if the association is not established yet.
 
 ------------------------------------------------------------------------
-r407 | ajung | 2004-07-26 17:53:38 +0200 (Mo, 26 Jul 2004) | 8 lines
-Geänderte Pfade:
+r407 | ajung | 2004-07-26 17:53:38 +0200 (Mon, 26 Jul 2004) | 8 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/distribution.h
@@ -1972,51 +2041,51 @@ to the order of arguments in an if-statement. The flag that checks
 if the association is gone needs to be in the first place.
 
 ------------------------------------------------------------------------
-r400 | ajung | 2004-07-23 16:37:38 +0200 (Fr, 23 Jul 2004) | 3 lines
-Geänderte Pfade:
+r400 | ajung | 2004-07-23 16:37:38 +0200 (Fri, 23 Jul 2004) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
 
 Do not increase peer error counter for path that has not been confirmed
 yet...
 
 ------------------------------------------------------------------------
-r393 | tuexen | 2004-07-22 12:31:47 +0200 (Do, 22 Jul 2004) | 2 lines
-Geänderte Pfade:
+r393 | tuexen | 2004-07-22 12:31:47 +0200 (Thu, 22 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Workaround for a gcc-3-3 bug on Mac OS X
 
 ------------------------------------------------------------------------
-r392 | tuexen | 2004-07-22 12:30:46 +0200 (Do, 22 Jul 2004) | 2 lines
-Geänderte Pfade:
+r392 | tuexen | 2004-07-22 12:30:46 +0200 (Thu, 22 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/combined_server.c
 
 Added path output.
 
 ------------------------------------------------------------------------
-r391 | tuexen | 2004-07-22 12:30:22 +0200 (Do, 22 Jul 2004) | 2 lines
-Geänderte Pfade:
+r391 | tuexen | 2004-07-22 12:30:22 +0200 (Thu, 22 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/terminal.c
 
 Added path output
 
 ------------------------------------------------------------------------
-r371 | ajung | 2004-07-11 13:44:48 +0200 (So, 11 Jul 2004) | 2 lines
-Geänderte Pfade:
+r371 | ajung | 2004-07-11 13:44:48 +0200 (Sun, 11 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/ChangeLog
 
 Updated Changelog to reflect latest modifications
 
 ------------------------------------------------------------------------
-r370 | tuexen | 2004-07-09 19:53:03 +0200 (Fr, 09 Jul 2004) | 2 lines
-Geänderte Pfade:
+r370 | tuexen | 2004-07-09 19:53:03 +0200 (Fri, 09 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 Get rid of a C++ style comment.
 
 ------------------------------------------------------------------------
-r369 | ajung | 2004-07-09 09:12:37 +0200 (Fr, 09 Jul 2004) | 4 lines
-Geänderte Pfade:
+r369 | ajung | 2004-07-09 09:12:37 +0200 (Fri, 09 Jul 2004) | 4 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 If Abort is called in CommunicationUp Notification, now
@@ -2024,22 +2093,22 @@ the Network Status Change Notifications are not generated any
 more after the user's CommunicationUp handler returns.
 
 ------------------------------------------------------------------------
-r368 | ajung | 2004-07-09 09:10:04 +0200 (Fr, 09 Jul 2004) | 2 lines
-Geänderte Pfade:
+r368 | ajung | 2004-07-09 09:10:04 +0200 (Fri, 09 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Updated to version 1.0.2-pre1
 
 ------------------------------------------------------------------------
-r363 | rohde | 2004-07-05 15:07:43 +0200 (Mo, 05 Jul 2004) | 2 lines
-Geänderte Pfade:
+r363 | rohde | 2004-07-05 15:07:43 +0200 (Mon, 05 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 Fixed Minor bug
 
 ------------------------------------------------------------------------
-r362 | rohde | 2004-07-05 14:36:33 +0200 (Mo, 05 Jul 2004) | 2 lines
-Geänderte Pfade:
+r362 | rohde | 2004-07-05 14:36:33 +0200 (Mon, 05 Jul 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/messages.h
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
    M /trunk/sctplib1/sctplib/sctp/streamengine.h
@@ -2048,8 +2117,8 @@ Geänderte Pfade:
 Imported streamengine from version 1.1
 
 ------------------------------------------------------------------------
-r319 | ajung | 2004-05-03 12:29:30 +0200 (Mo, 03 Mai 2004) | 5 lines
-Geänderte Pfade:
+r319 | ajung | 2004-05-03 12:29:30 +0200 (Mon, 03 May 2004) | 5 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Fixed segfault that occurrs in some cases on some architectures,
@@ -2058,44 +2127,44 @@ This is done by re-setting some freed pointers to NULL that are
 then used after callback.
 
 ------------------------------------------------------------------------
-r290 | ajung | 2004-01-13 17:33:47 +0100 (Di, 13 Jan 2004) | 2 lines
-Geänderte Pfade:
+r290 | ajung | 2004-01-13 17:33:47 +0100 (Tue, 13 Jan 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/ChangeLog
 
 Used cvs2cl.pl script to generate a fine ChangeLog from CVS.
 
 ------------------------------------------------------------------------
-r288 | tuexen | 2004-01-08 18:05:42 +0100 (Do, 08 Jan 2004) | 2 lines
-Geänderte Pfade:
+r288 | tuexen | 2004-01-08 18:05:42 +0100 (Thu, 08 Jan 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump version to rc10.
 
 ------------------------------------------------------------------------
-r287 | tuexen | 2004-01-08 18:04:28 +0100 (Do, 08 Jan 2004) | 3 lines
-Geänderte Pfade:
+r287 | tuexen | 2004-01-08 18:04:28 +0100 (Thu, 08 Jan 2004) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
 
 Do not use bufferlength as chuunklength because this can result
 in a deadlock on systems with small a_rwnd.
 
 ------------------------------------------------------------------------
-r286 | tuexen | 2004-01-08 18:02:52 +0100 (Do, 08 Jan 2004) | 2 lines
-Geänderte Pfade:
+r286 | tuexen | 2004-01-08 18:02:52 +0100 (Thu, 08 Jan 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/terminal.c
 
 Use a random source port by default.
 
 ------------------------------------------------------------------------
-r285 | tuexen | 2004-01-07 20:47:55 +0100 (Mi, 07 Jan 2004) | 2 lines
-Geänderte Pfade:
+r285 | tuexen | 2004-01-07 20:47:55 +0100 (Wed, 07 Jan 2004) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
 
 Added parameter to choose the length of the chunks.
 
 ------------------------------------------------------------------------
-r284 | ajung | 2004-01-07 10:02:57 +0100 (Mi, 07 Jan 2004) | 3 lines
-Geänderte Pfade:
+r284 | ajung | 2004-01-07 10:02:57 +0100 (Wed, 07 Jan 2004) | 3 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/reltransfer.c
@@ -2106,8 +2175,8 @@ Geänderte Pfade:
 - Fixes for selective retransmission (T3 timeout)
 
 ------------------------------------------------------------------------
-r283 | ajung | 2004-01-06 09:50:01 +0100 (Di, 06 Jan 2004) | 10 lines
-Geänderte Pfade:
+r283 | ajung | 2004-01-06 09:50:01 +0100 (Tue, 06 Jan 2004) | 10 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/globals.h
@@ -2128,8 +2197,8 @@ Geänderte Pfade:
   through a SACK gap report.
 
 ------------------------------------------------------------------------
-r282 | ajung | 2003-12-01 13:38:50 +0100 (Mo, 01 Dez 2003) | 5 lines
-Geänderte Pfade:
+r282 | ajung | 2003-12-01 13:38:50 +0100 (Mon, 01 Dec 2003) | 5 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib.kdevprj
@@ -2141,44 +2210,44 @@ should be ignored, but sctplib returned "unrecognized parameter".
 This was incorrect. Fixed by removing a line in chunkhandler.c.
 
 ------------------------------------------------------------------------
-r281 | tuexen | 2003-11-25 21:32:01 +0100 (Di, 25 Nov 2003) | 2 lines
-Geänderte Pfade:
+r281 | tuexen | 2003-11-25 21:32:01 +0100 (Tue, 25 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Fix a copy and paste error...
 
 ------------------------------------------------------------------------
-r280 | tuexen | 2003-11-25 21:24:31 +0100 (Di, 25 Nov 2003) | 2 lines
-Geänderte Pfade:
+r280 | tuexen | 2003-11-25 21:24:31 +0100 (Tue, 25 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/terminal.c
 
 Use the localPort in the registerInstance call as it should be...
 
 ------------------------------------------------------------------------
-r279 | tuexen | 2003-11-25 21:23:51 +0100 (Di, 25 Nov 2003) | 2 lines
-Geänderte Pfade:
+r279 | tuexen | 2003-11-25 21:23:51 +0100 (Tue, 25 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
 
 Get rid of a Solaris specific define.
 
 ------------------------------------------------------------------------
-r278 | tuexen | 2003-11-25 21:23:11 +0100 (Di, 25 Nov 2003) | 2 lines
-Geänderte Pfade:
+r278 | tuexen | 2003-11-25 21:23:11 +0100 (Tue, 25 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Add -D__EXTENSIONS__ on Solaris.
 
 ------------------------------------------------------------------------
-r277 | tuexen | 2003-11-24 20:04:34 +0100 (Mo, 24 Nov 2003) | 3 lines
-Geänderte Pfade:
+r277 | tuexen | 2003-11-24 20:04:34 +0100 (Mon, 24 Nov 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Get rid of some warnings and bring the file back to UNIX format.
 CVS ----------------------------------------------------------------------
 
 ------------------------------------------------------------------------
-r276 | ajung | 2003-11-24 14:30:40 +0100 (Mo, 24 Nov 2003) | 3 lines
-Geänderte Pfade:
+r276 | ajung | 2003-11-24 14:30:40 +0100 (Mon, 24 Nov 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
    M /trunk/sctplib1/sctplib.kdevses
@@ -2187,15 +2256,15 @@ Changed order of notifications: now PATH CONFIRMED notifications
 are only sent after COMM UP notifications
 
 ------------------------------------------------------------------------
-r275 | tuexen | 2003-11-21 15:45:23 +0100 (Fr, 21 Nov 2003) | 2 lines
-Geänderte Pfade:
+r275 | tuexen | 2003-11-21 15:45:23 +0100 (Fri, 21 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Fix another warning...
 
 ------------------------------------------------------------------------
-r274 | tuexen | 2003-11-21 15:41:21 +0100 (Fr, 21 Nov 2003) | 2 lines
-Geänderte Pfade:
+r274 | tuexen | 2003-11-21 15:41:21 +0100 (Fri, 21 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
@@ -2203,36 +2272,36 @@ Geänderte Pfade:
 Get rid of warnings.
 
 ------------------------------------------------------------------------
-r273 | tuexen | 2003-11-21 15:40:45 +0100 (Fr, 21 Nov 2003) | 2 lines
-Geänderte Pfade:
+r273 | tuexen | 2003-11-21 15:40:45 +0100 (Fri, 21 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/echo_tool.c
 
 Get rid of a warning.
 
 ------------------------------------------------------------------------
-r272 | ajung | 2003-11-21 14:36:56 +0100 (Fr, 21 Nov 2003) | 2 lines
-Geänderte Pfade:
+r272 | ajung | 2003-11-21 14:36:56 +0100 (Fri, 21 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Removed brackets in lines 8 and 9 ... would not compile with'em
 
 ------------------------------------------------------------------------
-r271 | tuexen | 2003-11-20 20:42:10 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r271 | tuexen | 2003-11-20 20:42:10 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Get rid of callback warnings.
 
 ------------------------------------------------------------------------
-r270 | tuexen | 2003-11-20 20:41:38 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r270 | tuexen | 2003-11-20 20:41:38 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Bump to rc5
 
 ------------------------------------------------------------------------
-r269 | tuexen | 2003-11-20 20:23:00 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r269 | tuexen | 2003-11-20 20:23:00 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/daytime_server.c
@@ -2246,22 +2315,22 @@ Geänderte Pfade:
 Fix a typo.
 
 ------------------------------------------------------------------------
-r268 | tuexen | 2003-11-20 20:22:12 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r268 | tuexen | 2003-11-20 20:22:12 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Fix a bug just introduced.
 
 ------------------------------------------------------------------------
-r267 | tuexen | 2003-11-20 19:34:53 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r267 | tuexen | 2003-11-20 19:34:53 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r266 | tuexen | 2003-11-20 19:34:07 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r266 | tuexen | 2003-11-20 19:34:07 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/daytime_server.c
@@ -2275,15 +2344,15 @@ Geänderte Pfade:
 Print the path states.
 
 ------------------------------------------------------------------------
-r265 | tuexen | 2003-11-20 18:21:26 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r265 | tuexen | 2003-11-20 18:21:26 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/echo_tool.c
 
 Update for Windows.
 
 ------------------------------------------------------------------------
-r264 | tuexen | 2003-11-20 14:24:10 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r264 | tuexen | 2003-11-20 14:24:10 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/adaptation.h
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
@@ -2292,8 +2361,8 @@ Geänderte Pfade:
 encapsulate random number generation.
 
 ------------------------------------------------------------------------
-r263 | tuexen | 2003-11-20 14:05:41 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r263 | tuexen | 2003-11-20 14:05:41 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
    M /trunk/sctplib1/sctplib/programs/daytime_server.c
@@ -2303,29 +2372,29 @@ Geänderte Pfade:
 Get pure versions of the sersers and get them ready for windows.
 
 ------------------------------------------------------------------------
-r262 | tuexen | 2003-11-20 11:01:26 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r262 | tuexen | 2003-11-20 11:01:26 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
 
 Get it compiling.
 
 ------------------------------------------------------------------------
-r261 | tuexen | 2003-11-20 11:00:46 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r261 | tuexen | 2003-11-20 11:00:46 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/combined_server.c
 
 Get it running under Windows.
 
 ------------------------------------------------------------------------
-r260 | tuexen | 2003-11-20 10:59:23 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r260 | tuexen | 2003-11-20 10:59:23 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Added a ; in the WIN32 part.
 
 ------------------------------------------------------------------------
-r259 | tuexen | 2003-11-20 09:43:09 +0100 (Do, 20 Nov 2003) | 2 lines
-Geänderte Pfade:
+r259 | tuexen | 2003-11-20 09:43:09 +0100 (Thu, 20 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
    M /trunk/sctplib1/sctplib/programs/chat.c
    M /trunk/sctplib1/sctplib/programs/combined_server.c
@@ -2345,30 +2414,30 @@ Geänderte Pfade:
 Get rid of warings.
 
 ------------------------------------------------------------------------
-r258 | tuexen | 2003-11-19 17:02:09 +0100 (Mi, 19 Nov 2003) | 2 lines
-Geänderte Pfade:
+r258 | tuexen | 2003-11-19 17:02:09 +0100 (Wed, 19 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Clean up the code.
 
 ------------------------------------------------------------------------
-r257 | tuexen | 2003-11-19 15:03:24 +0100 (Mi, 19 Nov 2003) | 2 lines
-Geänderte Pfade:
+r257 | tuexen | 2003-11-19 15:03:24 +0100 (Wed, 19 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/adaptation.h
 
 Get rid of some warnings.
 
 ------------------------------------------------------------------------
-r256 | ajung | 2003-11-18 14:03:36 +0100 (Di, 18 Nov 2003) | 2 lines
-Geänderte Pfade:
+r256 | ajung | 2003-11-18 14:03:36 +0100 (Tue, 18 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Fixed Segfault, that has come back in after CVS/diff problems
 
 ------------------------------------------------------------------------
-r255 | ajung | 2003-11-18 00:35:33 +0100 (Di, 18 Nov 2003) | 3 lines
-Geänderte Pfade:
+r255 | ajung | 2003-11-18 00:35:33 +0100 (Tue, 18 Nov 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/echo_server.c
    M /trunk/sctplib1/sctplib/programs/terminal.c
@@ -2389,16 +2458,16 @@ Fixed DoS bugs mentioned in IG version 10
 Added random port number selection for clients
 
 ------------------------------------------------------------------------
-r254 | tuexen | 2003-11-07 21:29:15 +0100 (Fr, 07 Nov 2003) | 2 lines
-Geänderte Pfade:
+r254 | tuexen | 2003-11-07 21:29:15 +0100 (Fri, 07 Nov 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/timer_list.c
 
 Get rid of some warnings.
 
 ------------------------------------------------------------------------
-r253 | ajung | 2003-11-06 10:59:14 +0100 (Do, 06 Nov 2003) | 3 lines
-Geänderte Pfade:
+r253 | ajung | 2003-11-06 10:59:14 +0100 (Thu, 06 Nov 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
    M /trunk/sctplib1/sctplib/sctp/sctp.h
@@ -2407,43 +2476,43 @@ Earlier Bugfix contained an error, that prevented associations
   from accepting data in the state SHUTDOWN_SENT
 
 ------------------------------------------------------------------------
-r252 | ajung | 2003-10-31 14:43:27 +0100 (Fr, 31 Okt 2003) | 2 lines
-Geänderte Pfade:
+r252 | ajung | 2003-10-31 14:43:27 +0100 (Fri, 31 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib.lsm
 
 Updated sctplib.lsm
 
 ------------------------------------------------------------------------
-r251 | ajung | 2003-10-31 14:40:34 +0100 (Fr, 31 Okt 2003) | 2 lines
-Geänderte Pfade:
+r251 | ajung | 2003-10-31 14:40:34 +0100 (Fri, 31 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Changed version numbering of sctplib for dynamic library
 
 ------------------------------------------------------------------------
-r250 | ajung | 2003-10-31 12:51:08 +0100 (Fr, 31 Okt 2003) | 2 lines
-Geänderte Pfade:
+r250 | ajung | 2003-10-31 12:51:08 +0100 (Fri, 31 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/Makefile.am
 
 Added version number for dynamic library
 
 ------------------------------------------------------------------------
-r249 | ajung | 2003-10-30 18:21:15 +0100 (Do, 30 Okt 2003) | 2 lines
-Geänderte Pfade:
+r249 | ajung | 2003-10-30 18:21:15 +0100 (Thu, 30 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
 
 Added small bug fix to free memory in a very special case...
 
 ------------------------------------------------------------------------
-r248 | ajung | 2003-10-30 17:24:42 +0100 (Do, 30 Okt 2003) | 2 lines
-Geänderte Pfade:
+r248 | ajung | 2003-10-30 17:24:42 +0100 (Thu, 30 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/streamengine.c
 
 Removed line that really was not necessary
 
 ------------------------------------------------------------------------
-r247 | tuexen | 2003-10-30 13:41:38 +0100 (Do, 30 Okt 2003) | 2 lines
-Geänderte Pfade:
+r247 | tuexen | 2003-10-30 13:41:38 +0100 (Thu, 30 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/globals.h
    M /trunk/sctplib1/sctplib/sctp/md5.h
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
@@ -2452,8 +2521,8 @@ Geänderte Pfade:
 Make Microsoft even more happy...
 
 ------------------------------------------------------------------------
-r246 | tuexen | 2003-10-28 23:00:15 +0100 (Di, 28 Okt 2003) | 2 lines
-Geänderte Pfade:
+r246 | tuexen | 2003-10-28 23:00:15 +0100 (Tue, 28 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
    M /trunk/sctplib1/sctplib/sctp/globals.c
@@ -2466,8 +2535,8 @@ Geänderte Pfade:
 get rid of gettimeofday.
 
 ------------------------------------------------------------------------
-r245 | tuexen | 2003-10-28 21:44:55 +0100 (Di, 28 Okt 2003) | 2 lines
-Geänderte Pfade:
+r245 | tuexen | 2003-10-28 21:44:55 +0100 (Tue, 28 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/rbundling.c
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
@@ -2477,8 +2546,8 @@ Geänderte Pfade:
 Second round of fixes to get it compiling on Windows.
 
 ------------------------------------------------------------------------
-r244 | tuexen | 2003-10-28 19:28:47 +0100 (Di, 28 Okt 2003) | 2 lines
-Geänderte Pfade:
+r244 | tuexen | 2003-10-28 19:28:47 +0100 (Tue, 28 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/auxiliary.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/distribution.c
@@ -2491,15 +2560,15 @@ Geänderte Pfade:
 First changes for Windows compatibility.
 
 ------------------------------------------------------------------------
-r243 | ajung | 2003-10-28 12:48:26 +0100 (Di, 28 Okt 2003) | 2 lines
-Geänderte Pfade:
+r243 | ajung | 2003-10-28 12:48:26 +0100 (Tue, 28 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
 
 Removed compile error
 
 ------------------------------------------------------------------------
-r242 | ajung | 2003-10-27 21:57:10 +0100 (Mo, 27 Okt 2003) | 2 lines
-Geänderte Pfade:
+r242 | ajung | 2003-10-27 21:57:10 +0100 (Mon, 27 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/rbundling.c
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
@@ -2511,8 +2580,8 @@ Geänderte Pfade:
 Added SWS prevention
 
 ------------------------------------------------------------------------
-r241 | tuexen | 2003-10-23 18:48:11 +0200 (Do, 23 Okt 2003) | 2 lines
-Geänderte Pfade:
+r241 | tuexen | 2003-10-23 18:48:11 +0200 (Thu, 23 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/mini-ulp.h
    M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
    M /trunk/sctplib1/sctplib/programs/test_tool.c
@@ -2523,52 +2592,52 @@ Geänderte Pfade:
 Replace #include <sctp.h> by #include "sctp.h"
 
 ------------------------------------------------------------------------
-r240 | tuexen | 2003-10-23 18:37:53 +0200 (Do, 23 Okt 2003) | 3 lines
-Geänderte Pfade:
+r240 | tuexen | 2003-10-23 18:37:53 +0200 (Thu, 23 Oct 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Fixed a bug: IP_RECVDST is an option for UDP socket, not raw IP sockets.
 Just use the information from the IPv4 header.
 
 ------------------------------------------------------------------------
-r209 | tuexen | 2003-10-14 23:31:13 +0200 (Di, 14 Okt 2003) | 2 lines
-Geänderte Pfade:
+r209 | tuexen | 2003-10-14 23:31:13 +0200 (Tue, 14 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Release.
 
 ------------------------------------------------------------------------
-r207 | tuexen | 2003-10-12 12:50:01 +0200 (So, 12 Okt 2003) | 2 lines
-Geänderte Pfade:
+r207 | tuexen | 2003-10-12 12:50:01 +0200 (Sun, 12 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/terminal.c
 
 Enable code to print received data.
 
 ------------------------------------------------------------------------
-r206 | tuexen | 2003-10-12 12:42:23 +0200 (So, 12 Okt 2003) | 2 lines
-Geänderte Pfade:
+r206 | tuexen | 2003-10-12 12:42:23 +0200 (Sun, 12 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1
    M /trunk/sctplib1/.cvsignore
 
 Ignore autom4te.cache
 
 ------------------------------------------------------------------------
-r205 | tuexen | 2003-10-12 12:41:34 +0200 (So, 12 Okt 2003) | 2 lines
-Geänderte Pfade:
+r205 | tuexen | 2003-10-12 12:41:34 +0200 (Sun, 12 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Use defaults for libtool.
 
 ------------------------------------------------------------------------
-r203 | ajung | 2003-10-06 11:46:13 +0200 (Mo, 06 Okt 2003) | 2 lines
-Geänderte Pfade:
+r203 | ajung | 2003-10-06 11:46:13 +0200 (Mon, 06 Oct 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/sctp.h
 
 Updated new version number
 
 ------------------------------------------------------------------------
-r202 | ajung | 2003-10-06 11:44:56 +0200 (Mo, 06 Okt 2003) | 13 lines
-Geänderte Pfade:
+r202 | ajung | 2003-10-06 11:44:56 +0200 (Mon, 06 Oct 2003) | 13 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs
    M /trunk/sctplib1/sctplib/programs/.cvsignore
@@ -2605,15 +2674,15 @@ Added fixes for:
 (reported by Michael)
 
 ------------------------------------------------------------------------
-r201 | ajung | 2003-09-25 13:01:04 +0200 (Do, 25 Sep 2003) | 2 lines
-Geänderte Pfade:
+r201 | ajung | 2003-09-25 13:01:04 +0200 (Thu, 25 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/recvctrl.c
 
 Replaced a (a>b) by  (after(a,b))
 
 ------------------------------------------------------------------------
-r200 | ajung | 2003-09-25 12:52:46 +0200 (Do, 25 Sep 2003) | 3 lines
-Geänderte Pfade:
+r200 | ajung | 2003-09-25 12:52:46 +0200 (Thu, 25 Sep 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/bundling.h
    M /trunk/sctplib1/sctplib/sctp/distribution.c
@@ -2625,15 +2694,15 @@ Added recognition of hostname parameters in INIT and INIT-ACK chunks
 these are now answered by an ABORT
 
 ------------------------------------------------------------------------
-r199 | ajung | 2003-09-25 11:25:38 +0200 (Do, 25 Sep 2003) | 2 lines
-Geänderte Pfade:
+r199 | ajung | 2003-09-25 11:25:38 +0200 (Thu, 25 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
 
 Changed an error level from FATAL to MAJOR
 
 ------------------------------------------------------------------------
-r198 | tuexen | 2003-09-10 23:54:51 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r198 | tuexen | 2003-09-10 23:54:51 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs
    M /trunk/sctplib1/sctplib/programs/.cvsignore
    M /trunk/sctplib1/sctplib/sctp
@@ -2642,8 +2711,8 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r197 | tuexen | 2003-09-10 23:53:34 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r197 | tuexen | 2003-09-10 23:53:34 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1
    M /trunk/sctplib1/.cvsignore
    M /trunk/sctplib1/sctplib
@@ -2656,15 +2725,15 @@ Geänderte Pfade:
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r196 | tuexen | 2003-09-10 23:49:25 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r196 | tuexen | 2003-09-10 23:49:25 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure.in
 
 Get it running on Solaris and relax prereq.
 
 ------------------------------------------------------------------------
-r195 | tuexen | 2003-09-10 23:48:43 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r195 | tuexen | 2003-09-10 23:48:43 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    D /trunk/sctplib1/aclocal.m4
    D /trunk/sctplib1/config.h.in
    D /trunk/sctplib1/configure
@@ -2673,15 +2742,15 @@ Geänderte Pfade:
 Derived file.
 
 ------------------------------------------------------------------------
-r194 | tuexen | 2003-09-10 23:46:39 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r194 | tuexen | 2003-09-10 23:46:39 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    A /trunk/sctplib1/bootstrap
 
 Needed to get things running.
 
 ------------------------------------------------------------------------
-r193 | tuexen | 2003-09-10 23:34:40 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r193 | tuexen | 2003-09-10 23:34:40 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
@@ -2699,8 +2768,8 @@ Geänderte Pfade:
 Get rid of C++ style comments.
 
 ------------------------------------------------------------------------
-r192 | tuexen | 2003-09-10 23:21:50 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r192 | tuexen | 2003-09-10 23:21:50 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/mini-ulp.c
    M /trunk/sctplib1/sctplib/programs/parser.c
    M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
@@ -2711,8 +2780,8 @@ Geänderte Pfade:
 Get rid of C++ style comments.
 
 ------------------------------------------------------------------------
-r191 | tuexen | 2003-09-10 23:20:03 +0200 (Mi, 10 Sep 2003) | 2 lines
-Geänderte Pfade:
+r191 | tuexen | 2003-09-10 23:20:03 +0200 (Wed, 10 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1
    A /trunk/sctplib1/.cvsignore
    M /trunk/sctplib1/sctplib
@@ -2735,15 +2804,15 @@ Geänderte Pfade:
 Ignore dependend files.
 
 ------------------------------------------------------------------------
-r188 | ajung | 2003-09-04 12:41:44 +0200 (Do, 04 Sep 2003) | 2 lines
-Geänderte Pfade:
+r188 | ajung | 2003-09-04 12:41:44 +0200 (Thu, 04 Sep 2003) | 2 lines
+Changed paths:
    A /trunk/sctplib1/depcomp
 
 Added autoconf-files
 
 ------------------------------------------------------------------------
-r187 | ajung | 2003-09-04 12:34:48 +0200 (Do, 04 Sep 2003) | 2 lines
-Geänderte Pfade:
+r187 | ajung | 2003-09-04 12:34:48 +0200 (Thu, 04 Sep 2003) | 2 lines
+Changed paths:
    D /trunk/sctplib1/acconfig.h
    D /trunk/sctplib1/acinclude.m4
    D /trunk/sctplib1/autogen.sh
@@ -2753,8 +2822,8 @@ Geänderte Pfade:
 Removed old autoconf files
 
 ------------------------------------------------------------------------
-r186 | ajung | 2003-09-04 12:26:40 +0200 (Do, 04 Sep 2003) | 2 lines
-Geänderte Pfade:
+r186 | ajung | 2003-09-04 12:26:40 +0200 (Thu, 04 Sep 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/Makefile.am
    M /trunk/sctplib1/aclocal.m4
    M /trunk/sctplib1/config.guess
@@ -2771,15 +2840,15 @@ Geänderte Pfade:
 Added new configuration files
 
 ------------------------------------------------------------------------
-r160 | dreibh | 2003-08-08 17:29:41 +0200 (Fr, 08 Aug 2003) | 2 lines
-Geänderte Pfade:
+r160 | dreibh | 2003-08-08 17:29:41 +0200 (Fri, 08 Aug 2003) | 2 lines
+Changed paths:
    A /trunk/sctplib1/autogen.sh
 
 *** empty log message ***
 
 ------------------------------------------------------------------------
-r116 | ajung | 2003-07-14 10:42:11 +0200 (Mo, 14 Jul 2003) | 3 lines
-Geänderte Pfade:
+r116 | ajung | 2003-07-14 10:42:11 +0200 (Mon, 14 Jul 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/config.guess
    M /trunk/sctplib1/config.sub
    M /trunk/sctplib1/configure
@@ -2796,8 +2865,8 @@ Geänderte Pfade:
 ZZCVS: 	sctplib/manual/sctp-api-1.0-1.tex sctplib/programs/Makefile.am
 
 ------------------------------------------------------------------------
-r103 | ajung | 2003-07-01 15:58:27 +0200 (Di, 01 Jul 2003) | 5 lines
-Geänderte Pfade:
+r103 | ajung | 2003-07-01 15:58:27 +0200 (Tue, 01 Jul 2003) | 5 lines
+Changed paths:
    M /trunk/sctplib1/AUTHORS
    M /trunk/sctplib1/configure
    M /trunk/sctplib1/configure.in
@@ -2859,36 +2928,36 @@ Added in new funtion that updates local addresses every
 once in a while.
 
 ------------------------------------------------------------------------
-r102 | ajung | 2003-07-01 14:03:03 +0200 (Di, 01 Jul 2003) | 2 lines
-Geänderte Pfade:
+r102 | ajung | 2003-07-01 14:03:03 +0200 (Tue, 01 Jul 2003) | 2 lines
+Changed paths:
    D /trunk/sctplib1/sctplib/sctp/.libs
 
 Remove void file
 
 ------------------------------------------------------------------------
-r101 | tuexen | 2003-07-01 11:37:15 +0200 (Di, 01 Jul 2003) | 2 lines
-Geänderte Pfade:
+r101 | tuexen | 2003-07-01 11:37:15 +0200 (Tue, 01 Jul 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/discard_server.c
 
 added Solaris suppport again
 
 ------------------------------------------------------------------------
-r100 | tuexen | 2003-07-01 11:36:53 +0200 (Di, 01 Jul 2003) | 2 lines
-Geänderte Pfade:
+r100 | tuexen | 2003-07-01 11:36:53 +0200 (Tue, 01 Jul 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chargen_server.c
 
 added Solaris support again
 
 ------------------------------------------------------------------------
-r99 | tuexen | 2003-07-01 11:36:21 +0200 (Di, 01 Jul 2003) | 2 lines
-Geänderte Pfade:
+r99 | tuexen | 2003-07-01 11:36:21 +0200 (Tue, 01 Jul 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 - added Solaris support again.
 
 ------------------------------------------------------------------------
-r95 | ajung | 2003-06-27 12:16:57 +0200 (Fr, 27 Jun 2003) | 2 lines
-Geänderte Pfade:
+r95 | ajung | 2003-06-27 12:16:57 +0200 (Fri, 27 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/md5.c
    M /trunk/sctplib1/sctplib/sctp/md5.h
@@ -2896,8 +2965,8 @@ Geänderte Pfade:
 Fixed wrong headers
 
 ------------------------------------------------------------------------
-r92 | ajung | 2003-06-25 12:32:39 +0200 (Mi, 25 Jun 2003) | 2 lines
-Geänderte Pfade:
+r92 | ajung | 2003-06-25 12:32:39 +0200 (Wed, 25 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/TODO
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib.kdevprj
@@ -2906,23 +2975,23 @@ Geänderte Pfade:
 Removed the possibility to associate to 0.0.0.0
 
 ------------------------------------------------------------------------
-r89 | ajung | 2003-06-24 10:53:31 +0200 (Di, 24 Jun 2003) | 3 lines
-Geänderte Pfade:
+r89 | ajung | 2003-06-24 10:53:31 +0200 (Tue, 24 Jun 2003) | 3 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Added check for port==0 in sctp_associatex
 and check fpr multicast addresses as destination addresses
 
 ------------------------------------------------------------------------
-r86 | ajung | 2003-06-15 15:57:39 +0200 (So, 15 Jun 2003) | 2 lines
-Geänderte Pfade:
+r86 | ajung | 2003-06-15 15:57:39 +0200 (Sun, 15 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
 
 Removed a comment
 
 ------------------------------------------------------------------------
-r81 | ajung | 2003-06-06 20:10:35 +0200 (Fr, 06 Jun 2003) | 2 lines
-Geänderte Pfade:
+r81 | ajung | 2003-06-06 20:10:35 +0200 (Fri, 06 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/programs/terminal.c
@@ -2933,30 +3002,30 @@ Geänderte Pfade:
 Added removal of timers in scr_shutdownComplete
 
 ------------------------------------------------------------------------
-r73 | ajung | 2003-06-06 15:07:14 +0200 (Fr, 06 Jun 2003) | 2 lines
-Geänderte Pfade:
+r73 | ajung | 2003-06-06 15:07:14 +0200 (Fri, 06 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/distribution.c
 
 Fixed bug in local address assignment
 
 ------------------------------------------------------------------------
-r71 | ajung | 2003-06-05 16:11:15 +0200 (Do, 05 Jun 2003) | 2 lines
-Geänderte Pfade:
+r71 | ajung | 2003-06-05 16:11:15 +0200 (Thu, 05 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
    M /trunk/sctplib1/sctplib/sctp/messages.h
 
 Fixed some issues in handling of unknown parameters for INIT/INIT-ACK
 
 ------------------------------------------------------------------------
-r70 | ajung | 2003-06-04 20:33:31 +0200 (Mi, 04 Jun 2003) | 2 lines
-Geänderte Pfade:
+r70 | ajung | 2003-06-04 20:33:31 +0200 (Wed, 04 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/reltransfer.c
 
 Fixed bug that would not corretly shut down in some situations
 
 ------------------------------------------------------------------------
-r65 | ajung | 2003-06-02 21:52:41 +0200 (Mo, 02 Jun 2003) | 4 lines
-Geänderte Pfade:
+r65 | ajung | 2003-06-02 21:52:41 +0200 (Mon, 02 Jun 2003) | 4 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
 
 Changed handling of SHUTDOWN chunks a bit, so that for new SHUTDOWN
@@ -2964,16 +3033,16 @@ chunks, the incorporated CTSNA is also checked and accepted to ack
 chunks.
 
 ------------------------------------------------------------------------
-r62 | ajung | 2003-06-02 19:18:48 +0200 (Mo, 02 Jun 2003) | 2 lines
-Geänderte Pfade:
+r62 | ajung | 2003-06-02 19:18:48 +0200 (Mon, 02 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/configure
    M /trunk/sctplib1/configure.in
 
 Modified Linux IPv6 check
 
 ------------------------------------------------------------------------
-r60 | ajung | 2003-06-01 21:44:55 +0200 (So, 01 Jun 2003) | 2 lines
-Geänderte Pfade:
+r60 | ajung | 2003-06-01 21:44:55 +0200 (Sun, 01 Jun 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/programs/chat.c
    M /trunk/sctplib1/sctplib/programs/echo_monitor.c
    M /trunk/sctplib1/sctplib/programs/main.c
@@ -2989,8 +3058,8 @@ Geänderte Pfade:
 Added sctp_associatex
 
 ------------------------------------------------------------------------
-r53 | ajung | 2003-05-28 15:34:02 +0200 (Mi, 28 Mai 2003) | 2 lines
-Geänderte Pfade:
+r53 | ajung | 2003-05-28 15:34:02 +0200 (Wed, 28 May 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
    M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
    M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
@@ -3000,8 +3069,8 @@ Geänderte Pfade:
 Small bugfixes of flow- and congestion control
 
 ------------------------------------------------------------------------
-r47 | ajung | 2003-05-23 12:40:53 +0200 (Fr, 23 Mai 2003) | 5 lines
-Geänderte Pfade:
+r47 | ajung | 2003-05-23 12:40:53 +0200 (Fri, 23 May 2003) | 5 lines
+Changed paths:
    M /trunk/sctplib1/configure
    M /trunk/sctplib1/configure.in
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
@@ -3025,15 +3094,15 @@ Added Fixes concerning the implementors guide and flow/congestion control
 - removed cwnd timer
 
 ------------------------------------------------------------------------
-r33 | ajung | 2003-05-16 15:55:42 +0200 (Fr, 16 Mai 2003) | 2 lines
-Geänderte Pfade:
+r33 | ajung | 2003-05-16 15:55:42 +0200 (Fri, 16 May 2003) | 2 lines
+Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
 
 Removed time output (was there for debug purposes)
 
 ------------------------------------------------------------------------
-r29 | ajung | 2003-05-16 15:47:47 +0200 (Fr, 16 Mai 2003) | 2 lines
-Geänderte Pfade:
+r29 | ajung | 2003-05-16 15:47:47 +0200 (Fri, 16 May 2003) | 2 lines
+Changed paths:
    A /trunk/sctplib1
    A /trunk/sctplib1/AUTHORS
    A /trunk/sctplib1/COPYING
