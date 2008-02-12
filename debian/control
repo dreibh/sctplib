@@ -13,7 +13,6 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: sctplib1
 Replaces: sctplib1
-Provides: sctplib1
 Description: Userland implementation of the SCTP protocol RFC 2960
  .
  The sctplib library is a fairly complete prototype implementation of the
@@ -41,7 +40,6 @@ Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1
 Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
-Provides: sctplib-stable-doc
 Description: Documentation of the userland SCTP implementation sctplib
  .
  The sctplib library is a fairly complete prototype implementation of the
@@ -69,7 +67,6 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
-Provides: sctplib-stable-dev
 Description: Headers and libraries of the userland SCTP implementation sctplib
  .
  The sctplib library is a fairly complete prototype implementation of the

@@ -1,1 +1,1 @@
-debian/tmp/usr/lib/libsctplib*.so
+debian/tmp/usr/lib/libsctplib.so.*
