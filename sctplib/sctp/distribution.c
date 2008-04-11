@@ -2674,7 +2674,7 @@ int sctp_getPathStatus(unsigned int associationID, short path_id, SCTP_PathStatu
         } else {
             sctpInstance = currentAssociation->sctpInstance;
             adl_sockunion2str(&(currentAssociation->destinationAddresses[path_id]),
-                          &(status->destinationAddress[0]), SCTP_MAX_IP_LEN);
+                              &(status->destinationAddress[0]), SCTP_MAX_IP_LEN);
             status->state = pm_readState(path_id);
             status->srtt = pm_readSRTT(path_id);
             status->rto = pm_readRTO(path_id);
