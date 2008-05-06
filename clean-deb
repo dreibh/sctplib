@@ -1,4 +1,5 @@
 #!/bin/bash
+# $Id: make-deb 1775 2008-05-06 03:32:48Z dreibh $
 
 PACKAGE="sctplib"
 
