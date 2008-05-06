@@ -1,6 +1,7 @@
 #!/bin/bash
-# $Id: make-deb 1775 2008-05-06 03:32:48Z dreibh $
+# $Id$
 
 PACKAGE="sctplib"
 
-rm -f *.deb *.dsc *.asc *.changes *.build *.upload *.tar.gz stamp-h* svn-commit* *~ $PACKAGE-* $PACKAGE"_"*
+rm -f *.deb *.dsc *.asc *.changes *.build *.upload *.tar.gz stamp-h* svn-commit* *~
+rm -rf $PACKAGE-* $PACKAGE"_"*
