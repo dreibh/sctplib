@@ -18,9 +18,9 @@ rm -f $PACKAGE-*.gz $PACKAGE"_"*.gz
 ./configure $CONFOPT && \
 make dist && \
 VERSION=`ls $PACKAGE-*.gz|sed -e "s/$PACKAGE-//g" -e "s/.tar.gz//g"` && \
-rm -rf $PACKAGE-$VERSION $PACKAGE_$VERSION.orig.tar.gz && \
-cp $PACKAGE-$VERSION.tar.gz $PACKAGE"_"$VERSION.orig.tar.gz && \
+rm -rf $PACKAGE-$VERSION $PACKAGE-$VERSION.orig && \
 tar xzf $INPUT/$PACKAGE-$VERSION.tar.gz && \
+cp -r $PACKAGE-$VERSION $PACKAGE-$VERSION.orig
 cd $PACKAGE-$VERSION && \
 cp -r $INPUT/debian . && \
 rm -rf debian/.svn || exit
@@ -34,7 +34,7 @@ rm -rf debian/.svn || exit
 # debuild -b
 
 # Mit Signatur!
-debuild -S -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
+debuild -sa -S -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
 
 
 # Wichtig: In /etc/pbuilderrc COMPONENTS="main universe" setzen!
