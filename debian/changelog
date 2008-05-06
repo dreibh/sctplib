@@ -1,8 +1,8 @@
-sctplib (1:1.0.8~beta3-3) unstable; urgency=low
+sctplib (1:1.0.8~beta3-4) hardy; urgency=low
 
   * Version update.
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Tue, 12 Feb 2008 14:22:12 +0800
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Tue, 06 May 2008 14:22:12 +0800
 
 sctplib (1:1.0.8~beta3-2) unstable; urgency=low
 

@@ -12,13 +12,14 @@ CONFOPT=""
 # Nur einmalig erforderlich!
 # dh_make -c gpl -n -e dreibh@iem.uni-due.de -m
 
-rm -f sctplib-*.gz
+rm -f $PACKAGE-*.gz $PACKAGE"_"*.gz
 
 ./bootstrap && \
 ./configure $CONFOPT && \
 make dist && \
 VERSION=`ls $PACKAGE-*.gz|sed -e "s/$PACKAGE-//g" -e "s/.tar.gz//g"` && \
-rm -rf $PACKAGE-$VERSION && \
+rm -rf $PACKAGE-$VERSION $PACKAGE_$VERSION.orig.tar.gz && \
+cp $PACKAGE-$VERSION.tar.gz $PACKAGE"_"$VERSION.orig.tar.gz && \
 tar xzf $INPUT/$PACKAGE-$VERSION.tar.gz && \
 cd $PACKAGE-$VERSION && \
 cp -r $INPUT/debian . && \
@@ -33,7 +34,7 @@ rm -rf debian/.svn || exit
 # debuild -b
 
 # Mit Signatur!
-debuild -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
+debuild -S -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
 
 
 # Wichtig: In /etc/pbuilderrc COMPONENTS="main universe" setzen!
