@@ -47,8 +47,16 @@ if [ "$DISTRIBUTIONS" == "" ] ; then
 fi
 
 
-rm -f $PACKAGE-*.gz $PACKAGE"_"*.gz
-( ./bootstrap && ./configure $CONFOPT && make dist ) || exit 1
+UPSTREAM_PACKAGE="`find . -name $PACKAGE-*.gz`"
+UPSTREAM_PACKAGES=`find . -name $PACKAGE-*.gz | wc --lines`
+if [ "$UPSTREAM_PACKAGE" == "" ]; then
+  rm -f $PACKAGE-*.gz $PACKAGE"_"*.gz
+  ( ./bootstrap && ./configure $CONFOPT && make dist ) || exit 1
+elif [ $UPSTREAM_PACKAGES -ne 1 ] ; then
+   echo "ERROR: There are multiple upstream packages (from \"make dist\")!" >&2
+   echo "       Remove all except the actual version!" >&2
+   exit 1
+fi
 
 
 for DISTRIBUTION in $DISTRIBUTIONS ; do
