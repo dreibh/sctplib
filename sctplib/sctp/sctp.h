@@ -7,7 +7,7 @@
  *              //  //         //    //       //       //   //    //
  *       ======//  //=====    //    //       //=====  //   //===//
  *
- * ---------------A SCTP implementation according to RFC 2960 ---------------
+ * ---------------A SCTP implementation according to RFC 4960 ---------------
  *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  * Copyright (C) 2001-2004 Andreas Jungmaier
@@ -588,7 +588,7 @@ int sctp_setPathStatus(unsigned int associationID, short path_id, SCTP_PathStatu
 /*----------------------------------------------------------------------------------------------*/
 /*
  * These _could_ be build up from the above functions, but for the sake of a
- * complete API according to RFC 2960, section 10, we have the following
+ * complete API according to RFC 4960, section 10, we have the following
  * six functions  here, explicitly
  */
 

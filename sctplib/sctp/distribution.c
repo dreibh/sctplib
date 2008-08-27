@@ -7,7 +7,7 @@
  *              //  //         //    //       //       //   //    //
  *       ======//  //=====    //    //       //=====  //   //===//
  *
- * ---------------A SCTP implementation according to RFC 2960 ---------------
+ * ---------------A SCTP implementation according to RFC 4960 ---------------
  *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  * Copyright (C) 2001-2004 Andreas Jungmaier
@@ -818,7 +818,7 @@ mdi_dummy_callback(gint socket_fd,
  *  mdi_receiveMessage is the callback function of the SCTP-message distribution.
  *  It is called by the Unix-interface module when a new datagramm is received.
  *  This function also performs OOTB handling, tag verification etc.
- *  (see also RFC 2960, section 8.5.1.B)  and sends data to the bundling module of
+ *  (see also RFC 4960, section 8.5.1.B)  and sends data to the bundling module of
  *  the right association
  *
  *  @param socket_fd          the socket file discriptor
@@ -1054,7 +1054,7 @@ mdi_receiveMessage(gint socket_fd,
         }
     }
 
-    /* check whether chunk is illegal or not (see section 3.1 of RFC 2960) */
+    /* check whether chunk is illegal or not (see section 3.1 of RFC 4960) */
     if ( ((rbu_datagramContains(CHUNK_INIT, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_INIT))) ||
          ((rbu_datagramContains(CHUNK_INIT_ACK, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_INIT_ACK))) ||
          ((rbu_datagramContains(CHUNK_SHUTDOWN_COMPLETE, chunkArray) == TRUE) && (chunkArray != (1 << CHUNK_SHUTDOWN_COMPLETE)))

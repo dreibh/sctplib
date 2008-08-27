@@ -6,9 +6,9 @@ Description:    The sctplib library is a prototype implementation of the Stream
                 Control Transmission Protocol (SCTP), a message-oriented
                 reliable transport protocol that supports multi-homing, and
                 multiple message streams multiplexed within an SCTP connection
-                (also named association). SCTP is described in RFC 2960,
+                (also named association). SCTP is described in RFC 4960,
                 RFC 3309 and RFC 3286. See http://www.sctp.de/ for details.
-                The API of the library was modeled after section 10 of RFC 2960,
+                The API of the library was modeled after section 10 of RFC 4960,
                 and most parameters and functions should be self-explanatory to
                 the user familiar with this document. In addition to these
                 interface functions between an Upper Layer Protocol (ULP) and an

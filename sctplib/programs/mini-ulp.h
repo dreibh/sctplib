@@ -1,7 +1,7 @@
 /*
  *  $Id$
  *
- * SCTP implementation according to RFC 2960.
+ * SCTP implementation according to RFC 4960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  *
  * Realized in co-operation between Siemens AG

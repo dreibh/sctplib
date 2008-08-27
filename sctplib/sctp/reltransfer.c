@@ -7,7 +7,7 @@
  *              //  //         //    //       //       //   //    //
  *       ======//  //=====    //    //       //=====  //   //===//
  *
- * ---------------A SCTP implementation according to RFC 2960 ---------------
+ * ---------------A SCTP implementation according to RFC 4960 ---------------
  *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  * Copyright (C) 2001-2004 Andreas Jungmaier
@@ -684,7 +684,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
         if (rtx->all_chunks_are_unacked == FALSE) {
             /* okay, we have chunks in the queue that were acked by a gap report before       */
             /* and reneged: reset their status to unacked, since that is what peer reported   */
-            /* fast retransmit reneged chunks, as per section   6.2.1.D.iii) of RFC 2960      */
+            /* fast retransmit reneged chunks, as per section   6.2.1.D.iii) of RFC 4960      */
             event_log(VVERBOSE, "rtx_process_sack: resetting all *hasBeenAcked* attributes");
             tmp_list = g_list_first(rtx->chunk_list);
             while (tmp_list) {

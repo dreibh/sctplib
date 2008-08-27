@@ -19,10 +19,9 @@ Description: Userland implementation of the SCTP protocol RFC 2960
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable
  transport protocol that supports multi-homing, and multiple message streams
  multiplexed within an SCTP connection (also named association). SCTP is
- described in RFC 2960, RFC 3309 and RFC 3286. This implementation is the
- product of a cooperation between Siemens AG (ICN), Munich, Germany and the
- Computer Networking Technology Group at the IEM of the University of Essen,
- Germany.
+ described in RFC 4960 and RFC 3286. This implementation is the product of a
+ cooperation between Siemens AG (ICN), Munich, Germany and the Computer
+ Networking Technology Group at the IEM of the University of Essen, Germany.
  .
  The API of the library was modeled after section 10 of RFC 2960, and most
  parameters and functions should be self-explanatory to the user familiar with
