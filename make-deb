@@ -35,6 +35,11 @@
 # ATTENTION:
 # debian/changelog MUST be like package (version-0ubuntu1); intrepid
 # "ubuntu" and "intrepid" are exchanged by this script
+#
+# USAGE:
+# ./make-deb default            => for Ubuntu REVU
+# ./make-deb unstable           => for Debian Mentors
+# ./make-deb intrepid|hardy|... => for Launchpad PPA
 # ---------------------------------------------------------------------------
 
 

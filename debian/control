@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: http://www.sctp.de/
 Build-Depends: debhelper (>= 5), autotools-dev, libglib2.0-dev
-Standards-Version: 3.7.3
+Standards-Version: 3.8.0
 
 Package: libsctplib1
 Section: libs
@@ -42,23 +42,7 @@ Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
 Description: Documentation of the userland SCTP implementation sctplib
  .
- The sctplib library is a fairly complete prototype implementation of the
- Stream Control Transmission Protocol (SCTP), a message-oriented reliable
- transport protocol that supports multi-homing, and multiple message streams
- multiplexed within an SCTP connection (also named association). SCTP is
- described in RFC 2960, RFC 3309 and RFC 3286. This implementation is the
- product of a cooperation between Siemens AG (ICN), Munich, Germany and the
- Computer Networking Technology Group at the IEM of the University of Essen,
- Germany.
- .
- The API of the library was modeled after section 10 of RFC 2960, and most
- parameters and functions should be self-explanatory to the user familiar with
- this document. In addition to these interface functions between an Upper
- Layer Protocol (ULP) and an SCTP instance, the library also provides a number
- of helper functions that can be used to manage callback function routines to
- make them execute at a certain point of time (i.e. timer-based) or open and
- bind  UDP sockets on a configurable port, which may then be used for an
- asynchronous interprocess communication.
+ This package contains documentation files for sctplib
 
 Package: libsctplib-dev
 Section: libdevel
@@ -69,20 +53,4 @@ Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Description: Headers and libraries of the userland SCTP implementation sctplib
  .
- The sctplib library is a fairly complete prototype implementation of the
- Stream Control Transmission Protocol (SCTP), a message-oriented reliable
- transport protocol that supports multi-homing, and multiple message streams
- multiplexed within an SCTP connection (also named association). SCTP is
- described in RFC 2960, RFC 3309 and RFC 3286. This implementation is the
- product of a cooperation between Siemens AG (ICN), Munich, Germany and the
- Computer Networking Technology Group at the IEM of the University of Essen,
- Germany.
- .
- The API of the library was modeled after section 10 of RFC 2960, and most
- parameters and functions should be self-explanatory to the user familiar with
- this document. In addition to these interface functions between an Upper
- Layer Protocol (ULP) and an SCTP instance, the library also provides a number
- of helper functions that can be used to manage callback function routines to
- make them execute at a certain point of time (i.e. timer-based) or open and
- bind  UDP sockets on a configurable port, which may then be used for an
- asynchronous interprocess communication.
+ This package contains development files for sctplib
