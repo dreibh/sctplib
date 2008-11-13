@@ -1,9 +1,8 @@
 Source: sctplib
 Section: net
 Priority: optional
-XSBC-Original-Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
-Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
-Homepage: http://tdrwww.exp-math.uni-essen.de/dreibholz/rserpool/index.html
+Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
+Homepage: http://tdrwww.iem.uni-due.de/dreibholz/rserpool/index.html
 Build-Depends: debhelper (>= 5), autotools-dev, libglib2.0-dev
 Standards-Version: 3.8.0
 

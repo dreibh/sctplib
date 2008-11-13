@@ -33,11 +33,13 @@
 
 # ---------------------------------------------------------------------------
 # ATTENTION:
-# debian/changelog MUST be like package (version-0ubuntu1); intrepid
-# "ubuntu" and "intrepid" are exchanged by this script
+# debian/changelog MUST be like package (version-0ubuntu1); $INPUT_DISTRIBUTION
+# "ubuntu" and "$INPUT_DISTRIBUTION" are exchanged by this script
 #
 # USAGE:
 # ./make-deb default            => for Ubuntu REVU
+#    Note: Replaces "Maintainer" by MOTU and writes original maintainer entry
+#          to "XSBC-Original-Maintainer"
 # ./make-deb unstable           => for Debian Mentors
 # ./make-deb intrepid|hardy|... => for Launchpad PPA
 # ---------------------------------------------------------------------------
@@ -81,28 +83,30 @@ for DISTRIBUTION in $DISTRIBUTIONS ; do
 
    if [ "$DISTRIBUTION" != "default" ] ; then
       if [ "$DISTRIBUTION" = "unstable" -o "$DISTRIBUTION" = "testing" -o "$DISTRIBUTION" = "stable" ] ; then
-         sed -e "s/intrepid;/$DISTRIBUTION;/1" -e "s/ubuntu/$DISTRIBUTION/1" <debian/changelog >debian/changelog.new
+         sed -e "s/$INPUT_DISTRIBUTION;/$DISTRIBUTION;/1" -e "s/ubuntu/$DISTRIBUTION/1" <debian/changelog >debian/changelog.new
       else
-         sed -e "s/intrepid;/$DISTRIBUTION;/1" -e "s/ubuntu/ubuntu-$DISTRIBUTION/1" <debian/changelog >debian/changelog.new
-         # sed -e "s/) intrepid;/$DISTRIBUTION) $DISTRIBUTION;/1" <debian/changelog >debian/changelog.new
+         sed -e "s/$INPUT_DISTRIBUTION;/$DISTRIBUTION;/1" -e "s/ubuntu/ubuntu-$DISTRIBUTION/1" <debian/changelog >debian/changelog.new
       fi
       mv debian/changelog.new debian/changelog
+   else
+      sed -e "s/^Maintainer:/Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>\nXSBC-Original-Maintainer:/g" <debian/control >debian/control.new
+      mv debian/control.new debian/control
    fi
 
 
-   # Ohne Signatur!
+   # Without signature!
    # debuild -us -uc
-   # Für Sources:
+   # For sources:
    # debuild -S
-   # Für Binaries:
+   # For binaries:
    # debuild -b
 
-   # Mit Signatur!
+   # Including signature!
    debuild -sa -S -k'Thomas Dreibholz <dreibh@iem.uni-due.de>'
 
 
-   # Wichtig: In /etc/pbuilderrc COMPONENTS="main universe" setzen!
-   # Wichtig: Jetzt Update mit Option "--override-config"!
+   # Important: In /etc/pbuilderrc, set COMPONENTS="main universe"!
+   # Important: After that, update with option "--override-config"!
    # sudo pbuilder update --override-config
 
    cd ..
