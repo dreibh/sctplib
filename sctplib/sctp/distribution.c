@@ -370,7 +370,7 @@ SCTP_instance* retrieveInstance(unsigned short instance_name)
     event_logi(INTERNAL_EVENT_0, "retrieving instance %u from list", instance_name);
 
     temporary.sctpInstanceName = instance_name;
-    result = g_list_find_custom(InstanceList, &temporary,&CompareInstanceNames);
+    result = g_list_find_custom(InstanceList, &temporary, &CompareInstanceNames);
     if (result != NULL) {
        instance = (SCTP_instance*)result->data;
     }
