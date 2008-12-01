@@ -1,5 +1,5 @@
-sctplib (1:1.0.8~rc3-0ubuntu1) intrepid; urgency=low
+sctplib (1:1.0.8~rc4-0ubuntu1) intrepid; urgency=low
 
   * Version update.
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Tue, 28 Nov 2008 19:12:12 +0200
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Mon, 01 Dec 2008 12:12:12 +0200
