@@ -1,13 +1,23 @@
-/*
- *  $Id$
+/* $Id$
  *
- *   MD5C.C - RSA Data Security, Inc., MD5 message-digest algorithm
+ * MD5 hash calculation
+ * Copyright (C) 1991-1992 RSA Data Security, Inc.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 /******************************************************************
- Copyright (C) 1991-2, RSA Data Security, Inc. Created 1991.
- All rights reserved.
-
  License to copy and use this software is granted provided that it
  is identified as the "RSA Data Security, Inc. MD5 Message-Digest
  Algorithm" in all material mentioning or referencing this software
