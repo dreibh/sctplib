@@ -1,28 +1,25 @@
 #! /bin/sh
 set -x
-mv -f config.guess config.guess.save
-mv -f config.sub   config.sub.save
+
+rm -rf admin
+mkdir admin
+
 if [ -e /usr/bin/glibtoolize ] ; then
-   glibtoolize --force
-elif [ -e /usr/local/bin/libtoolize ] ; then
-   /usr/local/bin/libtoolize --force
+    glibtoolize --force
 elif [ -e /usr/bin/libtoolize ] ; then
-   libtoolize --force
+    libtoolize --force
+elif [ -e /usr/local/bin/libtoolize ] ; then
+    libtoolize --force
 else
-   mv -f config.guess.save config.guess
-   mv -f config.sub.save   config.sub
    echo "ERROR: I cannot find libtoolize or glibtoolize!"
    exit 1
 fi
-rm -f config.guess config.sub
-mv -f config.guess.save config.guess
-mv -f config.sub.save config.sub
 
 if [ -e /usr/local/share/aclocal ] ; then
-   aclocal -I /usr/local/share/aclocal -I /usr/share/aclocal
+   aclocal -I /usr/local/share/aclocal
 else
    aclocal -I /usr/share/aclocal
 fi
-autoheader 
+autoheader
 automake --gnu --add-missing --copy
 autoconf
