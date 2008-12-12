@@ -4,6 +4,8 @@ mv -f config.guess config.guess.save
 mv -f config.sub   config.sub.save
 if [ -e /usr/bin/glibtoolize ] ; then
    glibtoolize --force
+elif [ -e /usr/local/bin/libtoolize ] ; then
+   /usr/local/bin/libtoolize --force
 elif [ -e /usr/bin/libtoolize ] ; then
    libtoolize --force
 else
