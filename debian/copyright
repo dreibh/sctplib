@@ -1,5 +1,5 @@
 This is sctplib, maintained by Thomas Dreibholz <dreibh@iem.uni-due.de>
-on Mon, 01 Dec 2008 13:13:18 +0200.
+on Thu, 15 Jan 2009 10:13:18 +0200.
 
 The original source can always be found at:
 http://tdrwww.exp-math.uni-essen.de/dreibholz/rserpool/
@@ -14,7 +14,7 @@ Copyright: GPL Version 3
 
 Copyright (C) 2000 Siemens AG, Munich, Germany.
 Copyright (C) 2001-2004 Andreas Jungmaier
-Copyright (C) 2004-2008 Thomas Dreibholz
+Copyright (C) 2004-2009 Thomas Dreibholz
 
 See /usr/share/common-licenses/GPL-3 or http://www.gnu.org/licenses/gpl.html
 for details.

@@ -22,7 +22,7 @@
  *
  * Contact: discussion@sctp.de
  *          tuexen@fh-muenster.de
- *          ajung@exp-math.uni-essen.de
+ *          ajung@iem.uni-due.de
  *
  * Purpose: Implements a few simple callback-functions for an "ULP"
  */
