@@ -1,5 +1,5 @@
-sctplib (1:1.0.8-1ubuntu1) jaunty; urgency=low
+sctplib (1:1.0.8-2ubuntu1) karmic; urgency=low
 
   * Version update.
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Sat, 21 Feb 2009 14:12:12 +0200
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 03 Jun 2009 12:03:12 +0200
