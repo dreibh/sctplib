@@ -689,14 +689,22 @@ static void mdi_removeAssociationData(Association * assoc)
         /* free module data */
         if (assoc->tagRemote != 0) {
             /* association init was already completed */
-            fc_delete_flowcontrol(assoc->flowControl);
-            rtx_delete_reltransfer(assoc->reliableTransfer);
-            rxc_delete_recvctrl(assoc->rx_control);
-            se_delete_stream_engine(assoc->streamengine);
-            assoc->flowControl = NULL;
-            assoc->reliableTransfer = NULL;
-            assoc->rx_control = NULL;
-            assoc->streamengine = NULL;
+            if(assoc->flowControl) {
+               fc_delete_flowcontrol(assoc->flowControl);
+               assoc->flowControl = NULL;
+            }
+            if(assoc->reliableTransfer) {
+               rtx_delete_reltransfer(assoc->reliableTransfer);
+               assoc->reliableTransfer = NULL;
+            }
+            if(assoc->rx_control) {
+               rxc_delete_recvctrl(assoc->rx_control);
+               assoc->rx_control = NULL;
+            }
+            if(assoc->streamengine) {
+               se_delete_stream_engine(assoc->streamengine);
+               assoc->streamengine = NULL;
+            }
         }
 
         pm_deletePathman(assoc->pathMan);
