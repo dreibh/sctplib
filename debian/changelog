@@ -1,3 +1,10 @@
+sctplib (1:1.0.9-1ubuntu1) karmic; urgency=low
+
+  * Version update.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 24 Jun 2009 12:03:12 +0200
+
+
 sctplib (1:1.0.8-2ubuntu1) karmic; urgency=low
 
   * Version update.
