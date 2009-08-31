@@ -1,4 +1,119 @@
 ------------------------------------------------------------------------
+r2134 | dreibh | 2009-06-24 15:29:34 +0200 (Wed, 24 Jun 2009) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+
+Updated version.
+
+------------------------------------------------------------------------
+r2133 | dreibh | 2009-06-22 14:37:37 +0200 (Mon, 22 Jun 2009) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+
+mdi_removeAssociationData(): Check association pointers before calling remove functions.
+
+------------------------------------------------------------------------
+r2128 | dreibh | 2009-06-03 12:07:39 +0200 (Wed, 03 Jun 2009) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian.conf
+
+Update of Debian files from jaunty to karmic.
+
+------------------------------------------------------------------------
+r2109 | dreibh | 2009-02-21 15:23:50 +0100 (Sat, 21 Feb 2009) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/clean-deb
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian.conf
+   M /trunk/sctplib1/make-deb
+
+Debian script updates.
+
+------------------------------------------------------------------------
+r2102 | dreibh | 2009-01-29 11:55:28 +0100 (Thu, 29 Jan 2009) | 1 line
+Changed paths:
+   D /trunk/sctplib1/admin
+   M /trunk/sctplib1/sctplib.lsm
+
+
+------------------------------------------------------------------------
+r2100 | dreibh | 2009-01-28 17:01:06 +0100 (Wed, 28 Jan 2009) | 1 line
+Changed paths:
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+
+
+------------------------------------------------------------------------
+r2095 | dreibh | 2009-01-15 11:22:05 +0100 (Thu, 15 Jan 2009) | 1 line
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+
+
+------------------------------------------------------------------------
+r2093 | dreibh | 2009-01-15 11:19:14 +0100 (Thu, 15 Jan 2009) | 2 lines
+Changed paths:
+   A /trunk/sctplib1/UpdateDoc1.sed
+   A /trunk/sctplib1/UpdateDocFile1.sh
+   M /trunk/sctplib1/clean-deb
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian/copyright
+   M /trunk/sctplib1/debian.conf
+   M /trunk/sctplib1/make-deb
+   M /trunk/sctplib1/sctplib/programs/chargen_server.c
+   M /trunk/sctplib1/sctplib/programs/chat.c
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/daytime_server.c
+   M /trunk/sctplib1/sctplib/programs/discard_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_monitor.c
+   M /trunk/sctplib1/sctplib/programs/echo_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_tool.c
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+   M /trunk/sctplib1/sctplib/programs/main.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.h
+   M /trunk/sctplib1/sctplib/programs/monitor.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
+   M /trunk/sctplib1/sctplib/programs/terminal.c
+   M /trunk/sctplib1/sctplib/programs/testsctp.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+   M /trunk/sctplib1/sctplib/sctp/adaptation.h
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.c
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.h
+   M /trunk/sctplib1/sctplib/sctp/bundling.h
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.h
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+   M /trunk/sctplib1/sctplib/sctp/distribution.h
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.c
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.h
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.h
+   M /trunk/sctplib1/sctplib/sctp/globals.c
+   M /trunk/sctplib1/sctplib/sctp/globals.h
+   M /trunk/sctplib1/sctplib/sctp/messages.h
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.h
+   M /trunk/sctplib1/sctplib/sctp/rbundling.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.h
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.c
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.h
+   M /trunk/sctplib1/sctplib/sctp/sbundling.c
+   M /trunk/sctplib1/sctplib/sctp/sctp.h
+   M /trunk/sctplib1/sctplib/sctp/streamengine.c
+   M /trunk/sctplib1/sctplib/sctp/streamengine.h
+   M /trunk/sctplib1/sctplib/sctp/timer_list.c
+   M /trunk/sctplib1/sctplib/sctp/timer_list.h
+
+Header updates.
+
+------------------------------------------------------------------------
 r2067 | dreibh | 2008-12-12 14:50:26 +0100 (Fri, 12 Dec 2008) | 1 line
 Changed paths:
    M /trunk/sctplib1/bootstrap
