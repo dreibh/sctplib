@@ -22,17 +22,17 @@
  * (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * This library is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 2.1 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact: sctp-discussion@sctp.de
@@ -127,15 +127,16 @@ void read_tracelevels()
         globalTrace = TRUE;
 
         for (i = 0; i < 50; i++) {
-            fscanf(fptr, "%s %d %d", tracedModules[i], &errorTraceLevel[i], &eventTraceLevel[i]);
-            if (strcmp(tracedModules[i], "LOGFILE") == 0) {
-                /*
-                printf("Logging all errors and events to file ./tmp%d.log\n", (int)getpid());
-                */
-                fileTrace = TRUE;
-                sprintf(filename, "./tmp%d.log",(int)getpid());
-                logfile = fopen(filename, "w+");
-                return;
+            if(fscanf(fptr, "%s %d %d", tracedModules[i], &errorTraceLevel[i], &eventTraceLevel[i]) >= 1) {
+               if (strcmp(tracedModules[i], "LOGFILE") == 0) {
+                   /*
+                   printf("Logging all errors and events to file ./tmp%d.log\n", (int)getpid());
+                   */
+                   fileTrace = TRUE;
+                   sprintf(filename, "./tmp%d.log",(int)getpid());
+                   logfile = fopen(filename, "w+");
+                   return;
+               }
             }
             if (ferror(fptr))
                 exit(-1);
@@ -160,7 +161,7 @@ void read_tracelevels()
 
 
 
-boolean traceModule(char *moduleName, int *moduleIndex)
+boolean traceModule(const char *moduleName, int *moduleIndex)
 {
     int i;
     boolean found;
@@ -181,7 +182,7 @@ boolean traceModule(char *moduleName, int *moduleIndex)
 
 
 
-int debug_vwrite(FILE * fd, char *format, va_list ap)
+int debug_vwrite(FILE * fd, const char *format, va_list ap)
 {
     struct timeval tv;
     struct tm *the_time;
@@ -199,7 +200,7 @@ int debug_vwrite(FILE * fd, char *format, va_list ap)
 }
 
 
-void debug_print(FILE * fd, char *f, ...)
+void debug_print(FILE * fd, const char *f, ...)
 {
     va_list va;
     va_start(va, f);
@@ -236,7 +237,7 @@ void print_time(short level)
    @param anyno            optional pointer to unsigned int, which is printed along with log_info.
                             The conversion specification must be contained in log_info.
 */
-void event_log1(short event_log_level, char *module_name, char *log_info, ...)
+void event_log1(short event_log_level, const char *module_name, const char *log_info, ...)
 {
     int mi;
     struct timeval tv;
@@ -290,7 +291,7 @@ void event_log1(short event_log_level, char *module_name, char *log_info, ...)
                            The conversion specification must be contained in log_info.
 
 */
-void error_log1(short error_log_level, char *module_name, int line_no, char *log_info, ...)
+void error_log1(short error_log_level, const char *module_name, int line_no, const char *log_info, ...)
 {
     int mi;
     va_list va;
@@ -337,7 +338,7 @@ void error_log1(short error_log_level, char *module_name, int line_no, char *log
    @param errnumber        the errno from systemlibrary.
    @param log_info         the info that is printed with the modulename and error text.
 */
-void error_log_sys1(short error_log_level, char *module_name, int line_no, short errnumber)
+void error_log_sys1(short error_log_level, const char *module_name, int line_no, short errnumber)
 {
     error_log1(error_log_level, module_name, line_no, strerror(errnumber));
 }

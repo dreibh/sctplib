@@ -1,8 +1,8 @@
-	11/20/07
+	31/08/2009
 
 Sctplib for Windows
 
-* Download the latest sctplib sources (sctplib-1.0.8) and unpack them
+* Download the latest sctplib sources (sctplib-1.0.9) and unpack them
   in a directory of your choice
 
 * In addition you need some files of the glib library. 
@@ -35,6 +35,3 @@ Sctplib for Windows
 
 * Now you can compile the sctplib and additional programs with
   nmake all -f Makefile.nmake. 
-
-
-

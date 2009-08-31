@@ -22,17 +22,17 @@
  * (Förderkennzeichen 01AK045).
  * The authors alone are responsible for the contents.
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * This library is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 2.1 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Contact: sctp-discussion@sctp.de
@@ -216,7 +216,7 @@ typedef struct chunk_data_struct
 void read_tracelevels(void);
 
 
-void debug_print(FILE * fd, char *f, ...);
+void debug_print(FILE * fd, const char *f, ...);
 
 /**
  * function to output the result of the adl_gettime-call, i.e. the time now
@@ -238,7 +238,7 @@ void perr_exit(const char *infostring);
                             The conversion specification must be contained in log_info.
    @author     H�zlwimmer
 */
-void event_log1(short event_log_level, char *module_name, char *log_info, ...);
+void event_log1(short event_log_level, const char *module_name, const char *log_info, ...);
 
 
 
@@ -250,7 +250,7 @@ void event_log1(short event_log_level, char *module_name, char *log_info, ...);
    @param log_info :        the info that is printed with the modulename.
    @author     H�zlwimmer
 */
-void error_log1(short error_log_level, char *module_name, int line_no, char *log_info, ...);
+void error_log1(short error_log_level, const char *module_name, int line_no, const char *log_info, ...);
 
 
 /* This function logs system call errors.
@@ -263,7 +263,7 @@ void error_log1(short error_log_level, char *module_name, int line_no, char *log
    @param log_info :        the info that is printed with the modulename and error text.
    @author     H�zlwimmer
 */
-void error_log_sys1(short error_log_level, char *module_name, int line_no, short errnumber);
+void error_log_sys1(short error_log_level, const char *module_name, int line_no, short errnumber);
 
 
 /**

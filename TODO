@@ -1,14 +1,6 @@
-
-
 No, this implementation is NOT CARRIER GRADE :-)
 
 - Implement ICMP handling.
-- Fix SACK timer handling.
-- Get IPv6 support for Tiger running
-- Fix auto* problem on FC 4
-- Fix unsupported parameter reporting problem
-- Fix IPv6 Handling for Linux.
-- Fix SACK Timer
 
 ======================================================================
  Things to do:
@@ -62,4 +54,3 @@ NICE TO HAVE (we are working on this - slowly :-) :
 -   Replace timer lists by a more sophisticated data structure.
 
 -   Add ECN support.
-
