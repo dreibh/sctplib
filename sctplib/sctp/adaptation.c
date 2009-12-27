@@ -2166,6 +2166,14 @@ gboolean adl_filterInetAddress(union sockunion* newAddress, AddressScopingFlags 
  * This error lead to a kernel error message because the kernel tried to load
  * a kernel module when the non-existing network devices were accessed on
  * SuSE Linux 7.3, kernel 2.4.16-4GB, GCC 2.95.3, glibc-2.2.4-64.
+ *
+ * Changed by Amedeo Bonfiglio <amedeo.bonfiglio@rcm.inet.it>, Dec 07 th, 2009.
+ * When porting to Neutrino RTOS 6.4.1, ioctl(sctp_fd, SIOCGIFCONF) has been adapted
+ * as shown in
+ * http://www.qnx.com/developers/docs/6.4.0/io-pkt_en/user_guide/migrating.html#Coexistence
+ * The modifications are controlled by #ifdef NEUTRINO_RTOS, but the modified code is applicable
+ * to any OS.
+ * 
  */
 gboolean adl_gatherLocalAddresses(union sockunion **addresses,
      int *numberOfNets,
@@ -2322,6 +2330,13 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 #ifdef SOLARIS
       pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
 #else
+#ifdef NEUTRINO_RTOS
+      if (ifrequest->ifr_addr.sa_len + IFNAMSIZ > sizeof(struct ifreq)) {
+          pos += ifrequest->ifr_addr.sa_len + IFNAMSIZ;
+      } else {
+          pos += sizeof(struct ifreq);
+      }
+#else
         pos += (ifrequest->ifr_addr.sa_len + sizeof(ifrequest->ifr_name));
 
         if (ifrequest->ifr_addr.sa_len == 0) {
@@ -2330,6 +2345,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
              */
             pos += sizeof(struct sockaddr);
         }
+#endif // NEUTRINO_RTOS
 #endif
         numAlocAddr++;
     }
@@ -2422,6 +2438,13 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
 #ifdef SOLARIS
       pos += (sizeof(struct sockaddr) + sizeof(ifrequest->ifr_name));
 #else
+#ifdef NEUTRINO_RTOS
+      if (ifrequest->ifr_addr.sa_len + IFNAMSIZ > sizeof(struct ifreq)) {
+          pos += ifrequest->ifr_addr.sa_len + IFNAMSIZ;
+      } else {
+          pos += sizeof(struct ifreq);
+      }
+#else
         pos += (ifrequest->ifr_addr.sa_len + sizeof(ifrequest->ifr_name));
 
         if (ifrequest->ifr_addr.sa_len == 0){
@@ -2430,6 +2453,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
              */
             pos += sizeof(struct sockaddr);
         }
+#endif // NEUTRINO_RTOS
 #endif
         nextif = (struct ifreq *)&buffer[pos];
 #else
