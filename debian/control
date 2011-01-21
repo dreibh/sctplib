@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: http://tdrwww.iem.uni-due.de/dreibholz/rserpool/index.html
 Build-Depends: debhelper (>= 5), autotools-dev, libglib2.0-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.9.1
 
 Package: libsctplib1
 Section: libs
@@ -47,7 +47,7 @@ Package: libsctplib-dev
 Section: libdevel
 Priority: optional
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1
+Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1 (= ${binary:Version})
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Description: Headers and libraries of the userland SCTP implementation sctplib
