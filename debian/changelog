@@ -1,4 +1,4 @@
-sctplib (1.0.9-6ubuntu1) natty; urgency=low
+sctplib (1.0.9-7ubuntu1) natty; urgency=low
 
   * Initial Ubuntu release (LP: #228052).
 
