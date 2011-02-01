@@ -31,6 +31,7 @@
 #include <config.h>
 #endif
 
+#include "sctp_wrapper.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -64,16 +65,27 @@ void exitCallback(int fd, short int revents, short int* gotEvents, void * dummy)
  */
 int main(int argc, char *argv[])
 {
-    unsigned int numOfErrors = 0;
+    SCTP_LibraryParameters params;
+    unsigned int           numOfErrors = 0;
+    int                    i;
 
     /* check if there is exactly one command line parameter */
-    if (argc != 2) {
+    if (argc < 2) {
         fprintf(stderr, "SCTPTest by Andreas Lang\n");
-        fprintf(stderr, "Usage: sctptest <scriptfile>\n");
+        fprintf(stderr, "Usage: sctptest <scriptfile> <options>\n");
+        fprintf(stderr, "options:\n");
+        fprintf(stderr, "-i       ignore OOTB packets\n");
         exit(1);
     }
 
     sctp_initLibrary();
+    SCTP_getLibraryParameters(&params);
+    for(i = 2; i < argc; i++) {
+        if(strcmp(argv[i], "-i") == 0) {
+           params.sendOotbAborts = 0;
+	}
+    }
+    SCTP_setLibraryParameters(&params);
 
     /* check script for errors */
     if ((numOfErrors = sctptest_start(argv[1], CHECK_SCRIPT)) != 0) {

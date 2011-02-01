@@ -25,7 +25,7 @@ echo_tool_LDADD =  ../sctp/libsctplib.la
 terminal_SOURCES = terminal.c sctp_wrapper.c
 terminal_LDADD =  ../sctp/libsctplib.la
 
-test_tool_SOURCES = parser.c test_tool.c testengine.c
+test_tool_SOURCES = parser.c test_tool.c testengine.c sctp_wrapper.c
 test_tool_LDADD =  ../sctp/libsctplib.la
 
 testsctp_SOURCES = testsctp.c sctp_wrapper.c
