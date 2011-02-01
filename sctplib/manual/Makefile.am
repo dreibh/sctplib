@@ -1,5 +1,5 @@
-EXTRA_DIST = fixunder.sty functions.sty sctp-api-1.0.8.pdf \
-             sctp-api-1.0.8.ps sctp-api-1.0.8.tex commands.doc \
+EXTRA_DIST = fixunder.sty functions.sty sctp-api.pdf \
+             sctp-api.ps sctp-api.tex commands.doc \
              commands.html commands.pdf 
 
 all:
@@ -13,16 +13,16 @@ distclean:
 really-clean: clean
 	rm -f *.dvi *.ps *.pdf
 
-sctp-api-1.0.8.ps: sctp-api-1.0.8.pdf
-	pdf2ps sctp-api-1.0.8.pdf sctp-api-1.0.8.ps
+sctp-api.ps: sctp-api.pdf
+	pdf2ps sctp-api.pdf sctp-api.ps
 
-sctp-api-1.0.8.pdf: sctp-api-1.0.8.tex
-	pdflatex sctp-api-1.0.8.tex
-	pdflatex sctp-api-1.0.8.tex
+sctp-api.pdf: sctp-api.tex
+	pdflatex sctp-api.tex
+	pdflatex sctp-api.tex
 
-dis: sctp-api-1.0.8.pdf
-	acroread sctp-api-1.0.8.pdf
+dis: sctp-api.pdf
+	acroread sctp-api.pdf
 
-pdf: sctp-api-1.0.8.pdf
+pdf: sctp-api.pdf
 
-ps: sctp-api-1.0.8.ps
+ps: sctp-api.ps
