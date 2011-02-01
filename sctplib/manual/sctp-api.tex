@@ -147,7 +147,7 @@ to run, an application should call this function in between in order
 to treat SCTP events while performing other tasks.
 
 \subsection{Notes}
-Note that the \lib depends on a software packet (glib-1.2) for portable definition of
+Note that the \lib depends on a software packet (glib-2.0) for portable definition of
 types, list functions etc.
 Since we started using this late during the
 project's development cycle, its application is sometimes not very 
@@ -169,22 +169,14 @@ Let's assume, your application is named \libname{app}
 and consists of the file \filename{app.c}. If you use \texttt{gcc} as
 compiler, it is sufficient to issue the command
 \begin{verbatim}
-host:~> gcc -o app app.c -lsctp -lglib
+host:~> gcc -o app app.c -lsctp -lglib2.0
 \end{verbatim}
-in order to compile your application. Note though, that FreeBSD calls
-the \libname{glib}-library by default \libname{libglib12}, since it
-exists both in several versions (i.e.  \libname{glib} version 1.0 would
-be called \libname{libglib10} under FreeBSD (and possibly other
-BSD unixes). So under this platform, you would use
-\begin{verbatim}
-BSDhost:~> gcc -o app app.c -lsctp -lglib12
-\end{verbatim}
-
+in order to compile your application.
 
 \section{Features of the Implementation}
-The implementation is able to establish associations according to RFC4960 and
+The implementation is able to establish associations according to RFC~4960 and
 its interoperablility has been tested with implementations of about 25 companies.
-It features a complete API according to section 10 of RFC 4960~\cite{RFC4960}.
+It features a complete API according to section 10 of RFC~4960~\cite{RFC4960}.
 Naturally it supports the SCTP multihoming features, and is able to handle
 all-IPv4  as well as all-IPv6 or mixed IPv4/IPv6 associations.
 An association may be established using a Cookie-structure that is secured
@@ -364,7 +356,7 @@ which in turn
 registers the appropriate functions from this structure for the corresponding 
 events.
 \bv
-structSCTP_ulp_Callbacks
+struct SCTP_ulp_Callbacks
 {
    void  (*dataArriveNotif)  (unsigned int, unsigned int, unsigned int,
                               unsigned int, unsigned int,   void*);
