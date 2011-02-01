@@ -3,14 +3,16 @@ Section: net
 Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: http://tdrwww.iem.uni-due.de/dreibholz/rserpool/index.html
-Build-Depends: debhelper (>= 5), autotools-dev, libglib2.0-dev
+Build-Depends: autotools-dev,
+               debhelper (>= 5),
+               libglib2.0-dev
 Standards-Version: 3.9.1
 
 Package: libsctplib1
 Section: libs
-Priority: optional
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${misc:Depends},
+         ${shlibs:Depends}
 Conflicts: sctplib1
 Replaces: sctplib1
 Description: Userland implementation of the SCTP protocol RFC 4960
@@ -34,22 +36,40 @@ Description: Userland implementation of the SCTP protocol RFC 4960
 
 Package: sctplib-doc
 Section: doc
-Priority: optional
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1
+Depends: libsctplib1,
+         ${misc:Depends},
+         ${shlibs:Depends}
 Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
 Description: Documentation of the userland SCTP implementation sctplib
  .
  This package contains documentation files for sctplib
+ .
+ The sctplib library is a fairly complete prototype implementation of the
+ Stream Control Transmission Protocol (SCTP), a message-oriented reliable
+ transport protocol that supports multi-homing, and multiple message streams
+ multiplexed within an SCTP connection (also named association). SCTP is
+ described in RFC 4960. This implementation is the product of a cooperation
+ between Siemens AG (ICN), Munich, Germany and the Computer Networking
+ Technology Group at the IEM of the University of Essen, Germany.
 
 Package: libsctplib-dev
 Section: libdevel
-Priority: optional
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libsctplib1 (= ${binary:Version})
+Depends: libsctplib1 (= ${binary:Version}),
+         ${misc:Depends},
+         ${shlibs:Depends}
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Description: Headers and libraries of the userland SCTP implementation sctplib
  .
  This package contains development files for sctplib
+ .
+ The sctplib library is a fairly complete prototype implementation of the
+ Stream Control Transmission Protocol (SCTP), a message-oriented reliable
+ transport protocol that supports multi-homing, and multiple message streams
+ multiplexed within an SCTP connection (also named association). SCTP is
+ described in RFC 4960. This implementation is the product of a cooperation
+ between Siemens AG (ICN), Munich, Germany and the Computer Networking
+ Technology Group at the IEM of the University of Essen, Germany.
