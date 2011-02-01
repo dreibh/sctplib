@@ -24,7 +24,6 @@ LIBRARY_PACKAGES="libsctplib1"
 
 find debian/ -maxdepth 1 -name "*.symbols" | xargs --no-run-if-empty rm -f
 
-
 echo ""
 echo "Creating binary package ..."
 echo ""
