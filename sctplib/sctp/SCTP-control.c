@@ -1294,11 +1294,6 @@ void sctlr_cookie_echo(SCTP_cookie_echo * cookie_echo)
         ch_deleteChunk(initCID);
         ch_deleteChunk(initAckCID);
         event_log(EXTERNAL_EVENT, "event: good cookie echo received, but with incorrect verification tag");
-
-        /* for test purposes */
-        exit(-1);
-        /* for test purposes */
-
         return;
     }
 

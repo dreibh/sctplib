@@ -139,7 +139,7 @@ void read_tracelevels()
                }
             }
             if (ferror(fptr))
-                exit(-1);
+                abort();
             if (feof(fptr))
                 break;
             globalTrace = FALSE;
@@ -215,7 +215,7 @@ void debug_print(FILE * fd, const char *f, ...)
 void perr_exit(const char *infostring)
 {
     perror(infostring);
-    exit(-1);
+    abort();
 }
 
 

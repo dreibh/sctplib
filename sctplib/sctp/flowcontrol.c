@@ -594,7 +594,7 @@ void fc_update_chunk_data(fc_data * fc, chunk_data * dat, unsigned int destinati
         dat->num_of_transmissions = MAX_DEST - 1;
     } else if (dat->num_of_transmissions < 1) {
         error_log(ERROR_FATAL, "Somehow dat->num_of_transmissions became 0 !");
-        exit(-1);
+        abort();
     }
 
     /* this time we will send dat to destination */

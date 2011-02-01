@@ -1930,7 +1930,7 @@ ChunkID ch_makeHeartbeat(unsigned int sendingTime, unsigned int pathID)
     heartbeatChunk->sendingTime = htonl(sendingTime);
 
     key =  key_operation(KEY_READ);
-    if (key == NULL) exit(-111);
+    if (key == NULL) abort();
     memset(heartbeatChunk->hmac, 0, HMAC_LEN);
 
     MD5Init(&ctx);
@@ -1973,7 +1973,7 @@ gboolean ch_verifyHeartbeat(ChunkID chunkID)
     if (chunks[chunkID]->chunk_header.chunk_id == CHUNK_HBACK) {
         heartbeatChunk =  (SCTP_heartbeat *)chunks[chunkID];
         key =  key_operation(KEY_READ);
-        if (key == NULL) exit(-111);
+        if (key == NULL) abort();
         /* store HMAC */
         memcpy(hbSignature, heartbeatChunk->hmac, HMAC_LEN);
 

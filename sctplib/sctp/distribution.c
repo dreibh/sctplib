@@ -4535,7 +4535,7 @@ myNumberOfAddresses);
     }
     event_logi(INTERNAL_EVENT_0, "mdi_readLocalAddresses() : returning %u addresses !",count);
     /*
-    if (count == 0) exit(-100);
+    if (count == 0) abort();
     */
 
     *noOfAddresses = count;

@@ -1927,7 +1927,7 @@ int adl_registerStdinCallback(sctp_StdinCallback sdf, char* buffer, int length)
    if (!(stdin_thread_handle=CreateThread(NULL, 0, stdin_read_thread,
                &idata, 0, &in_threadid))) {
       fprintf(stderr, "Unable to create input thread\n");
-      exit(1);
+      return -1;
     }
 
     result = adl_register_fd_cb(0, EVENTCB_TYPE_USER, 0, (void (*) (void *,void *))sdf, NULL);

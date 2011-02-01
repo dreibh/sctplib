@@ -1017,7 +1017,7 @@ int rxc_process_forward_tsn(void* chunk)
                 rxc->ctsna = fw_tsn;
             } else {
                 error_log(ERROR_FATAL, "rxc_process_forward_tsn: impossible conditon");
-                exit(-1);
+                abort();
             }
         }
         /* we are still here, take next fragment == first fragment */

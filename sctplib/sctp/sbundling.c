@@ -461,7 +461,7 @@ gint bu_sendAllChunks(guint * ad_idx)
         fprintf(stderr, "MTU definitely exceeded (%u) - aborting\n",send_len);
         fprintf(stderr, "sack_position: %u, ctrl_position: %u, data_position: %u\n",
             bu_ptr->sack_position,bu_ptr->ctrl_position,bu_ptr->data_position);
-        exit(-1);
+        abort();
     }
 
     if ((bu_ptr->data_in_buffer) && (idx != -1)) pm_chunksSentOn(idx);
