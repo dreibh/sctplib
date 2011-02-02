@@ -1,5 +1,6 @@
 sctplib (1:1.0.10~rc2-1ubuntu1) natty; urgency=low
 
+  * New upstream version.
   * Initial Ubuntu release (LP: #228052).
 
  -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Mon, 31 Jan 2011 22:22:22 +0200
