@@ -34,7 +34,7 @@ Description: Userland implementation of the SCTP protocol RFC 4960
  bind  UDP sockets on a configurable port, which may then be used for an
  asynchronous interprocess communication.
 
-Package: sctplib-doc
+Package: sctplib-docs
 Section: doc
 Architecture: all
 Depends: libsctplib1,
@@ -62,6 +62,7 @@ Depends: libsctplib1 (= ${binary:Version}),
          ${shlibs:Depends}
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
+Recommends: sctplib-docs
 Description: Headers and libraries of the userland SCTP implementation sctplib
  .
  This package contains development files for sctplib

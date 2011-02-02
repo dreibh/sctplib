@@ -6,7 +6,7 @@ Stream Control Transmission Protocol, as per RFC 4960.
 ---------------------------------------------------------------------------------
 Copyright (C) 2000 by Siemens AG, Munich, Germany.
 Copyright (C) 2001-2004 Andreas Jungmaier
-Copyright (C) 2004-2009 Thomas Dreibholz
+Copyright (C) 2004-2011 Thomas Dreibholz
 
 Realized in co-operation between Siemens AG and
 the Institute of Computer Networking Technology, University of
@@ -66,4 +66,4 @@ sctplib/manual :   A subdirectory containing some tex files and a PDF manual,
 sctplib/docs: This subdirectory will contain documentation after the build
     process, that has been automatically derived from the source ode. You
     might want to get
-    ftp://tdrwww.exp-math.uni-essen.de/pub/unix/devel/doc++-3.4.6.tar.gz
+    ftp://tdrwww.iem.uni-due.de/pub/unix/devel/doc++-3.4.6.tar.gz
