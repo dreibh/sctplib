@@ -57,7 +57,7 @@ Description: Documentation of the userland SCTP implementation sctplib
 Package: libsctplib-dev
 Section: libdevel
 Architecture: any
-Depends: libsctplib1 (>= 1.0.9),
+Depends: libsctplib1 (>= 1.0.8~),
          ${misc:Depends},
          ${shlibs:Depends}
 Conflicts: sctplib-stable-dev
