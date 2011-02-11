@@ -28,7 +28,7 @@ echo ""
 echo "Creating binary package ..."
 echo ""
 
-debuild -b -us -uc || exit 1
+./bootstrap && debuild -b -us -uc || exit 1
 
 
 for LIBRARY_PACKAGE in $LIBRARY_PACKAGES ; do
@@ -43,7 +43,11 @@ for LIBRARY_PACKAGE in $LIBRARY_PACKAGES ; do
 
    echo "dpkg-gensymbols -p$LIBRARY_PACKAGE -Pdebian/$LIBRARY_PACKAGE | patch -p0"
    dpkg-gensymbols -p$LIBRARY_PACKAGE -Pdebian/$LIBRARY_PACKAGE | patch -p0 || exit 1
-   mv dpkg-gensymbols* debian/$LIBRARY_PACKAGE.symbols || exit 1
+
+   # Replace C++ symbols which are different on 32- and 64-bit systems
+   ./replace-cpp-symbols <dpkg-gensymbols* >debian/$LIBRARY_PACKAGE.symbols || exit 1
+
+   # Strip off ubuntu version!
    perl -pi -e 's/-\d.*//' debian/$LIBRARY_PACKAGE.symbols || exit 1
 done
 
