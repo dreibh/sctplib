@@ -1,7 +1,7 @@
 Begin4
 Title:          sctplib
-Version:        1.0.10
-Entered-date:   2011-02-04
+Version:        1.0.11
+Entered-date:   2011-12-12
 Description:    The sctplib library is a prototype implementation of the Stream
                 Control Transmission Protocol (SCTP), a message-oriented
                 reliable transport protocol that supports multi-homing, and
@@ -20,9 +20,9 @@ Keywords:       Stream Control Transmission Protocol, SCTP, Networking, Userland
 Author:         andreas.jungmaier@web.de (Andreas Jungmaier)
 Maintained-by:  dreibh@iem.uni-due.de (Thomas Dreibholz)
 Primary-site:   http://tdrwww.iem.uni-due.de/dreibholz/rserpool
-                1357 KiB download/sctplib-1.0.10.tar.gz
+                1357 KiB download/sctplib-1.0.11.tar.gz
 Alternate-site: http://www.sctp.de
-                1357 KiB sctplib-1.0.10.tar.gz
+                1357 KiB sctplib-1.0.11.tar.gz
 Original-site:  http://www.sctp.de
 Platforms:      Linux, FreeBSD, MacOS, Solaris, Windows
 Copying-policy: GPL
