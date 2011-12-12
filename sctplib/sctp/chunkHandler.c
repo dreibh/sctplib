@@ -1077,7 +1077,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
 
     guint16 curs;
     guint16 pType, oType;
-    guint16 pLen, oLen;
+    guint16 pLen;
     guint16 vlp_totalLength;
     gboolean with_ipv4 = FALSE, with_ipv6=FALSE;
     SCTP_ip_address* address = NULL;
@@ -1138,8 +1138,7 @@ int ch_enterUnrecognizedErrors(ChunkID initAckID,
 
         } else if (pType == VLPARAM_UNRECOGNIZED_PARAM) {
             vl_optionsPtr = (SCTP_vlparam_header *) & ack_string[curs+sizeof(SCTP_vlparam_header)];
-            oType =  ntohs(vl_optionsPtr->param_type);
-            oLen =   ntohs(vl_optionsPtr->param_length);
+            oType = ntohs(vl_optionsPtr->param_type);
 
             if (oType ==  VLPARAM_PRSCTP) {
                 *peerSupportsPRSCTP = FALSE;

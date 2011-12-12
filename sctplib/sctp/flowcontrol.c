@@ -658,11 +658,10 @@ gboolean fc_send_okay(fc_data* fc,
  */
 int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doInitialRetransmit)
 {
-    int result;
     unsigned int len, obpa;
     fc_data *fc;
     chunk_data *dat;
-    unsigned int total_size, destination, oldDestination, peer_rwnd, rto_time;
+    unsigned int total_size, destination, oldDestination, peer_rwnd;
 
     gboolean data_is_retransmitted = FALSE;
     gboolean lowest_tsn_is_retransmitted = FALSE;
@@ -738,7 +737,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
                     dat->ack_time, dat->num_of_transmissions);
         /* -------------------- DEBUGGING --------------------------------------- */
 
-        result = bu_put_Data_Chunk((SCTP_simple_chunk *) dat->data, &destination);
+        bu_put_Data_Chunk((SCTP_simple_chunk *) dat->data, &destination);
         data_is_submitted = TRUE;
         adl_gettime(&(fc->cparams[destination].last_send_time));
 
@@ -751,7 +750,7 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
         if (dat->num_of_transmissions == 1) {
             adl_gettime(&(dat->transmission_time));
             event_log(INTERNAL_EVENT_0, "Storing chunk in retransmission list -> calling rtx_save_retrans");
-            result = rtx_save_retrans_chunks(dat);
+            rtx_save_retrans_chunks(dat);
         } else {
             if (lowest_tsn_is_retransmitted == FALSE)
                 /* must not be reset to FALSE here */
@@ -828,7 +827,6 @@ int fc_check_for_txmit(void *fc_instance, unsigned int oldListLen, gboolean doIn
     if (data_is_submitted == TRUE) {
         fc->one_packet_inflight = TRUE;
         bu_sendAllChunks(&destination);
-        rto_time = pm_readRTO((short)destination);
 
         if (fc->maxQueueLen != 0) {
             if (len < fc->maxQueueLen && oldListLen >= fc->maxQueueLen) {

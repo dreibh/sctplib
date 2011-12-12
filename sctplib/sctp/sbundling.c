@@ -192,7 +192,6 @@ void bu_unlock_sender(guint* ad_idx)
  */
 gint bu_put_SACK_Chunk(SCTP_sack_chunk * chunk, unsigned int * dest_index)
 {
-    gint result;
     bundling_instance *bu_ptr;
     gboolean lock;
 
@@ -211,7 +210,7 @@ gint bu_put_SACK_Chunk(SCTP_sack_chunk * chunk, unsigned int * dest_index)
                   "Chunk Length exceeded MAX_SCTP_PDU : sending chunk to address %u !",
                     (dest_index==NULL)?0:*dest_index);
         if (lock) bu_ptr->locked = FALSE;
-        result = bu_sendAllChunks(dest_index);
+        bu_sendAllChunks(dest_index);
         if (lock) bu_ptr->locked = TRUE;
     } else if (dest_index != NULL) {
         bu_ptr->got_send_address = TRUE;
@@ -245,7 +244,6 @@ gint bu_put_SACK_Chunk(SCTP_sack_chunk * chunk, unsigned int * dest_index)
  */
 gint bu_put_Ctrl_Chunk(SCTP_simple_chunk * chunk,unsigned int * dest_index)
 {
-    gint result;
     bundling_instance *bu_ptr;
     gint count;
     gboolean lock;
@@ -265,7 +263,7 @@ gint bu_put_Ctrl_Chunk(SCTP_simple_chunk * chunk,unsigned int * dest_index)
                   "Chunk Length exceeded MAX_SCTP_PDU : sending chunk to address %u !",
                     (dest_index==NULL)?0:*dest_index);
         if (lock) bu_ptr->locked = FALSE;
-        result = bu_sendAllChunks(dest_index);
+        bu_sendAllChunks(dest_index);
         if (lock) bu_ptr->locked = TRUE;
     } else if (dest_index != NULL) {
         bu_ptr->got_send_address = TRUE;
@@ -311,7 +309,6 @@ gboolean bu_userDataOutbound(void)
  */
 gint bu_put_Data_Chunk(SCTP_simple_chunk * chunk,unsigned int * dest_index)
 {
-    gint result;
     bundling_instance *bu_ptr;
     gint count;
     gboolean lock;
@@ -331,7 +328,7 @@ gint bu_put_Data_Chunk(SCTP_simple_chunk * chunk,unsigned int * dest_index)
                   "Chunk Length exceeded MAX_SCTP_PDU : sending chunk to address %u !",
                     (dest_index==NULL)?0:*dest_index);
         if (lock) bu_ptr->locked = FALSE;
-        result = bu_sendAllChunks(dest_index);
+        bu_sendAllChunks(dest_index);
         if (lock) bu_ptr->locked = TRUE;
     } else if (dest_index != NULL) {
         bu_ptr->got_send_address = TRUE;

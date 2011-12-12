@@ -674,8 +674,6 @@ int sctlr_init(SCTP_init * init)
     int process_further, result;
     int return_state = STATE_OK;
 
-    guint primary;
-
     event_log(EXTERNAL_EVENT, "sctlr_init() is executed");
 
     initCID = ch_makeChunk((SCTP_simple_chunk *) init);
@@ -795,7 +793,6 @@ int sctlr_init(SCTP_init * init)
 
         state = localData->association_state;
         event_logi(EXTERNAL_EVENT, "sctlr_init: received INIT chunk in state %02u", state);
-        primary = pm_readPrimaryPath();
         supportedTypes = mdi_getSupportedAddressTypes();
 
         switch (state) {

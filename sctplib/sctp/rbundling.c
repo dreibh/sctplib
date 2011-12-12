@@ -67,29 +67,29 @@ unsigned int rbu_scanPDU(guchar * pdu, guint len)
     current_position = pdu; /* points to the first chunk in this pdu */
 
     while (processed_len < len) {
-        
+
         event_logii(VERBOSE, "rbu_scanPDU : len==%u, processed_len == %u", len, processed_len);
 
         chunk = (SCTP_simple_chunk *) current_position;
         chunk_len = CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
-        
+
         if (chunk_len < 4 || chunk_len + processed_len > len) return result;
-        
+
         if (chunk->chunk_header.chunk_id <= 30) {
             result = result | (1 << chunk->chunk_header.chunk_id);
             event_logii(VERBOSE, "rbu_scanPDU : Chunk type==%u, result == %x", chunk->chunk_header.chunk_id, result);
         } else {
             result = result | (1 << 31);
             event_logii(VERBOSE, "rbu_scanPDU : Chunk type==%u setting bit 31 --> result == %x", chunk->chunk_header.chunk_id, result);
-        }    
+        }
         processed_len += chunk_len;
         pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
         processed_len += pad_bytes;
         chunk_len = (CHUNKP_LENGTH((SCTP_chunk_header *) chunk) + pad_bytes * sizeof(unsigned char));
-        
+
         if (chunk_len < 4 || chunk_len + processed_len > len) return result;
         current_position += chunk_len;
-        
+
     }
     return result;
 }
@@ -108,8 +108,8 @@ gboolean rbu_datagramContains(gushort chunk_type, unsigned int chunkArray)
     if ((val & chunkArray) != 0) return TRUE;
     else return FALSE;
 
-}    
-        
+}
+
 
 guchar* rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
 {
@@ -135,9 +135,9 @@ guchar* rbu_scanInitChunkForParameter(guchar * chunk, gushort paramType)
                     "rbu_scanInitChunkForParameter : len==%u, processed_len == %u", len, processed_len);
         vlp = (SCTP_vlparam_header*) current_position;
         parameterLength = ntohs(vlp->param_length);
-        
+
         if (parameterLength < 4 || parameterLength + processed_len > len) return NULL;
-        
+
         if (ntohs(vlp->param_type) == paramType) {
             return current_position;
         }
@@ -180,7 +180,7 @@ guchar* rbu_findChunk(guchar * datagram, guint len, gushort chunk_type)
         else {
             chunk_len = CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
             if (chunk_len < 4 || chunk_len + processed_len > len) return NULL;
-            
+
             processed_len += CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
             pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
             processed_len += pad_bytes;
@@ -231,9 +231,9 @@ gint rbu_findAddress(guchar * chunk, guint n, union sockunion* foundAddress, int
                     "rbu_findAddress : len==%u, processed_len == %u", len, processed_len);
         vlp = (SCTP_vlparam_header*) current_position;
         parameterLength = ntohs(vlp->param_length);
-        
+
         if (parameterLength < 4 || parameterLength + processed_len > len) return -1;
-        
+
         if (ntohs(vlp->param_type) == VLPARAM_IPV4_ADDRESS &&
             supportedAddressTypes & SUPPORT_ADDRESS_TYPE_IPV4) {
             /* discard invalid addresses */
@@ -306,11 +306,11 @@ gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_ca
         chunk = (SCTP_simple_chunk *) current_position;
         chunk_length = CHUNKP_LENGTH((SCTP_chunk_header *) chunk);
         if (chunk_length < 4 || chunk_length + processed_len > len) return FALSE;
-        
+
         if (chunk->chunk_header.chunk_id == CHUNK_ERROR) {
-            
+
             if (chunk_length < 4 || chunk_length + processed_len > len) return FALSE;
-            
+
             event_log(INTERNAL_EVENT_0, "rbu_scanDatagramForError : Error Chunk Found");
             /* now search for error parameter that fits */
             while (err_len < chunk_length - sizeof(SCTP_chunk_header))  {
@@ -323,13 +323,13 @@ gboolean rbu_scanDatagramForError(guchar * datagram, guint len, gushort error_ca
                 }
                 param_length = ntohs(err_chunk->vlparam_header.param_length);
                 if (param_length < 4 || param_length + err_len > len) return FALSE;
-                
+
                 err_len += param_length;
                 while ((err_len % 4) != 0)
                     err_len++;
             }
         }
-        
+
         processed_len += chunk_length;
         pad_bytes = ((processed_len % 4) == 0) ? 0 : (4 - processed_len % 4);
         processed_len += pad_bytes;
@@ -378,7 +378,6 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
 
     int association_state = STATE_OK;
     gboolean send_it = FALSE;
-    int result;
 
     bu_lock_sender();
 
@@ -495,14 +494,14 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
                 event_logi(EXTERNAL_EVENT_X, "00: Unknown chunktype %u in rbundling.c", chunk->chunk_header.chunk_id);
             } else if ((chunk->chunk_header.chunk_id & 0xC0) == 0x40) {    /* 01 */
                 processed_len = len;
-                result = eh_send_unrecognized_chunktype((unsigned char*)chunk,chunk_len);
+                eh_send_unrecognized_chunktype((unsigned char*)chunk,chunk_len);
                 event_logi(EXTERNAL_EVENT_X, "01: Unknown chunktype %u in rbundling.c",chunk->chunk_header.chunk_id);
             } else if ((chunk->chunk_header.chunk_id & 0xC0) == 0x80) {    /* 10 */
                 /* nothing */
                 event_logi(EXTERNAL_EVENT_X, "10: Unknown chunktype %u in rbundling.c",chunk->chunk_header.chunk_id);
             } else if ((chunk->chunk_header.chunk_id & 0xC0) == 0xC0) {    /* 11 */
                 event_logi(EXTERNAL_EVENT_X, "11: Unknown chunktype %u in rbundling.c", chunk->chunk_header.chunk_id);
-                result = eh_send_unrecognized_chunktype((unsigned char*)chunk,chunk_len);
+                eh_send_unrecognized_chunktype((unsigned char*)chunk,chunk_len);
             }
             break;
         }
@@ -525,7 +524,7 @@ gint rbu_rcvDatagram(guint address_index, guchar * datagram, guint len)
             rxc_all_chunks_processed(TRUE);
         } else {
             /* update SACK structure and datagram counter */
-            rxc_all_chunks_processed(FALSE);   
+            rxc_all_chunks_processed(FALSE);
         }
         /* optionally also add a SACK chunk, at least for every second datagram
          * see section 6.2, second paragraph

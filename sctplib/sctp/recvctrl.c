@@ -532,7 +532,6 @@ int rxc_data_chunk_rx(SCTP_data_chunk * se_chk, unsigned int ad_idx)
 boolean rxc_create_sack(unsigned int *destination_address, boolean force_sack)
 {
     rxc_buffer *rxc;
-    int result;
     unsigned int num_of_frags;
 
     event_logii(VVERBOSE,
@@ -563,7 +562,7 @@ boolean rxc_create_sack(unsigned int *destination_address, boolean force_sack)
     /* first sack is sent at once, since datagrams_received==-1 */
     if (force_sack == TRUE) {
         rxc->lowest = rxc->ctsna;
-        result = bu_put_SACK_Chunk((SCTP_sack_chunk*)rxc->sack_chunk, destination_address);
+        bu_put_SACK_Chunk((SCTP_sack_chunk*)rxc->sack_chunk, destination_address);
         return TRUE;
     } else {
 
@@ -576,7 +575,7 @@ boolean rxc_create_sack(unsigned int *destination_address, boolean force_sack)
                 return FALSE;
         }
         rxc->lowest = rxc->ctsna;
-        result = bu_put_SACK_Chunk((SCTP_sack_chunk*)rxc->sack_chunk,destination_address);
+        bu_put_SACK_Chunk((SCTP_sack_chunk*)rxc->sack_chunk,destination_address);
         return TRUE;
     }
     return FALSE;
@@ -595,7 +594,6 @@ boolean rxc_create_sack(unsigned int *destination_address, boolean force_sack)
 void rxc_sack_timer_cb(TimerID tid, void *assoc, void *dummy)
 {
     unsigned short res;
-    int send_result;
 
     rxc_buffer *rxc;
     event_log(INTERNAL_EVENT_1, "Timer Callback Function activated -> initiate sending of a SACK");
@@ -616,7 +614,7 @@ void rxc_sack_timer_cb(TimerID tid, void *assoc, void *dummy)
     /* sending sack */
     /* FIXME : maybe choose different address ??? */
     rxc_create_sack(&rxc->last_address, TRUE);
-    send_result = bu_sendAllChunks(&rxc->last_address);
+    bu_sendAllChunks(&rxc->last_address);
 
     mdi_clearAssociationData();
     return;
@@ -667,7 +665,6 @@ boolean rxc_sack_timer_is_running(void)
  */
 void rxc_all_chunks_processed(boolean new_data_received)
 {
-
     /* now go and create SACK structure from the array */
     rxc_buffer *rxc=NULL;
     SCTP_sack_chunk *sack=NULL;
@@ -777,7 +774,7 @@ void rxc_all_chunks_processed(boolean new_data_received)
 int rxc_start_sack_timer(unsigned int oldQueueLen)
 {
     rxc_buffer *rxc;
-    int bytesQueued = 0, send_result;
+    int bytesQueued = 0;
 
     rxc = (rxc_buffer *) mdi_readRX_control();
     if (!rxc) {
@@ -793,7 +790,7 @@ int rxc_start_sack_timer(unsigned int oldQueueLen)
         (rxc->my_rwnd - bytesQueued >= 2 * MAX_SCTP_PDU)) {
         /* send SACK at once */
         rxc_create_sack(&rxc->last_address, TRUE);
-        send_result = bu_sendAllChunks(&rxc->last_address);
+        bu_sendAllChunks(&rxc->last_address);
         rxc_stop_sack_timer();
     } else {    /* normal application read, no need to rush things */
         if (rxc->timer_running != TRUE) {

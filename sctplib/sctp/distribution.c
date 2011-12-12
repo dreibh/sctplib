@@ -842,7 +842,6 @@ mdi_receiveMessage(gint socket_fd,
                    union sockunion * dest_addr)
 {
     SCTP_message *message;
-    SCTP_simple_chunk *chunk = NULL;
     SCTP_init_fixed *initChunk = NULL;
     guchar* initPtr = NULL;
     guchar source_addr_string[SCTP_MAX_IP_LEN];
@@ -1021,8 +1020,6 @@ mdi_receiveMessage(gint socket_fd,
     }
 
     lastInitiateTag = ntohl(message->common_header.verification_tag);
-
-    chunk = (SCTP_simple_chunk *) & message->sctp_pdu[0];
 
     chunkArray = rbu_scanPDU(message->sctp_pdu, len);
 
