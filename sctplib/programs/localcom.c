@@ -114,8 +114,8 @@ void printUsage(void)
 {
     printf("usage:   local_communication [options] \n");
     printf("options:\n");
-    printf("-l length           number of bytes of the payload when generating traffic (default 512)\n");   
-    printf("-n number           number of packets initially send out (default 1)\n");   
+    printf("-l length           number of bytes of the payload when generating traffic (default 512)\n");
+    printf("-n number           number of packets initially send out (default 1)\n");
     printf("-u                  use unordered delivery\n");
     printf("-e number           end after that many chunks\n");
 }
@@ -154,14 +154,14 @@ void getArgs(int argc, char **argv)
 void checkArgs(void)
 {
     int printUsageInfo;
-    
+
     printUsageInfo = 0;
-    
+
     if (unknownCommand ==1) {
          printf("Error:   Unkown options in command.\n");
          printUsageInfo = 1;
     }
-    
+
     if (printUsageInfo == 1)
         printUsage();
 }
@@ -172,7 +172,6 @@ void serverDataArriveNotif(unsigned int assocID, unsigned short streamID, unsign
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
     unsigned int length;
-    int result;
     unsigned short ssn;
     unsigned int the_tsn;
 
@@ -183,13 +182,13 @@ void serverDataArriveNotif(unsigned int assocID, unsigned short streamID, unsign
     /* update counter */
     ((struct ulp_data *) ulpDataPtr)->nrOfReceivedChunks += 1;
     ((struct ulp_data *) ulpDataPtr)->nrOfReceivedBytes  += length;
-    
+
     /* and send it */
-    result = SCTP_send(assocID,
-                       (unsigned short)min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
-                       chunk, length,
-                       protoID,
-                       SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME, unordered, SCTP_BUNDLING_DISABLED);
+    SCTP_send(assocID,
+              (unsigned short)min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
+              chunk, length,
+              protoID,
+              SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME, unordered, SCTP_BUNDLING_DISABLED);
 }
 
 void clientDataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int len,
@@ -198,18 +197,17 @@ void clientDataArriveNotif(unsigned int assocID, unsigned short streamID, unsign
 {
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
     unsigned int length;
-    int  result;
     unsigned short ssn;
     unsigned int the_tsn;
 
     chunkCount++;
     length = sizeof(chunk);
     SCTP_receive(assocID, streamID, chunk, &length, &ssn, &the_tsn, SCTP_MSG_DEFAULT);
-    result = SCTP_send(assocID,
-                       streamID,
-                       chunk, length,
-                       protoID,
-                       SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME, unordered, SCTP_BUNDLING_DISABLED);
+    SCTP_send(assocID,
+              streamID,
+              chunk, length,
+              protoID,
+              SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME, unordered, SCTP_BUNDLING_DISABLED);
 
     if (chunkCount > ende)     SCTP_shutdown(assocID);
 }
@@ -226,18 +224,18 @@ void networkStatusChangeNotif(unsigned int assocID, short affectedPathID, unsign
     SCTP_AssociationStatus assocStatus;
     SCTP_PathStatus pathStatus;
     unsigned short pathID;
-    
+
     SCTP_getPathStatus(assocID, affectedPathID, &pathStatus);
     fprintf(fptr, "%-8x: Network status change: path %u (towards %s) is now %s\n",
                     assocID, affectedPathID,
                     pathStatus.destinationAddress,
                     pathStateName(newState));
     fflush(fptr);
-    
+
     /* if the primary path has become inactive */
     if ((newState == SCTP_PATH_UNREACHABLE) &&
         (affectedPathID == SCTP_getPrimary(assocID))) {
-        
+
         /* select a new one */
         SCTP_getAssocStatus(assocID, &assocStatus);
         for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
@@ -245,7 +243,7 @@ void networkStatusChangeNotif(unsigned int assocID, short affectedPathID, unsign
             if (pathStatus.state == SCTP_PATH_OK)
                 break;
         }
-        
+
         /* and use it */
         if (pathID < assocStatus.numberOfAddresses) {
             SCTP_setPrimary(assocID, pathID);
@@ -257,10 +255,10 @@ void* clientCommunicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfPaths,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{	
+{
     unsigned int  packetNumber;
     unsigned char chunk[MAXIMUM_PAYLOAD_LENGTH];
-       
+
     /* send the initial packets */
     memset(chunk, 0xFF, sizeof(chunk));
     for(packetNumber=1; packetNumber <= numberOfInitialPackets; packetNumber++) {
@@ -269,31 +267,31 @@ void* clientCommunicationUpNotif(unsigned int assocID, int status,
                   chunk, chunkLength,
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
                   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME,
-                  (sendUnordered)?SCTP_UNORDERED_DELIVERY:SCTP_ORDERED_DELIVERY, 
+                  (sendUnordered)?SCTP_UNORDERED_DELIVERY:SCTP_ORDERED_DELIVERY,
                   SCTP_BUNDLING_DISABLED);
     }
-    return NULL;       
+    return NULL;
 }
 
 void* serverCommunicationUpNotif(unsigned int assocID, int status,
                                  unsigned int noOfPaths,
                                  unsigned short noOfInStreams, unsigned short noOfOutStreams,
                                  int associationSupportsPRSCTP, void* dummy)
-{	
+{
     int index;
-       
+
     /* look for a free ULP data */
     for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
         if (ulpData[index].maximumStreamID == -1)
             break;
     }
-   
+
     /* if found */
     if (index < MAXIMUM_NUMBER_OF_ASSOCIATIONS) {
         /* use it */
         ulpData[index].maximumStreamID = noOfOutStreams - 1;
         ulpData[index].assocID = assocID;
-        return &ulpData[index];       
+        return &ulpData[index];
     } else {
         /* abort assoc due to lack of resources */
         SCTP_abort(assocID);
@@ -302,7 +300,7 @@ void* serverCommunicationUpNotif(unsigned int assocID, int status,
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{	
+{
     unsigned char buffer[MAXIMUM_PAYLOAD_LENGTH];
     unsigned int bufferLength;
     unsigned short streamID, streamSN;
@@ -311,7 +309,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 
     fprintf(fptr, "%-8x: Communication lost (status %u)\n", assocID, status);
     fflush(fptr);
-  
+
     /* retrieve data */
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnsent(assocID, buffer, &bufferLength, &tsn,
@@ -320,7 +318,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-    
+
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnacked(assocID, buffer, &bufferLength, &tsn,
 			       &streamID, &streamSN, &protoID) >= 0){
@@ -328,7 +326,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-                      
+
     /* free ULP data */
     if (ulpDataPtr) {
         ((struct ulp_data *) ulpDataPtr)->maximumStreamID = -1;
@@ -347,10 +345,10 @@ void communicationErrorNotif(unsigned int assocID, unsigned short status, void* 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
 {
     SCTP_AssociationStatus assocStatus;
-    
+
     fprintf(fptr, "%-8x: Restart\n", assocID);
     fflush(fptr);
-    
+
     /* update ULP data */
     if (ulpDataPtr) {
         SCTP_getAssocStatus(assocID, &assocStatus);
@@ -404,7 +402,7 @@ measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void *par
 
 int main(int argc, char **argv)
 {
-    int sctpServerInstance, sctpClientInstance;
+    int sctpClientInstance;
     SCTP_ulpCallbacks echoServerUlp, echoClientUlp;
     SCTP_LibraryParameters params;
     unsigned int index, version;
@@ -414,7 +412,7 @@ int main(int argc, char **argv)
     for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
         ulpData[index].maximumStreamID    = -1;
         ulpData[index].nrOfReceivedChunks = 0;
-        ulpData[index].nrOfReceivedBytes  = 0;        
+        ulpData[index].nrOfReceivedBytes  = 0;
     }
 
     /* initialize the echo_ulp variable */
@@ -453,28 +451,28 @@ int main(int argc, char **argv)
     params.checksumAlgorithm = SCTP_CHECKSUM_ALGORITHM_CRC32C;
     SCTP_setLibraryParameters(&params);
 
-    
+
     noOfLocalAddresses = 1;
     strcpy((char *)localAddressList[0], "127.0.0.1");
-    
-    sctpServerInstance = SCTP_registerInstance(ECHO_PORT,
-                                               MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
-                                               noOfLocalAddresses, localAddressList,
-                                               echoServerUlp);
+
+    SCTP_registerInstance(ECHO_PORT,
+                          MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
+                          noOfLocalAddresses, localAddressList,
+                          echoServerUlp);
 
     sctpClientInstance = SCTP_registerInstance(CLIENT_PORT,
                                                MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
                                                noOfLocalAddresses, localAddressList,
                                                echoClientUlp);
 
-    strcpy((char *)destinationAddress, "127.0.0.1");    
+    strcpy((char *)destinationAddress, "127.0.0.1");
 
 
     SCTP_associate(sctpClientInstance, 1, destinationAddress, ECHO_PORT, NULL);
 
     SCTP_startTimer(deltaT, &measurementTimerRunOffFunction, NULL, NULL);
 
-    
+
     /* run the event handler forever */
     while (1) {
         SCTP_eventLoop();
