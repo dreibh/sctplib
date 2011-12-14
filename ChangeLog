@@ -1,4 +1,77 @@
 ------------------------------------------------------------------------
+r2626 | dreibh | 2011-12-12 13:00:40 +0100 (Mon, 12 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/sctplib.lsm
+
+Version update.
+
+------------------------------------------------------------------------
+r2625 | dreibh | 2011-12-12 12:58:13 +0100 (Mon, 12 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
+   M /trunk/sctplib1/sctplib/sctp/rbundling.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.c
+   M /trunk/sctplib1/sctplib/sctp/sbundling.c
+
+Compiler warning fixes (unused variables).
+
+------------------------------------------------------------------------
+r2624 | dreibh | 2011-12-12 12:49:17 +0100 (Mon, 12 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+
+Compiler warning fixes.
+
+------------------------------------------------------------------------
+r2548 | dreibh | 2011-05-04 07:57:27 +0200 (Wed, 04 May 2011) | 2 lines
+Changed paths:
+   M /trunk/rsplib2/make-ppa
+   M /trunk/sctplib1/make-ppa
+   M /trunk/socketapi/make-ppa
+   M /trunk/socketapi/replace-cpp-symbols
+
+Scripts updates.
+
+------------------------------------------------------------------------
+r2513 | dreibh | 2011-02-11 23:34:17 +0100 (Fri, 11 Feb 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian/libsctplib1.symbols
+   M /trunk/sctplib1/make-deb
+   M /trunk/sctplib1/make-symbols
+   A /trunk/sctplib1/replace-cpp-symbols
+   M /trunk/socketapi/debian/changelog
+   M /trunk/socketapi/debian/libsctpsocket2.symbols
+   M /trunk/socketapi/make-deb
+   M /trunk/socketapi/make-symbols
+   A /trunk/socketapi/replace-cpp-symbols
+
+Updated packaging files.
+
+------------------------------------------------------------------------
+r2502 | dreibh | 2011-02-04 11:25:06 +0100 (Fri, 04 Feb 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib.lsm
+
+Updated LSM entry.
+
+------------------------------------------------------------------------
+r2499 | dreibh | 2011-02-04 10:47:51 +0100 (Fri, 04 Feb 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian/control
+   M /trunk/sctplib1/sctplib.lsm
+
+Version update.
+
+------------------------------------------------------------------------
 r2496 | dreibh | 2011-02-03 10:01:14 +0100 (Thu, 03 Feb 2011) | 2 lines
 Changed paths:
    M /trunk/sctplib1/configure.in

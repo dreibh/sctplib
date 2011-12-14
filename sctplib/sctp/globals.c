@@ -7,7 +7,7 @@
  *              //  //         //    //       //       //   //    //
  *       ======//  //=====    //    //       //=====  //   //===//
  *
- * ---------------A SCTP implementation according to RFC 4960 ---------------
+ * -------------- An SCTP implementation according to RFC 4960 --------------
  *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  * Copyright (C) 2001-2004 Andreas Jungmaier

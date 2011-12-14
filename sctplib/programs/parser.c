@@ -7,7 +7,7 @@
  *              //  //         //    //       //       //   //    //
  *       ======//  //=====    //    //       //=====  //   //===//
  *
- * ---------------A SCTP implementation according to RFC 4960 ---------------
+ * -------------- An SCTP implementation according to RFC 4960 --------------
  *
  * Copyright (C) 2001 by Andreas Lang
  *
