@@ -31,10 +31,11 @@
 #include <config.h>
 #endif
 
-#include "sctp_wrapper.h"
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+#include "sctp_wrapper.h"
 #include "sctptest.h"
 #include "sctp.h"
 
