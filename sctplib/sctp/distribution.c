@@ -917,7 +917,7 @@ mdi_receiveMessage(gint socket_fd,
 
     } else
 #ifdef HAVE_IPV6
-            if (sockunion_family(dest_addr) == AF_INET6) {
+    if (sockunion_family(dest_addr) == AF_INET6) {
         addressType = SUPPORT_ADDRESS_TYPE_IPV6;
         event_log(VERBOSE, "mdi_receiveMessage: checking for correct IPV6 addresses");
 #if defined (LINUX)
@@ -928,10 +928,11 @@ mdi_receiveMessage(gint socket_fd,
         if (IN6_IS_ADDR_UNSPECIFIED(&(source_addr->sin6.sin6_addr.s6_addr))) discard = TRUE;
         if (IN6_IS_ADDR_MULTICAST(&(source_addr->sin6.sin6_addr.s6_addr))) discard = TRUE;
         /*  if (IN6_IS_ADDR_V4COMPAT(&(source_addr->sin6.sin6_addr.s6_addr))) discard = TRUE; */
-        if (
-            (!IN6_IS_ADDR_LOOPBACK(&(source_addr->sin6.sin6_addr.s6_addr))) &&
+        /*
+        if ((!IN6_IS_ADDR_LOOPBACK(&(source_addr->sin6.sin6_addr.s6_addr))) &&
             IN6_ARE_ADDR_EQUAL(&(source_addr->sin6.sin6_addr.s6_addr),
-                                &(dest_addr->sin6.sin6_addr.s6_addr))) discard = TRUE;
+                               &(dest_addr->sin6.sin6_addr.s6_addr))) discard = TRUE;
+        */
 #else
         if (IN6_IS_ADDR_UNSPECIFIED(&(dest_addr->sin6.sin6_addr))) discard = TRUE;
         if (IN6_IS_ADDR_MULTICAST(&(dest_addr->sin6.sin6_addr))) discard = TRUE;
@@ -940,15 +941,15 @@ mdi_receiveMessage(gint socket_fd,
         if (IN6_IS_ADDR_UNSPECIFIED(&(source_addr->sin6.sin6_addr))) discard = TRUE;
         if (IN6_IS_ADDR_MULTICAST(&(source_addr->sin6.sin6_addr))) discard = TRUE;
         /* if (IN6_IS_ADDR_V4COMPAT(&(source_addr->sin6.sin6_addr))) discard = TRUE; */
-        if (
-            (!IN6_IS_ADDR_LOOPBACK(&(source_addr->sin6.sin6_addr))) &&
-            IN6_ARE_ADDR_EQUAL(&(source_addr->sin6.sin6_addr),
+        /*
+        if ((!IN6_IS_ADDR_LOOPBACK(&(source_addr->sin6.sin6_addr))) &&
+             IN6_ARE_ADDR_EQUAL(&(source_addr->sin6.sin6_addr),
                                 &(dest_addr->sin6.sin6_addr))) discard = TRUE;
-
+        */
 #endif
     } else
 #endif
-            {
+    {
         error_log(ERROR_FATAL, "mdi_receiveMessage: Unsupported AddressType Received !");
         discard = TRUE;
     }
@@ -966,7 +967,8 @@ mdi_receiveMessage(gint socket_fd,
         lastDestPort = 0;
         sctpInstance = NULL;
         currentAssociation = NULL;
-        event_log(INTERNAL_EVENT_0, "mdi_receiveMessage: discarding packet for incorrect addresses");
+        event_logi(INTERNAL_EVENT_0, "mdi_receiveMessage: discarding packet for incorrect address %s",
+                   dest_addr_string);
         return;
     }
 
