@@ -94,7 +94,7 @@ static int pathY1,pathY2,statusY1,statusY2,helpY1,helpY2;
 
 
 typedef struct SCTP_Monitor_ToolStatus
-{        
+{
   unsigned char localAddrList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
   unsigned short noOfInStreams;
   unsigned short noOfOutStreams;
@@ -136,15 +136,15 @@ void printUsage(void)
 {
     printf("usage: monitor [options] -s source_addr_1 -d destination_addr ...\n");
     printf("options:\n");
-    printf("-s source_address(es) source IP address(es)\n");  
-    printf("-d destination_addr   establish a association with the specified address\n");   
-    printf("-l local port         local port number\n");   
-    printf("-r remote port        remote port number\n"); 
+    printf("-s source_address(es) source IP address(es)\n");
+    printf("-d destination_addr   establish a association with the specified address\n");
+    printf("-l local port         local port number\n");
+    printf("-r remote port        remote port number\n");
     printf("-p period             specify period for the measurements in milliseconds (default 1000)\n");
     printf("-m                    do periodic refresh of data specified per period (see -p)\n");
-    printf("-t byte               TOS byte used by all assiciations (default 0x10)\n");   
-    printf("-v                    verbose mode\n");   
-    printf("-V                    very verbose mode\n");   
+    printf("-t byte               TOS byte used by all assiciations (default 0x10)\n");
+    printf("-v                    verbose mode\n");
+    printf("-V                    very verbose mode\n");
 }
 
 void getArgs(int argc, char **argv)
@@ -159,7 +159,7 @@ void getArgs(int argc, char **argv)
         case 'd':
             if (strlen(optarg) < SCTP_MAX_IP_LEN) {
                 strcpy((char *)destinationAddress, optarg);
-		client = 1;
+        client = 1;
             }
             break;
         case 'l':
@@ -175,13 +175,13 @@ void getArgs(int argc, char **argv)
                 noOfLocalAddresses++;
             }
             break;
-	case 'p':
-	    deltaT = atoi(optarg);
-	    periodicRefresh = 1;
-	    break;
-	case 'm':
-	    periodicRefresh = 1;
-	    break;
+    case 'p':
+        deltaT = atoi(optarg);
+        periodicRefresh = 1;
+        break;
+    case 'm':
+        periodicRefresh = 1;
+        break;
         case 't':
             tosByte = (unsigned char) atoi(optarg);
             break;
@@ -204,15 +204,15 @@ void checkArgs(void)
         exit(-1);
     }
     else if (client == 0){
-	printf("Error: Please specify a destination. This Monitoring tool will not work as a server.\n");
+    printf("Error: Please specify a destination. This Monitoring tool will not work as a server.\n");
         printUsage();
         exit(-1);
     }
-    else if (remotePort == 0){   
+    else if (remotePort == 0){
         printf("Error: Please specify a remote port. For example, port of echo_tool is 7\n");
         printUsage();
         exit(-1);
-    }        
+    }
 }
 
 
@@ -224,7 +224,7 @@ void UpdateMonitorToolStruct(unsigned short noOfInStreams, unsigned short noOfOu
   /* Update the Monitor tool status structure */
   statusUpdate.noOfInStreams            = noOfInStreams;
   statusUpdate.noOfOutStreams           = noOfOutStreams;
-    
+
   /* Initialise the Contents of InStreamList and OutStreamList to -1 */
   for (i=0; i < noOfInStreams; i++)
     {
@@ -254,7 +254,7 @@ void initializecurses()
 
     assocY1 = 0;
     assocY2 = (int)((LINES-14)/2)-1;
-   
+
     pathY1 = (int)((LINES-14)/2);
     pathY2 = LINES-14;
 
@@ -266,9 +266,9 @@ void initializecurses()
 
     helpY1 = textY2+1;
     helpY2 = helpY1+3;
-    
+
     assocWin = newwin((assocY2-assocY1),X2,assocY1+1,0);
-    pathWin = newwin((pathY2-pathY1-1),X2,pathY1+2,0);   
+    pathWin = newwin((pathY2-pathY1-1),X2,pathY1+2,0);
     statusWin = newwin(5,X2,statusY1+1,0);
     textWin = newwin(2,X2,textY1+1,0);
     receivedWin = newwin(3,X2,helpY1+1,0);
@@ -280,14 +280,14 @@ void initializecurses()
     receivedWinHeader = newwin(1,X2,helpY1,0);
 
     waddstr(assocWinHeader,"Association Status");
-    for (i=18;i<COLS-1;i++) 
+    for (i=18;i<COLS-1;i++)
       mvwaddch(assocWinHeader,0,i,'*');
 
     waddstr(pathWinHeader,"Path Status");
     for (i=11;i<COLS-1;i++)
       mvwaddch(pathWinHeader,0,i,'*');
     mvwaddstr(pathWinHeader,1,0,"[Select numbers 0-9 to display path details for the path with the corresponding Path ID]");
-    
+
     waddstr(statusWinHeader,"SCTP Events Status");
     for (i=18;i<COLS-1;i++)
       mvwaddch(statusWinHeader,0,i,'*');
@@ -312,7 +312,7 @@ void initializecurses()
     wnoutrefresh(statusWin);
     wnoutrefresh(textWin);
     wnoutrefresh(receivedWin);
-    
+
     keypad(textWin,TRUE);
     (void) idlok(assocWin,TRUE);
     (void) idlok(pathWin,TRUE);
@@ -327,13 +327,13 @@ void initializecurses()
 }
 
 
-/* This function reads the input from the parameters of the SCTP_PathStatus structure 
+/* This function reads the input from the parameters of the SCTP_PathStatus structure
    and displays the data on a window of ncurses. */
 void ncurses_display_AssocStatus(unsigned int assocID)
 
 {
   SCTP_AssociationStatus assocStatus;
-  int i; 
+  int i;
   char tstr[200];
 
   wclear(assocWin);
@@ -342,7 +342,7 @@ void ncurses_display_AssocStatus(unsigned int assocID)
   sctp_getAssocStatus(assocID,&assocStatus);
 
   sprintf(assocInfo," Association ID : %d, Local port : %d, Remote port : %d\n",
-	  assocID,assocStatus.sourcePort,assocStatus.destPort);
+      assocID,assocStatus.sourcePort,assocStatus.destPort);
 
   waddstr(assocWin,assocInfo);
   wrefresh(assocWin);
@@ -350,25 +350,25 @@ void ncurses_display_AssocStatus(unsigned int assocID)
   sprintf(assocInfo," Local address(es) is(are) :");
 
   for (i=0; i <  noOfLocalAddresses; i++)
-     {      
+     {
        sprintf(tstr," %s,", localAddressList[i]);
        strcat(assocInfo,tstr);
      }
   waddstr(assocWin,assocInfo);
   wrefresh(assocWin);
-  
+
   sprintf(assocInfo,"\n No. of Destination address : %d,\t\t Primary destination address : %s\n Number of incoming Streams : %d,\t\t Number of outgoing streams : %d\n Primary Address Index: %d,\t\t\t Current Receiver Window Size : %d\n Outstanding bytes : %-8d,\t\t\t No. of chunks in send queue : %d\n No. of chunks in retransmission queue : %d,\t No. of chunks in reception queue : %d\n Initial Round Trip Timeout : %d (msecs),\t Minimum Round Trip Timeout : %d (msecs)\n Maximum Round Trip Timeout : %d(msecs),\t Cookie Lifetime : %d (msecs)\n Max retransmission per association : %d,\t Max retransmission per path : %d\n Max Initial Retransmission : %d,\t\t Local Receiver Window : %d\n Delay for delay acknowledge : %d (msecs),\t IP Type Of Service : %x\n Current Incoming stream ID : %d,\t\t Current Outgoing stream ID : %d ",
-	  assocStatus.numberOfAddresses, assocStatus.primaryDestinationAddress, 
-	  statusUpdate.noOfInStreams, statusUpdate.noOfOutStreams, assocStatus.primaryAddressIndex,
-	  assocStatus.currentReceiverWindowSize, assocStatus.outstandingBytes, 
-	  assocStatus.noOfChunksInSendQueue, assocStatus.noOfChunksInRetransmissionQueue, 
-	  assocStatus.noOfChunksInReceptionQueue, assocStatus.rtoInitial, assocStatus.rtoMin, 
-	  assocStatus.rtoMax, assocStatus.validCookieLife, assocStatus.assocMaxRetransmits, 
-	  assocStatus.pathMaxRetransmits, assocStatus.maxInitRetransmits, assocStatus.myRwnd, 
-	  assocStatus.delay, assocStatus.ipTos, 
-	  statusUpdate.InstreamIDList[currInstreamID], 
-	  statusUpdate.OutstreamIDList[currOutstreamID] );
-  
+      assocStatus.numberOfAddresses, assocStatus.primaryDestinationAddress,
+      statusUpdate.noOfInStreams, statusUpdate.noOfOutStreams, assocStatus.primaryAddressIndex,
+      assocStatus.currentReceiverWindowSize, assocStatus.outstandingBytes,
+      assocStatus.noOfChunksInSendQueue, assocStatus.noOfChunksInRetransmissionQueue,
+      assocStatus.noOfChunksInReceptionQueue, assocStatus.rtoInitial, assocStatus.rtoMin,
+      assocStatus.rtoMax, assocStatus.validCookieLife, assocStatus.assocMaxRetransmits,
+      assocStatus.pathMaxRetransmits, assocStatus.maxInitRetransmits, assocStatus.myRwnd,
+      assocStatus.delay, assocStatus.ipTos,
+      statusUpdate.InstreamIDList[currInstreamID],
+      statusUpdate.OutstreamIDList[currOutstreamID] );
+
   waddstr(assocWin,assocInfo);
   wrefresh(assocWin);
   wrefresh(textWin);
@@ -376,7 +376,7 @@ void ncurses_display_AssocStatus(unsigned int assocID)
 }
 
 
-/* This function reads the input from the parameters of the SCTP_PathStatus structure 
+/* This function reads the input from the parameters of the SCTP_PathStatus structure
    and displays the data on a window of ncurses. */
 void ncurses_display_PathStatus(unsigned int assocID)
 
@@ -392,65 +392,65 @@ void ncurses_display_PathStatus(unsigned int assocID)
     short State[SCTP_MAX_NUM_ADDRESSES];
     char destaddr[SCTP_MAX_NUM_ADDRESSES][SCTP_MAX_IP_LEN];
     unsigned char IPTos[SCTP_MAX_NUM_ADDRESSES];
-    
+
     wclear(pathWin);
     wrefresh(pathWin);
 
     sctp_getAssocStatus(assocID, &assocStatus);
     for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++)
       {
-	sctp_getPathStatus(assocID, pathID, &pathStatus);
-	strcpy((char *)destaddr[pathID], (const char *)pathStatus.destinationAddress);
-	State[pathID] = pathStatus.state;
-	Rto[pathID] = pathStatus.rto;
-	HB_Interval[pathID] = pathStatus.heartbeatIntervall;
-	SRTT[pathID] = pathStatus.srtt;
-	RTTVar[pathID] = pathStatus.rttvar;
-	SlowStThres[pathID] = pathStatus.ssthresh;
-	PartBytesAck[pathID] = pathStatus.partialBytesAcked;
-	CongestWin[pathID] = pathStatus.cwnd;
-	CongestWin2[pathID] = pathStatus.cwnd2;
-	MTU[pathID] = pathStatus.mtu;
-	OutBytesPerAddr[pathID] = pathStatus.outstandingBytesPerAddress;
-	IPTos[pathID] = pathStatus.ipTos;
-	
-	if (displayPathDetails == 0)
-	  {
-	    /* Check if the current path is the primary path */ 					       
-	    if (pathID == sctp_getPrimary(assocID))
-	      {
-		sprintf(pathInfo," Primary Path ID : %d, state of path : %s\n",
-			pathID, pathStateName(State[pathID])); 
-		waddstr(pathWin,pathInfo);
-		wrefresh(pathWin);
-	      }  
-	    else 
-	      {
-		sprintf(pathInfo," Path ID : %d, state of path : %s\n",
-			pathID, pathStateName(State[pathID])); 
-		waddstr(pathWin,pathInfo);
-		wrefresh(pathWin);
-	      }
-	  }
-	
-	else if (displayPathDetails == 1)
-	  { 
-	    mvwaddstr(pathWin,0,0,"[Hit Backspace to return to main menu]\n");
-	    wrefresh(pathWin);
+    sctp_getPathStatus(assocID, pathID, &pathStatus);
+    strcpy((char *)destaddr[pathID], (const char *)pathStatus.destinationAddress);
+    State[pathID] = pathStatus.state;
+    Rto[pathID] = pathStatus.rto;
+    HB_Interval[pathID] = pathStatus.heartbeatIntervall;
+    SRTT[pathID] = pathStatus.srtt;
+    RTTVar[pathID] = pathStatus.rttvar;
+    SlowStThres[pathID] = pathStatus.ssthresh;
+    PartBytesAck[pathID] = pathStatus.partialBytesAcked;
+    CongestWin[pathID] = pathStatus.cwnd;
+    CongestWin2[pathID] = pathStatus.cwnd2;
+    MTU[pathID] = pathStatus.mtu;
+    OutBytesPerAddr[pathID] = pathStatus.outstandingBytesPerAddress;
+    IPTos[pathID] = pathStatus.ipTos;
 
-	    if (pathID == chosenPath)
-	      {
-		sprintf(pathInfo,"\n Path ID : %d, State of path : %s\t\t Destination address : %s\n Heartbeat Interval : %-8u\t\t Retransmisson time(msecs) : %-8d\n Smooth Round Trip time(msecs) : %-8d\t Round Trip time Variations(msecs) : %-8d\n Slow start threshold : %-8d\t\t Congestion Window Size : %-8d\n Outstanding Bytes per Address : %-8d\t Congestion Window Size 2 : %-8d\n Partial bytes acknowledge : %-8d\t\t IP type of service : %x\n MTU : %d bytes\n\n", 
-			pathID, pathStateName(State[pathID]),
-			destaddr[pathID],HB_Interval[pathID],Rto[pathID],
-			SRTT[pathID],RTTVar[pathID],SlowStThres[pathID],CongestWin[pathID],
-			OutBytesPerAddr[pathID], CongestWin2[pathID],PartBytesAck[pathID],
-			IPTos[pathID],MTU[pathID]);
+    if (displayPathDetails == 0)
+      {
+        /* Check if the current path is the primary path */
+        if (pathID == sctp_getPrimary(assocID))
+          {
+        sprintf(pathInfo," Primary Path ID : %d, state of path : %s\n",
+            pathID, pathStateName(State[pathID]));
+        waddstr(pathWin,pathInfo);
+        wrefresh(pathWin);
+          }
+        else
+          {
+        sprintf(pathInfo," Path ID : %d, state of path : %s\n",
+            pathID, pathStateName(State[pathID]));
+        waddstr(pathWin,pathInfo);
+        wrefresh(pathWin);
+          }
+      }
 
-		waddstr(pathWin,pathInfo);
-		wrefresh(pathWin);
-	      }
-	  }
+    else if (displayPathDetails == 1)
+      {
+        mvwaddstr(pathWin,0,0,"[Hit Backspace to return to main menu]\n");
+        wrefresh(pathWin);
+
+        if (pathID == chosenPath)
+          {
+        sprintf(pathInfo,"\n Path ID : %d, State of path : %s\t\t Destination address : %s\n Heartbeat Interval : %-8u\t\t Retransmisson time(msecs) : %-8d\n Smooth Round Trip time(msecs) : %-8d\t Round Trip time Variations(msecs) : %-8d\n Slow start threshold : %-8d\t\t Congestion Window Size : %-8d\n Outstanding Bytes per Address : %-8d\t Congestion Window Size 2 : %-8d\n Partial bytes acknowledge : %-8d\t\t IP type of service : %x\n MTU : %d bytes\n\n",
+            pathID, pathStateName(State[pathID]),
+            destaddr[pathID],HB_Interval[pathID],Rto[pathID],
+            SRTT[pathID],RTTVar[pathID],SlowStThres[pathID],CongestWin[pathID],
+            OutBytesPerAddr[pathID], CongestWin2[pathID],PartBytesAck[pathID],
+            IPTos[pathID],MTU[pathID]);
+
+        waddstr(pathWin,pathInfo);
+        wrefresh(pathWin);
+          }
+      }
       }
     wrefresh(textWin);
     displayPathDetails = 0;
@@ -458,8 +458,7 @@ void ncurses_display_PathStatus(unsigned int assocID)
 
 void periodicRefreshFunction(unsigned int timerID, void *parameter1, void *parameter2)
 {
-    
-  /* Display the primary path details by default when data arrive */ 
+    /* Display the primary path details by default when data arrive */
     displayPathDetails = 1;
     chosenPath = sctp_getPrimary(associationID);
     ncurses_display_PathStatus(associationID);
@@ -471,59 +470,58 @@ void periodicRefreshFunction(unsigned int timerID, void *parameter1, void *param
 void* communicationUpNotif(unsigned int assocID, int status, unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{	
-    
+{
   /* SCTP_AssociationStatus assocStatus; */
   int TimerID;
-  
+
   initializecurses();
-  
-  sprintf(statusInfo, " Association ID =%-8x: Communication up (%u paths)\n", 
-	  assocID, noOfDestinations);
+
+  sprintf(statusInfo, " Association ID =%-8x: Communication up (%u paths)\n",
+      assocID, noOfDestinations);
   waddstr(statusWin,statusInfo);
-  wrefresh(statusWin);    
-  
+  wrefresh(statusWin);
+
   /* Set heartbeat
   sctp_getAssocStatus(assocID,&assocStatus);
-     
+
   for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
     if (sctp_changeHeartBeat(assocID,pathID,SCTP_HEARTBEAT_ON,10000)==0)
       sprintf(statusInfo ,"Successful in changing the heartbeat for pathID = %d\n",pathID);
-    
+
     else
       sprintf(statusInfo ,"Error in changing the heartbeat for pathID = %d\n",pathID);
-    
+
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
     }*/
-  
-  /* Modify RTO Max to 10 secs so that network status change occurs faster 
+
+  /* Modify RTO Max to 10 secs so that network status change occurs faster
   sctp_getAssocStatus(assocID, &assocStatus);
   assocStatus.rtoMax = 10000;
   if (sctp_setAssocStatus(assocID, &assocStatus)==0)
     {
       sctp_getAssocStatus(assocID, &assocStatus);
       if (assocStatus.rtoMax == 10000)
-	{
-	  sprintf(statusInfo," Maximum Round Trip Timeout modified to %d (msecs)\n",
-		  assocStatus.rtoMax);
-	  waddstr(statusWin,statusInfo);
-	  wrefresh(statusWin);    
-	}
+    {
+      sprintf(statusInfo," Maximum Round Trip Timeout modified to %d (msecs)\n",
+          assocStatus.rtoMax);
+      waddstr(statusWin,statusInfo);
+      wrefresh(statusWin);
+    }
     } */
-  
+
   /* Start Timer */
-  if (periodicRefresh) 
+  if (periodicRefresh)
     {
       TimerID = sctp_startTimer(deltaT/1000, (deltaT%1000)*1000, &periodicRefreshFunction, NULL, NULL);
       sprintf(statusInfo," TimerID is %d\n",TimerID);
       waddstr(statusWin,statusInfo);
       wrefresh(statusWin);
     }
-  
+
   /* Update the Monitor tool data structures */
   UpdateMonitorToolStruct(noOfInStreams, noOfOutStreams);
-  
+
   /* Display functions */
   ncurses_display_AssocStatus(assocID);
   ncurses_display_PathStatus(assocID);
@@ -537,59 +535,59 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 {
     char chunk[SCTP_MAXIMUM_DATA_LENGTH + 1];
     unsigned int length;
-    int i; 
+    int i;
     unsigned int InstreamID_position = 0;
     unsigned int tsn;
     unsigned short ssn;
-     
+
     sprintf(statusInfo, " Association ID =%-8x: Data arrived (%u bytes on stream %u, %s)\n",
-	    assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
+        assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
-    
+
 
     /* read it */
     length = SCTP_MAXIMUM_DATA_LENGTH;
     sctp_receive(assocID, streamID, (unsigned char *)chunk, &length, &ssn, &tsn, SCTP_MSG_DEFAULT);
-    chunk[length]=0;  
-    
+    chunk[length]=0;
+
     /* and display it */
     sprintf(receivedInfo, " Data received : %s", chunk);
     waddstr(receivedWin,receivedInfo);
     wrefresh(receivedWin);
 
-    /* Stores the stream Id into the structure statusUpdate each time a data arrives */    
+    /* Stores the stream Id into the structure statusUpdate each time a data arrives */
     for (i=0; i <statusUpdate.noOfInStreams; i++)
       {
-	if (statusUpdate.InstreamIDList[i] == -1)
-	  {
-	    statusUpdate.InstreamIDList[i] = streamID;  
-	    InstreamID_position = i;
-	  }
-	else if (statusUpdate.InstreamIDList[i] != -1 &&
-		 statusUpdate.InstreamIDList[i] != streamID)
-	  {
-	    statusUpdate.InstreamIDList[i] = streamID;  
-	    InstreamID_position = i;
-	  }
-	else if (statusUpdate.InstreamIDList[i] == streamID)
-	  {
-	    InstreamID_position = i;
-	  }
+    if (statusUpdate.InstreamIDList[i] == -1)
+      {
+        statusUpdate.InstreamIDList[i] = streamID;
+        InstreamID_position = i;
+      }
+    else if (statusUpdate.InstreamIDList[i] != -1 &&
+         statusUpdate.InstreamIDList[i] != streamID)
+      {
+        statusUpdate.InstreamIDList[i] = streamID;
+        InstreamID_position = i;
+      }
+    else if (statusUpdate.InstreamIDList[i] == streamID)
+      {
+        InstreamID_position = i;
+      }
       }
 
-    /* Update the current position of the InstreamIDList array */  
+    /* Update the current position of the InstreamIDList array */
     currInstreamID = InstreamID_position;
 
     /* Display the Association details */
-	ncurses_display_AssocStatus(assocID);
-	
+    ncurses_display_AssocStatus(assocID);
+
     if (!periodicRefresh)
       {
       /* Display the primary path details by default when data arrive */
-	displayPathDetails = 1;
-	chosenPath = sctp_getPrimary(assocID);
-	ncurses_display_PathStatus(assocID);
+    displayPathDetails = 1;
+    chosenPath = sctp_getPrimary(assocID);
+    ncurses_display_PathStatus(assocID);
       }
 }
 
@@ -602,32 +600,32 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
     unsigned short pathID;
 
     sctp_getPathStatus(assocID, destAddrIndex , &pathStatus);
-    sprintf(statusInfo, " Association ID =%-8x: Network status change: path %u (towards %s) is now %s\n", 
-	    assocID, destAddrIndex, pathStatus.destinationAddress, pathStateName(newState));
+    sprintf(statusInfo, " Association ID =%-8x: Network status change: path %u (towards %s) is now %s\n",
+        assocID, destAddrIndex, pathStatus.destinationAddress, pathStateName(newState));
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
-    
+
     /* if the primary path has become inactive */
     if ((newState == SCTP_PATH_UNREACHABLE) &&
         (destAddrIndex == sctp_getPrimary(assocID))) {
-        
+
         sctp_getAssocStatus(assocID, &assocStatus);
         for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++)
-	  {
+      {
             sctp_getPathStatus(assocID, pathID, &pathStatus);
             if (pathStatus.state == SCTP_PATH_OK)
-	      {
-		break;
-	      }
-	  }
-        
+          {
+        break;
+          }
+      }
+
         /* and use it */
-        if (pathID < assocStatus.numberOfAddresses) 
-	  {
-	    sctp_setPrimary(assocID, pathID);
-	  }
+        if (pathID < assocStatus.numberOfAddresses)
+      {
+        sctp_setPrimary(assocID, pathID);
+      }
     }
-    
+
     /* Display functions */
     ncurses_display_AssocStatus(assocID);
     displayPathDetails = 0;
@@ -635,7 +633,7 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{	
+{
     unsigned char buffer[SCTP_MAXIMUM_DATA_LENGTH];
     unsigned int bufferLength;
     unsigned short streamID, streamSN;
@@ -644,13 +642,13 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
     unsigned char flags;
     void* ctx;
 
-    
+
     sprintf(statusInfo, " Association ID =%-8x: Communication lost (status %u)\n", assocID, status);
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
 
     return;
-    
+
     /* retrieve data */
     bufferLength = sizeof(buffer);
     while (sctp_receiveUnsent(assocID, buffer, &bufferLength, &tsn,
@@ -659,15 +657,15 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-    
+
     bufferLength = sizeof(buffer);
     while (sctp_receiveUnacked(assocID, buffer, &bufferLength, &tsn,
-			                   &streamID, &streamSN, &protoID, &flags, &ctx) >= 0){
+                               &streamID, &streamSN, &protoID, &flags, &ctx) >= 0){
         /* do something with the retrieved data */
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-  
+
     /* delete the association, instace and terminate */
     sctp_deleteAssociation(assocID);
     sctp_unregisterInstance(sctpInstance);
@@ -679,7 +677,7 @@ void communicationErrorNotif(unsigned int assocID, unsigned short status, void* 
     sprintf(statusInfo, " Association ID =%-8x: Communication error (status %u)\n", assocID, status);
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
-    
+
     /* Display function */
     ncurses_display_PathStatus(assocID);
 
@@ -691,7 +689,7 @@ void sendFailureNotif(unsigned int assocID,
     sprintf(statusInfo, " Association ID =%-8x: Send failure\n", assocID);
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
-    
+
     ncurses_display_PathStatus(assocID);
 }
 
@@ -710,11 +708,11 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
     sprintf(statusInfo, " Association ID =%-8x: Shutdown complete\n", assocID);
     waddstr(statusWin,statusInfo);
-    wrefresh(statusWin); 
-   
+    wrefresh(statusWin);
+
     endwin();
     exit(0);
-    
+
     /* delete the association, instance and terminate */
     sctp_deleteAssociation(assocID);
     sctp_unregisterInstance(sctpInstance);
@@ -724,14 +722,14 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 
 void stdinCallback(int fd, short int revents, short int* gotEvents, void* dummy)
 {
-/*  This function gets triggered by the ncurses library upon *any* keystroke 
+/*  This function gets triggered by the ncurses library upon *any* keystroke
     from user (for handling of Ctrl-C, see function finish()) */
-    
+
     int key;
     static unsigned short outstreamID = 0;
     SCTP_AssociationStatus assocStatus;
 
-    /* call ncurses function wgetch() to read in one user keystroke. 
+    /* call ncurses function wgetch() to read in one user keystroke.
        Did not use the wgetstr() function because it blocks until the user#
        terminates with a end-of-line (return) key. This prevents the SCTP
        library from sending out heartbeats, as well as queuing other callbacks
@@ -740,88 +738,88 @@ void stdinCallback(int fd, short int revents, short int* gotEvents, void* dummy)
 
     key = wgetch(textWin);
 
-    switch (key) 
+    switch (key)
       {
       case ERR:
-	sctp_shutdown(associationID);
-	endwin();
-	break;
-	
+    sctp_shutdown(associationID);
+    endwin();
+    break;
+
       /* ascii code for return key is 13 */
       case 13:
       case KEY_ENTER:
-	buffer[bufCount++]='\n';
-	buffer[bufCount++]=0;
+    buffer[bufCount++]='\n';
+    buffer[bufCount++]=0;
 
-	/* Increment the Stream ID by 1 everytime data is sent, 
-	   if stream ID = largest stream ID assigned, reset stream ID to 0 */      
-	if (outstreamID == statusUpdate.noOfOutStreams)
-	  outstreamID = 0;
+    /* Increment the Stream ID by 1 everytime data is sent,
+       if stream ID = largest stream ID assigned, reset stream ID to 0 */
+    if (outstreamID == statusUpdate.noOfOutStreams)
+      outstreamID = 0;
 
     sctp_send(associationID, outstreamID, (unsigned char *)buffer, strlen(buffer),
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
-                  SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
-                  SCTP_INFINITE_LIFETIME, SCTP_ORDERED_DELIVERY, 
-		  SCTP_BUNDLING_DISABLED);
+                  SCTP_USE_PRIMARY, SCTP_NO_CONTEXT,
+                  SCTP_INFINITE_LIFETIME, SCTP_ORDERED_DELIVERY,
+          SCTP_BUNDLING_DISABLED);
 
-	/* Update the Outstream ID list in Monitor tool structure */
-	if (statusUpdate.OutstreamIDList[outstreamID] == -1)
-	  statusUpdate.OutstreamIDList[outstreamID] = outstreamID; 
-	
-	/* Update the current position of OutstreamIDList array  */
-	currOutstreamID = outstreamID;
+    /* Update the Outstream ID list in Monitor tool structure */
+    if (statusUpdate.OutstreamIDList[outstreamID] == -1)
+      statusUpdate.OutstreamIDList[outstreamID] = outstreamID;
 
-	/* update the display */
-	ncurses_display_AssocStatus(associationID);
-	
-	outstreamID ++;
-   
-	waddch(textWin,'\n');
-	wrefresh(textWin);
+    /* Update the current position of OutstreamIDList array  */
+    currOutstreamID = outstreamID;
 
-	bufCount=0;
-	break;
+    /* update the display */
+    ncurses_display_AssocStatus(associationID);
+
+    outstreamID ++;
+
+    waddch(textWin,'\n');
+    wrefresh(textWin);
+
+    bufCount=0;
+    break;
 
       case KEY_BACKSPACE:
-	displayPathDetails = 0;
-	ncurses_display_PathStatus(associationID);
-	break;
+    displayPathDetails = 0;
+    ncurses_display_PathStatus(associationID);
+    break;
 
-      case '0': 
-      case '1': 
-      case '2': 
+      case '0':
+      case '1':
+      case '2':
       case '3':
-      case '4': 
+      case '4':
       case '5':
       case '6':
-      case '7': 
-      case '8': 
+      case '7':
+      case '8':
       case '9':
-	/* ascii code for key '0' is 48, key '1' is 49 and so fro..... 
-	 therefore, key - 48 will return the value of the Path ID chosen */ 
-	chosenPath = key - 48;
-	displayPathDetails = 1;
-	sctp_getAssocStatus(associationID,&assocStatus);
-	if (chosenPath < assocStatus.numberOfAddresses)
-	  ncurses_display_PathStatus(associationID);
-	break;
+    /* ascii code for key '0' is 48, key '1' is 49 and so fro.....
+     therefore, key - 48 will return the value of the Path ID chosen */
+    chosenPath = key - 48;
+    displayPathDetails = 1;
+    sctp_getAssocStatus(associationID,&assocStatus);
+    if (chosenPath < assocStatus.numberOfAddresses)
+      ncurses_display_PathStatus(associationID);
+    break;
 
       case KEY_RESIZE:
-	endwin();
-	initializecurses();
-	wrefresh(statusWin);
-	/* Display Functions*/
-	ncurses_display_AssocStatus(associationID);
-	ncurses_display_PathStatus(associationID);
-	break;
-	 
+    endwin();
+    initializecurses();
+    wrefresh(statusWin);
+    /* Display Functions*/
+    ncurses_display_AssocStatus(associationID);
+    ncurses_display_PathStatus(associationID);
+    break;
+
       default:
-	if (bufCount<SCTP_MAXIMUM_DATA_LENGTH);{
-	  buffer[bufCount++]= key;
-	  waddch(textWin, key);
-	  wrefresh(textWin);
-	  }
-      }  
+    if (bufCount<SCTP_MAXIMUM_DATA_LENGTH);{
+      buffer[bufCount++]= key;
+      waddch(textWin, key);
+      wrefresh(textWin);
+      }
+      }
 }
 
 
@@ -829,7 +827,7 @@ static void finish(int sig)
 {
 
     waddstr(statusWin," Terminating Monitoring tool...");
-    
+
     /* calls sctp_shutdown() to close the association.
        waits for the receipt of the shutdown notification before terminating the program */
 
@@ -837,8 +835,8 @@ static void finish(int sig)
       waddstr(statusWin,"successful\n");
     else{
       waddstr(statusWin,"failed\n");
-      /* the program should exit here as the shutdownComplete notification will 
-	 not be produced in this case */
+      /* the program should exit here as the shutdownComplete notification will
+         not be produced in this case */
       endwin();
       exit(0);
     }
@@ -850,7 +848,7 @@ static void finish(int sig)
 static void resize(int sig)
 {
   endwin();
-  
+
   initializecurses();
 
   wrefresh(statusWin);
@@ -864,7 +862,7 @@ int main(int argc, char **argv)
 {
     SCTP_ulpCallbacks terminalUlp;
     SCTP_InstanceParameters instanceParameters;
-    
+
     /* trapping Ctrl-C */
     signal(SIGINT, finish);
 
@@ -890,10 +888,10 @@ int main(int argc, char **argv)
 
     /* set up the "server" */
     sctpInstance = sctp_registerInstance(localPort,
-					  MAXIMUM_NUMBER_OF_IN_STREAMS,
-					  MAXIMUM_NUMBER_OF_OUT_STREAMS,
-					  noOfLocalAddresses, localAddressList,
-					  terminalUlp);
+                      MAXIMUM_NUMBER_OF_IN_STREAMS,
+                      MAXIMUM_NUMBER_OF_OUT_STREAMS,
+                      noOfLocalAddresses, localAddressList,
+                      terminalUlp);
 
     /* set the TOS byte */
     sctp_getAssocDefaults(sctpInstance, &instanceParameters);
@@ -901,7 +899,7 @@ int main(int argc, char **argv)
     sctp_setAssocDefaults(sctpInstance, &instanceParameters);
 
     associationID = sctp_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress,
-				   remotePort, NULL);
+                                   remotePort, NULL);
 
     sctp_registerUserCallback(fileno(stdin), &stdinCallback, NULL, POLLIN|POLLPRI);
 
@@ -911,22 +909,3 @@ int main(int argc, char **argv)
     /* this will never be reached */
     return 0;
 }
-
-/*  Local Variables: *** */
-/*  compile-command: "gcc -Wall -o monitor monitor.c -I/usr/local/include -L/usr/local/lib -lglib12 -lsctp -lncurses" *** */
-/*  End: *** */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

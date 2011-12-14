@@ -148,7 +148,7 @@ void getArgs(int argc, char **argv)
                 case 'i':
                   sendOOTBAborts = 0;
                   break;
-                  case 't':
+                case 't':
                   if (i+1 >= argc) {
                      printUsage();
                      exit(0);

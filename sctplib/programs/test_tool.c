@@ -83,7 +83,7 @@ int main(int argc, char *argv[])
     for(i = 2; i < argc; i++) {
         if(strcmp(argv[i], "-i") == 0) {
            params.sendOotbAborts = 0;
-	}
+        }
     }
     SCTP_setLibraryParameters(&params);
 
@@ -104,4 +104,3 @@ int main(int argc, char *argv[])
     /* this will never be reached */
     return 0;
 }
-

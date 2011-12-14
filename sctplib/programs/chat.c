@@ -58,10 +58,10 @@
 #define CHAT_PORT                          2345
 #define MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES    10
 #define MAXIMUM_NUMBER_OF_IN_STREAMS         10
-#define MAXIMUM_NUMBER_OF_OUT_STREAMS        10 
+#define MAXIMUM_NUMBER_OF_OUT_STREAMS        10
 #define SCTP_GENERIC_PAYLOAD_PROTOCOL_ID      0
 
-#define MAX_BUFFER_LENGTH                   1400	
+#define MAX_BUFFER_LENGTH                   1400
 
 #ifndef min
 #define min(x,y)            (x)<(y)?(x):(y)
@@ -101,13 +101,13 @@ void printUsage(void)
 {
     printf("usage:   chat [options] -s source_addr_1 -d destination_addr ...\n");
     printf("options:\n");
-    printf("-d destination_addr establish a association with the specified address\n");   
-    printf("-l local port       local port number\n");   
-    printf("-r remote port      remote port number\n");   
-    printf("-u user ID          specify your own user ID, otherwise login ID will be used\n");   
-    printf("-t byte             TOS byte used by all assiciations (default 0x10)\n");   
-    printf("-v                  verbose mode\n");   
-    printf("-V                  very verbose mode\n");   
+    printf("-d destination_addr establish a association with the specified address\n");
+    printf("-l local port       local port number\n");
+    printf("-r remote port      remote port number\n");
+    printf("-u user ID          specify your own user ID, otherwise login ID will be used\n");
+    printf("-t byte             TOS byte used by all assiciations (default 0x10)\n");
+    printf("-v                  verbose mode\n");
+    printf("-V                  very verbose mode\n");
 }
 
 void getArgs(int argc, char **argv)
@@ -121,8 +121,8 @@ void getArgs(int argc, char **argv)
         switch (c) {
         case 'd':
             if (strlen(optarg) < SCTP_MAX_IP_LEN) {
-                strcpy((char *)destinationAddress, optarg);
-		client = 1;
+               strcpy((char *)destinationAddress, optarg);
+               client = 1;
             }
             break;
         case 'l':
@@ -148,15 +148,14 @@ void getArgs(int argc, char **argv)
             verbose = 1;
             vverbose = 1;
             break;
-	case 'u':
-	    usrid = optarg;
-	    usrid_len =  strlen(usrid);
-	    break;
-	default:
+        case 'u':
+            usrid = optarg;
+            usrid_len =  strlen(usrid);
+            break;
+        default:
             printUsage();
             exit(-1);
-
-	  }
+        }
     }
 }
 
@@ -173,11 +172,11 @@ void checkArgs(void)
         exit(-1);
     }
     /*if user ID is not entered, get user ID from environment variable,"USER"*/
-    else if (usrid_len == 0){  
+    else if (usrid_len == 0){
 	  usrid = getenv("USER");
 	  usrid_len = strlen(usrid);
     }
-       
+
 }
 
 
@@ -187,7 +186,7 @@ void getDestinationIPaddr(char paddr[SCTP_MAX_IP_LEN])
 
 {
    SCTP_PathStatus pathStatus;
-   int i, pathID; 
+   int i, pathID;
 
    pathID = sctp_getPrimary(associationID);
    sctp_getPathStatus(associationID, pathID, &pathStatus);
@@ -197,7 +196,7 @@ void getDestinationIPaddr(char paddr[SCTP_MAX_IP_LEN])
    mvwaddstr(peerWinStatus, 0, 0, paddr);
    for (i=strlen(paddr);i<COLS-3;i++)
       mvwaddch(peerWinStatus,0,i,'-');
-  
+
    wrefresh(peerWinStatus);
    wrefresh(statusWin);
 }
@@ -209,7 +208,7 @@ void initializecurses()
   /* Ncurses initialization: specify window size and positions.
      selfWin : top window
      peerWin : bottom window
-     statusWin : display for SCTP information (bottom line(s))     
+     statusWin : display for SCTP information (bottom line(s))
 
   */
 
@@ -224,29 +223,29 @@ void initializecurses()
     selfY1 = 1;
     selfX2 = COLS-1;
     selfY2 = (int)((LINES-3)/2)-1;
-    
+
     peerX1 = 0;
     peerY1 = (int)((LINES-3)/2);
     peerX2 = COLS-1;
     peerY2 = LINES-5;
-    
+
     selfWin = newwin((selfY2-selfY1),selfX2,1,0);
-    peerWin = newwin((peerY2-peerY1),peerX2,peerY1,0);   
+    peerWin = newwin((peerY2-peerY1),peerX2,peerY1,0);
 
     statusWin = newwin(2,peerX2,peerY2+1,0);
 
     selfWinStatus = newwin(1,selfX2,0,0);
     peerWinStatus = newwin(1,peerX2,peerY1-1,0);
-    
+
     getDestinationIPaddr((char *)peeraddr);
 
     waddstr(selfWinStatus,usrid);
- 
-    for (i=usrid_len;i<COLS-3;i++) 
+
+    for (i=usrid_len;i<COLS-3;i++)
       mvwaddch(selfWinStatus,0,i,'-');
-    
+
     wrefresh(selfWinStatus);
-   
+
     (void) idlok(selfWin,TRUE);
     (void) idlok(peerWin,TRUE);
     (void) scrollok(selfWin,TRUE);
@@ -255,7 +254,7 @@ void initializecurses()
     (void) idlok(statusWin,TRUE);
 
     doupdate();
-    
+
 }
 
 void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int len,
@@ -265,8 +264,8 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
     unsigned int length;
     unsigned int tsn;
     unsigned short ssn;
- 
-    if (vverbose) {  
+
+    if (vverbose) {
       sprintf(tstr, "%-8x: Data arrived (%u bytes on stream %u, %s)\n",
                       assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
       waddstr(statusWin,tstr);
@@ -287,7 +286,7 @@ void dataArriveNotif(unsigned int assocID, unsigned int streamID, unsigned int l
 void sendFailureNotif(unsigned int assocID,
                       unsigned char *unsent_data, unsigned int dataLength, unsigned int *context, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     sprintf(tstr, "%-8x: Send failure\n", assocID);
     waddstr(statusWin,tstr);
     wrefresh(statusWin);
@@ -299,31 +298,31 @@ void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigne
     SCTP_AssociationStatus assocStatus;
     SCTP_PathStatus pathStatus;
     unsigned short pathID;
-    
-    if (verbose) {  
-        sprintf(tstr, "%-8x: Network status change: path %u is now %s\n", 
+
+    if (verbose) {
+        sprintf(tstr, "%-8x: Network status change: path %u is now %s\n",
         assocID, destAddrIndex, ((newState == SCTP_PATH_OK) ? "ACTIVE" : "INACTIVE"));
         waddstr(statusWin,tstr);
 	wrefresh(statusWin);
     }
-    
+
     /* if the primary path has become inactive */
     if ((newState == SCTP_PATH_UNREACHABLE) &&
         (destAddrIndex == sctp_getPrimary(assocID))) {
-        
-        /* select a new one */ 
+
+        /* select a new one */
         sctp_getAssocStatus(assocID, &assocStatus);
         for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
             sctp_getPathStatus(assocID, pathID, &pathStatus);
             if (pathStatus.state == SCTP_PATH_OK)
                 break;
         }
-        
+
         /* and use it */
         if (pathID < assocStatus.numberOfAddresses) {
             sctp_setPrimary(assocID, pathID);
 	    getDestinationIPaddr((char *)peeraddr);
-	   
+
         }
     }
 }
@@ -332,7 +331,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP,void* dummy)
-{	
+{
 
     associationID=assocID;
 
@@ -342,7 +341,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{	
+{
     unsigned char buffer[SCTP_MAXIMUM_DATA_LENGTH];
     unsigned int bufferLength;
     unsigned short streamID, streamSN;
@@ -356,7 +355,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         waddstr(statusWin,tstr);
     }
     return;
-    
+
     /* retrieve data */
     bufferLength = sizeof(buffer);
     while (sctp_receiveUnsent(assocID, buffer, &bufferLength, &tsn,
@@ -365,7 +364,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-    
+
     bufferLength = sizeof(buffer);
     while (sctp_receiveUnacked(assocID, buffer, &bufferLength, &tsn,
                                &streamID, &streamSN, &protoID, &flags, &ctx) >= 0){
@@ -373,14 +372,14 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-                      
+
     /* delete the association */
     sctp_deleteAssociation(assocID);
 }
 
 void communicationErrorNotif(unsigned int assocID, unsigned short status, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     sprintf(tstr, "%-8x: Communication error (status %u)\n", assocID, status);
     waddstr(statusWin,tstr);
     wrefresh(statusWin);
@@ -390,8 +389,8 @@ void communicationErrorNotif(unsigned int assocID, unsigned short status, void* 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
 {
     SCTP_AssociationStatus assocStatus;
-    
-    if (verbose) {  
+
+    if (verbose) {
         sprintf(tstr, "%-8x: Restart\n", assocID);
         waddstr(statusWin,tstr);
     }
@@ -400,34 +399,34 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) 
-    {  
+    if (verbose)
+    {
       sprintf(tstr, "%-8x: Shutdown complete\n", assocID);
       waddstr(statusWin,tstr);
       wrefresh(statusWin);
     }
-    
+
     /* delete the association */
     sctp_deleteAssociation(assocID);
-    
-    /* program terminates at this point upon the proper shutdown of the 
+
+    /* program terminates at this point upon the proper shutdown of the
        association. */
     endwin();
     exit(0);
-    
-    
+
+
 }
 
 void stdinCallback(int fd,short int revent, short int* gotEvents, void* dummy)
 {
-/*   this function gets triggered by the ncurses library upon *any* keystroke 
+/*   this function gets triggered by the ncurses library upon *any* keystroke
      from user (for handling of Ctrl-C and Ctrl-\ see function finish()) */
-    
+
     static int t;
     unsigned char c;
     char buffer[MAX_BUFFER_LENGTH];
- 
-    /* call ncurses function wgetch() to read in one user keystroke. 
+
+    /* call ncurses function wgetch() to read in one user keystroke.
        Did not use the wgetstr() function because it blocks until the user#
        terminates with a end-of-line (return) key. This prevents the SCTP
        library from sending out heartbeats, as well as queuing other callbacks
@@ -454,7 +453,7 @@ void stdinCallback(int fd,short int revent, short int* gotEvents, void* dummy)
                   0,
                   (unsigned char *)buffer, strlen(buffer),
                   SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
-                  SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
+                  SCTP_USE_PRIMARY, SCTP_NO_CONTEXT,
                   SCTP_INFINITE_LIFETIME, SCTP_ORDERED_DELIVERY,
                   SCTP_BUNDLING_DISABLED);
 	bufCount=0;
@@ -464,24 +463,24 @@ void stdinCallback(int fd,short int revent, short int* gotEvents, void* dummy)
 	break;
 
       default:
-    
+
 	if (bufCount<MAX_BUFFER_LENGTH);
 	{
 	  buf[bufCount++]=c;
-	  
+
 	  waddch(selfWin,c);
 	  wrefresh(selfWin);
 	}
-    }  
-        
-    
+    }
+
+
 }
 
 static void finish(int sig)
 {
 
     waddstr(statusWin,"Terminating chat session...");
-    
+
     /* calls sctp_shutdown() to close the association.
        waits for the receipt of the shutdown notification before terminating
        the program */
@@ -491,7 +490,7 @@ static void finish(int sig)
     else
     {
       waddstr(statusWin,"failed\n");
-      /* the program should exit here as the shutdownComplete contification will 
+      /* the program should exit here as the shutdownComplete contification will
 	 not be produced in this case */
       endwin();
       exit(0);
@@ -539,49 +538,23 @@ int main(int argc, char **argv)
 					  MAXIMUM_NUMBER_OF_OUT_STREAMS,
 					  noOfLocalAddresses, localAddressList,
 					  terminalUlp);
-    
+
       /* set the TOS byte */
       sctp_getAssocDefaults(sctpInstance, &instanceParameters);
       instanceParameters.ipTos=tosByte;
       sctp_setAssocDefaults(sctpInstance, &instanceParameters);
-    
+
       associationID = sctp_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS,
                                      destinationAddress, remotePort,  NULL);
-    
+
 
     }
 
     sctp_registerUserCallback(fileno(stdin),&stdinCallback, NULL, POLLIN|POLLPRI);
-    
+
     /* run the event handler forever */
     while (sctp_eventLoop() >= 0);
 
     /* this will never be reached */
     return 0;
 }
-
-
-/*  Local Variables: *** */
-/*  compile-command: "gcc -Wall -ggdb -o chat chat.c -I/usr/local/include -L/usr/local/lib -lglib12 -lsctp -lncurses" *** */
-/*  End: *** */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

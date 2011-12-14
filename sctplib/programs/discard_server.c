@@ -124,15 +124,15 @@ void printUsage(void)
     printf("-r        delay reading for a period of time. See the -p option.\n");
     printf("-s        source address\n");
     printf("-v        verbose mode\n");
-    printf("-V        very verbose mode\n");  
-    printf("-w        receiver Window\n");    
+    printf("-V        very verbose mode\n");
+    printf("-w        receiver Window\n");
 }
 
 void getArgs(int argc, char **argv)  /* Irene */
 {
     int i;
     char *opt;
-    
+
     for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
             switch (argv[i][1]) {
@@ -142,9 +142,9 @@ void getArgs(int argc, char **argv)  /* Irene */
                 case 'p':
                     if (i+1 >= argc) {
                         printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
+                    exit(0);
+                }
+                opt = argv[++i];
                     period = atoi(opt);
                     break;
                 case 'r':
@@ -152,15 +152,15 @@ void getArgs(int argc, char **argv)  /* Irene */
                     break;
                 case 's':
                     if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
+                       printUsage();
+                       exit(0);
+                    }
+                    opt = argv[++i];
                     if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
                         (strlen(opt) < SCTP_MAX_IP_LEN  )) {
                         strcpy((char *)localAddressList[noOfLocalAddresses], opt);
                         noOfLocalAddresses++;
-                    }; 
+                    };
                     break;
                 case 'i':
                     sendOOTBAborts = 0;
@@ -174,10 +174,10 @@ void getArgs(int argc, char **argv)  /* Irene */
                     break;
                 case 'w':
                     if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
+                       printUsage();
+                       exit(0);
+                    }
+                    opt = argv[++i];
                     myRwnd = atoi(opt);
                     myRwndSpecified = 1;
                     break;
@@ -186,7 +186,7 @@ void getArgs(int argc, char **argv)  /* Irene */
                     break;
             }
         } else
-			unknownCommand = 1;
+           unknownCommand = 1;
     }
 }
 
@@ -194,11 +194,11 @@ void checkArgs(void)
 {
     int abortProgram;
     int printUsageInfo;
-    
+
     abortProgram = 0;
     printUsageInfo = 0;
-    
-    if (noOfLocalAddresses == 0) {    
+
+    if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
         strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
 #else
@@ -211,7 +211,7 @@ void checkArgs(void)
          printUsageInfo = 1;
          abortProgram = 1;
     }
-    
+
     if (printUsageInfo == 1)
         printUsage();
     if (abortProgram == 1)
@@ -227,16 +227,16 @@ void readDataFunction(unsigned int timerID, void *parameter1, void *parameter2)
     unsigned short ssn;
     unsigned int tsn;
 
-    
+
     myUlpDataPtr = (struct ulp_data *) parameter1;
     length = sizeof(chunk);
-    for(streamID=0; streamID < myUlpDataPtr->streams; streamID++) { 
+    for(streamID=0; streamID < myUlpDataPtr->streams; streamID++) {
         length = MAXIMUM_PAYLOAD_LENGTH;
         while (SCTP_receive(myUlpDataPtr->assocID, streamID, chunk, &length, &ssn, &tsn, SCTP_MSG_DEFAULT) == 0) {
             /* update counter */
             myUlpDataPtr->nrOfReceivedChunks += 1;
             myUlpDataPtr->nrOfReceivedBytes  += length;
-            if (vverbose) {  
+            if (vverbose) {
                 fprintf(stdout, "%-8x: Data read (%u bytes on stream %u, ssn %u.)\n", myUlpDataPtr->assocID, length, streamID, ssn);
                 fflush(stdout);
             }
@@ -255,7 +255,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     unsigned short ssn;
     unsigned int tsn;
 
-    if (vverbose) {  
+    if (vverbose) {
       fprintf(stdout, "%-8x: Data arrived (%u bytes; TSN = %u, SSN = %u, SID= %u, %s)\n",
                       assocID, len, TSN, streamSN, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
       fflush(stdout);
@@ -264,7 +264,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     length = MAXIMUM_PAYLOAD_LENGTH;
     if (!(delayReading)) {
         SCTP_receive(assocID, streamID, chunk, &length, &ssn, &tsn, SCTP_MSG_DEFAULT);
-        if (vverbose) {  
+        if (vverbose) {
             fprintf(stdout, "%-8x: Data read (%u bytes; TSN = %u, SSN = %u, SID= %u, %s)\n",
                             assocID, len, TSN, ssn, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
             fflush(stdout);
@@ -279,7 +279,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 void sendFailureNotif(unsigned int assocID,
                       unsigned char *unsent_data, unsigned int dataLength, unsigned int *context, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Send failure\n", assocID);
     fflush(stdout);
   }
@@ -287,8 +287,8 @@ void sendFailureNotif(unsigned int assocID,
 
 void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigned short newState, void* ulpDataPtr)
 {
-    if (verbose) {  
-        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n", 
+    if (verbose) {
+        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n",
                 assocID, destAddrIndex, pathStateName(newState));
         fflush(stdout);
     }
@@ -298,10 +298,10 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{   
+{
     int index;
-    
-    if (verbose) {  
+
+    if (verbose) {
         fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfDestinations);
         fflush(stdout);
     }
@@ -324,7 +324,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
     if (delayReading) {
         /* if found */
         if (index < MAXIMUM_NUMBER_OF_ASSOCIATIONS) {
-            ulpData[index].readTimerID = SCTP_startTimer(period, &readDataFunction, (void *) &ulpData[index], NULL);   
+            ulpData[index].readTimerID = SCTP_startTimer(period, &readDataFunction, (void *) &ulpData[index], NULL);
             return &ulpData[index];
         } else {
             /* abort assoc due to lack of resources */
@@ -338,11 +338,11 @@ void* communicationUpNotif(unsigned int assocID, int status,
     }
     return NULL;
 }
- 
-   
+
+
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{   
+{
     if (verbose) {
         fprintf(stdout, "%-8x: Communication lost (status %u)\n", assocID, status);
         fflush(stdout);
@@ -356,15 +356,15 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 
 void communicationErrorNotif(unsigned int assocID, unsigned short status, void* dummy)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Communication error (status %u)\n", assocID, status);
         fflush(stdout);
     }
 }
 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
-{    
-    if (verbose) {  
+{
+    if (verbose) {
         fprintf(stdout, "%-8x: Restart\n", assocID);
         fflush(stdout);
     }
@@ -372,7 +372,7 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Shutdown complete\n", assocID);
         fflush(stdout);
     }
@@ -385,7 +385,7 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Shutdown received\n", assocID);
         fflush(stdout);
     }
@@ -399,7 +399,7 @@ int main(int argc, char **argv)
     SCTP_InstanceParameters instanceParameters;
     int sctpInstance;
     int index;
-    
+
     for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
         ulpData[index].assocID = 0;
         ulpData[index].streams = 0;
@@ -440,23 +440,19 @@ int main(int argc, char **argv)
                                          MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
                                          noOfLocalAddresses, localAddressList,
                                          discardUlp);
-    
+
     SCTP_getAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
     if (myRwndSpecified)
         instanceParameters.myRwnd = myRwnd;
     SCTP_setAssocDefaults((unsigned short)sctpInstance, &instanceParameters);
 
-    
+
     /* run the event handler forever */
 
     while (1) {
         SCTP_eventLoop();
     }
-    
+
     /* this will never be reached */
     exit(0);
 }
-
-
-
-

@@ -117,51 +117,51 @@ void timer_expired(unsigned int tID, void *associationIDvoid, void *unused);
 */
 void printString(char *log_name, unsigned char *byte_string, short nbytes)
 {
-	int i, j, linesOut;
-	char buff1[64];
-	char buff2[64];
-	char *ptr1, *ptr2, *dptrlast, *dptr;
-	char *hexes = "0123456789ABCDEF";
+    int i, j, linesOut;
+    char buff1[64];
+    char buff2[64];
+    char *ptr1, *ptr2, *dptrlast, *dptr;
+    char *hexes = "0123456789ABCDEF";
 
     fprintf(stdout, "Bytestring: %s.................................\n", log_name);
 
-	ptr1 = buff1;
-	ptr2 = buff2;
-	dptrlast = dptr = (char *)byte_string;
-	for (i = 0, linesOut = 0; i < nbytes; i++) {
-		*ptr1++ = hexes[0x0f & ((*dptr) >> 4)];
-		*ptr1++ = hexes[0x0f & (*dptr)];
-		*ptr1++ = ' ';
-		if ((*dptr >= 040) && (*dptr <= 0176))
-			*ptr2++ = *dptr;
-		else
-			*ptr2++ = '.';
-		dptr++;
-		if (((i + 1) % 16) == 0) {
-			*ptr1 = 0;
-			*ptr2 = 0;
-			fprintf(stdout, "%s %s\n", buff1, buff2);
-			linesOut++;
-			ptr1 = buff1;
-			ptr2 = buff2;
-			dptrlast = dptr;
-		}
-	}
-	if ((linesOut * 16) < nbytes) {
-		char spaces[64];
-		int dist, sp;
+    ptr1 = buff1;
+    ptr2 = buff2;
+    dptrlast = dptr = (char *)byte_string;
+    for (i = 0, linesOut = 0; i < nbytes; i++) {
+        *ptr1++ = hexes[0x0f & ((*dptr) >> 4)];
+        *ptr1++ = hexes[0x0f & (*dptr)];
+        *ptr1++ = ' ';
+        if ((*dptr >= 040) && (*dptr <= 0176))
+            *ptr2++ = *dptr;
+        else
+            *ptr2++ = '.';
+        dptr++;
+        if (((i + 1) % 16) == 0) {
+            *ptr1 = 0;
+            *ptr2 = 0;
+            fprintf(stdout, "%s %s\n", buff1, buff2);
+            linesOut++;
+            ptr1 = buff1;
+            ptr2 = buff2;
+            dptrlast = dptr;
+        }
+    }
+    if ((linesOut * 16) < nbytes) {
+        char spaces[64];
+        int dist, sp;
 
-		j = (linesOut * 16);
-		dist = ((16 - (i - j)) * 3) + 2;
-		*ptr1 = 0;
-		*ptr2 = 0;
-		for (sp = 0; sp < dist; sp++) {
-			spaces[sp] = ' ';
-		}
-		spaces[sp] = 0;
-		fprintf(stdout, "%s %s%s\n", buff1, spaces, buff2);
-	}
-	fflush(stdout);
+        j = (linesOut * 16);
+        dist = ((16 - (i - j)) * 3) + 2;
+        *ptr1 = 0;
+        *ptr2 = 0;
+        for (sp = 0; sp < dist; sp++) {
+            spaces[sp] = ' ';
+        }
+        spaces[sp] = 0;
+        fprintf(stdout, "%s %s%s\n", buff1, spaces, buff2);
+    }
+    fflush(stdout);
 }
 
 
@@ -224,11 +224,11 @@ void nextPath(void)
 int doPingPong(void)
 {
     int i;
-	/* use ascii bulk ping mode. */
+    /* use ascii bulk ping mode. */
     strncpy((char *)pingBuffer, "ping", 4);
-	for (i = 4; i < pingBufSize; i++) {
-			pingBuffer[i] = 'A' + (i % 26);
-	}
+    for (i = 4; i < pingBufSize; i++) {
+            pingBuffer[i] = 'A' + (i % 26);
+    }
     gettimeofday(&pingstart_time, NULL);
     return sctp_send(assocID, pingStream, (unsigned char *) pingBuffer,
                 pingBufSize, payload, -1, 0, 0, 0, 0);
@@ -240,9 +240,9 @@ int handlePong(void)
     int secs, msecs, timediff;
     struct timeval result;
 
-	pingPongCount--;
-	if (pingPongCount <= 0) {
-		/* done */
+    pingPongCount--;
+    if (pingPongCount <= 0) {
+        /* done */
         printf("#######################################################################\n");
 
         gettimeofday(&pongstop_time, NULL);
@@ -256,8 +256,8 @@ int handlePong(void)
 
         printf("#######################################################################\n");
         fflush(stdout);
-		return -1 ;
-	}
+        return -1 ;
+    }
     return sctp_send(assocID, pingStream, (unsigned char *) pingBuffer,
          pingBufSize, payload, -1, 0, 0, 0, 0);
 }
@@ -268,43 +268,43 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
     int lenread,i;
     SCTP_AssociationStatus status;
 
-	char readBuffer[256];
-	fgets(readBuffer, 256, stdin);
-	lenread = strlen(readBuffer);
+    char readBuffer[256];
+    fgets(readBuffer, 256, stdin);
+    lenread = strlen(readBuffer);
 
     while(lenread > 0 && (readBuffer[(lenread - 1)] == '\n' || readBuffer[(lenread - 1)] == '\r')) {
         readBuffer[(lenread - 1)] = 0;
         lenread --;
     }
 
-	if (lenread == 0) {
-		printf(">");
-		fflush(stdout);
-		return;
-	}
-	if (strcmp(readBuffer, "help") == 0) {
-		printf("Available commands are:\n");
-		printf(" quit - exit the program\n");
+    if (lenread == 0) {
+        printf(">");
+        fflush(stdout);
+        return;
+    }
+    if (strcmp(readBuffer, "help") == 0) {
+        printf("Available commands are:\n");
+        printf(" quit - exit the program\n");
         /*
         printf(" setassoc:WWW.XXX.YYY.ZZZ - set association id for assoc with this destination\n");
         */
-		printf(" setpay:payload - set the payload type\n");
-		printf(" setdefstrm:num - set the default stream to\n");
-		printf(" ping:size:stream:times - play ping pong\n");
-		printf(" stat - print queue counts\n");
-		printf(" bulk:size:stream:number - send a bulk of messages\n");
-		printf(" assoc - associate with the set destination\n");
-		printf(" abort - send an abort to the peer\n");
-		printf(" nextpath - switch to next path\n");
-		printf(" term - terminate the set destination association (graceful shutdown )\n");
-		printf(" heart:on/off - Turn HB on or off  to the destination\n");
-		printf(" heartdelay:time - Add number of seconds + RTO to hb interval\n");
-		printf(" getrtt - print RTT on primary path\n");
-		printf(" dohb:N - send a HB on path N\n");
-		printf(" sendloop:N - send test script loopback request of N size\n");
-		printf(" sendloopend:N - send test script loopback request of N size and terminate\n");
-    	printf(" timeoutval:msecs - set bulk timer to send one message every msecs\n");
-		printf(" some-other-string - send this to a peer if a peer is set\n");
+        printf(" setpay:payload - set the payload type\n");
+        printf(" setdefstrm:num - set the default stream to\n");
+        printf(" ping:size:stream:times - play ping pong\n");
+        printf(" stat - print queue counts\n");
+        printf(" bulk:size:stream:number - send a bulk of messages\n");
+        printf(" assoc - associate with the set destination\n");
+        printf(" abort - send an abort to the peer\n");
+        printf(" nextpath - switch to next path\n");
+        printf(" term - terminate the set destination association (graceful shutdown )\n");
+        printf(" heart:on/off - Turn HB on or off  to the destination\n");
+        printf(" heartdelay:time - Add number of seconds + RTO to hb interval\n");
+        printf(" getrtt - print RTT on primary path\n");
+        printf(" dohb:N - send a HB on path N\n");
+        printf(" sendloop:N - send test script loopback request of N size\n");
+        printf(" sendloopend:N - send test script loopback request of N size and terminate\n");
+        printf(" timeoutval:msecs - set bulk timer to send one message every msecs\n");
+        printf(" some-other-string - send this to a peer if a peer is set\n");
     } else if (strcmp(readBuffer, "quit") == 0) {
         /* add some cleanups */
         exit(0);
@@ -314,181 +314,181 @@ void ulp_stdin_cb(int fd, short int revents, short int* gotEvents, void* dummy)
         int result;
         result = sctp_abort(assocID);
         timerID = 0;
-		printf("Sent an abort -> result %d\n", result);
+        printf("Sent an abort -> result %d\n", result);
     } else if (strncmp(readBuffer, "sendloop:", 9) == 0) {
-		int x, ret = -1;
-		x = (int) strtol(&readBuffer[9], NULL, 0);
-		if (x == 0) {
-			printf("N was 0? defaulting to 64\n");
-			x = 64;
-		}
-		/*
+        int x, ret = -1;
+        x = (int) strtol(&readBuffer[9], NULL, 0);
+        if (x == 0) {
+            printf("N was 0? defaulting to 64\n");
+            x = 64;
+        }
+        /*
         ret = sendLoopRequest(m, x);
-		*/ 
-		printf("Sent loop returned %d\n", ret);
+        */
+        printf("Sent loop returned %d\n", ret);
     } else if (strncmp(readBuffer, "setpay:", 7) == 0) {
-		payload = strtol(&readBuffer[7], NULL, 0);
-		printf("payloadtype set to %d\n", payload);
+        payload = strtol(&readBuffer[7], NULL, 0);
+        printf("payloadtype set to %d\n", payload);
     } else if (strncmp(readBuffer, "setassoc:", 9) == 0) {
-/*      this could be used when we have several assocs	*/	
+/*      this could be used when we have several assocs    */
 /*         = strtol(&readBuffer[9], NULL, 0);  */
-		printf("assoc ID is %u\n", assocID);
+        printf("assoc ID is %u\n", assocID);
     } else if (strncmp(readBuffer, "timeoutval:", 11) == 0) {
-		timeoutval = strtol(&readBuffer[11], NULL, 0);
-		printf("Timeoutval set to %d msecs\n", timeoutval);
- 	} else if (strncmp(readBuffer, "heart:", 6) == 0) {
-		if (strncmp(&readBuffer[6], "off", 3) == 0) {
+        timeoutval = strtol(&readBuffer[11], NULL, 0);
+        printf("Timeoutval set to %d msecs\n", timeoutval);
+     } else if (strncmp(readBuffer, "heart:", 6) == 0) {
+        if (strncmp(&readBuffer[6], "off", 3) == 0) {
             for (i = 0; i < noOfPaths; i++)
                 sctp_changeHeartBeat(assocID, i, FALSE, 0);
-		} else {
+        } else {
             for (i = 0; i < noOfPaths; i++)
                 sctp_changeHeartBeat(assocID, i, TRUE, timeoutval);
-		}
-	} else if (strcmp(readBuffer, "getrtt") == 0) {
-		/* printf("RTT of TO is %d\n", sctpGETRTTREPORT(m, &to_ip)); */
+        }
+    } else if (strcmp(readBuffer, "getrtt") == 0) {
+        /* printf("RTT of TO is %d\n", sctpGETRTTREPORT(m, &to_ip)); */
     } else if (strncmp(readBuffer, "dohb:",5) == 0) {
         int path;
-		path = strtol(&readBuffer[5], NULL, 0);
+        path = strtol(&readBuffer[5], NULL, 0);
         path =  sctp_requestHeartbeat(assocID, (short)path);
-		printf("HB Request %s\n", (path==0)?"successfully sent":"failed");
+        printf("HB Request %s\n", (path==0)?"successfully sent":"failed");
     } else if (strncmp(readBuffer, "heartdelay:", 11) == 0) {
-	    int newdelay;
-		newdelay = strtol(&readBuffer[11], NULL, 0);
+        int newdelay;
+        newdelay = strtol(&readBuffer[11], NULL, 0);
         for (i = 0; i < noOfPaths; i++)
             sctp_changeHeartBeat(assocID, i, TRUE, newdelay);
         timeoutval =  newdelay;
-		printf("HB.Intervall set to %d msecs\n", newdelay);
- 	} else if (strcmp("term", readBuffer) == 0) {
+        printf("HB.Intervall set to %d msecs\n", newdelay);
+     } else if (strcmp("term", readBuffer) == 0) {
         sctp_shutdown(assocID);
         timerID = 0;
- 	} else if (strcmp("stat", readBuffer) == 0) {
-	    i = sctp_getAssocStatus(assocID,&status);
-	    if (i == 0) {
-    		printf(" %u chunks in SendQueue, %u chunks in RTX queue\n",
-    		    status.noOfChunksInSendQueue, status.noOfChunksInRetransmissionQueue);
-	    }
-	} else if (strncmp("setdefstrm:", readBuffer, 11) == 0) {
-		sID1 = strtol(&readBuffer[11], NULL, 0);
-	} else if (strcmp("assoc", readBuffer) == 0) {
-		printf("Sorry - command not yet implemented\n");
-        /*	sctpASSOCIATE(m, &to_ip, 0); */
-	} else if (strncmp("ping:", readBuffer, 5) == 0) {
-		char *end, *nxt;
-		int skip;
-		skip = 0;
-		if (pingPongCount) {
-			printf("Sorry ping-pong already in progress\n");
-			printf(">");
-			fflush(stdout);
-			return;
-		}
-		pingBufSize = strtol(&readBuffer[5], &end, 0);
-		if (end != NULL) {
-			if (*end != ':') {
-				skip = 1;
-			}
-		} else {
-			skip = 1;
-		}
+     } else if (strcmp("stat", readBuffer) == 0) {
+        i = sctp_getAssocStatus(assocID,&status);
+        if (i == 0) {
+            printf(" %u chunks in SendQueue, %u chunks in RTX queue\n",
+                status.noOfChunksInSendQueue, status.noOfChunksInRetransmissionQueue);
+        }
+    } else if (strncmp("setdefstrm:", readBuffer, 11) == 0) {
+        sID1 = strtol(&readBuffer[11], NULL, 0);
+    } else if (strcmp("assoc", readBuffer) == 0) {
+        printf("Sorry - command not yet implemented\n");
+        /*    sctpASSOCIATE(m, &to_ip, 0); */
+    } else if (strncmp("ping:", readBuffer, 5) == 0) {
+        char *end, *nxt;
+        int skip;
+        skip = 0;
+        if (pingPongCount) {
+            printf("Sorry ping-pong already in progress\n");
+            printf(">");
+            fflush(stdout);
+            return;
+        }
+        pingBufSize = strtol(&readBuffer[5], &end, 0);
+        if (end != NULL) {
+            if (*end != ':') {
+                skip = 1;
+            }
+        } else {
+            skip = 1;
+        }
 
-		if (skip) {
-			printf("mal-formed request at size\n");
-			printf(">");
-			fflush(stdout);
-			return;
-		}
-		nxt = end;
-		nxt++;
-		pingStream = strtol(nxt, &end, 0);
-		if (end != NULL) {
-			if (*end != ':') {
-				skip = 1;
-			}
-		} else {
-			skip = 1;
-		}
-		if (skip) {
-			printf("mal-formed request stream\n");
-			printf(">");
-			fflush(stdout);
-			return;
-		}
-		nxt = end;
-		nxt++;
-		pingPongCount = strtol(nxt, NULL, 0);
-		if (pingPongCount == 0) {
-			printf("mal-formed request at times\n");
-			printf(">");
-			fflush(stdout);
-			return;
-		}
-		/* prepare ping buffer */
+        if (skip) {
+            printf("mal-formed request at size\n");
+            printf(">");
+            fflush(stdout);
+            return;
+        }
+        nxt = end;
+        nxt++;
+        pingStream = strtol(nxt, &end, 0);
+        if (end != NULL) {
+            if (*end != ':') {
+                skip = 1;
+            }
+        } else {
+            skip = 1;
+        }
+        if (skip) {
+            printf("mal-formed request stream\n");
+            printf(">");
+            fflush(stdout);
+            return;
+        }
+        nxt = end;
+        nxt++;
+        pingPongCount = strtol(nxt, NULL, 0);
+        if (pingPongCount == 0) {
+            printf("mal-formed request at times\n");
+            printf(">");
+            fflush(stdout);
+            return;
+        }
+        /* prepare ping buffer */
         doPingPong();
-	} else if (strncmp("bulk:", readBuffer, 5) == 0) {
-		/*
+    } else if (strncmp("bulk:", readBuffer, 5) == 0) {
+        /*
         int ret;
-		*/
-		char *end, *nxt;
-		int skip;
-		skip = 0;
-		dataLength = strtol(&readBuffer[5], &end, 0);
-		if (end != NULL) {
-			if (*end != ':') {
-				skip = 1;
-			}
-		} else {
-			skip = 1;
-		}
+        */
+        char *end, *nxt;
+        int skip;
+        skip = 0;
+        dataLength = strtol(&readBuffer[5], &end, 0);
+        if (end != NULL) {
+            if (*end != ':') {
+                skip = 1;
+            }
+        } else {
+            skip = 1;
+        }
 
-		if (skip) {
-			printf("mal-formed request at size\n");
-			printf(">");
-			fflush(stdout);
-			return;
-		}
-		nxt = end;
-		nxt++;
-		sID1 = strtol(nxt, &end, 0);
-		if (end != NULL) {
-			if (*end != ':') {
-				skip = 1;
-			}
-		} else {
-			skip = 1;
-		}
-		if (skip) {
-			printf("mal-formed request stream\n");
-			printf(">");
-			fflush(stdout);
-			return;
-		}
-		nxt = end;
-		nxt++;
-		sendEvents = strtol(nxt, NULL, 0);
-		if (sendEvents == 0) {
-			printf("mal-formed request at times\n");
-			printf(">");
-			fflush(stdout);
+        if (skip) {
+            printf("mal-formed request at size\n");
+            printf(">");
+            fflush(stdout);
+            return;
+        }
+        nxt = end;
+        nxt++;
+        sID1 = strtol(nxt, &end, 0);
+        if (end != NULL) {
+            if (*end != ':') {
+                skip = 1;
+            }
+        } else {
+            skip = 1;
+        }
+        if (skip) {
+            printf("mal-formed request stream\n");
+            printf(">");
+            fflush(stdout);
+            return;
+        }
+        nxt = end;
+        nxt++;
+        sendEvents = strtol(nxt, NULL, 0);
+        if (sendEvents == 0) {
+            printf("mal-formed request at times\n");
+            printf(">");
+            fflush(stdout);
             sendEvents = 0;
-			return;
-		}
+            return;
+        }
         timerID = sctp_startTimer(timeoutval/1000, (timeoutval%1000)*1000, &timer_expired, NULL, NULL);
 
-	} else if (strcmp("inqueue", readBuffer) == 0) {
-/*		printf("Outbound queue count to dest = %d\n", sctpHOWMANYINQUEUE(m, &to_ip)); */
-/*		printf("Inbound queue count = %d\n", sctpHOWMANYINBOUND(m)); */
-	} else {
+    } else if (strcmp("inqueue", readBuffer) == 0) {
+/*        printf("Outbound queue count to dest = %d\n", sctpHOWMANYINQUEUE(m, &to_ip)); */
+/*        printf("Inbound queue count = %d\n", sctpHOWMANYINBOUND(m)); */
+    } else {
         if (timerID != 0) {
-		    printf("bulk or ping might be in progress, not sending !!!\n");
-		} else {
-			int xsxx;
+            printf("bulk or ping might be in progress, not sending !!!\n");
+        } else {
+            int xsxx;
             xsxx = sctp_send(assocID, sID1, (unsigned char *)readBuffer,
                    lenread, payload, -1, 0, 0, 0, 0);
-			printf("Returned %d from the send (1==association error, 0==success, -1==could not send)\n", xsxx);
-		}
-	}
-	printf(">");
-	fflush(stdout);
+            printf("Returned %d from the send (1==association error, 0==success, -1==could not send)\n", xsxx);
+        }
+    }
+    printf(">");
+    fflush(stdout);
 
 }
 
@@ -604,7 +604,7 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned short stream_id, unsign
 */
     if (pingPongCount > 0) {
         if (strncmp((char *)chunk, "pong", 4) == 0) {
-			i = handlePong();
+            i = handlePong();
             if (i==-1) {
                 printf("Data not sent, SHUTDOWN-state reached, terminating Ping-Pong !\n");
                 pingPongCount = 0;
@@ -616,9 +616,9 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned short stream_id, unsign
 
     if(strncmp((char *)chunk, "ping", 4) == 0) {
         /* it is a ping-pong message, send it back after changing
-		 * the first 4 bytes to pong
-		 */
-		strncpy((char *)chunk, "pong", 4);
+         * the first 4 bytes to pong
+         */
+        strncpy((char *)chunk, "pong", 4);
         SID =  stream_id;
         i = sctp_send(assoc_id, SID, (unsigned char *) chunk,
             len, protoID, -1, 0, 0, 0, 0);
@@ -644,8 +644,8 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned short stream_id, unsign
     } else {
         printString("ULP chunk received:", chunk, length);
     }
-	printf(">");
-	fflush(stdout);
+    printf(">");
+    fflush(stdout);
 }
 
 
@@ -653,7 +653,7 @@ void ulp_dataArriveNotif(unsigned int assoc_id, unsigned short stream_id, unsign
 /* indicates a change of network status (chapter 9.2.C).
    params: 1.  associationID
            2.  destinationAddresses
-	         3.  newState
+             3.  newState
 */
 void ulp_networkStatusChangeNotif(unsigned int assoc_id, short dest_add, unsigned short new_state, void* dummy)
 {
@@ -664,8 +664,8 @@ void ulp_networkStatusChangeNotif(unsigned int assoc_id, short dest_add, unsigne
         ((new_state == 0) ? "ACTIVE" : "INACTIVE"), noOfPaths);
     fprintf(stderr, "#######################################################################\n");
 
-	printf(">");
-	fflush(stdout);
+    printf(">");
+    fflush(stdout);
     /* if (noOfPaths > 0 && new_state) nextPath(); */
 }
 
@@ -716,8 +716,8 @@ void ulp_communicationLostNotif(unsigned int assoc_id, unsigned short status, vo
     if (timerID)
         sctp_stopTimer(timerID);
     timerID = 0;
-	printf(">");
-	fflush(stdout);
+    printf(">");
+    fflush(stdout);
 /*
     exit(0);
 */
@@ -746,8 +746,8 @@ void ulp_ShutdownCompleteNotif(unsigned int assoc_id, void* dummy)
     if (timerID)
         sctp_stopTimer(timerID);
     timerID = 0;
-	printf(">");
-	fflush(stdout);
+    printf(">");
+    fflush(stdout);
 }
 
 
@@ -788,9 +788,7 @@ void* ulp_communicationUpNotif(unsigned int assoc_id, int status,
         for (i = 0; i < noOfPaths; i++)
             sctp_changeHeartBeat(assocID, i, TRUE, timeInt);
     /* by default, HB  is with adaptive intervall enabled */
-	printf(">");
-	fflush(stdout);
+    printf(">");
+    fflush(stdout);
     return NULL;
 }
-
-

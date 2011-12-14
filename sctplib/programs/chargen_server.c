@@ -124,55 +124,55 @@ void getArgs(int argc, char **argv)
     for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
             switch (argv[i][1]) {
-				case 'h':
-					printUsage();
-					exit(0);
-				case 'l':
-					if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
-					givenLength =  atoi(opt);
-					break;
-				case 's':
-					if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
-					if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-						(strlen(opt) < SCTP_MAX_IP_LEN  )) {
-						strcpy((char *)localAddressList[noOfLocalAddresses], opt);
-						noOfLocalAddresses++;
-					};
-					break;
-				case 'i':
-					sendOOTBAborts = 0;
-					break;
-				case 't':
-					if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
-					timeToLive = atoi(opt);
-					break;
-				case 'v':
-					verbose = 1;
-					break;
-				case 'V':
-					verbose = 1;
-					vverbose = 1;
-					break;
-				default:
-					unknownCommand = 1;
-					break;
-			}
-		}
-		else
-			unknownCommand = 1;
-	}
+            case 'h':
+               printUsage();
+               exit(0);
+            case 'l':
+               if (i+1 >= argc) {
+                  printUsage();
+                  exit(0);
+               }
+               opt = argv[++i];
+               givenLength =  atoi(opt);
+               break;
+            case 's':
+               if (i+1 >= argc) {
+                  printUsage();
+                  exit(0);
+               }
+               opt = argv[++i];
+               if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+                  (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+                  strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+                  noOfLocalAddresses++;
+               };
+               break;
+            case 'i':
+               sendOOTBAborts = 0;
+               break;
+            case 't':
+               if (i+1 >= argc) {
+                  printUsage();
+                  exit(0);
+               }
+               opt = argv[++i];
+               timeToLive = atoi(opt);
+               break;
+            case 'v':
+               verbose = 1;
+               break;
+            case 'V':
+               verbose = 1;
+               vverbose = 1;
+               break;
+            default:
+               unknownCommand = 1;
+               break;
+         }
+      }
+      else
+         unknownCommand = 1;
+   }
 }
 
 void checkArgs(void)
