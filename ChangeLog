@@ -1,4 +1,166 @@
 ------------------------------------------------------------------------
+r2637 | dreibh | 2011-12-14 09:11:11 +0100 (Wed, 14 Dec 2011) | 1 line
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+   M /trunk/sctplib1/UpdateDoc1.sed
+   D /trunk/sctplib1/UpdateDocFile1.sh
+   A /trunk/sctplib1/UpdateDocFiles
+   M /trunk/sctplib1/sctplib/programs/chargen_server.c
+   M /trunk/sctplib1/sctplib/programs/chat.c
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/daytime_server.c
+   M /trunk/sctplib1/sctplib/programs/discard_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_monitor.c
+   M /trunk/sctplib1/sctplib/programs/echo_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_tool.c
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+   M /trunk/sctplib1/sctplib/programs/main.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.c
+   M /trunk/sctplib1/sctplib/programs/monitor.c
+   M /trunk/sctplib1/sctplib/programs/parser.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
+   M /trunk/sctplib1/sctplib/programs/sctptest.h
+   M /trunk/sctplib1/sctplib/programs/terminal.c
+   M /trunk/sctplib1/sctplib/programs/test_tool.c
+   M /trunk/sctplib1/sctplib/programs/testengine.c
+   M /trunk/sctplib1/sctplib/programs/testsctp.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+   M /trunk/sctplib1/sctplib/sctp/adaptation.h
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.c
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.h
+   M /trunk/sctplib1/sctplib/sctp/bundling.h
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.h
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+   M /trunk/sctplib1/sctplib/sctp/distribution.h
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.c
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.h
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.h
+   M /trunk/sctplib1/sctplib/sctp/globals.c
+   M /trunk/sctplib1/sctplib/sctp/globals.h
+   M /trunk/sctplib1/sctplib/sctp/messages.h
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.h
+   M /trunk/sctplib1/sctplib/sctp/rbundling.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.h
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.c
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.h
+   M /trunk/sctplib1/sctplib/sctp/sbundling.c
+   M /trunk/sctplib1/sctplib/sctp/sctp.h
+   M /trunk/sctplib1/sctplib/sctp/streamengine.c
+   M /trunk/sctplib1/sctplib/sctp/streamengine.h
+   M /trunk/sctplib1/sctplib/sctp/timer_list.c
+   M /trunk/sctplib1/sctplib/sctp/timer_list.h
+   M /trunk/sctplib1/sctplib.lsm
+
+Fixed typo.
+------------------------------------------------------------------------
+r2635 | dreibh | 2011-12-14 09:03:27 +0100 (Wed, 14 Dec 2011) | 1 line
+Changed paths:
+   M /trunk/sctplib1/sctplib/programs/test_tool.c
+
+Added missing include file.
+------------------------------------------------------------------------
+r2634 | dreibh | 2011-12-14 08:52:53 +0100 (Wed, 14 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/UpdateDoc1.sed
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/sctplib/programs/chargen_server.c
+   M /trunk/sctplib1/sctplib/programs/chat.c
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/daytime_server.c
+   M /trunk/sctplib1/sctplib/programs/discard_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_monitor.c
+   M /trunk/sctplib1/sctplib/programs/echo_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_tool.c
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+   M /trunk/sctplib1/sctplib/programs/main.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.c
+   M /trunk/sctplib1/sctplib/programs/monitor.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
+   M /trunk/sctplib1/sctplib/programs/terminal.c
+   M /trunk/sctplib1/sctplib/programs/testsctp.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+   M /trunk/sctplib1/sctplib/sctp/adaptation.h
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.c
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.h
+   M /trunk/sctplib1/sctplib/sctp/bundling.h
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.h
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+   M /trunk/sctplib1/sctplib/sctp/distribution.h
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.c
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.h
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.h
+   M /trunk/sctplib1/sctplib/sctp/globals.c
+   M /trunk/sctplib1/sctplib/sctp/globals.h
+   M /trunk/sctplib1/sctplib/sctp/messages.h
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.h
+   M /trunk/sctplib1/sctplib/sctp/rbundling.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.h
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.c
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.h
+   M /trunk/sctplib1/sctplib/sctp/sbundling.c
+   M /trunk/sctplib1/sctplib/sctp/sctp.h
+   M /trunk/sctplib1/sctplib/sctp/streamengine.c
+   M /trunk/sctplib1/sctplib/sctp/streamengine.h
+   M /trunk/sctplib1/sctplib/sctp/timer_list.c
+   M /trunk/sctplib1/sctplib/sctp/timer_list.h
+
+Version update.
+
+------------------------------------------------------------------------
+r2633 | dreibh | 2011-12-14 08:47:52 +0100 (Wed, 14 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/programs/chargen_server.c
+   M /trunk/sctplib1/sctplib/programs/chat.c
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/discard_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_tool.c
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.c
+   M /trunk/sctplib1/sctplib/programs/monitor.c
+   M /trunk/sctplib1/sctplib/programs/test_tool.c
+   M /trunk/sctplib1/sctplib/programs/testsctp.c
+
+Parameter handling fixes for test programs.
+
+------------------------------------------------------------------------
+r2632 | dreibh | 2011-12-14 08:01:30 +0100 (Wed, 14 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+
+IPv6 address handling fix: IPv6 src==dst is okay (same as IPv4 case) => loopback communication working for IPv6 now.
+
+------------------------------------------------------------------------
+r2631 | dreibh | 2011-12-14 07:51:11 +0100 (Wed, 14 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+
+SCTP over UDP socket initialization fix for IPv6.
+
+------------------------------------------------------------------------
+r2630 | dreibh | 2011-12-14 07:46:44 +0100 (Wed, 14 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_server.c
+   M /trunk/sctplib1/sctplib/programs/terminal.c
+
+Parameter handling fixes.
+
+------------------------------------------------------------------------
 r2626 | dreibh | 2011-12-12 13:00:40 +0100 (Mon, 12 Dec 2011) | 2 lines
 Changed paths:
    M /trunk/sctplib1/configure.in
