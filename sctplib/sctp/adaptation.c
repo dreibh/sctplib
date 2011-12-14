@@ -1677,7 +1677,7 @@ int open_dummy_socket(int family)
 
    if(family == AF_INET6) {
       memset(&in6, 0, sizeof(in6));
-      in6.sin6_family = AF_INET;
+      in6.sin6_family = AF_INET6;
       in6.sin6_port   = htons(SCTP_OVER_UDP_UDPPORT);
    }
    else {
@@ -2173,7 +2173,7 @@ gboolean adl_filterInetAddress(union sockunion* newAddress, AddressScopingFlags 
  * http://www.qnx.com/developers/docs/6.4.0/io-pkt_en/user_guide/migrating.html#Coexistence
  * The modifications are controlled by #ifdef NEUTRINO_RTOS, but the modified code is applicable
  * to any OS.
- * 
+ *
  */
 gboolean adl_gatherLocalAddresses(union sockunion **addresses,
      int *numberOfNets,
