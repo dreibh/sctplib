@@ -148,88 +148,123 @@ void printUsage(void)
 
 void getArgs(int argc, char **argv)
 {
-    int i;
-    char *opt;
+   int i;
+   char *opt;
 
 
-     for(i=1; i < argc ;i++) {
-        if (argv[i][0] == '-') {
-            switch (argv[i][1])
-      {
-        case 'a':
-            useAbort = 1;
-            break;
-        case 'c':
-            rotateStreams = 1;
-            break;
-        case 'd':
+   for(i=1; i < argc ;i++) {
+      if (argv[i][0] == '-') {
+         switch (argv[i][1]) {
+         case 'a':
+               useAbort = 1;
+               break;
+         case 'c':
+               rotateStreams = 1;
+               break;
+         case 'd':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             if (strlen(opt) < SCTP_MAX_IP_LEN) {
-                strcpy((char *)destinationAddress, opt);
+               strcpy((char *)destinationAddress, opt);
             }
             hasDestinationAddress = 1;
             break;
-        case 'h':
+         case 'h':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             HBInterval = atoi(opt);
             break;
-        case 'l':
+         case 'l':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             localPort = atoi(opt);
             break;
-        case 'm':
+         case 'm':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             rto_min = atoi(opt);
             break;
-        case 'M':
+         case 'M':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             rto_max = atoi(opt);
             break;
-        case 'q':
+         case 'q':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             tosByte = (unsigned char) atoi(opt);
             break;
-        case 'r':
+         case 'r':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             remotePort = atoi(opt);
             break;
-        case 's':
+         case 's':
             if (i+1 >= argc) {
-                        printUsage();
-                        exit(0);
-                    }
+               printUsage();
+               exit(0);
+            }
             opt = argv[++i];
             if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                (strlen(opt) < SCTP_MAX_IP_LEN  )) {
-                strcpy((char *)localAddressList[noOfLocalAddresses], opt);
-                noOfLocalAddresses++;
+               (strlen(opt) < SCTP_MAX_IP_LEN  )) {
+               strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+               noOfLocalAddresses++;
             }
             break;
-        case 't':
+         case 't':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             timeToLive = atoi(opt);
             break;
-        case 'i':
+         case 'i':
             sendOOTBAborts = 0;
             break;
-        case 'v':
+         case 'v':
             verbose = 1;
             break;
-        case 'V':
+         case 'V':
             verbose = 1;
             vverbose = 1;
             break;
-        case 'w':
+         case 'w':
+            if (i+1 >= argc) {
+               printUsage();
+               exit(0);
+            }
             opt=argv[++i];
             myRwnd = atoi(opt);
             myRwndSpecified = 1;
             break;
-        default:
+         default:
             unknownCommand = 1;
             break;
-        }
-    }
-}
+         }
+      }
+   }
 }
 
 void checkArgs(void)

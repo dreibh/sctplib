@@ -125,29 +125,29 @@ void getArgs(int argc, char **argv)
         if (argv[i][0] == '-') {
             switch (argv[i][1]) {
                 case 'h':
-                printUsage();
-                exit(0);
+                  printUsage();
+                  exit(0);
                 case 's':
-                    if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
-                    if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
-                        (strlen(opt) < SCTP_MAX_IP_LEN  )) {
-                        strcpy((char *)localAddressList[noOfLocalAddresses], opt);
-                        noOfLocalAddresses++;
-                    };
-                    break;
+                   if (i+1 >= argc) {
+                      printUsage();
+                      exit(0);
+                   }
+                   opt = argv[++i];
+                   if ((noOfLocalAddresses < MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES) &&
+                       (strlen(opt) < SCTP_MAX_IP_LEN)) {
+                       strcpy((char *)localAddressList[noOfLocalAddresses], opt);
+                       noOfLocalAddresses++;
+                   };
+                   break;
                 case 'i':
                     sendOOTBAborts = 0;
                     break;
                 case 't':
                     if (i+1 >= argc) {
-                        printUsage();
-				        exit(0);
-				    }
-				    opt = argv[++i];
+                       printUsage();
+                       exit(0);
+                    }
+                    opt = argv[++i];
                     timeToLive = atoi(opt);
                     break;
                 case 'v':
@@ -162,7 +162,7 @@ void getArgs(int argc, char **argv)
                     break;
             }
         } else
-			unknownCommand = 1;
+         unknownCommand = 1;
     }
 }
 
@@ -299,7 +299,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 
     bufferLength = sizeof(buffer);
     while (SCTP_receiveUnacked(assocID, buffer, &bufferLength, &tsn,
-			       &streamID, &streamSN, &protoID) >= 0){
+                &streamID, &streamSN, &protoID) >= 0){
         /* do something with the retrieved data */
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
