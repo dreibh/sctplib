@@ -1,4 +1,4 @@
-sctplib (1:1.0.11~rc1.1-1ubuntu1) natty; urgency=low
+sctplib (1:1.0.11~rc1.2-1ubuntu1) natty; urgency=low
 
   * New upstream version.
   * Initial Ubuntu release (LP: #228052).
