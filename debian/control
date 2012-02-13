@@ -6,7 +6,7 @@ Homepage: http://tdrwww.iem.uni-due.de/dreibholz/rserpool/index.html
 Build-Depends: autotools-dev,
                debhelper (>= 5),
                libglib2.0-dev
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 
 Package: libsctplib1
 Section: libs
@@ -16,6 +16,7 @@ Depends: ${misc:Depends},
 Conflicts: sctplib1
 Replaces: sctplib1
 Description: Userland implementation of the SCTP protocol RFC 4960
+ This package contains the shared library for sctplib.
  .
  The sctplib library is a fairly complete prototype implementation of the
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable
@@ -43,8 +44,7 @@ Depends: libsctplib1,
 Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
 Description: Documentation of the userland SCTP implementation sctplib
- .
- This package contains documentation files for sctplib
+ This package contains documentation files for sctplib.
  .
  The sctplib library is a fairly complete prototype implementation of the
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable
@@ -64,8 +64,7 @@ Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Recommends: sctplib-docs
 Description: Headers and libraries of the userland SCTP implementation sctplib
- .
- This package contains development files for sctplib
+ This package contains development files for sctplib.
  .
  The sctplib library is a fairly complete prototype implementation of the
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable

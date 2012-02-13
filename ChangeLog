@@ -1,4 +1,24 @@
 ------------------------------------------------------------------------
+r2654 | dreibh | 2011-12-22 08:51:45 +0100 (Thu, 22 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/rsplib2/UpdateDoc1.sed
+   M /trunk/sctplib1/UpdateDoc1.sed
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/socketapi/UpdateDoc1.sed
+   M /trunk/socketapi/configure.in
+   M /trunk/socketapi/debian/changelog
+
+Minor updates.
+
+------------------------------------------------------------------------
+r2639 | dreibh | 2011-12-14 09:15:52 +0100 (Wed, 14 Dec 2011) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+
+Updated ChangeLog.
+
+------------------------------------------------------------------------
 r2637 | dreibh | 2011-12-14 09:11:11 +0100 (Wed, 14 Dec 2011) | 1 line
 Changed paths:
    M /trunk/sctplib1/ChangeLog
