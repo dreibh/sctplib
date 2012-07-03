@@ -2,5 +2,5 @@
 
 ./bootstrap && \
 ./clean-deb && \
-./make-deb dapper hardy jaunty karmic lucid maverick natty oneiric && \
+./make-deb dapper hardy jaunty karmic lucid maverick natty oneiric precise quantal && \
 dput ppa *.changes
