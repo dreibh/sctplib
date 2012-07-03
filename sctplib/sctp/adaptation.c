@@ -451,7 +451,8 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
 #ifdef SIN6_LEN
         su->sin6.sin6_len = sizeof(struct sockaddr_in6);
 #endif                          /* SIN6_LEN */
-        return 0;
+        su->sin6.sin6_scope_id = 0;
+        return 0;        
     }
 #endif                          /* HAVE_IPV6 */
     return -1;
@@ -460,6 +461,9 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
 
 int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len)
 {
+    char        ifnamebuffer[IFNAMSIZ];
+    const char* ifname;
+
     if (su->sa.sa_family == AF_INET){
         if (len > 16) len = 16;
         strncpy((char *)buf, inet_ntoa(su->sin.sin_addr), len);
@@ -468,6 +472,18 @@ int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len)
 #ifdef HAVE_IPV6
     else if (su->sa.sa_family == AF_INET6) {
         if (inet_ntop(AF_INET6, &su->sin6.sin6_addr, (char *)buf, len)==NULL) return 0;
+        if (IN6_IS_ADDR_LINKLOCAL(&su->sin6.sin6_addr)) {
+             char* ifname = if_indextoname(su->sin6.sin6_scope_id, (char*)&ifnamebuffer);
+             if(ifname == NULL) {
+                /* printf("Bad scope: %s!\n", buf); */
+                return(0);   /* Bad scope ID! */
+             }
+             if(strlen((const char*)buf) + strlen(ifname) + 2 >= len) {
+                return(0);   /* Not enough space! */
+             }
+             strcat((char*)buf, "%");
+             strcat((char*)buf, ifname);
+        }
         return (1);
     }
 #endif                          /* HAVE_IPV6 */
@@ -2415,8 +2431,11 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
             strncpy(&addrBuffer2[35],&addrBuffer[28],4);
 
             if(inet_pton(AF_INET6,addrBuffer2,(void *)&sin6.sin6_addr) > 0){
-                memcpy(&((localAddresses)[*numberOfNets]),&sin6,sizeof(sin6));
-                (*numberOfNets)++;
+                if (IN6_IS_ADDR_LINKLOCAL(&sin6.sin6_addr)) {
+                   sscanf((const char*)&addrBuffer[34], "%x", &sin6.sin6_scope_id);
+                }
+                memcpy(&((localAddresses)[*numberOfNets]),&sin6,sizeof(sin6));                
+
             }else{
                 error_logi(ERROR_FATAL, "Could not translate string %s",addrBuffer2);
             }
