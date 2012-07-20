@@ -452,7 +452,7 @@ int adl_str2sockunion(guchar * str, union sockunion *su)
         su->sin6.sin6_len = sizeof(struct sockaddr_in6);
 #endif                          /* SIN6_LEN */
         su->sin6.sin6_scope_id = 0;
-        return 0;        
+        return 0;
     }
 #endif                          /* HAVE_IPV6 */
     return -1;
@@ -473,7 +473,7 @@ int adl_sockunion2str(union sockunion *su, guchar * buf, size_t len)
     else if (su->sa.sa_family == AF_INET6) {
         if (inet_ntop(AF_INET6, &su->sin6.sin6_addr, (char *)buf, len)==NULL) return 0;
         if (IN6_IS_ADDR_LINKLOCAL(&su->sin6.sin6_addr)) {
-             char* ifname = if_indextoname(su->sin6.sin6_scope_id, (char*)&ifnamebuffer);
+             ifname = if_indextoname(su->sin6.sin6_scope_id, (char*)&ifnamebuffer);
              if(ifname == NULL) {
                 /* printf("Bad scope: %s!\n", buf); */
                 return(0);   /* Bad scope ID! */
@@ -2434,7 +2434,7 @@ gboolean adl_gatherLocalAddresses(union sockunion **addresses,
                 if (IN6_IS_ADDR_LINKLOCAL(&sin6.sin6_addr)) {
                    sscanf((const char*)&addrBuffer[34], "%x", &sin6.sin6_scope_id);
                 }
-                memcpy(&((localAddresses)[*numberOfNets]),&sin6,sizeof(sin6));                
+                memcpy(&((localAddresses)[*numberOfNets]),&sin6,sizeof(sin6));
 
             }else{
                 error_logi(ERROR_FATAL, "Could not translate string %s",addrBuffer2);

@@ -47,7 +47,8 @@
 #include <string.h>
 #include <stdarg.h>
 #include <time.h>
-
+#include <sys/types.h>
+        
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
