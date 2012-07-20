@@ -799,7 +799,7 @@ int ch_enterPRSCTPfromInit(ChunkID initAckCID, ChunkID initCID)
         pType =  ntohs(vl_initPtr->param_type);
         pLen  =  ntohs(vl_initPtr->param_length);
 
-        if (pLen < 4) result = -1; /* peer error - ignore - should send an error notification */
+        if (pLen < 4) return -1; /* peer error - ignore - should send an error notification */
 
         event_logiii(VERBOSE, "Scan variable parameters: Got type %u, len: %u, position %u",pType, pLen, curs);
 
