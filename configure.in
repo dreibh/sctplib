@@ -6,7 +6,7 @@
 AC_INIT(sctplib/programs/discard_server.c)
 AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(sctplib, 1.0.13)
+AM_INIT_AUTOMAKE(sctplib, 1.0.14~rc1.1)
 AC_PREFIX_DEFAULT(/usr/local)
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
@@ -38,6 +38,16 @@ AC_FUNC_SELECT_ARGTYPES
 AC_TYPE_SIGNAL
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([gettimeofday inet_ntoa memset select socket strerror strtol strtoul])
+
+
+# ###### colorgcc ###########################################################
+AC_CHECK_PROG([COLORGCC], [colorgcc], [yes], [no])
+if test "$COLORGCC" == "yes"
+then
+   AC_MSG_NOTICE([Compiling using colorgcc])
+   CC=colorgcc
+   CXX=colorgcc
+fi
 
 
 # ###### Options ############################################################

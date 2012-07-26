@@ -1,4 +1,74 @@
 ------------------------------------------------------------------------
+r2706 | dreibh | 2012-07-20 21:53:45 +0200 (Fri, 20 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+   M /trunk/sctplib1/sctplib/sctp/globals.c
+
+Fixed two compiler warnings.
+
+------------------------------------------------------------------------
+r2703 | dreibh | 2012-07-20 21:29:31 +0200 (Fri, 20 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/debian/changelog
+
+A small fix.
+
+------------------------------------------------------------------------
+r2702 | dreibh | 2012-07-20 21:09:54 +0200 (Fri, 20 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+
+Version update.
+
+------------------------------------------------------------------------
+r2701 | dreibh | 2012-07-20 21:02:06 +0200 (Fri, 20 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+
+Merged patch by Nils Olav Sel?\195?\165sdal to avoid infinite loop in case of malformed INIT chunk.
+
+------------------------------------------------------------------------
+r2694 | dreibh | 2012-07-03 19:36:25 +0200 (Tue, 03 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/make-ppa
+
+Version update.
+
+------------------------------------------------------------------------
+r2691 | dreibh | 2012-07-03 19:32:07 +0200 (Tue, 03 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+
+Fixed handling of IPv6 scope ID.
+
+------------------------------------------------------------------------
+r2690 | dreibh | 2012-07-03 19:31:51 +0200 (Tue, 03 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib/sctp/Makefile.am
+
+Makefile fix.
+
+------------------------------------------------------------------------
+r2670 | dreibh | 2012-02-13 07:58:11 +0100 (Mon, 13 Feb 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/sctplib.lsm
+
+Update of LSM entry.
+
+------------------------------------------------------------------------
+r2669 | dreibh | 2012-02-13 07:57:38 +0100 (Mon, 13 Feb 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian/control
+
+Packaging updates.
+
+------------------------------------------------------------------------
 r2654 | dreibh | 2011-12-22 08:51:45 +0100 (Thu, 22 Dec 2011) | 2 lines
 Changed paths:
    M /trunk/rsplib2/UpdateDoc1.sed
