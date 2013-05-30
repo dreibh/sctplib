@@ -6,7 +6,7 @@ Homepage: http://tdrwww.iem.uni-due.de/dreibholz/rserpool/index.html
 Build-Depends: autotools-dev,
                debhelper (>= 5),
                libglib2.0-dev
-Standards-Version: 3.9.2
+Standards-Version: 3.9.4
 
 Package: libsctplib1
 Section: libs
