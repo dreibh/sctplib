@@ -4,9 +4,10 @@ This source code repository contains an implementation of the
 Stream Control Transmission Protocol, as per RFC 4960.
 
 ---------------------------------------------------------------------------------
+
 Copyright (C) 2000 by Siemens AG, Munich, Germany.
 Copyright (C) 2001-2004 Andreas Jungmaier
-Copyright (C) 2004-2011 Thomas Dreibholz
+Copyright (C) 2004-2013 Thomas Dreibholz
 
 Realized in co-operation between Siemens AG and
 the Institute of Computer Networking Technology, University of
@@ -22,14 +23,14 @@ The authors alone are responsible for the contents.
 Please note that you must have glib version 1.2 and/or 2.0 installed in order for
 the compilation to succeed! GLIB is a generic C-library for things like lists,
 arrays, timers etc. Should you not have it installed, you can obtain it for most
-OS's from ftp://www.gtk.org/pub/gtk/v1.2/
+OS's from ftp://www.gtk.org/pub/gtk/
 
 ---------------------------------------------------------------------------------
 
 Just use
-prompt> tar xvfz sctplib-1.0.8-XYZ.tar.gz
+prompt> tar xvfz sctplib-1.0.14-XYZ.tar.gz
 and you get a new directory 
-sctplib-1.0.8-XYZ
+sctplib-1.0.14-XYZ
 
 cd into that and type
 ./configure
@@ -61,9 +62,7 @@ sctplib/manual :   A subdirectory containing some tex files and a PDF manual,
                 PLEASE NOTE: THIS DOCUMENTATION IS SLIGHTLY OUT OF DATE !
                 IF YOU DO NOT LIKE THIS, FEEL FREE TO CONTRIBUTE UPDATES...
                 But promised: we will be working on that, and there will be
-                a new manual after release of sctplib-1.0.8 !
+                a new manual after release of sctplib-1.0.14 !
 
 sctplib/docs: This subdirectory will contain documentation after the build
-    process, that has been automatically derived from the source ode. You
-    might want to get
-    ftp://tdrwww.iem.uni-due.de/pub/unix/devel/doc++-3.4.6.tar.gz
+    process, that has been automatically derived from the source code.
