@@ -2,7 +2,7 @@ Source: sctplib
 Section: net
 Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
-Homepage: http://tdrwww.iem.uni-due.de/dreibholz/rserpool/index.html
+Homepage: http://www.iem.uni-due.de/~dreibh/rserpool/index.html
 Build-Depends: autotools-dev,
                debhelper (>= 5),
                libglib2.0-dev
