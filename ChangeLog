@@ -1,4 +1,101 @@
 ------------------------------------------------------------------------
+r2772 | dreibh | 2013-05-30 11:12:13 +0200 (Thu, 30 May 2013) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/debian/control
+
+Control file fix.
+
+------------------------------------------------------------------------
+r2771 | dreibh | 2013-05-30 11:09:07 +0200 (Thu, 30 May 2013) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/README
+   M /trunk/sctplib1/UpdateDoc1.sed
+   M /trunk/sctplib1/debian/copyright
+   M /trunk/sctplib1/debian/watch
+   M /trunk/sctplib1/sctplib/programs/chargen_server.c
+   M /trunk/sctplib1/sctplib/programs/chat.c
+   M /trunk/sctplib1/sctplib/programs/combined_server.c
+   M /trunk/sctplib1/sctplib/programs/daytime_server.c
+   M /trunk/sctplib1/sctplib/programs/discard_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_monitor.c
+   M /trunk/sctplib1/sctplib/programs/echo_server.c
+   M /trunk/sctplib1/sctplib/programs/echo_tool.c
+   M /trunk/sctplib1/sctplib/programs/localcom.c
+   M /trunk/sctplib1/sctplib/programs/main.c
+   M /trunk/sctplib1/sctplib/programs/mini-ulp.c
+   M /trunk/sctplib1/sctplib/programs/monitor.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.c
+   M /trunk/sctplib1/sctplib/programs/sctp_wrapper.h
+   M /trunk/sctplib1/sctplib/programs/terminal.c
+   M /trunk/sctplib1/sctplib/programs/testsctp.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.c
+   M /trunk/sctplib1/sctplib/sctp/SCTP-control.h
+   M /trunk/sctplib1/sctplib/sctp/adaptation.c
+   M /trunk/sctplib1/sctplib/sctp/adaptation.h
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.c
+   M /trunk/sctplib1/sctplib/sctp/auxiliary.h
+   M /trunk/sctplib1/sctplib/sctp/bundling.h
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.c
+   M /trunk/sctplib1/sctplib/sctp/chunkHandler.h
+   M /trunk/sctplib1/sctplib/sctp/distribution.c
+   M /trunk/sctplib1/sctplib/sctp/distribution.h
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.c
+   M /trunk/sctplib1/sctplib/sctp/errorhandler.h
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.c
+   M /trunk/sctplib1/sctplib/sctp/flowcontrol.h
+   M /trunk/sctplib1/sctplib/sctp/globals.c
+   M /trunk/sctplib1/sctplib/sctp/globals.h
+   M /trunk/sctplib1/sctplib/sctp/messages.h
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.c
+   M /trunk/sctplib1/sctplib/sctp/pathmanagement.h
+   M /trunk/sctplib1/sctplib/sctp/rbundling.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.c
+   M /trunk/sctplib1/sctplib/sctp/recvctrl.h
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.c
+   M /trunk/sctplib1/sctplib/sctp/reltransfer.h
+   M /trunk/sctplib1/sctplib/sctp/sbundling.c
+   M /trunk/sctplib1/sctplib/sctp/sctp.h
+   M /trunk/sctplib1/sctplib/sctp/streamengine.c
+   M /trunk/sctplib1/sctplib/sctp/streamengine.h
+   M /trunk/sctplib1/sctplib/sctp/timer_list.c
+   M /trunk/sctplib1/sctplib/sctp/timer_list.h
+   M /trunk/sctplib1/sctplib.lsm
+
+Build system updates.
+
+------------------------------------------------------------------------
+r2770 | dreibh | 2013-05-30 10:46:46 +0200 (Thu, 30 May 2013) | 2 lines
+Changed paths:
+   A /trunk/sctplib1/build-deb
+   M /trunk/sctplib1/clean-deb
+   A /trunk/sctplib1/configure.ac (from /trunk/sctplib1/configure.in:2768)
+   D /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/debian/control
+   A /trunk/sctplib1/filter-empty-entries (from /trunk/rsplib2/filter-empty-entries:2768)
+   M /trunk/sctplib1/make-deb
+
+Build script updates.
+
+------------------------------------------------------------------------
+r2722 | dreibh | 2012-10-20 23:50:43 +0200 (Sat, 20 Oct 2012) | 1 line
+Changed paths:
+   M /trunk/rsplib2/make-ppa
+   M /trunk/sctplib1/make-ppa
+   M /trunk/socketapi/make-ppa
+
+Build script updates.
+------------------------------------------------------------------------
+r2707 | dreibh | 2012-07-26 13:44:33 +0200 (Thu, 26 Jul 2012) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+   M /trunk/sctplib1/configure.in
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/sctplib1/sctplib/sctp/Makefile.am
+
+Build script updates.
+
+------------------------------------------------------------------------
 r2706 | dreibh | 2012-07-20 21:53:45 +0200 (Fri, 20 Jul 2012) | 2 lines
 Changed paths:
    M /trunk/sctplib1/sctplib/sctp/adaptation.c
