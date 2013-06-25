@@ -6,7 +6,7 @@
 AC_INIT(sctplib/programs/discard_server.c)
 AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(sctplib, 1.0.14~rc2.1)
+AM_INIT_AUTOMAKE(sctplib, 1.0.14)
 AC_PREFIX_DEFAULT(/usr/local)
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
