@@ -1,4 +1,45 @@
 ------------------------------------------------------------------------
+r2795 | dreibh | 2013-10-18 23:52:41 +0200 (Fri, 18 Oct 2013) | 2 lines
+Changed paths:
+   M /trunk/rsplib2/make-ppa
+   M /trunk/sctplib1/make-ppa
+   M /trunk/socketapi/make-ppa
+
+Updated make-ppa.
+
+------------------------------------------------------------------------
+r2786 | dreibh | 2013-06-25 22:39:59 +0200 (Tue, 25 Jun 2013) | 1 line
+Changed paths:
+   M /trunk/sctplib1/configure.ac
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/socketapi/configure.ac
+   M /trunk/socketapi/debian/changelog
+
+Version updates.
+------------------------------------------------------------------------
+r2785 | dreibh | 2013-06-10 16:51:07 +0200 (Mon, 10 Jun 2013) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/configure.ac
+   M /trunk/sctplib1/debian/changelog
+   M /trunk/socketapi/configure.ac
+   M /trunk/socketapi/debian/changelog
+
+Version update.
+
+------------------------------------------------------------------------
+r2778 | dreibh | 2013-05-30 14:19:00 +0200 (Thu, 30 May 2013) | 1 line
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+
+Updated ChangeLog.
+------------------------------------------------------------------------
+r2774 | dreibh | 2013-05-30 13:21:19 +0200 (Thu, 30 May 2013) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/make-ppa
+
+Script update.
+
+------------------------------------------------------------------------
 r2772 | dreibh | 2013-05-30 11:12:13 +0200 (Thu, 30 May 2013) | 2 lines
 Changed paths:
    M /trunk/sctplib1/debian/control

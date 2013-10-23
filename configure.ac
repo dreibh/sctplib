@@ -3,10 +3,10 @@
 # $Id$
 # ###########################################################################
 
-AC_INIT(sctplib/programs/discard_server.c)
-AC_CONFIG_AUX_DIR(admin)
+AC_INIT([sctplib], [1.0.15~rc1], [dreib@iem.uni-due.de])
+AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
-AM_INIT_AUTOMAKE(sctplib, 1.0.14)
 AC_PREFIX_DEFAULT(/usr/local)
 if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix

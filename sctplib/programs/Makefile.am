@@ -2,6 +2,8 @@ EXTRA_DIST = combined_server.c daytime_server.c discard_server.c echo_server.c e
             terminal.c parser.c script1 script2 sctptest.h test_tool.c testengine.c main.c mini-ulp.c mini-ulp.h \
             sctp_wrapper.h sctp_wrapper.c monitor.c chat.c echo_monitor.c localcom.c chargen_server.c Makefile.nmake
 
+AM_CPPFLAGS = -I$(srcdir)/../sctp
+
 noinst_PROGRAMS = combined_server daytime_server discard_server echo_server echo_tool terminal test_tool localcom chargen_server testsctp
 
 combined_server_SOURCES = combined_server.c sctp_wrapper.c
@@ -33,6 +35,3 @@ testsctp_LDADD =  ../sctp/libsctplib.la
 
 localcom_SOURCES = localcom.c sctp_wrapper.c
 localcom_LDADD =  ../sctp/libsctplib.la
-
-
-INCLUDES = -I$(srcdir)/../sctp
