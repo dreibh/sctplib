@@ -1,4 +1,18 @@
 ------------------------------------------------------------------------
+r2798 | dreibh | 2013-10-23 14:37:35 +0200 (Wed, 23 Oct 2013) | 2 lines
+Changed paths:
+   M /trunk/sctplib1/ChangeLog
+   M /trunk/sctplib1/Makefile.am
+   M /trunk/sctplib1/clean-deb
+   M /trunk/sctplib1/configure.ac
+   M /trunk/sctplib1/debian/changelog
+   D /trunk/sctplib1/missing
+   M /trunk/sctplib1/sctplib/programs/Makefile.am
+   A /trunk/sctplib1/update-changelog (from /trunk/rsplib2/update-changelog:2797)
+
+Packaging file updates.
+
+------------------------------------------------------------------------
 r2795 | dreibh | 2013-10-18 23:52:41 +0200 (Fri, 18 Oct 2013) | 2 lines
 Changed paths:
    M /trunk/rsplib2/make-ppa
