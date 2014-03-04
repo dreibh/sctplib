@@ -261,11 +261,11 @@ AC_SUBST(thread_LIBS)
 
 # ###### Maintainer mode ####################################################
 if test "$enable_maintainer_mode" = "yes"; then
-   CFLAGS="$CFLAGS -Wall -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
-   CXXFLAGS="$CXXFLAGS -Wall -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
+   CFLAGS="$CFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
+   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
 else
-   CFLAGS="$CFLAGS -Wall -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
-   CXXFLAGS="$CXXFLAGS -Wall -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
+   CFLAGS="$CFLAGS -Wall -Wunreachable-code -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
+   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
 fi
 
 
