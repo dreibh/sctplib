@@ -6,7 +6,7 @@ Homepage: http://www.iem.uni-due.de/~dreibh/rserpool/index.html
 Build-Depends: autotools-dev,
                debhelper (>= 5),
                libglib2.0-dev
-Standards-Version: 3.9.4
+Standards-Version: 3.9.6
 
 Package: libsctplib1
 Section: libs
@@ -57,7 +57,7 @@ Description: Documentation of the userland SCTP implementation sctplib
 Package: libsctplib-dev
 Section: libdevel
 Architecture: any
-Depends: libsctplib1 (>= 1.0.8~),
+Depends: libsctplib1 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
 Conflicts: sctplib-stable-dev
