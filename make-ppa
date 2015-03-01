@@ -2,5 +2,5 @@
 
 ./bootstrap && \
 ./clean-deb && \
-./make-deb precise trusty utpoic vivid && \
+./make-deb precise trusty utopic vivid && \
 dput ppa *.changes
