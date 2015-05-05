@@ -83,6 +83,7 @@
         struct in_addr ip_src, ip_dst; /* source and dest address */
     };
 
+#define IFNAMSIZ 64   /* Windows has no IFNAMSIZ. Just define it. */
 #endif
 
 #ifdef HAVE_IPV6
