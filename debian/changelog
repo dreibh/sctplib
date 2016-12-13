@@ -1,4 +1,4 @@
-sctplib (1:1.0.18~rc1-1ubuntu1) trusty; urgency=low
+sctplib (1:1.0.18-1ubuntu1) trusty; urgency=low
 
   * New upstream version.
   * Initial Ubuntu release (LP: #228052).
