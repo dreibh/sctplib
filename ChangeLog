@@ -1,3 +1,14 @@
+commit 453bd9865854f9257cedf5d2aefb4071f0a4c1dd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 8 15:01:27 2017 +0200
+
+    Script updates.
+
+ ChangeLog                   |  90 ++++++++++++++++++++++++++++++++++++++++++++
+ make-ppa                    |   2 +-
+ sctplib/manual/sctp-api.pdf | Bin 145724 -> 134705 bytes
+ 3 files changed, 91 insertions(+), 1 deletion(-)
+
 commit 1970e1b0631da8adf1214bfd9e64af23b2fe9608
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon May 8 14:51:54 2017 +0200
