@@ -20,7 +20,7 @@
 # Contact: dreibh@iem.uni-due.de
 
 ./clean-deb
-./make-deb precise precise trusty vivid wily xenial yakkety zesty artful unstable
+./make-deb precise trusty vivid xenial yakkety zesty artful unstable
 changeFiles=`ls *.changes`
 for changeFile in $changeFiles ; do
    if [[ $changeFile =~ .*[0-9](ppa|ubuntu)[0-9].* ]] ; then

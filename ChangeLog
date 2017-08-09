@@ -1,3 +1,37 @@
+commit e490229df07513d7cb3a26d8eec09942e31b70d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 9 12:36:06 2017 +0200
+
+    Script update.
+
+ UpdateDoc1.sed | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit cf20a375704da9507ff36242ef38bfa5ad2d5a3b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 9 12:35:45 2017 +0200
+
+    URL updates.
+
+ UpdateDoc1.sed   | 5 +++--
+ debian/control   | 2 +-
+ debian/copyright | 2 +-
+ debian/watch     | 2 +-
+ sctplib.lsm      | 2 +-
+ 5 files changed, 7 insertions(+), 6 deletions(-)
+
+commit c4367af63fa2d06abd57caa548ed8922b4d6f926
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon May 8 15:38:46 2017 +0200
+
+    Script updates.
+
+ ChangeLog        | 11 +++++++++++
+ configure.ac     |  2 +-
+ debian/changelog |  2 +-
+ sctplib.lsm      |  8 ++++----
+ 4 files changed, 17 insertions(+), 6 deletions(-)
+
 commit 453bd9865854f9257cedf5d2aefb4071f0a4c1dd
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon May 8 15:01:27 2017 +0200
