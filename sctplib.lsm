@@ -19,7 +19,7 @@ Keywords:       Stream Control Transmission Protocol, SCTP, Networking, Userland
                 Transport Protocol Implementation, Multi-Homing, Multi-Streaming
 Author:         andreas.jungmaier@web.de (Andreas Jungmaier)
 Maintained-by:  dreibh@iem.uni-due.de (Thomas Dreibholz)
-Primary-site:   http://www.iem.uni-due.de/~dreibh/rserpool/
+Primary-site:   https://www.uni-due.de/~be0001/rserpool/
                 1273 KiB download/sctplib-1.0.19.tar.gz
 Alternate-site: http://www.sctp.de
                 1273 KiB sctplib-1.0.19.tar.gz
