@@ -1,3 +1,79 @@
+commit 5c1721711a29b29a0e5fb6714f25e28b2e67e75a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 3 15:49:50 2018 +0100
+
+    LSM entry update.
+
+ sctplib.lsm | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 3812617c3397c4814e68d867423e821ee6ab2ffb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 3 15:48:59 2018 +0100
+
+    Header updates.
+
+ UpdateDoc1.sed                     | 4 ++--
+ sctplib/programs/chargen_server.c  | 2 +-
+ sctplib/programs/chat.c            | 2 +-
+ sctplib/programs/combined_server.c | 2 +-
+ sctplib/programs/daytime_server.c  | 2 +-
+ sctplib/programs/discard_server.c  | 2 +-
+ sctplib/programs/echo_monitor.c    | 2 +-
+ sctplib/programs/echo_server.c     | 2 +-
+ sctplib/programs/echo_tool.c       | 2 +-
+ sctplib/programs/localcom.c        | 2 +-
+ sctplib/programs/main.c            | 2 +-
+ sctplib/programs/mini-ulp.c        | 2 +-
+ sctplib/programs/monitor.c         | 2 +-
+ sctplib/programs/sctp_wrapper.c    | 2 +-
+ sctplib/programs/sctp_wrapper.h    | 2 +-
+ sctplib/programs/terminal.c        | 2 +-
+ sctplib/programs/testsctp.c        | 2 +-
+ sctplib/sctp/SCTP-control.c        | 2 +-
+ sctplib/sctp/SCTP-control.h        | 2 +-
+ sctplib/sctp/adaptation.c          | 2 +-
+ sctplib/sctp/adaptation.h          | 2 +-
+ sctplib/sctp/auxiliary.c           | 2 +-
+ sctplib/sctp/auxiliary.h           | 2 +-
+ sctplib/sctp/bundling.h            | 2 +-
+ sctplib/sctp/chunkHandler.c        | 2 +-
+ sctplib/sctp/chunkHandler.h        | 2 +-
+ sctplib/sctp/distribution.c        | 2 +-
+ sctplib/sctp/distribution.h        | 2 +-
+ sctplib/sctp/errorhandler.c        | 2 +-
+ sctplib/sctp/errorhandler.h        | 2 +-
+ sctplib/sctp/flowcontrol.c         | 2 +-
+ sctplib/sctp/flowcontrol.h         | 2 +-
+ sctplib/sctp/globals.c             | 2 +-
+ sctplib/sctp/globals.h             | 2 +-
+ sctplib/sctp/messages.h            | 2 +-
+ sctplib/sctp/pathmanagement.c      | 2 +-
+ sctplib/sctp/pathmanagement.h      | 2 +-
+ sctplib/sctp/rbundling.c           | 2 +-
+ sctplib/sctp/recvctrl.c            | 2 +-
+ sctplib/sctp/recvctrl.h            | 2 +-
+ sctplib/sctp/reltransfer.c         | 2 +-
+ sctplib/sctp/reltransfer.h         | 2 +-
+ sctplib/sctp/sbundling.c           | 2 +-
+ sctplib/sctp/sctp.h                | 2 +-
+ sctplib/sctp/streamengine.c        | 2 +-
+ sctplib/sctp/streamengine.h        | 2 +-
+ sctplib/sctp/timer_list.c          | 2 +-
+ sctplib/sctp/timer_list.h          | 2 +-
+ 48 files changed, 49 insertions(+), 49 deletions(-)
+
+commit 64160f425eeb0697ef4411bcab6d80549d8fcfea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 3 15:48:07 2018 +0100
+
+    Version bump.
+
+ ChangeLog        | 202 ++++++++++++++++++++++++++++++++-----------------------
+ configure.ac     |   2 +-
+ debian/changelog |   4 +-
+ 3 files changed, 122 insertions(+), 86 deletions(-)
+
 commit a965b29fb46021ed56ece04e23096c2c6f42015c
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Oct 3 15:47:45 2018 +0100
