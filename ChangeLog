@@ -1,3 +1,43 @@
+commit a965b29fb46021ed56ece04e23096c2c6f42015c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 3 15:47:45 2018 +0100
+
+    Build script update.
+
+ make-ppa | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 70e1009d5b3555702a6b5769e4d46b9119d32595
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Oct 3 15:29:36 2018 +0100
+
+    Updated autogen.sh.
+
+ autogen.sh | 21 +++++++++++++++++++--
+ depcomp    |  6 +++---
+ 2 files changed, 22 insertions(+), 5 deletions(-)
+
+commit 4e93bbd48b23b85e0e7f6567f30217c815cb841d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 11 13:12:43 2018 +0200
+
+    Updated LSM entry.
+
+ sctplib.lsm                 |   4 ++--
+ sctplib/manual/sctp-api.pdf | Bin 134705 -> 134703 bytes
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 7559a4e05ff6c547ac629857243ea997b49ac7eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jun 6 12:47:30 2018 +0200
+
+    Version bump.
+
+ ChangeLog        | 33 +++++++++++++++++++++++++++++++++
+ configure.ac     |  2 +-
+ debian/changelog |  4 ++--
+ 3 files changed, 36 insertions(+), 3 deletions(-)
+
 commit 6105d2dc9aedaf3103bb8e4bc2b9645372e3e117
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Jun 6 11:48:09 2018 +0200
@@ -560,15 +600,14 @@ Date:   Thu May 30 08:46:46 2013 +0000
     
     git-svn-id: https://svn.tdr.iem.uni-due.de:8443/svn/sctp/trunk/sctplib1@2770 516812f1-d3fd-0310-9ea4-9aededebcb87
 
- build-deb            | 114 ++++++++++++++++++++
- clean-deb            |  15 +--
- configure.ac         | 297 +++++++++++++++++++++++++++++++++++++++++++++++++++
- configure.in         | 297 ---------------------------------------------------
- debian/changelog     |   4 +-
- debian/control       |   2 +-
- filter-empty-entries |  61 +++++++++++
- make-deb             | 213 +++++++++++++++++++++---------------
- 8 files changed, 607 insertions(+), 396 deletions(-)
+ build-deb                    | 114 +++++++++++++++++++++++
+ clean-deb                    |  15 +--
+ configure.in => configure.ac |   2 +-
+ debian/changelog             |   4 +-
+ debian/control               |   2 +-
+ filter-empty-entries         |  61 +++++++++++++
+ make-deb                     | 213 ++++++++++++++++++++++++++-----------------
+ 7 files changed, 311 insertions(+), 100 deletions(-)
 
 commit 9073c031468b387bf317a23f735a5bd9fb6d48d4
 Author: dreibh <dreibh@516812f1-d3fd-0310-9ea4-9aededebcb87>
@@ -1218,14 +1257,13 @@ Date:   Tue Feb 1 13:17:34 2011 +0000
     
     git-svn-id: https://svn.tdr.iem.uni-due.de:8443/svn/sctp/trunk/sctplib1@2471 516812f1-d3fd-0310-9ea4-9aededebcb87
 
- sctplib/manual/Makefile.am        |   22 +-
- sctplib/manual/commands.doc       |  Bin 34816 -> 34816 bytes
- sctplib/manual/commands.html      |  556 +++++++-------
- sctplib/manual/sctp-api-1.0.8.pdf |  Bin 140191 -> 0 bytes
- sctplib/manual/sctp-api-1.0.8.tex | 1439 -------------------------------------
- sctplib/manual/sctp-api.pdf       |  Bin 0 -> 145948 bytes
- sctplib/manual/sctp-api.tex       | 1439 +++++++++++++++++++++++++++++++++++++
- 7 files changed, 1728 insertions(+), 1728 deletions(-)
+ sctplib/manual/Makefile.am                         |  22 +-
+ sctplib/manual/commands.doc                        | Bin 34816 -> 34816 bytes
+ sctplib/manual/commands.html                       | 556 ++++++++++-----------
+ sctplib/manual/sctp-api-1.0.8.pdf                  | Bin 140191 -> 0 bytes
+ sctplib/manual/sctp-api.pdf                        | Bin 0 -> 145948 bytes
+ .../manual/{sctp-api-1.0.8.tex => sctp-api.tex}    |   0
+ 6 files changed, 289 insertions(+), 289 deletions(-)
 
 commit 4fa6150af58bf50983390fcb4a793d56fc195fd3
 Author: dreibh <dreibh@516812f1-d3fd-0310-9ea4-9aededebcb87>
@@ -1842,65 +1880,64 @@ Date:   Wed Aug 27 10:37:38 2008 +0000
     
     git-svn-id: https://svn.tdr.iem.uni-due.de:8443/svn/sctp/trunk/sctplib1@1867 516812f1-d3fd-0310-9ea4-9aededebcb87
 
- README                             |     28 +-
- debian/control                     |      7 +-
- sctplib.lsm                        |      4 +-
- sctplib/docs/sctplib/rfc4960.txt   |   8515 +
- sctplib/manual/Makefile.am         |     22 +-
- sctplib/manual/sctp-api-1.0-1.pdf  |    Bin 744571 -> 0 bytes
- sctplib/manual/sctp-api-1.0-1.ps   | 365372 ----------------------------------
- sctplib/manual/sctp-api-1.0-1.tex  |   1433 -
- sctplib/manual/sctp-api-1.0.8.pdf  |    Bin 0 -> 140191 bytes
- sctplib/manual/sctp-api-1.0.8.tex  |   1439 +
- sctplib/programs/chargen_server.c  |      2 +-
- sctplib/programs/chat.c            |      2 +-
- sctplib/programs/combined_server.c |      2 +-
- sctplib/programs/daytime_server.c  |      2 +-
- sctplib/programs/discard_server.c  |      2 +-
- sctplib/programs/echo_monitor.c    |      2 +-
- sctplib/programs/echo_server.c     |      2 +-
- sctplib/programs/echo_tool.c       |      2 +-
- sctplib/programs/localcom.c        |      2 +-
- sctplib/programs/main.c            |      2 +-
- sctplib/programs/mini-ulp.c        |      2 +-
- sctplib/programs/mini-ulp.h        |      2 +-
- sctplib/programs/monitor.c         |      2 +-
- sctplib/programs/sctp_wrapper.c    |      2 +-
- sctplib/programs/sctp_wrapper.h    |      2 +-
- sctplib/programs/terminal.c        |      2 +-
- sctplib/programs/testsctp.c        |      2 +-
- sctplib/sctp/SCTP-control.c        |      2 +-
- sctplib/sctp/SCTP-control.h        |      2 +-
- sctplib/sctp/adaptation.c          |      2 +-
- sctplib/sctp/adaptation.h          |      2 +-
- sctplib/sctp/auxiliary.c           |      2 +-
- sctplib/sctp/auxiliary.h           |      2 +-
- sctplib/sctp/bundling.h            |      2 +-
- sctplib/sctp/chunkHandler.c        |      2 +-
- sctplib/sctp/chunkHandler.h        |      2 +-
- sctplib/sctp/distribution.c        |      6 +-
- sctplib/sctp/distribution.h        |      4 +-
- sctplib/sctp/errorhandler.c        |      2 +-
- sctplib/sctp/errorhandler.h        |      2 +-
- sctplib/sctp/flowcontrol.c         |      2 +-
- sctplib/sctp/flowcontrol.h         |      2 +-
- sctplib/sctp/globals.c             |      2 +-
- sctplib/sctp/globals.h             |      2 +-
- sctplib/sctp/messages.h            |      2 +-
- sctplib/sctp/pathmanagement.c      |      2 +-
- sctplib/sctp/pathmanagement.h      |      2 +-
- sctplib/sctp/rbundling.c           |      2 +-
- sctplib/sctp/recvctrl.c            |      2 +-
- sctplib/sctp/recvctrl.h            |      2 +-
- sctplib/sctp/reltransfer.c         |      4 +-
- sctplib/sctp/reltransfer.h         |      2 +-
- sctplib/sctp/sbundling.c           |      2 +-
- sctplib/sctp/sctp.h                |      4 +-
- sctplib/sctp/streamengine.c        |      2 +-
- sctplib/sctp/streamengine.h        |      2 +-
- sctplib/sctp/timer_list.c          |      2 +-
- sctplib/sctp/timer_list.h          |      2 +-
- 58 files changed, 10036 insertions(+), 366890 deletions(-)
+ README                                             |     28 +-
+ debian/control                                     |      7 +-
+ sctplib.lsm                                        |      4 +-
+ sctplib/docs/sctplib/rfc4960.txt                   |   8515 +
+ sctplib/manual/Makefile.am                         |     22 +-
+ sctplib/manual/sctp-api-1.0-1.pdf                  |    Bin 744571 -> 0 bytes
+ sctplib/manual/sctp-api-1.0-1.ps                   | 365372 ------------------
+ sctplib/manual/sctp-api-1.0.8.pdf                  |    Bin 0 -> 140191 bytes
+ .../{sctp-api-1.0-1.tex => sctp-api-1.0.8.tex}     |     22 +-
+ sctplib/programs/chargen_server.c                  |      2 +-
+ sctplib/programs/chat.c                            |      2 +-
+ sctplib/programs/combined_server.c                 |      2 +-
+ sctplib/programs/daytime_server.c                  |      2 +-
+ sctplib/programs/discard_server.c                  |      2 +-
+ sctplib/programs/echo_monitor.c                    |      2 +-
+ sctplib/programs/echo_server.c                     |      2 +-
+ sctplib/programs/echo_tool.c                       |      2 +-
+ sctplib/programs/localcom.c                        |      2 +-
+ sctplib/programs/main.c                            |      2 +-
+ sctplib/programs/mini-ulp.c                        |      2 +-
+ sctplib/programs/mini-ulp.h                        |      2 +-
+ sctplib/programs/monitor.c                         |      2 +-
+ sctplib/programs/sctp_wrapper.c                    |      2 +-
+ sctplib/programs/sctp_wrapper.h                    |      2 +-
+ sctplib/programs/terminal.c                        |      2 +-
+ sctplib/programs/testsctp.c                        |      2 +-
+ sctplib/sctp/SCTP-control.c                        |      2 +-
+ sctplib/sctp/SCTP-control.h                        |      2 +-
+ sctplib/sctp/adaptation.c                          |      2 +-
+ sctplib/sctp/adaptation.h                          |      2 +-
+ sctplib/sctp/auxiliary.c                           |      2 +-
+ sctplib/sctp/auxiliary.h                           |      2 +-
+ sctplib/sctp/bundling.h                            |      2 +-
+ sctplib/sctp/chunkHandler.c                        |      2 +-
+ sctplib/sctp/chunkHandler.h                        |      2 +-
+ sctplib/sctp/distribution.c                        |      6 +-
+ sctplib/sctp/distribution.h                        |      4 +-
+ sctplib/sctp/errorhandler.c                        |      2 +-
+ sctplib/sctp/errorhandler.h                        |      2 +-
+ sctplib/sctp/flowcontrol.c                         |      2 +-
+ sctplib/sctp/flowcontrol.h                         |      2 +-
+ sctplib/sctp/globals.c                             |      2 +-
+ sctplib/sctp/globals.h                             |      2 +-
+ sctplib/sctp/messages.h                            |      2 +-
+ sctplib/sctp/pathmanagement.c                      |      2 +-
+ sctplib/sctp/pathmanagement.h                      |      2 +-
+ sctplib/sctp/rbundling.c                           |      2 +-
+ sctplib/sctp/recvctrl.c                            |      2 +-
+ sctplib/sctp/recvctrl.h                            |      2 +-
+ sctplib/sctp/reltransfer.c                         |      4 +-
+ sctplib/sctp/reltransfer.h                         |      2 +-
+ sctplib/sctp/sbundling.c                           |      2 +-
+ sctplib/sctp/sctp.h                                |      4 +-
+ sctplib/sctp/streamengine.c                        |      2 +-
+ sctplib/sctp/streamengine.h                        |      2 +-
+ sctplib/sctp/timer_list.c                          |      2 +-
+ sctplib/sctp/timer_list.h                          |      2 +-
+ 57 files changed, 8611 insertions(+), 365465 deletions(-)
 
 commit 8f314dc478664e7c2f089fe41d12be8ff491429c
 Author: dreibh <dreibh@516812f1-d3fd-0310-9ea4-9aededebcb87>
@@ -2147,12 +2184,11 @@ Date:   Sun Feb 10 16:57:41 2008 +0000
     
     git-svn-id: https://svn.tdr.iem.uni-due.de:8443/svn/sctp/trunk/sctplib1@1701 516812f1-d3fd-0310-9ea4-9aededebcb87
 
- configure.in               | 6 ++----
- debian/libsctplib1.install | 1 +
- debian/libsctplib2.install | 1 -
- debian/shlibs              | 2 +-
- sctplib/sctp/Makefile.am   | 3 +--
- 5 files changed, 5 insertions(+), 8 deletions(-)
+ configure.in                                        | 6 ++----
+ debian/{libsctplib2.install => libsctplib1.install} | 0
+ debian/shlibs                                       | 2 +-
+ sctplib/sctp/Makefile.am                            | 3 +--
+ 4 files changed, 4 insertions(+), 7 deletions(-)
 
 commit d8b2f8b4ff2874de76ed3ca5327e25c9b1172270
 Author: dreibh <dreibh@516812f1-d3fd-0310-9ea4-9aededebcb87>
@@ -6060,7 +6096,7 @@ commit 0895be12cd839deccca385135d2f4d1e368dffbf
 Author: ajung <ajung@516812f1-d3fd-0310-9ea4-9aededebcb87>
 Date:   Mon Jul 14 08:42:11 2003 +0000
 
-    ZZCVS: 	sctplib/manual/sctp-api-1.0-1.tex sctplib/programs/Makefile.am
+    ZZCVS:  sctplib/manual/sctp-api-1.0-1.tex sctplib/programs/Makefile.am
     
     
     git-svn-id: https://svn.tdr.iem.uni-due.de:8443/svn/sctp/trunk/sctplib1@116 516812f1-d3fd-0310-9ea4-9aededebcb87
