@@ -127,9 +127,9 @@ install:
     if [ "$TRAVIS_OS_NAME" = "linux" ] ; then
        if [ "$VARIANT" = "ubuntu" ] ; then
           sudo docker exec -t ubuntu-test bash -c "apt-get update"
-          sudo docker exec -t ubuntu-test bash -c "apt-get install -y autoconf automake libtool gcc g++ clang make"
+          sudo docker exec -t ubuntu-test bash -c "apt-get install -y autoconf automake libtool gcc g++ clang make libglib2.0-dev"
        elif [ "$VARIANT" = "fedora" ] ; then
-          sudo docker exec -t ubuntu-test bash -c "dnf install -y autoconf automake libtool gcc gcc-c++ clang make"
+          sudo docker exec -t ubuntu-test bash -c "dnf install -y autoconf automake libtool gcc gcc-c++ clang make glib2-devel"
        fi
     fi
 
