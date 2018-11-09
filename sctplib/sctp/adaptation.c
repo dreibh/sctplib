@@ -1255,8 +1255,9 @@ void dispatch_event(int num_of_events)
     ENTER_EVENT_DISPATCHER;
     for (i = 0; i < num_of_fds; i++) {
 
-    if (!poll_fds[i].revents)
-        continue;
+        if (!poll_fds[i].revents) {
+            continue;
+        }
 
         if (poll_fds[i].revents & POLLERR) {
             /* We must have specified this callback funtion for treating/logging the error */
