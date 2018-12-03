@@ -3,10 +3,12 @@ Section: net
 Priority: optional
 Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: https://www.uni-due.de/~be0001/rserpool/index.html
-Build-Depends: autotools-dev,
+Build-Depends: autoconf,
+               automake,
                debhelper (>= 5),
                ghostscript,
-               libglib2.0-dev
+               libglib2.0-dev,
+               libtool
 Standards-Version: 4.2.1
 
 Package: libsctplib1
