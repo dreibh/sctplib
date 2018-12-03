@@ -5,7 +5,7 @@ Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
 Homepage: https://www.uni-due.de/~be0001/rserpool/index.html
 Build-Depends: autoconf,
                automake,
-               debhelper (>= 5),
+               debhelper (>= 9),
                ghostscript,
                libglib2.0-dev,
                libtool
