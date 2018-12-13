@@ -8,7 +8,8 @@ Build-Depends: autoconf,
                debhelper (>= 9),
                ghostscript,
                libglib2.0-dev,
-               libtool
+               libtool,
+               texlive-latex-base
 Standards-Version: 4.2.1
 
 Package: libsctplib1
