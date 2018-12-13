@@ -9,7 +9,8 @@ Build-Depends: autoconf,
                ghostscript,
                libglib2.0-dev,
                libtool,
-               texlive-latex-base
+               texlive-latex-base,
+               texlive-latex-extra
 Standards-Version: 4.2.1
 
 Package: libsctplib1
