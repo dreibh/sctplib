@@ -9,6 +9,7 @@ Build-Depends: autoconf,
                ghostscript,
                libglib2.0-dev,
                libtool,
+               texlive-fonts-recommended,
                texlive-latex-base,
                texlive-latex-extra
 Standards-Version: 4.2.1
