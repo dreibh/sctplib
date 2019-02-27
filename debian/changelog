@@ -3,4 +3,4 @@ sctplib (1:1.0.22~rc1.0-1ubuntu1) cosmic; urgency=low
   * New upstream version.
   * Initial Ubuntu release (LP: #228052).
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 09 Nov 2018 12:12:12 +0200
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 27 Feb 2019 08:08:08 +0800
