@@ -1,4 +1,4 @@
-sctplib (1:1.0.22~rc1.0-1ubuntu1) cosmic; urgency=low
+sctplib (1:1.0.22~rc1.1-1ubuntu1) eoan; urgency=low
 
   * New upstream version.
   * Initial Ubuntu release (LP: #228052).
