@@ -124,7 +124,7 @@ between Siemens AG (ICN), Munich, Germany and the Computer Networking
 Technology Group at the IEM of the University of Essen, Germany.
 
 %files docs
-%{_datadir}/doc/sctplib/manual/*.pdf
+%doc sctplib/manual/*.pdf
 
 
 %changelog
