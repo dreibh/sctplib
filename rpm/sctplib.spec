@@ -10,7 +10,6 @@ Source: https://www.uni-due.de/~be0001/sctplib/download/%{name}-%{version}.tar.g
 AutoReqProv: on
 BuildRequires: autoconf
 BuildRequires: automake
-BuildRequires: debhelper
 BuildRequires: ghostscript
 BuildRequires: glib2-devel
 BuildRequires: libtool
