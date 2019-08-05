@@ -17,7 +17,7 @@ Description:    The sctplib library is a prototype implementation of the Stream
                 well as UDP sockets for simple IPC. Furthermore, sctplib
                 provides support for UDP encapsulation, making it possible to
                 co-exist with kernel SCTP implementations.
-Keywords:       Stream Control Transmission Protocol, SCTP, Networking, Userland
+Keywords:       Stream Control Transmission Protocol, SCTP, Networking, User-Space
                 Transport Protocol Implementation, Multi-Homing, Multi-Streaming
 Author:         andreas.jungmaier@web.de (Andreas Jungmaier)
 Maintained-by:  dreibh@iem.uni-due.de (Thomas Dreibholz)

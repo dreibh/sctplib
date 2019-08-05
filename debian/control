@@ -21,7 +21,7 @@ Depends: ${misc:Depends},
          ${shlibs:Depends}
 Conflicts: sctplib1
 Replaces: sctplib1
-Description: Userland implementation of the SCTP protocol RFC 4960
+Description: User-space implementation of the SCTP protocol RFC 4960
  This package contains the shared library for sctplib.
  .
  The sctplib library is a fairly complete prototype implementation of the
@@ -50,7 +50,7 @@ Depends: libsctplib1 (= ${binary:Version}),
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Recommends: sctplib-docs
-Description: Headers and libraries of the userland SCTP implementation sctplib
+Description: Headers and libraries of the user-space SCTP implementation sctplib
  This package contains development files for sctplib.
  .
  The sctplib library is a fairly complete prototype implementation of the
@@ -78,7 +78,7 @@ Depends: libsctplib1,
          ${shlibs:Depends}
 Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
-Description: Documentation of the userland SCTP implementation sctplib
+Description: Documentation of the user-space SCTP implementation sctplib
  This package contains documentation files for sctplib.
  .
  The sctplib library is a fairly complete prototype implementation of the

@@ -1,7 +1,7 @@
 Name: sctplib
 Version: 1.0.22~rc1.5
 Release: 1
-Summary: Userland implementation of the SCTP protocol RFC 4960
+Summary: User-space implementation of the SCTP protocol RFC 4960
 License: LGPL-3
 Group: Applications/Internet
 URL: https://www.uni-due.de/~be0001/sctplib/
@@ -19,7 +19,7 @@ BuildRequires: texlive-collection-latexextra
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 # TEST ONLY:
-# %define _unpackaged_files_terminate_build 0
+# define _unpackaged_files_terminate_build 0
 
 %description
 The sctplib library is a fairly complete prototype implementation of the
@@ -52,7 +52,7 @@ make DESTDIR=%{buildroot} install
 
 
 %package libsctplib
-Summary: Userland implementation of the SCTP protocol RFC 4960
+Summary: User-space implementation of the SCTP protocol RFC 4960
 Group: System Environment/Libraries
 
 %description libsctplib
@@ -78,7 +78,7 @@ asynchronous interprocess communication.
 
 
 %package libsctplib-devel
-Summary: Headers and libraries of the userland SCTP implementation sctplib
+Summary: Headers and libraries of the user-space SCTP implementation sctplib
 Group: Development/Libraries
 Requires: %{name}-libsctplib = %{version}-%{release}
 
@@ -107,7 +107,7 @@ asynchronous interprocess communication.
 
 
 %package docs
-Summary: Documentation of the userland SCTP implementation sctplib
+Summary: Documentation of the user-space SCTP implementation sctplib
 Group: System Environment/Libraries
 BuildArch: noarch
 Requires: %{name}-libsctplib = %{version}-%{release}

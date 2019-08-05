@@ -72,7 +72,7 @@ fi
 
 AC_ARG_ENABLE([maintainer-mode],
 [  --enable-maintainer-mode            enable maintainer mode ]
-[default=yes]],enable_maintainer_mode=$enableval,enable_maintainer_mode=yes)
+[default=no]],enable_maintainer_mode=$enableval,enable_maintainer_mode=no)
 
 AC_ARG_ENABLE(ipv6,
 [  --disable-ipv6          turn off IPv6 support ])
@@ -261,11 +261,11 @@ AC_SUBST(thread_LIBS)
 
 # ###### Maintainer mode ####################################################
 if test "$enable_maintainer_mode" = "yes"; then
-   CFLAGS="$CFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
-   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
+   CFLAGS="$CFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE -DSCTP_SOCKET_API"
+   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE -DSCTP_SOCKET_API"
 else
-   CFLAGS="$CFLAGS -Wall -Wunreachable-code -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
-   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -O3 -g0 -D_REENTRANT -D_THREAD_SAFE"
+   CFLAGS="$CFLAGS -Wall -Wunreachable-code -O3 -g -D_REENTRANT -D_THREAD_SAFE -DSCTP_SOCKET_API"
+   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -O3 -g -D_REENTRANT -D_THREAD_SAFE -DSCTP_SOCKET_API"
 fi
 
 
