@@ -22,9 +22,9 @@ Depends: ${misc:Depends},
 Conflicts: sctplib1
 Replaces: sctplib1
 Description: User-space implementation of the SCTP protocol RFC 4960
- This package contains the shared library for sctplib.
+ This package contains the shared library for SCTPLIB.
  .
- The sctplib library is a fairly complete prototype implementation of the
+ The SCTPLIB library is a fairly complete prototype implementation of the
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable
  transport protocol that supports multi-homing, and multiple message streams
  multiplexed within an SCTP connection (also named association). SCTP is
@@ -50,10 +50,10 @@ Depends: libsctplib1 (= ${binary:Version}),
 Conflicts: sctplib-stable-dev
 Replaces: sctplib-stable-dev
 Recommends: sctplib-docs
-Description: Headers and libraries of the user-space SCTP implementation sctplib
- This package contains development files for sctplib.
+Description: Headers and libraries of the user-space SCTP implementation SCTPLIB
+ This package contains development files for SCTPLIB.
  .
- The sctplib library is a fairly complete prototype implementation of the
+ The SCTPLIB library is a fairly complete prototype implementation of the
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable
  transport protocol that supports multi-homing, and multiple message streams
  multiplexed within an SCTP connection (also named association). SCTP is
@@ -78,10 +78,10 @@ Depends: libsctplib1,
          ${shlibs:Depends}
 Conflicts: sctplib-stable-doc
 Replaces: sctplib-stable-doc
-Description: Documentation of the user-space SCTP implementation sctplib
- This package contains documentation files for sctplib.
+Description: Documentation of the user-space SCTP implementation SCTPLIB
+ This package contains documentation files for SCTPLIB.
  .
- The sctplib library is a fairly complete prototype implementation of the
+ The SCTPLIB library is a fairly complete prototype implementation of the
  Stream Control Transmission Protocol (SCTP), a message-oriented reliable
  transport protocol that supports multi-homing, and multiple message streams
  multiplexed within an SCTP connection (also named association). SCTP is

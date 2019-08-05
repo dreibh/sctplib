@@ -56,8 +56,8 @@ Summary: User-space implementation of the SCTP protocol RFC 4960
 Group: System Environment/Libraries
 
 %description libsctplib
-This package contains the shared library for sctplib.
-The sctplib library is a fairly complete prototype implementation of the
+This package contains the shared library for SCTPLIB.
+The SCTPLIB library is a fairly complete prototype implementation of the
 Stream Control Transmission Protocol (SCTP), a message-oriented reliable
 transport protocol that supports multi-homing, and multiple message streams
 multiplexed within an SCTP connection (also named association). SCTP is
@@ -78,13 +78,13 @@ asynchronous interprocess communication.
 
 
 %package libsctplib-devel
-Summary: Headers and libraries of the user-space SCTP implementation sctplib
+Summary: Headers and libraries of the user-space SCTP implementation SCTPLIB
 Group: Development/Libraries
 Requires: %{name}-libsctplib = %{version}-%{release}
 
 %description libsctplib-devel
-This package contains development files for sctplib.
-The sctplib library is a fairly complete prototype implementation of the
+This package contains development files for SCTPLIB.
+The SCTPLIB library is a fairly complete prototype implementation of the
 Stream Control Transmission Protocol (SCTP), a message-oriented reliable
 transport protocol that supports multi-homing, and multiple message streams
 multiplexed within an SCTP connection (also named association). SCTP is
@@ -108,14 +108,14 @@ asynchronous interprocess communication.
 
 
 %package docs
-Summary: Documentation of the user-space SCTP implementation sctplib
+Summary: Documentation of the user-space SCTP implementation SCTPLIB
 Group: System Environment/Libraries
 BuildArch: noarch
 Requires: %{name}-libsctplib = %{version}-%{release}
 
 %description docs
-This package contains documentation files for sctplib.
-The sctplib library is a fairly complete prototype implementation of the
+This package contains documentation files for SCTPLIB.
+The SCTPLIB library is a fairly complete prototype implementation of the
 Stream Control Transmission Protocol (SCTP), a message-oriented reliable
 transport protocol that supports multi-homing, and multiple message streams
 multiplexed within an SCTP connection (also named association). SCTP is

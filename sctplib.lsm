@@ -1,8 +1,8 @@
 Begin4
 Title:          sctplib
-Version:        1.0.21
-Entered-date:   2018-10-03
-Description:    The sctplib library is a prototype implementation of the Stream
+Version:        1.0.22~rc1.6
+Entered-date:   2019-08-06
+Description:    The SCTPLIB library is a prototype implementation of the Stream
                 Control Transmission Protocol (SCTP), a message-oriented
                 reliable transport protocol that supports multi-homing, and
                 multiple message streams multiplexed within an SCTP connection
@@ -14,7 +14,7 @@ Description:    The sctplib library is a prototype implementation of the Stream
                 interface functions between an Upper Layer Protocol (ULP) and an
                 SCTP instance, the library also provides a number of helper
                 functions that can be used to manage callbacks and timers, as
-                well as UDP sockets for simple IPC. Furthermore, sctplib
+                well as UDP sockets for simple IPC. Furthermore, SCTPLIB
                 provides support for UDP encapsulation, making it possible to
                 co-exist with kernel SCTP implementations.
 Keywords:       Stream Control Transmission Protocol, SCTP, Networking, User-Space
