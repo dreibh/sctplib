@@ -1,8 +1,8 @@
 Name: sctplib
-Version: 1.0.22
+Version: 1.0.22~rc1.4
 Release: 1
 Summary: Userland implementation of the SCTP protocol RFC 4960
-License: LGPL-3.0
+License: LGPL-3
 Group: Applications/Internet
 URL: https://www.uni-due.de/~be0001/sctplib/
 Source: https://www.uni-due.de/~be0001/sctplib/download/%{name}-%{version}.tar.gz
@@ -12,11 +12,11 @@ BuildRequires: autoconf
 BuildRequires: automake
 BuildRequires: debhelper
 BuildRequires: ghostscript
-BuildRequires: glib2.0-devel
+BuildRequires: glib2-devel
 BuildRequires: libtool
-BuildRequires: texlive-fonts-recommended
-BuildRequires: texlive-latex-base
-BuildRequires: texlive-latex-extra
+BuildRequires: texlive-collection-fontsrecommended
+BuildRequires: texlive-collection-latex
+BuildRequires: texlive-collection-latexextra
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
 # TEST ONLY:
@@ -43,7 +43,9 @@ asynchronous interprocess communication.
 %setup -q
 
 %build
-%configure --enable-static --enable-shared --enable-maintainer-mode --enable-sctp-over-udp
+autoreconf -i
+
+%configure --prefix=/usr --enable-static --enable-shared --enable-sctp-over-udp
 make %{?_smp_mflags}
 
 %install
