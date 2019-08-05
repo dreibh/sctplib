@@ -3,7 +3,7 @@
 # $Id$
 # ###########################################################################
 
-AC_INIT([sctplib], [1.0.22~rc1.5], [dreib@iem.uni-due.de])
+AC_INIT([sctplib], [1.0.22~rc1.6], [dreib@iem.uni-due.de])
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST
