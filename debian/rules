@@ -8,7 +8,7 @@ include /usr/share/dpkg/buildflags.mk
 	dh $@
 
 override_dh_auto_configure:
-	dh_auto_configure --
+	dh_auto_configure -- --enable-sctp-over-udp
 
 override_dh_installchangelogs:
 	dh_installchangelogs -k ChangeLog
