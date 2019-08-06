@@ -1,6 +1,7 @@
-sctplib (1:1.0.22-1ubuntu1) eoan; urgency=medium
+sctplib (1:1.0.23~alpha1.0-1ubuntu1) eoan; urgency=medium
 
   * New upstream version.
+  * Initial Debian release (Closes: #934049).
   * Initial Ubuntu release (LP: #228052).
 
  -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 27 Feb 2019 08:08:08 +0800
