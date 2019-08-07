@@ -1,0 +1,8 @@
+Document: sctplib
+Title: Documentation of the SCTP implementation SCTPLIB
+Author: Thomas Dreibholz
+Abstract:  Documentation of the SCTP implementation SCTPLIB
+Section: Network/Communication
+
+Format: PDF
+Files: /usr/share/doc/sctplib-doc/*.pdf.gz

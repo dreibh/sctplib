@@ -19,8 +19,6 @@ Section: libs
 Architecture: any
 Depends: ${misc:Depends},
          ${shlibs:Depends}
-Conflicts: sctplib1
-Replaces: sctplib1
 Description: User-space implementation of the SCTP protocol RFC 4960
  This package contains the shared library for SCTPLIB.
  .
@@ -47,9 +45,7 @@ Architecture: any
 Depends: libsctplib1 (= ${binary:Version}),
          ${misc:Depends},
          ${shlibs:Depends}
-Conflicts: sctplib-stable-dev
-Replaces: sctplib-stable-dev
-Recommends: sctplib-docs
+Recommends: sctplib-doc
 Description: Headers and libraries of the user-space SCTP implementation SCTPLIB
  This package contains development files for SCTPLIB.
  .
@@ -70,14 +66,15 @@ Description: Headers and libraries of the user-space SCTP implementation SCTPLIB
  bind  UDP sockets on a configurable port, which may then be used for an
  asynchronous interprocess communication.
 
-Package: sctplib-docs
+Package: sctplib-doc
+Provides: sctplib-docs
+Replaces: sctplib-docs
 Section: doc
 Architecture: all
 Depends: libsctplib1,
          ${misc:Depends},
          ${shlibs:Depends}
 Conflicts: sctplib-stable-doc
-Replaces: sctplib-stable-doc
 Description: Documentation of the user-space SCTP implementation SCTPLIB
  This package contains documentation files for SCTPLIB.
  .
