@@ -27,5 +27,5 @@ Alternate-site: http://www.sctp.de
                 1273 KiB sctplib-1.0.19.tar.gz
 Original-site:  http://www.sctp.de
 Platforms:      Linux, FreeBSD, MacOS, Solaris, Windows
-Copying-policy: GPL
+Copying-policy: LGPL-3+
 End
