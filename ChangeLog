@@ -1,3 +1,45 @@
+commit 728b6fe9b4b5e4fafbc05b2a47dcb5267876e2ae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 16:36:20 2019 +0200
+
+    Fixed some Lintian warnings.
+
+commit 1f1b2a34ddef8e3e8b9de799ac3ca722f9cee7c5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 10:33:04 2019 +0200
+
+    Fixed some inconsistencies in different packaging files.
+
+commit 2c8b24c6f4f3ff2e1b3a60e01265a2524bb4ebe3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 10:04:34 2019 +0200
+
+    Updated build scripts.
+
+commit 6753a8170e06c44476c954a87399d75e3343465e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 16:50:36 2019 +0200
+
+    Removed leading / from Ubuntu/Debian install files.
+
+commit b045d664df4fcb316791b57b6abe96ddef91a775
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 14:32:47 2019 +0200
+
+    Reference to RFS #934049.
+
+commit 5a1c6d531dcd93a6b66fad2baf86ec4a173fdac8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 11:08:18 2019 +0200
+
+    Updated LSM entry.
+
+commit 0cd6391df2f179f30aa49f8e174f14fbcf12fd3f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 6 11:05:16 2019 +0200
+
+    New release sctplib-1.0.22.
+
 commit 5e405e3b43e0da55b999c9c28ffb9243d71efa00
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Aug 6 00:01:58 2019 +0200
