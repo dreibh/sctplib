@@ -1,0 +1,5 @@
+include/sctp.h
+lib/libsctplib.a
+lib/libsctplib.la
+lib/libsctplib.so
+lib/libsctplib.so.1.0.8
