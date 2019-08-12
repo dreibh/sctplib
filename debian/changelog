@@ -1,4 +1,4 @@
-sctplib (1:1.0.23-1ubuntu1) unstable; urgency=medium
+sctplib (1:1.0.23-1ubuntu1) eoan; urgency=medium
 
   * New upstream version.
   * Initial Debian release (Closes: #934156).
