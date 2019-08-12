@@ -86,7 +86,7 @@ static int verbose                            = 0;
 static int vverbose                           = 0;
 static int unknownCommand                     = 0;
 static unsigned int deltaT                    = 1000;
-static int sendToAll                          = 0;                 
+static int sendToAll                          = 0;
 static int startAssociation                   = 0;
 static int sendUnordered                      = 0;
 
@@ -99,8 +99,8 @@ static WINDOW *statusWin, *statusWinHeader;
 static WINDOW *pathWin, *pathWinHeader;
 static int X1,X2,mainY1,mainY2,statusY1,statusY2,pathY1,pathY2;
 
-/* Declaration for Display menu */  
-static int new_option = 0; 
+/* Declaration for Display menu */
+static int new_option = 0;
 unsigned int pathID = 0;
 static WINDOW *allWin;
 static char allInfo[1024];
@@ -114,7 +114,7 @@ struct SCTP_Monitor_AssocStatus
   unsigned char localAddressList[MAXIMUM_NUMBER_OF_LOCAL_ADDRESSES][SCTP_MAX_IP_LEN];
   unsigned char primaryDestinationAddress[SCTP_MAX_IP_LEN];
   unsigned short inStreams;
-  unsigned short outStreams; 
+  unsigned short outStreams;
   unsigned short inStreamID;
   unsigned short outStreamID;
   unsigned short primaryAddressIndex;
@@ -134,7 +134,7 @@ struct SCTP_Monitor_AssocStatus
   unsigned int delay;
   unsigned char ipTos;
   unsigned int maxSendQueue;
-  unsigned int maxRecvQueue; 
+  unsigned int maxRecvQueue;
 };
 static struct SCTP_Monitor_AssocStatus MonitorAssocStatus[MAXIMUM_NUMBER_OF_ASSOCIATIONS];
 
@@ -152,13 +152,13 @@ struct SCTP_Monitor_PathStatus
   unsigned int ssthresh[SCTP_MAX_NUM_ADDRESSES];
   unsigned int outstandingBytesPerAddress[SCTP_MAX_NUM_ADDRESSES];
   unsigned int mtu[SCTP_MAX_NUM_ADDRESSES];
-  unsigned char ipTos[SCTP_MAX_NUM_ADDRESSES]; 
+  unsigned char ipTos[SCTP_MAX_NUM_ADDRESSES];
 };
 static struct SCTP_Monitor_PathStatus MonitorPathStatus[MAXIMUM_NUMBER_OF_ASSOCIATIONS];
 
 /* Structure to store and retrieve association IDs */
 struct Monitor_List
-{ 
+{
   int associationID;
 };
 static struct Monitor_List MonitorList[MAXIMUM_NUMBER_OF_ASSOCIATIONS];
@@ -169,16 +169,16 @@ void printUsage(void)
   printf("usage:   echo_monitor [options] -s source_addr_1 -s source_addr_2 ...\n");
   printf("options:\n");
   printf("-b                  send back incoming data on all existing associations\n");
-  printf("-d destination_addr establish a association with the specified address\n");   
-  printf("-l length           number of bytes of the payload when generating traffic (default 512)\n");   
+  printf("-d destination_addr establish a association with the specified address\n");
+  printf("-l length           number of bytes of the payload when generating traffic (default 512)\n");
   printf("-m                  print number of received bytes and chunks per period (see -p)\n");
-  printf("-M      print number of received bytes, chunks per period (see -p) and flow control info\n");    
-  printf("-n number           number of packets initially send out (default 0)\n");   
-  printf("-p period           period for the measurements in milliseconds (default 1000)\n");   
-  printf("-t byte             TOS byte used by all assiciations (default 0x10)\n");   
+  printf("-M      print number of received bytes, chunks per period (see -p) and flow control info\n");
+  printf("-n number           number of packets initially send out (default 0)\n");
+  printf("-p period           period for the measurements in milliseconds (default 1000)\n");
+  printf("-t byte             TOS byte used by all assiciations (default 0x10)\n");
   printf("-u                  inject the initial packets unordered\n");
-  printf("-v                  verbose mode\n");   
-  printf("-V                  very verbose mode\n");   
+  printf("-v                  verbose mode\n");
+  printf("-V                  very verbose mode\n");
 }
 
 void getArgs(int argc, char **argv)
@@ -186,7 +186,7 @@ void getArgs(int argc, char **argv)
   int c;
   extern char *optarg;
   extern int optind;
-  
+
   while ((c = getopt(argc, argv, "bd:l:mMn:p:s:t:uvV")) != -1)
     {
       switch (c) {
@@ -221,7 +221,7 @@ void getArgs(int argc, char **argv)
 	  strcpy((char *)localAddressList[noOfLocalAddresses], optarg);
 	  noOfLocalAddresses++;
 	}
-	break;  
+	break;
       case 't':
 	tosByte = (unsigned char) atoi(optarg);
 	break;
@@ -246,10 +246,10 @@ void checkArgs(void)
 {
   int abortProgram;
   int printUsageInfo;
-  
+
   abortProgram = 0;
   printUsageInfo = 0;
-  
+
   if (noOfLocalAddresses == 0) {
     printf("Error:   At least one sourceaddress must be specified.\n");
     abortProgram = 1;
@@ -259,7 +259,7 @@ void checkArgs(void)
     printf("Error:   Unkown options in command.\n");
     printUsageInfo = 1;
   }
-  
+
   if (printUsageInfo == 1)
     printUsage();
   if (abortProgram == 1)
@@ -269,27 +269,27 @@ void checkArgs(void)
 void display_menu(int new_option, int assocID)
 {
   unsigned int i;
-  
+
   wclear(mainWin);
   wrefresh(mainWin);
-  
+
   wattrset(mainWin,A_NORMAL);
   mvwaddstr(mainWin,1,20,"Echo Tool Monitoring Program\n\n");
-  
+
   /* display all associations */
   for (i=0;i<MAXIMUM_NUMBER_OF_ASSOCIATIONS;i++)
-    { 
+    {
       if (MonitorList[i].associationID != -1)
 	{
 	  sprintf(mainInfo, "\t\t\t Association ID = %d\n", MonitorList[i].associationID);
 	  waddstr(mainWin,mainInfo);
 	  wrefresh(mainWin);
 	}
-    } 
-  
+    }
+
   /* set video attributes to be highlighted */
   wattrset(mainWin,A_REVERSE);
-  sprintf(mainInfo, "Association ID = %d", assocID); 
+  sprintf(mainInfo, "Association ID = %d", assocID);
   if (assocID != -1)
     mvwaddstr(mainWin,3+new_option,25,mainInfo);
   wattrset(mainWin,A_NORMAL);
@@ -301,15 +301,15 @@ int
 display_menu_position(unsigned int assocID)
 {
   int index;
-  
-  /* returns its position for the associated association */  
+
+  /* returns its position for the associated association */
   for (index=0;index<MAXIMUM_NUMBER_OF_ASSOCIATIONS;index++)
-    { 
+    {
       if (positions[index] == assocID) return index;
     }
     /* not found */
     return -1;
-} 
+}
 
 void store_menu()
 {
@@ -317,34 +317,34 @@ void store_menu()
   unsigned int j = 0;
 
   /* initialize positions array */
-  for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++) 
+  for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
     {
       positions[i] = -1;
-    } 
-  
+    }
+
   /* stores all associations in an array for the display menu */
   for (i=0;i<MAXIMUM_NUMBER_OF_ASSOCIATIONS;i++)
-    { 
+    {
       if (MonitorList[i].associationID != -1)
 	{
 	  positions[j] = MonitorList[i].associationID;
-	  j++;	  
+	  j++;
 	}
-    } 
+    }
 }
 
-void store_AssocStatus (unsigned int assocID) 
-{     
-  /* This function stores the Association Status of an association 
+void store_AssocStatus (unsigned int assocID)
+{
+  /* This function stores the Association Status of an association
      into the global structure MonitorAssocStatus */
   SCTP_AssociationStatus assocStatus;
   unsigned int LocalAddressID = 0;
   unsigned int i = 0;
   sctp_getAssocStatus(assocID, &assocStatus);
-  
+
   for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
-    { 
-      if (MonitorList[i].associationID == -1)	
+    {
+      if (MonitorList[i].associationID == -1)
 	{
 	  MonitorAssocStatus[i].state               = assocStatus.state;
 	  MonitorList[i].associationID              = assocID;
@@ -353,7 +353,7 @@ void store_AssocStatus (unsigned int assocID)
 	  for (LocalAddressID=0; LocalAddressID < noOfLocalAddresses; LocalAddressID++)
 	    {
 	      strcpy((char *)MonitorAssocStatus[i].localAddressList[LocalAddressID], (const char *)localAddressList[LocalAddressID]);
-	    }  
+	    }
 	  strcpy((char *)MonitorAssocStatus[i].primaryDestinationAddress, (const char *)assocStatus.primaryDestinationAddress);
 	  MonitorAssocStatus[i].inStreams = assocStatus.inStreams;
 	  MonitorAssocStatus[i].outStreams = assocStatus.outStreams;
@@ -382,15 +382,15 @@ void store_AssocStatus (unsigned int assocID)
 
 void store_PathStatus (unsigned int assocID)
 {
-  /* This function stores the Path Status of an association 
+  /* This function stores the Path Status of an association
      into the global structure MonitorPathStatus */
   SCTP_AssociationStatus assocStatus;
   SCTP_PathStatus pathStatus;
   unsigned short path;
   unsigned int i;
-  
+
   sctp_getAssocStatus(assocID, &assocStatus);
-  
+
   for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
     {
       if (MonitorList[i].associationID == -1 || MonitorList[i].associationID == assocID)
@@ -413,69 +413,69 @@ void store_PathStatus (unsigned int assocID)
 	      MonitorPathStatus[i].ipTos[path] = pathStatus.ipTos;
 	    }break;
 	}
-      
-    }  
+
+    }
 }
 
 void initializecurses()
      /* This function draws the windows of the monitoring tool using Ncurses */
 {
   int i;
-  
+
   initscr();            /* Initialize the curses library */
   cbreak();             /* Take input chars one at a time, no wait for \n */
   noecho();             /* Don't echo input */
   nonl();               /* Tell curses not to do NL->CR/NL on output */
-  
+
   X1 = 0;
   X2 = COLS-1;
-  
+
   mainY1 = 0;
   mainY2 = LINES-33;
-  
+
   pathY1 = mainY2+1;
   pathY2 = pathY1+18;
-  
+
   statusY1 = pathY2+1;
   statusY2 = statusY1+12;
-  
+
   mainWin = newwin((mainY2-mainY1),X2,mainY1+1,0);
   pathWin = newwin(18,X2,pathY1+1,0);
   statusWin = newwin(12,X2,statusY1+1,0);
-  
+
   pathWinHeader = newwin(1,X2,pathY1,0);
   waddstr(pathWinHeader,"Path Status");
   for (i=12; i<COLS-1;i++)
     mvwaddch(pathWinHeader,0,i,'*');
-  
+
   statusWinHeader = newwin(1,X2,statusY1,0);
   waddstr(statusWinHeader,"SCTP Event Status");
   for (i=18; i<COLS-1;i++)
     mvwaddch(statusWinHeader,0,i,'*');
-  
+
   wnoutrefresh(pathWinHeader);
   wnoutrefresh(statusWinHeader);
   wnoutrefresh(mainWin);
   wnoutrefresh(pathWin);
   wnoutrefresh(statusWin);
-  
+
   keypad(mainWin,TRUE);          /* Enable keyboard mapping */
   (void) idlok(statusWin,TRUE);
   (void) scrollok(statusWin,TRUE);
-  
+
   doupdate();
-  
+
 }
 
 void ncurses_display_InstanceParameters (unsigned int assocID)
 {
   unsigned int i = 0;
-  
+
   mvwaddstr(allWin,1,0, "Instance Parameters\n\n");
   for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
     {
       if (MonitorList[i].associationID == assocID)
-	{	  
+	{
 	  sprintf(allInfo, " The Initial Round Trip Timeout : %d\n The Minimum RTO Timeout : %d\n The Maximum RTO Timeout : %d\n The Lifetime of a Cookie : %d\n Maximum Retransmissions per association : %d\n Maximum Retransmissions per path : %d\n Maximum Initial Retransmissions : %d\n Local Receiver Window : %d\n Delay for delayed ACK in msecs : %d\n The IP Type of Service Field : %x\n Limit for the number of Chunks queued in the Send queue : %d\n Limit for the number of Chunks queued in the Receive queue : %d\n\n\n", MonitorAssocStatus[i].rtoInitial, MonitorAssocStatus[i].rtoMin, MonitorAssocStatus[i].rtoMax, MonitorAssocStatus[i].validCookieLife, MonitorAssocStatus[i].assocMaxRetransmits, MonitorAssocStatus[i].pathMaxRetransmits, MonitorAssocStatus[i].maxInitRetransmits, MonitorAssocStatus[i].myRwnd, MonitorAssocStatus[i].delay, MonitorAssocStatus[i].ipTos, MonitorAssocStatus[i].maxSendQueue, MonitorAssocStatus[i].maxRecvQueue);
 	  waddstr(allWin, allInfo);
 	  wrefresh(allWin);
@@ -487,16 +487,16 @@ void ncurses_display_AssocStatus (unsigned int assocID)
 {
   unsigned int LocalAddressID = 0;
   unsigned int i = 0;
-  
+
   waddstr(allWin, "Association Status\n\n");
-  
+
   for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
     {
       if (MonitorList[i].associationID == assocID)
 	{
 	  sprintf(allInfo, " Association ID : %d\n State : %d\n Local Port : %d\n Number of Local Addresses : %d\n", MonitorList[i].associationID, MonitorAssocStatus[i].state, MonitorAssocStatus[i].localPort, MonitorAssocStatus[i].numberOfAddresses);
 	  waddstr(allWin, allInfo);
-	  
+
 	  for (LocalAddressID=0; LocalAddressID < MonitorAssocStatus[i].numberOfAddresses; LocalAddressID++)
 	    {
 	      sprintf(allInfo," Local Address : %s\n", MonitorAssocStatus[i].localAddressList[LocalAddressID]);
@@ -512,10 +512,10 @@ void ncurses_display_AssocStatus (unsigned int assocID)
 void ncurses_display_PathStatus (unsigned int assocID)
 {
   unsigned int i, path;
-  
+
   wclear(pathWin);
   wrefresh(pathWin);
-  
+
   for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
     {
       if (MonitorList[i].associationID == assocID)
@@ -541,10 +541,10 @@ void ncurses_display_PathStatus (unsigned int assocID)
 void ncurses_display_PathDetails (unsigned int assocID, unsigned int path)
 {
   unsigned int i;
-  
+
   wclear(pathWin);
   wrefresh(pathWin);
-  
+
   for (i=0; i < MAXIMUM_NUMBER_OF_ASSOCIATIONS; i++)
     {
       if (MonitorList[i].associationID == assocID)
@@ -569,16 +569,16 @@ void ncurses_display_PathDetails (unsigned int assocID, unsigned int path)
 void ncurses_display_AllStatus (unsigned int assocID)
 {
   allWin = newpad(50,150);
-  
+
   ncurses_display_InstanceParameters(assocID);
   ncurses_display_AssocStatus(assocID);
-  
+
   wmove(allWin,40,1);
   wclrtoeol(allWin);
   mvwaddstr(allWin,40,1,"Press any key to go back");
-  
+
   prefresh(allWin,0,0,0,0,45,140);
-  
+
   keypad(allWin,TRUE);
   raw();
   wgetch(allWin);
@@ -594,22 +594,22 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
   int index=0, result;
   unsigned int tsn;
   unsigned short ssn;
-  
+
   if (vverbose) {
     sprintf(statusInfo, "Association ID =%-8d: Data arrived (%u bytes on stream %u, %s)\n",
 	    assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
     waddstr(statusWin,statusInfo);
 
   }
-  
+
   /* read it */
   length = sizeof(chunk);
   sctp_receive(assocID, streamID, chunk, &length, &ssn, &tsn, 0);
-  
+
   /* update counter */
   ((struct ulp_data *) ulpDataPtr)->nrOfReceivedChunks += 1;
   ((struct ulp_data *) ulpDataPtr)->nrOfReceivedBytes  += length;
-  
+
   /* and send it */
   if (sendToAll) {
     for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
@@ -620,16 +620,16 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 			   protoID,
 			   SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME, unordered,
                 SCTP_BUNDLING_DISABLED);
-	
+
 	if (vverbose) {
 	  sprintf(statusInfo, "Association ID =%-8d: Data sent (%u bytes on stream %u, %s) Result: %d\n",ulpData[index].assocID, len, min(streamID, ulpData[index].maximumStreamID), (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered", result);
 	  waddstr(statusWin,statusInfo);
 	  wrefresh(statusWin);
 	}
-	
+
 	/*Store Stream ID for data send into structure SCTP_Monitor_AssocStatus*/
 	MonitorAssocStatus[assocID].outStreamID = min(streamID, ulpData[index].maximumStreamID);
-	
+
 	store_PathStatus(assocID);
 	new_option = display_menu_position(assocID);
 	pathID = sctp_getPrimary(assocID);
@@ -645,7 +645,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 		       protoID,
 		       SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME,
                 unordered, SCTP_BUNDLING_DISABLED);
-    
+
     if (vverbose) {
       sprintf(statusInfo, "Association ID =%-8d: Data sent (%u bytes on stream %u, %s) Result: %d\n",
 	      ulpData[index].assocID, len, min(streamID, ((struct ulp_data *) ulpDataPtr)->maximumStreamID),
@@ -653,21 +653,21 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
       waddstr(statusWin,statusInfo);
       wrefresh(statusWin);
     }
-    
+
     /*Store Stream ID for data send into structure SCTP_Monitor_AssocStatus*/
     MonitorAssocStatus[assocID].outStreamID = min(streamID, ulpData[index].maximumStreamID);
-    
+
     store_PathStatus(assocID);
-    new_option = display_menu_position(assocID); 
+    new_option = display_menu_position(assocID);
     pathID = sctp_getPrimary(assocID);
     ncurses_display_PathDetails(assocID,pathID);
     store_menu();
     display_menu(new_option,assocID);
   }
-  
+
   /*Store Stream ID for data arrive into structure SCTP_Monitor_AssocStatus*/
   MonitorAssocStatus[assocID].inStreamID = streamID;
-  
+
 }
 
 
@@ -679,9 +679,9 @@ void sendFailureNotif(unsigned int assocID,
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
   }
-  
+
   store_PathStatus(assocID);
-  new_option = display_menu_position(assocID); 
+  new_option = display_menu_position(assocID);
   ncurses_display_PathStatus(assocID);
   store_menu();
   display_menu(new_option,assocID);
@@ -692,37 +692,37 @@ void networkStatusChangeNotif(unsigned int assocID, short affectedPathID, unsign
   SCTP_AssociationStatus assocStatus;
   SCTP_PathStatus pathStatus;
   unsigned short pathID;
-  
+
   if (verbose) {
     sctp_getPathStatus(assocID, affectedPathID, &pathStatus);
-    sprintf(statusInfo, "Association ID =%-8d: Network status change: path %u (towards %s) is now %s\n", 
+    sprintf(statusInfo, "Association ID =%-8d: Network status change: path %u (towards %s) is now %s\n",
 	    assocID, affectedPathID,
 	    pathStatus.destinationAddress,
 	    ((newState == SCTP_PATH_OK) ? "ACTIVE" : "INACTIVE"));
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
   }
-  
+
   /* if the primary path has become inactive */
   if ((newState == SCTP_PATH_UNREACHABLE) &&
-      (affectedPathID == sctp_getPrimary(assocID))) 
+      (affectedPathID == sctp_getPrimary(assocID)))
     {
-      
+
       sctp_getAssocStatus(assocID, &assocStatus);
       for (pathID=0; pathID < assocStatus.numberOfAddresses; pathID++){
 	sctp_getPathStatus(assocID, pathID, &pathStatus);
 	if (pathStatus.state == SCTP_PATH_OK)
 	  break;
       }
-      
+
       /* and use it */
       if (pathID < assocStatus.numberOfAddresses) {
 	sctp_setPrimary(assocID, pathID);
       }
     }
-  
+
   store_PathStatus(assocID);
-  new_option = display_menu_position(assocID); 
+  new_option = display_menu_position(assocID);
   ncurses_display_PathStatus(assocID);
   store_menu();
   display_menu(new_option,assocID);
@@ -732,22 +732,22 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfPaths,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP,void* dummy)
-{	
+{
   unsigned int index, packetNumber;
   unsigned char chunk[SCTP_MAXIMUM_DATA_LENGTH];
   SCTP_PathStatus pathStatus;
   /* SCTP_AssociationStatus assocStatus; */
   unsigned short pathID;
-  
+
   if (verbose) {
     sprintf(statusInfo, "Association ID =%-8d: Communication up (%u paths:", assocID, noOfPaths);
     waddstr(statusWin,statusInfo);
-  
+
     for (pathID=0; pathID < noOfPaths; pathID++){
       sctp_getPathStatus(assocID, pathID, &pathStatus);
       sprintf(statusInfo, " %s ", pathStatus.destinationAddress);
       waddstr(statusWin,statusInfo);
-      
+
     }
     sprintf(statusInfo, ")\n");
     waddstr(statusWin,statusInfo);
@@ -756,7 +756,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
   }
-  
+
   store_AssocStatus(assocID);
   store_PathStatus(assocID);
   /* look for association to determine its cursor location */
@@ -767,23 +767,23 @@ void* communicationUpNotif(unsigned int assocID, int status,
 	  new_option = index;
 	  break;
 	}
-    } 
+    }
   ncurses_display_PathStatus(assocID);
   store_menu();
   display_menu(new_option,assocID);
-  
+
   /* look for a free ULP data */
   for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
     if (ulpData[index].maximumStreamID == -1)
       break;
   }
-  
+
   /* if found */
   if (index < MAXIMUM_NUMBER_OF_ASSOCIATIONS) {
     /* use it */
     ulpData[index].maximumStreamID = noOfOutStreams - 1;
     ulpData[index].assocID = assocID;
-    
+
     /* send the initial packets */
     memset(chunk, 0, sizeof(chunk));
     for(packetNumber=1; packetNumber <= numberOfInitialPackets; packetNumber++) {
@@ -794,7 +794,7 @@ void* communicationUpNotif(unsigned int assocID, int status,
 		SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, SCTP_INFINITE_LIFETIME,
 		SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
     }
-    return &ulpData[index];       
+    return &ulpData[index];
   } else {
     /* abort assoc due to lack of resources */
     sctp_abort(assocID);
@@ -814,13 +814,13 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 
     unsigned int index;
     unsigned int count = 0;
-  
+
     if (verbose) {
         sprintf(statusInfo, "Association ID =%-8d: Communication lost (status %u)\n", assocID, status);
         waddstr(statusWin,statusInfo);
         wrefresh(statusWin);
     }
-  
+
     /* retrieve data */
     bufferLength = sizeof(buffer);
     while (sctp_receiveUnsent(assocID, buffer, &bufferLength, &tsn,
@@ -829,7 +829,7 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-  
+
     bufferLength = sizeof(buffer);
     while (sctp_receiveUnacked(assocID, buffer, &bufferLength, &tsn,
                                 &streamID, &streamSN, &protoID,&flags,&ctx) >= 0){
@@ -837,26 +837,26 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
         /* after that, reset bufferLength */
         bufferLength = sizeof(buffer);
     }
-  
+
   /* free ULP data */
   ((struct ulp_data *) ulpDataPtr)->maximumStreamID = -1;
-  
+
   /* delete the association */
   sctp_deleteAssociation(assocID);
-  
+
   /* free Association and Path data */
-  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (MonitorList[index].associationID == assocID)
 	MonitorList[index].associationID = -1;
     }
   /* free cursor position */
-  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (positions[index] == assocID)
-	positions[index] = -1;    
+	positions[index] = -1;
     }
-  
+
   for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (positions[index] != -1)
@@ -869,15 +869,15 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 	  break;
 	}
     }
-  
-  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+
+  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (MonitorList[index].associationID != -1)
 	{
 	  count++;
 	}
     }
-  
+
   if (count == 0)
     {
       new_option = 0;
@@ -895,34 +895,34 @@ void communicationErrorNotif(unsigned int assocID, unsigned short status, void* 
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
   }
-  
+
   store_PathStatus(assocID);
-  new_option = display_menu_position(assocID); 
+  new_option = display_menu_position(assocID);
   ncurses_display_PathStatus(assocID);
   store_menu();
   display_menu(new_option,assocID);
-  
+
 }
 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
 {
   SCTP_AssociationStatus assocStatus;
-  
-  if (verbose) {  
+
+  if (verbose) {
     sprintf(statusInfo, "Association ID =%-8d: Restart\n", assocID);
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
-  }  
-  
+  }
+
   sctp_getAssocStatus(assocID, &assocStatus);
-    
+
   /* update ULP data */
   ((struct ulp_data *) ulpDataPtr)->maximumStreamID = assocStatus.outStreams - 1;
   ((struct ulp_data *) ulpDataPtr)->assocID = assocID;
-  
+
   store_AssocStatus(assocID);
   store_PathStatus(assocID);
-  new_option = display_menu_position(assocID); 
+  new_option = display_menu_position(assocID);
   ncurses_display_PathStatus(assocID);
   store_menu();
   display_menu(new_option,assocID);
@@ -935,29 +935,29 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
   unsigned int associationID = 0;
   unsigned int count = 0;
 
-  if (verbose) {  
+  if (verbose) {
     sprintf(statusInfo, "Association ID =%-8d: Shutdown complete\n", assocID);
     waddstr(statusWin,statusInfo);
     wrefresh(statusWin);
-  }  
-  
+  }
+
   /* free ULP data */
   ((struct ulp_data *) ulpDataPtr)->maximumStreamID = -1;
   sctp_deleteAssociation(assocID);
-  
+
   /* free Association and Path data */
-  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (MonitorList[index].associationID == assocID)
 	MonitorList[index].associationID = -1;
     }
   /* free cursor position */
-  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (positions[index] == assocID)
-	positions[index] = -1;    
+	positions[index] = -1;
     }
-  
+
   for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (positions[index] != -1)
@@ -970,15 +970,15 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 	  break;
 	}
     }
-  
-  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+
+  for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
     {
       if (MonitorList[index].associationID != -1)
 	{
 	  count++;
 	}
     }
-  
+
   if (count == 0)
     {
       new_option = 0;
@@ -993,7 +993,7 @@ void measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void
 {
   int index;
   SCTP_AssociationStatus assocStatus;
-  
+
   for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
     if (ulpData[index].maximumStreamID >= 0){
       sprintf(statusInfo, "Association ID =%-8d: %-6lu Chunks, %-8lu Bytes received\n",
@@ -1020,7 +1020,7 @@ void measurementTimerRunOffFunction(unsigned int timerID, void *parameter1, void
     }
   }
   sctp_startTimer(deltaT/1000, (deltaT%1000)*1000, measurementTimerRunOffFunction, NULL, NULL);
-} 
+}
 
 void stdinCallback (int fd, short int revents, short int* gotEvents, void* dummy)
 {
@@ -1028,11 +1028,11 @@ void stdinCallback (int fd, short int revents, short int* gotEvents, void* dummy
   int key;
   unsigned int assocID = 0;
   unsigned int index;
-  unsigned int count = 0;  
+  unsigned int count = 0;
   unsigned int numOfAddr = 0;
-  
+
   key=wgetch(mainWin);
-  
+
   switch(key)
     {
     case 13:
@@ -1043,16 +1043,16 @@ void stdinCallback (int fd, short int revents, short int* gotEvents, void* dummy
       ncurses_display_PathStatus(assocID);
       display_menu(new_option,assocID);
       break;
-      
+
     case KEY_UP:
       new_option = (new_option == 0) ? new_option : new_option-1;
       assocID = positions[new_option];
       ncurses_display_PathStatus(assocID);
       display_menu(new_option,assocID);
       break;
-      
+
     case KEY_DOWN:
-      for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) 
+      for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++)
 	{
 	  if (MonitorList[index].associationID != -1)
 	    {
@@ -1064,7 +1064,7 @@ void stdinCallback (int fd, short int revents, short int* gotEvents, void* dummy
       ncurses_display_PathStatus(assocID);
       display_menu(new_option,assocID);
       break;
-      
+
     case KEY_RESIZE:
       endwin();
       initializecurses();
@@ -1072,23 +1072,23 @@ void stdinCallback (int fd, short int revents, short int* gotEvents, void* dummy
       wrefresh(mainWin);
       wrefresh(pathWin);
       wrefresh(statusWin);
-      break; 
-      
+      break;
+
     case 'Q':
     case 'q':
       endwin();
       exit(0);
       break;
-      
-    case '0': 
-    case '1': 
-    case '2': 
+
+    case '0':
+    case '1':
+    case '2':
     case '3':
-    case '4': 
+    case '4':
     case '5':
     case '6':
-    case '7': 
-    case '8': 
+    case '7':
+    case '8':
     case '9':
       /* ascii code for key '0' is 48, key '1' is 49 and so fro....
 	 therefore, key - 48 will return the value of the PathID chosen */
@@ -1100,20 +1100,20 @@ void stdinCallback (int fd, short int revents, short int* gotEvents, void* dummy
 	  if (MonitorList[index].associationID == assocID)
 	    numOfAddr = MonitorAssocStatus[index].numberOfAddresses;
 	}
-      
+
       if (pathID < numOfAddr)
 	{
 	  ncurses_display_PathDetails(assocID,pathID);
-	} 
+	}
       display_menu(new_option,assocID);
       break;
-      
+
     case KEY_BACKSPACE:
       assocID = positions[new_option];
       ncurses_display_PathStatus(assocID);
       display_menu(new_option,assocID);
       break;
-      
+
     default:
       break;
     }
@@ -1135,24 +1135,24 @@ int main(int argc, char **argv)
   SCTP_ulpCallbacks echoUlp;
   SCTP_InstanceParameters instanceParameters;
   unsigned int index;
-  
+
   /* Trapping Resize Signal */
   signal(SIGWINCH, resize);
-    
-  
+
+
   /* initialize ULP data */
   for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
     ulpData[index].maximumStreamID    = -1;
     ulpData[index].nrOfReceivedChunks = 0;
-    ulpData[index].nrOfReceivedBytes  = 0;        
+    ulpData[index].nrOfReceivedBytes  = 0;
   }
-  
+
   /* initialize Association and Path data */
   for (index=0; index < MAXIMUM_NUMBER_OF_ASSOCIATIONS; index++) {
-    MonitorList[index].associationID    = -1;        
+    MonitorList[index].associationID    = -1;
   }
-  
-  
+
+
     /* initialize the echo_ulp variable */
   echoUlp.dataArriveNotif          = &dataArriveNotif;
   echoUlp.sendFailureNotif         = &sendFailureNotif;
@@ -1166,37 +1166,37 @@ int main(int argc, char **argv)
   getArgs(argc, argv);
 
   checkArgs();
-  
+
   initializecurses();
-  
+
   sctp_initLibrary();
-  
+
   sctpInstance = sctp_registerInstance(ECHO_PORT,
 				       MAXIMUM_NUMBER_OF_IN_STREAMS,
 				       MAXIMUM_NUMBER_OF_OUT_STREAMS,
                        noOfLocalAddresses, localAddressList,
 				       echoUlp);
-  
-  /* set the TOS field */                  
+
+  /* set the TOS field */
   sctp_getAssocDefaults(sctpInstance, &instanceParameters);
   instanceParameters.ipTos=tosByte;
   sctp_setAssocDefaults(sctpInstance, &instanceParameters);
-  
+
   if (startAssociation) {
     associationID = sctp_associate(sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS,
                                     destinationAddress, ECHO_PORT, &ulpData[0]);
     store_AssocStatus(associationID);
   }
-  
+
   if (doMeasurements) {
     sctp_startTimer(deltaT/1000, (deltaT%1000)*1000, &measurementTimerRunOffFunction, NULL, NULL);
     }
-  
+
   sctp_registerUserCallback(fileno(stdin), &stdinCallback, NULL, POLLIN|POLLPRI);
   /* run the event handler forever */
   while (sctp_eventLoop() >= 0) {
   }
-  
+
   /* this will never be reached */
   return 0;
 }
@@ -1204,13 +1204,3 @@ int main(int argc, char **argv)
 /* Local Variables: *** */
 /* compile-command: "gcc -o echo_monitor echo_monitor.c -I/usr/local/include -L/usr/local/lib -lglib12 -lsctp -lncurses" *** */
 /* End: *** */
-
-
-
-
-
-
-
-
-
-

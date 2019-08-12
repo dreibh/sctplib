@@ -479,5 +479,5 @@ int main(int argc, char **argv)
     };
 
     /* this will never be reached */
-    exit(0);
+    return 0;
 }

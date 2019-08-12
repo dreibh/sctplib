@@ -340,4 +340,5 @@ int main(int argc, char **argv)
     }
 
     /* this will never be reached */
+    return 0;
 }
