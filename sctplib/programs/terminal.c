@@ -534,12 +534,9 @@ int main(int argc, char **argv)
     associationID=SCTP_associate((unsigned short)sctpInstance, MAXIMUM_NUMBER_OF_OUT_STREAMS, destinationAddress, remotePort, NULL);
 
     /* run the event handler forever */
-    while (1){
+    while (1) {
         SCTP_eventLoop();
     }
 
     /* this will never be reached */
-    exit(0);
 }
-
-

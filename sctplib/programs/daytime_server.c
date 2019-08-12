@@ -106,15 +106,15 @@ void printUsage(void)
     printf("-i       ignore OOTB packets\n");
     printf("-s       source address\n");
     printf("-t       time to live in ms\n");
-    printf("-v       verbose mode\n");   
-    printf("-V       very verbose mode\n");   
+    printf("-v       verbose mode\n");
+    printf("-V       very verbose mode\n");
 }
 
 void getArgs(int argc, char **argv)
 {
     int i;
     char *opt;
-    
+
     for(i=1; i < argc ;i++) {
         if (argv[i][0] == '-') {
             switch (argv[i][1]) {
@@ -135,7 +135,7 @@ void getArgs(int argc, char **argv)
                         strcpy((char *)localAddressList[noOfLocalAddresses], opt);
                         noOfLocalAddresses++;
                     };
-                    break;  
+                    break;
                 case 't':
                     if (i+1 >= argc) {
                         printUsage();
@@ -164,10 +164,10 @@ void checkArgs(void)
 {
     int abortProgram;
     int printUsageInfo;
-    
+
     abortProgram = 0;
     printUsageInfo = 0;
-    
+
     if (noOfLocalAddresses == 0) {
 #ifdef HAVE_IPV6
         strcpy((char *)localAddressList[noOfLocalAddresses], "::0");
@@ -180,7 +180,7 @@ void checkArgs(void)
          printf("Error:   Unkown options in command.\n");
          printUsageInfo = 1;
     }
-    
+
     if (printUsageInfo == 1)
         printUsage();
     if (abortProgram == 1)
@@ -196,8 +196,8 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
     unsigned int tsn;
     unsigned short ssn;
 
- 
-    if (vverbose) {  
+
+    if (vverbose) {
       fprintf(stdout, "%-8x: Data arrived (%u bytes on stream %u, %s)\n",
                       assocID, len, streamID, (unordered==SCTP_ORDERED_DELIVERY)?"ordered":"unordered");
       fflush(stdout);
@@ -210,7 +210,7 @@ void dataArriveNotif(unsigned int assocID, unsigned short streamID, unsigned int
 void sendFailureNotif(unsigned int assocID,
                       unsigned char *unsent_data, unsigned int dataLength, unsigned int *context, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Send failure\n", assocID);
     fflush(stdout);
   }
@@ -218,8 +218,8 @@ void sendFailureNotif(unsigned int assocID,
 
 void networkStatusChangeNotif(unsigned int assocID, short destAddrIndex, unsigned short newState, void* ulpDataPtr)
 {
-    if (verbose) {  
-        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n", 
+    if (verbose) {
+        fprintf(stdout, "%-8x: Network status change: path %u is now %s\n",
                 assocID, destAddrIndex, pathStateName(newState));
         fflush(stdout);
     }
@@ -229,38 +229,38 @@ void* communicationUpNotif(unsigned int assocID, int status,
                            unsigned int noOfDestinations,
                            unsigned short noOfInStreams, unsigned short noOfOutStreams,
                            int associationSupportsPRSCTP, void* dummy)
-{	
+{
     char *timeAsString;
     time_t now;
- 
-    if (verbose) {  
+
+    if (verbose) {
         fprintf(stdout, "%-8x: Communication up (%u paths)\n", assocID, noOfDestinations);
         fflush(stdout);
     }
-   
+
     /* get the current time and convert to string */
     time(&now);
     timeAsString = ctime(&now);
 
-    if (vverbose) {  
+    if (vverbose) {
         fprintf(stdout, "%-8x: Current Time: %s", assocID, timeAsString);
         fflush(stdout);
     }
-   
+
     SCTP_send(assocID,
               0,
               (unsigned char *)timeAsString, strlen(timeAsString),
               SCTP_GENERIC_PAYLOAD_PROTOCOL_ID,
-              SCTP_USE_PRIMARY, SCTP_NO_CONTEXT, 
+              SCTP_USE_PRIMARY, SCTP_NO_CONTEXT,
 	          timeToLive, SCTP_ORDERED_DELIVERY, SCTP_BUNDLING_DISABLED);
-    
+
     SCTP_shutdown(assocID);
 
     return NULL;
 }
 
 void communicationLostNotif(unsigned int assocID, unsigned short status, void* ulpDataPtr)
-{	
+{
     if (verbose) {
         fprintf(stdout, "%-8x: Communication lost (status %u)\n", assocID, status);
         fflush(stdout);
@@ -270,15 +270,15 @@ void communicationLostNotif(unsigned int assocID, unsigned short status, void* u
 
 void communicationErrorNotif(unsigned int assocID, unsigned short status, void* dummy)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Communication error (status %u)\n", assocID, status);
     fflush(stdout);
   }
 }
 
 void restartNotif(unsigned int assocID, void* ulpDataPtr)
-{    
-    if (verbose) {  
+{
+    if (verbose) {
         fprintf(stdout, "%-8x: Restart\n", assocID);
         fflush(stdout);
     }
@@ -286,7 +286,7 @@ void restartNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 {
-  if (verbose) {  
+  if (verbose) {
     fprintf(stdout, "%-8x: Shutdown complete\n", assocID);
     fflush(stdout);
   }
@@ -295,7 +295,7 @@ void shutdownCompleteNotif(unsigned int assocID, void* ulpDataPtr)
 
 void shutdownReceivedNotif(unsigned int assocID, void* ulpDataPtr)
 {
-    if (verbose) {  
+    if (verbose) {
         fprintf(stdout, "%-8x: Shutdown received\n", assocID);
         fflush(stdout);
     }
@@ -321,13 +321,13 @@ int main(int argc, char **argv)
     /* handle all command line options */
     getArgs(argc, argv);
     checkArgs();
-    
+
     SCTP_initLibrary();
     SCTP_getLibraryParameters(&params);
     params.sendOotbAborts    = sendOOTBAborts;
     params.checksumAlgorithm = SCTP_CHECKSUM_ALGORITHM_CRC32C;
     SCTP_setLibraryParameters(&params);
-    
+
     /* set up the "server" */
     SCTP_registerInstance(DAYTIME_PORT,
                           MAXIMUM_NUMBER_OF_IN_STREAMS, MAXIMUM_NUMBER_OF_OUT_STREAMS,
@@ -338,8 +338,6 @@ int main(int argc, char **argv)
     while (1) {
         SCTP_eventLoop();
     }
-    
-    /* this will never be reached */
-    exit(0);
-}
 
+    /* this will never be reached */
+}
