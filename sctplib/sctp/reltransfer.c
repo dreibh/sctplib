@@ -717,7 +717,7 @@ int rtx_process_sack(unsigned int adr_index, void *sack_chunk, unsigned int tota
      * also see section 6.2.1 (Note)
      */
     if (rtx->chunk_list == NULL) {
-        if ((rtx->highest_tsn == rtx->highest_acked)) {
+        if (rtx->highest_tsn == rtx->highest_acked) {
             all_acked = TRUE;
         }
         /* section 6.2.1.D.ii) */
