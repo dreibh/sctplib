@@ -269,7 +269,7 @@ static void handleChunksAcked(short pathID, unsigned int newRTT)
         } else {
             pmData->pathData[pathID].rttvar = (unsigned int)
                 ((1. - RTO_BETA) * pmData->pathData[pathID].rttvar +
-                RTO_BETA * abs(pmData->pathData[pathID].srtt - newRTT));
+                RTO_BETA * abs((int)pmData->pathData[pathID].srtt - (int)newRTT));
             pmData->pathData[pathID].rttvar = max((unsigned int)pmData->pathData[pathID].rttvar, GRANULARITY);
 
             pmData->pathData[pathID].srtt = (unsigned int)
