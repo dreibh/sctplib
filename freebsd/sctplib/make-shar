@@ -1,5 +1,0 @@
-#!/bin/sh
-
-echo "!!! pkg-plist is not needed here !!!"
-# shar Makefile distinfo pkg-descr pkg-plist >netperfmeter.shar
-shar Makefile distinfo pkg-descr >bibtexconv.shar
