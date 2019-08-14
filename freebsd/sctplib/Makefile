@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	sctplib
-PORTVERSION=	1.0.23
+PORTVERSION=	1.0.24
 CATEGORIES=	net
 MASTER_SITES=	https://www.uni-due.de/~be0001/sctplib/download/
 

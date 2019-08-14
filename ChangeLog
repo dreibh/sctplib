@@ -1,3 +1,106 @@
+commit 5c9971f7d369a372ea13246988bb12ab1f0e3436
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 14 09:50:31 2019 +0200
+
+    Updated CI scripts.
+
+commit ecd4c1c2367ff3d83e3471dfa29af5dc6a3bbc73
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:30:32 2019 +0200
+
+    Updated build script.
+
+commit a3edfcfd3ef29e115a94e6aecf7dd91626edc554
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 15:29:48 2019 +0200
+
+    Removed Ubuntu Cosmic from Travis CI builds, since it is deprecated.
+
+commit 19f551a12feaf19dbe1ba44b6cae79cd3844520f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:51:48 2019 +0200
+
+    Further clean-ups.
+
+commit 92e964ac020699dc7cb0f2da7c6743f66352e6d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:40:45 2019 +0200
+
+    Ubuntu packaging fix.
+
+commit 26d2fe201a4e7b5fc3a7b1ddbb04b3f5786e30db
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:38:42 2019 +0200
+
+    Bugfix: chunkLength has to be "unsigned int", not "unsiged short". Otherwise, it cannot reach MAXIMUM_PAYLOAD_LENGTH (1000000).
+
+commit 9f75c80f5dfce360e0a0a32638cd78a78731f596
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:38:39 2019 +0200
+
+    Fixed compiler warning: removed unreachable "exit(0)" after infinite main loop.
+
+commit ba3d2e0ff67376d3315d690822d31494414c7d0f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:33:38 2019 +0200
+
+    Fixed compiler warning: removed unreachable "exit(0)" after infinite main loop.
+
+commit 709f50c7d145d81a3d4195f8b3a04f4e81cce71f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:32:28 2019 +0200
+
+    Fixed compiler warnings: removed unreachable "exit(0)" after infinite main loop.
+
+commit eafa10f1d677c1fd28cc135464e47aee5bca7a4b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:29:44 2019 +0200
+
+    Bugfix: RTT difference has to use signed integers.
+
+commit 3e2044e93b29b9b395157bd4d465df7e017cb5be
+Merge: 1865bea 27b62f4
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:25:58 2019 +0200
+
+    Merge branch 'master' of github.com:dreibh/sctplib
+
+commit 1865bea762cebac12beb6d4d0b5ec0ced0828ed7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 12:25:34 2019 +0200
+
+    Fixed compiler warning: removed extraneous parentheses.
+
+commit 27b62f443d966784da02f22cf4dec11286935518
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 11:27:50 2019 +0200
+
+    Added initial FreeBSD port files.
+
+commit 04240e17cc279649203c98664cf13aaa2ef4e39b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Aug 12 09:05:37 2019 +0200
+
+    Improved Travis CI configuration.
+
+commit 00f04161c5b8dbd1c27dbeff2fb837bfdb609188
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Aug 8 14:05:25 2019 +0200
+
+    Build script update.
+
+commit a5cc041279e780de1782c0a6d51ffd236bca6413
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 18:22:03 2019 +0200
+
+    Updated LSM entry.
+
+commit f5fc809fc8798a8e6d95fb563768a63d20297c62
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 7 17:41:09 2019 +0200
+
+    New release sctplib-1.0.23.
+
 commit 728b6fe9b4b5e4fafbc05b2a47dcb5267876e2ae
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Aug 7 16:36:20 2019 +0200

@@ -1,3 +1,9 @@
+sctplib (1:1.0.24-1ubuntu1) eoan; urgency=medium
+
+  * New upstream release.
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 14 Aug 2019 14:01:49 +0200
+
 sctplib (1:1.0.23-1ubuntu1) eoan; urgency=medium
 
   * New upstream version.
