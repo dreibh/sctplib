@@ -83,9 +83,7 @@ for DISTRIBUTION in ${DISTRIBUTIONS} ; do
    mock -r ${DISTRIBUTION} --old-chroot --init
    mock -r ${DISTRIBUTION} --old-chroot --installdeps ${PACKAGE_SRPM}
    mock -r ${DISTRIBUTION} --old-chroot --install openssl pesign
-echo "X-1 `date`"
    mock -r ${DISTRIBUTION} --old-chroot --no-clean --rebuild ${PACKAGE_SRPM}
-echo "X-2 `date`"
 
    # Check whether files are at the right location
    PACKAGE_RPMS=`find /var/lib/mock/${distribution}/result -name "${PACKAGE}-*-*.rpm" | grep -v "${PACKAGE}-*-*.src.rpm" || true`
@@ -93,6 +91,4 @@ echo "X-2 `date`"
       echo >&2 "ERROR: Cannot find RPMs!"
       exit 1
    fi
-echo "X-3 `date`"
 done
-echo "X-4 `date`"
