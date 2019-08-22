@@ -1,6 +1,7 @@
-#!/bin/bash -e
+#!/usr/bin/env bash
 
-rm -f CMakeCache.txt
+# Bash options:
+set -e
 
 # ------ Obtain number of cores ---------------------------------------------
 # Try Linux
