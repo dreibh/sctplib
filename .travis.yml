@@ -5,6 +5,10 @@ env:
     # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
     #   via the "travis encrypt" command using the project repo's public key
     - secure: "Mbtc2+vR9I7lPZYEG5lGDJyfWQ3+RGqg0Eq2E0jAzpcjJRmwoUn6l/nDbMsp83HrKE7u9z5iZaweIQemYBDkvNDiuPuD8cDLeQwts5pSCL5dHD8zxtCKtyixzGPv2H+zrUUDI6YytCJ5lTr98keBX3HkCqhsvWeagPfQ5S1Re1E7GuZQZWbW2O/OSHQtSKfBxSeVyIhR4VrY2RHw+tNt7B4Ic3XORiAqL+h3fKpvEYOqIfIcaZsjURAkA+zEu8OfsPgmmjM6MUmLaWFOmkkUV3guzB/Q/hZuuDSmChcVHzR2dT4DqVJqnOd6iSoKnTk0Na1S81e6V2GdUjGBbVxGgpxTmLrNxw1ljDz/7WuZGkfQzlMDv35phOCqX6cmi4iVTkpjbxVbieKeNorWQBXSRFdRlcO8mJE5DoEsfKzGXgCigAEYu9UHmJFXeLmUBUmpcZz+6bvDtuX2nLk3ZBu8V3fpkVBl9LEYj1UKNTek1L6ogjlZ7zWVM71XrcG8ZpXJVdgnig7ybizf4g/wEpzuusJ5ZlFGuTqye+DmbI4KzhQO69f4EjFMLXQbI9HLLvDMF/KGydiNSrumduUTJn/Szwp4YZX1fqG5ElpXUx5ZVjOdxerlNakwzLlImuSLx9VYsp2gvoYNMVpd0FpHdlY4I0W+4TlynF0kO2Ov6uOrC4o="
+cache:
+  directories:
+    - /var/cache/apt/
+    - /var/cache/pbuilder/aptcache/
 
 
 matrix:
