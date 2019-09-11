@@ -14,7 +14,7 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 
 USES=		gnome libtool pkgconfig
 USE_LDCONFIG=	yes
-USE_GNOME=	glib20
+# USE_GNOME=	glib20
 
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--enable-sctp-over-udp
