@@ -317,6 +317,8 @@ elif [ "${TRAVIS_OS_NAME}" == "linux" -a "${QEMU}" == "FreeBSD" ] ; then
       sudo bash -c "echo \"PermitRootLogin prohibit-password\" >>${mountPoint}/etc/ssh/sshd_config"
       # sudo tail -n 6 ${mountPoint}/etc/ssh/sshd_config
 
+      sudo sed -e 's#"pkg+http://pkg.FreeBSD.org/${ABI}/quarterly"#"pkg+http://pkg.FreeBSD.org/${ABI}/latest"#g' -i ${mountPoint}/etc/pkg/FreeBSD.conf
+
       sudo mkdir -p ${mountPoint}/usr/ports
 
       sudo mkdir -p ${mountPoint}/root/.ssh
