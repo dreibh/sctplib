@@ -421,7 +421,7 @@ elif [ "${TRAVIS_OS_NAME}" == "linux" -a "${QEMU}" == "FreeBSD" ] ; then
 
       # Package's dependencies:
       ssh -p 8829 -oStrictHostKeyChecking=no -i ~/.ssh/id_rsa root@localhost \
-         "cd /travis/freebsd/*/ && ( make build-depends-list && make run-depends-list ) | sed 's/^.*\///g' | xargs -r env ASSUME_ALWAYS_YES=yes pkg install -y"
+         "cd /travis/freebsd/*/ && ( make build-depends-list && make run-depends-list ) | sed -e 's/^.*\///g' -e 's/glib20/glib/g' | sort -u | xargs -r env ASSUME_ALWAYS_YES=yes pkg install -y"
 
       echo "===== The FreeBSD VM is ready! ====="
    fi
