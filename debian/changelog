@@ -1,9 +1,9 @@
-sctplib (1:1.0.25~rc3-1ubuntu1) focal; urgency=medium
+sctplib (1:1.0.25-1ubuntu1) focal; urgency=medium
 
   * New upstream release.
   * debian/control: Updated standards version to 4.5.0.0.
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 07 Feb 2020 12:53:01 +0100
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Fri, 07 Feb 2020 13:21:57 +0100
 
 sctplib (1:1.0.24-1ubuntu1) eoan; urgency=medium
 
