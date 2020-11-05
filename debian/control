@@ -13,6 +13,9 @@ Build-Depends: autoconf,
                texlive-latex-base,
                texlive-latex-extra
 Standards-Version: 4.5.0.0
+Rules-Requires-Root: no
+Vcs-Git: https://github.com/dreibh/sctplib.git
+Vcs-Browser: https://github.com/dreibh/sctplib
 
 Package: libsctplib1
 Section: libs
