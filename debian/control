@@ -12,7 +12,7 @@ Build-Depends: autoconf,
                texlive-fonts-recommended,
                texlive-latex-base,
                texlive-latex-extra
-Standards-Version: 4.5.0.0
+Standards-Version: 4.5.0.3
 Rules-Requires-Root: no
 Vcs-Git: https://github.com/dreibh/sctplib.git
 Vcs-Browser: https://github.com/dreibh/sctplib
