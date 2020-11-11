@@ -1,4 +1,5 @@
 libsctplib.so.1 libsctplib1 #MINVER#
+* Build-Depends-Package: libsctplib-dev
  CheckForAddressInInstance@Base 1:1.0.10
  CompareInstanceNames@Base 1:1.0.10
  MD5Final@Base 1:1.0.10
