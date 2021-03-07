@@ -227,18 +227,6 @@ matrix:
 
    # ###### FreeBSD #########################################################
 
-   # ====== FreeBSD 12.1-RELEASE ============================================
-   - name: "FreeBSD 12.1-RELEASE with Clang"
-     os: linux
-     dist: focal
-     group: travis_latest
-     env: QEMU="FreeBSD" VARIANT="12.1-RELEASE" TOOL="compile" COMPILER_C="clang" COMPILER_CXX="clang++"
-   - name: "FreeBSD 12.1-RELEASE with GCC"
-     os: linux
-     dist: focal
-     group: travis_latest
-     env: QEMU="FreeBSD" VARIANT="12.1-RELEASE" TOOL="compile" COMPILER_C="gcc" COMPILER_CXX="g++"
-
    # ====== FreeBSD 12.2-RELEASE ============================================
    - name: "FreeBSD 12.2-RELEASE with Clang"
      os: linux
