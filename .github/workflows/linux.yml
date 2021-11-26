@@ -49,10 +49,6 @@ jobs:
             image: ubuntu:16.04
             cc: gcc
             cxx: g++
-          - label: "Ubuntu 14.04 (Trusty Tahr) with GCC"
-            image: ubuntu:14.04
-            cc: gcc
-            cxx: g++
 
           # ====== Debian Linux =============================================
           - label: "Debian 12 (Bookworm) with GCC"
