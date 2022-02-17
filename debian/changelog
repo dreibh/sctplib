@@ -1,3 +1,10 @@
+sctplib (1:1.0.28~rc0-1ubuntu1) jammy; urgency=medium
+
+  * New upstream release.
+  * Closes: #934156 (ITP).
+
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Thu, 17 Feb 2022 11:16:12 +0100
+
 sctplib (1:1.0.27-1ubuntu1) hirsute; urgency=medium
 
   * New upstream release.
@@ -28,7 +35,6 @@ sctplib (1:1.0.24-1ubuntu1) eoan; urgency=medium
 sctplib (1:1.0.23-1ubuntu1) eoan; urgency=medium
 
   * New upstream version.
-  * Initial Debian release (Closes: #934156).
 
  -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Wed, 07 Aug 2019 17:40:55 +0200
 
