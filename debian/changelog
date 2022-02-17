@@ -1,9 +1,9 @@
-sctplib (1:1.0.28~rc1-1ubuntu1) jammy; urgency=medium
+sctplib (1:1.0.28-1ubuntu1) jammy; urgency=medium
 
   * New upstream release.
   * Closes: #934049 (ITP).
 
- -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Thu, 17 Feb 2022 11:54:14 +0100
+ -- Thomas Dreibholz <dreibh@iem.uni-due.de>  Thu, 17 Feb 2022 12:25:40 +0100
 
 sctplib (1:1.0.27-1ubuntu1) hirsute; urgency=medium
 

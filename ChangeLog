@@ -1,3 +1,27 @@
+commit e224ac62ed0def7aa572b13ba027bd35e72c8365
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 17 11:54:20 2022 +0100
+
+    ITP fix.
+
+commit 3a5e5b2fdd9a10715c4749fe33a5c282ffbb60c8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 17 11:31:08 2022 +0100
+
+    Version bump.
+
+commit 53b54f082ece5a202a398c368ee210e8946a0c77
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:56:41 2022 +0100
+
+    Updated LSM entry.
+
+commit 31b2e9c0c0fb4916e21a2b9c6fbaa24aebe1fe82
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Feb 16 12:39:29 2022 +0100
+
+    New release sctplib-1.0.27.
+
 commit c6c0c0d352c5e1a0c8aeee2a92cfef1db42d884e
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Wed Feb 16 12:22:10 2022 +0100
