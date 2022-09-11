@@ -1,3 +1,33 @@
+commit d745d0e0ed91ee166760fcffe12a5fe7e167daeb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:47:32 2022 +0200
+
+    Removed Vcs-* fields from debian/control.
+
+commit 206e4bee3f6e9a94125bb316d6a4d446e48c7fec
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:19:38 2022 +0200
+
+    Updated CI scripts
+
+commit 6fd8ad58b396cc47cb9fa8a20fd5f34a07927373
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 31 11:19:36 2022 +0200
+
+    Updated build scripts
+
+commit fbcd78f4dbecfb77bc6643790b1fa59ad153a907
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 17 12:38:32 2022 +0100
+
+    Updated LSM entry.
+
+commit 5ed3aed724e1084143a2c6c242ed3e887a8030a5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Feb 17 12:25:42 2022 +0100
+
+    New release sctplib-1.0.28.
+
 commit e224ac62ed0def7aa572b13ba027bd35e72c8365
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Thu Feb 17 11:54:20 2022 +0100
