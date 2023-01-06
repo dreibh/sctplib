@@ -1,8 +1,8 @@
 Source: sctplib
 Section: net
 Priority: optional
-Maintainer: Thomas Dreibholz <dreibh@iem.uni-due.de>
-Homepage: https://www.uni-due.de/~be0001/sctplib/index.html
+Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
+Homepage: https://www.nntb.no/~dreibh/sctplib/index.html
 Build-Depends: autoconf,
                automake,
                debhelper (>= 9),
@@ -12,7 +12,7 @@ Build-Depends: autoconf,
                texlive-fonts-recommended,
                texlive-latex-base,
                texlive-latex-extra
-Standards-Version: 4.6.1
+Standards-Version: 4.6.2
 Rules-Requires-Root: no
 
 Package: libsctplib1

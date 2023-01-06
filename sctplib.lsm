@@ -7,7 +7,7 @@ Description:    The SCTPLIB library is a prototype implementation of the Stream
                 reliable transport protocol that supports multi-homing, and
                 multiple message streams multiplexed within an SCTP connection
                 (also named association). SCTP is described in RFC 4960.
-                See https://www.uni-due.de/~be0001/sctplib/ for details.
+                See https://www.nntb.no/~dreibh/sctplib/ for details.
                 The API of the library is modeled after Section 10 of RFC 4960,
                 and most parameters and functions should be self-explanatory to
                 the user familiar with this document. In addition to these
@@ -20,8 +20,8 @@ Description:    The SCTPLIB library is a prototype implementation of the Stream
 Keywords:       Stream Control Transmission Protocol, SCTP, Networking, User-Space
                 Transport Protocol Implementation, Multi-Homing, Multi-Streaming
 Author:         andreas.jungmaier@web.de (Andreas Jungmaier)
-Maintained-by:  dreibh@iem.uni-due.de (Thomas Dreibholz)
-Primary-site:   https://www.uni-due.de/~be0001/sctplib/
+Maintained-by:  thomas.dreibholz@gmail.com (Thomas Dreibholz)
+Primary-site:   https://www.nntb.no/~dreibh/sctplib/
                 1273 KiB download/sctplib-1.0.19.tar.gz
 Alternate-site: http://www.sctp.de
                 1273 KiB sctplib-1.0.19.tar.gz

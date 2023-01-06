@@ -1,12 +1,12 @@
-# Created by: Thomas Dreibholz <dreibh@iem.uni-due.de>
+# Created by: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 # $FreeBSD: head/net/sctplib/Makefile 509201 2019-08-18 11:11:21Z pi $
 
 PORTNAME=	sctplib
-PORTVERSION=	1.0.29
+PORTVERSION=	1.0.30~rc0
 CATEGORIES=	net
-MASTER_SITES=	https://www.uni-due.de/~be0001/sctplib/download/
+MASTER_SITES=	https://www.nntb.no/~dreibh/sctplib/download/
 
-MAINTAINER=	dreibh@iem.uni-due.de
+MAINTAINER=	thomas.dreibholz@gmail.com
 COMMENT=	User-space implementation of the SCTP protocol RFC 4960
 
 LICENSE=	GPLv3+
