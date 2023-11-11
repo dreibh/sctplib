@@ -1,5 +1,4 @@
 /*
- *  $Id$
  *
  * SCTP implementation according to RFC 4960.
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.

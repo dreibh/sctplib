@@ -1,4 +1,4 @@
-/* $Id$
+/*
  *
  * MD5 hash calculation
  * Copyright (C) 1991-1992 RSA Data Security, Inc.

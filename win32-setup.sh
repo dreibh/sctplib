@@ -1,5 +1,4 @@
 #!/bin/sh
-# $Id$
 #
 # Win32 sctplib script
 # Copyright (C) 2003-2008 by Michael Tuexen
