@@ -1,5 +1,5 @@
 Name: sctplib
-Version: 1.0.30
+Version: 1.0.31~rc1
 Release: 1
 Summary: User-space implementation of the SCTP protocol RFC 4960
 License: LGPL-3+

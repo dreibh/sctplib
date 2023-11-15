@@ -1,8 +1,14 @@
+sctplib (1:1.0.31~rc1-1ubuntu1) jammy; urgency=medium
+
+  * New upstream release.
+  * Closes: #934049 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 15 Nov 2023 10:52:55 +0100
+
 sctplib (1:1.0.30-1ubuntu1) jammy; urgency=medium
 
   * New upstream release.
   * debian/control: Updated standards version to 4.6.2.
-  * Closes: #934049 (ITP).
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Sun, 22 Jan 2023 22:48:59 +1100
 
