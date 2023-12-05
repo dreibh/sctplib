@@ -2507,11 +2507,12 @@ sctp_changeHeartBeat(unsigned int associationID,
             event_logiii(VERBOSE,
                         "Setting HB interval for address %d to %u msecs, result: %d !",
                         path_id, timeIntervall, result);
-        } else
+        } else {
             result = pm_disableHB(path_id);
             event_logii(VERBOSE,
                         "Disabling HB for address %d, result: %d !",
                         path_id, result);
+        }
     } else {
         error_log(ERROR_MAJOR, "sctp_changeHeartBeat: addressed association does not exist");
         result = SCTP_ASSOC_NOT_FOUND;
