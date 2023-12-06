@@ -11,12 +11,12 @@ if test "x$prefix" = "xNONE"; then
   prefix=$ac_default_prefix
   ac_configure_args="$ac_configure_args --prefix $prefix"
 fi
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h:config.h.in])
 
 
 # ###### Checks for programs ################################################
 AC_PROG_CC
-AC_PROG_LIBTOOL
+LT_INIT
 
 # ###### Compiler checks ####################################################
 AC_C_CONST
@@ -25,16 +25,33 @@ AC_TYPE_SIZE_T
 AC_STRUCT_TM
 
 # ###### Check for Headers ##################################################
-AC_HEADER_STDC
+AC_CHECK_INCLUDES_DEFAULT
+AC_PROG_EGREP
+
 AC_CHECK_HEADERS(sys/time.h)
-AC_HEADER_TIME
+AC_CHECK_HEADERS_ONCE([sys/time.h])
+# Obsolete code to be removed.
+if test $ac_cv_header_sys_time_h = yes; then
+  AC_DEFINE([TIME_WITH_SYS_TIME],[1],[Define to 1 if you can safely include both <sys/time.h> and <time.h>.])
+fi
+# End of obsolete code.
+
 
 # ###### Checks for library functions #######################################
 AC_PROG_GCC_TRADITIONAL
 AC_FUNC_MALLOC
 AC_FUNC_MEMCMP
 AC_FUNC_SELECT_ARGTYPES
-AC_TYPE_SIGNAL
+AC_CACHE_CHECK([return type of signal handlers],[ac_cv_type_signal],[AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM([#include <sys/types.h>
+#include <signal.h>
+],
+  [return *(signal (0, 0)) (0) == 1;])],
+    [ac_cv_type_signal=int],
+    [ac_cv_type_signal=void])])
+AC_DEFINE_UNQUOTED([RETSIGTYPE],[$ac_cv_type_signal],[Define as the return type of signal handlers
+     (`int' or `void').])
+
 AC_FUNC_VPRINTF
 AC_CHECK_FUNCS([gettimeofday inet_ntoa memset select socket strerror strtol strtoul])
 
@@ -56,14 +73,12 @@ AC_DEFINE(SCTP_OVER_UDP, 1, "Define to 1 if you want SCTP over UDP"), )
 
 if test "$enable_sctp_over_udp" = "yes" ; then
    AC_MSG_CHECKING([port number for SCTP over UDP])
-   AC_ARG_WITH(sctp_over_udp_port,AC_HELP_STRING(
-      [--with-sctp-over-udp-port=FLAGS],
-      [SCTP over UDO port (default: 9899).]),
+   AC_ARG_WITH(sctp_over_udp_port,AS_HELP_STRING([--with-sctp-over-udp-port=FLAGS],[SCTP over UDO port (default: 9899).]),
       sctp_over_udp_port="$withval", sctp_over_udp_port="9899")
    if test "$sctp_over_udp_port" -lt 1 ; then
-      AC_ERROR([SCTP over UDP port too small!])
+      AC_MSG_ERROR(SCTP over UDP port too small!)
    elif test "$sctp_over_udp_port" -gt 65535 ; then
-      AC_ERROR([SCTP over UDP port too large!])
+      AC_MSG_ERROR(SCTP over UDP port too large!)
    fi
    AC_MSG_RESULT($sctp_over_udp_port)
    AC_DEFINE_UNQUOTED(SCTP_OVER_UDP_UDPPORT, $sctp_over_udp_port, [UDP port for SCTP over UDP tunneling])
@@ -156,39 +171,37 @@ AC_SUBST(LIB_IPV6)
 # ###### Check for sin6_scope_id of sockaddr_in6 ############################
 if test "$cv_ipv6" = yes; then
    AC_MSG_CHECKING(whether struct sockaddr_in6 has a sin6_scope_id field)
-   AC_TRY_COMPILE([#include <sys/types.h>
+   AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <sys/types.h>
 #include <netinet/in.h>
-],[static struct sockaddr_in6 ac_i;int ac_j = sizeof(ac_i.sin6_scope_id);],
-[AC_MSG_RESULT(yes)
- AC_DEFINE(HAVE_SIN6_SCOPE_ID, 1, "Define to 1 if sin6_scope_id is supported.")],
- AC_MSG_RESULT(no))
+]], [[static struct sockaddr_in6 ac_i;int ac_j = sizeof(ac_i.sin6_scope_id);]])],[AC_MSG_RESULT(yes)
+ AC_DEFINE(HAVE_SIN6_SCOPE_ID, 1, "Define to 1 if sin6_scope_id is supported.")],[AC_MSG_RESULT(no)])
 fi
 
 
 # ###### Check for IPV6_PKTINFO #############################################
 AC_MSG_CHECKING(for IPV6_PKTINFO)
-AC_TRY_COMPILE([#include <arpa/inet.h>
-#include <netinet/in.h>], [
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <arpa/inet.h>
+#include <netinet/in.h>]], [[
     int level = IPV6_PKTINFO;
-], [
+]])],[
     # Yes, we have it...
     AC_MSG_RESULT(yes)
     AC_DEFINE([HAVE_IPV6_PKTINFO], [], [IPV6_PKTINFO has been found!])
-], [
+],[
     AC_MSG_RESULT(no)
 ])
 
 
 # ###### Check for IPV6_RECVPKTINFO #########################################
 AC_MSG_CHECKING(for IPV6_RECVPKTINFO)
-AC_TRY_COMPILE([#include <arpa/inet.h>
-#include <netinet/in.h>], [
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[#include <arpa/inet.h>
+#include <netinet/in.h>]], [[
     int level = IPV6_RECVPKTINFO;
-], [
+]])],[
     # Yes, we have it...
     AC_MSG_RESULT(yes)
     AC_DEFINE([HAVE_IPV6_RECVPKTINFO], [], [IPV6_RECVPKTINFO has been found!])
-], [
+],[
     AC_MSG_RESULT(no)
 ])
 
@@ -260,8 +273,8 @@ AC_SUBST(thread_LIBS)
 
 # ###### Maintainer mode ####################################################
 if test "$enable_maintainer_mode" = "yes"; then
-   CFLAGS="$CFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
-   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -g3 -O0 -D_REENTRANT -D_THREAD_SAFE"
+   CFLAGS="$CFLAGS -Wall -Wunreachable-code -g3 -O1 -D_REENTRANT -D_THREAD_SAFE"
+   CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -g3 -O1 -D_REENTRANT -D_THREAD_SAFE"
 else
    CFLAGS="$CFLAGS -Wall -Wunreachable-code -O3 -g -D_REENTRANT -D_THREAD_SAFE"
    CXXFLAGS="$CXXFLAGS -Wall -Wunreachable-code -O3 -g -D_REENTRANT -D_THREAD_SAFE"
@@ -279,7 +292,8 @@ AC_SUBST(SCTPLIB_AGE)
 
 
 # ###### Makefiles ##########################################################
-AC_OUTPUT(Makefile sctplib/Makefile sctplib/docs/Makefile sctplib/docs/en/Makefile sctplib/docs/sctplib/Makefile sctplib/manual/Makefile sctplib/programs/Makefile sctplib/sctp/Makefile )
+AC_CONFIG_FILES([Makefile sctplib/Makefile sctplib/docs/Makefile sctplib/docs/en/Makefile sctplib/docs/sctplib/Makefile sctplib/manual/Makefile sctplib/programs/Makefile sctplib/sctp/Makefile])
+AC_OUTPUT
 
 
 # ###### Configuration results ##############################################

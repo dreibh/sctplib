@@ -27,6 +27,10 @@ EXTRA_DIST = \
    debian/copyright \
    debian/watch \
    debian/changelog \
+   freebsd/sctplib/distinfo \
+   freebsd/sctplib/pkg-descr \
+   freebsd/sctplib/test-packaging \
+   freebsd/sctplib/Makefile \
    rpm/sctplib.spec
 
 ACLOCAL_AMFLAGS = -I m4
