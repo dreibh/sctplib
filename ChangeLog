@@ -1,3 +1,81 @@
+commit dd4565ef9f4e41605bda63f135892822beedb656
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 6 12:03:32 2023 +0100
+
+    Updated autoconf/automake script.
+
+commit c5fbfec8f60c0417a0d077692c9b033a7d6a9cb3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 6 10:15:32 2023 +0100
+
+    Added packaging files into tarball.
+
+commit ae12e36a4e482b9281490f6cba429e7a72151412
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 5 16:58:47 2023 +0100
+
+    Bugfix: Added { ... } block for "else" statements.
+
+commit 8d59104ea78d2bdf78bc828f63fea271bc05a9fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 15 10:53:51 2023 +0100
+
+    Packaging clean-ups.
+
+commit 948dbe4327c7c9f0bdd62770d62526b8d2acd289
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 15 09:51:57 2023 +0100
+
+    Updated build scripts
+
+commit ef9d4746cddba57a478ce4ffa2e39ed0040c3dc6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Nov 15 09:33:50 2023 +0100
+
+    Updated build scripts
+
+commit 8e5537cc41d900f3ee6fbd91a7ab0724a89f75fd
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 11 17:50:51 2023 +0100
+
+    Workflows update.
+
+commit eed3036266f0020fabf0d2b2e4ebbcb7d1c5677b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 11 16:33:35 2023 +0100
+
+    Removed obsolete CVS $Id$ tag.
+
+commit 78f1e85a62c8cb402cee53d9a55bbc4610ac7678
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 11 16:22:36 2023 +0100
+
+    Header updates.
+
+commit 448f15bd94ea083236bbd7a4c5baabb9546c74de
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 11 16:16:27 2023 +0100
+
+    Updated build scripts
+
+commit 7d8837f222975404e0af68308cfd526e2feaf779
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 11 16:16:20 2023 +0100
+
+    Updated CI scripts
+
+commit d537b04d6e0d90b63a877684a6bd6c1138c301b7
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sat Nov 11 16:16:17 2023 +0100
+
+    Travis CI is dead. Removed obsolete Travis CI scripts and configuration.
+
+commit e2b3043d8049651f33c9dcc64977ae1801420b2a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Sun Jan 22 22:49:02 2023 +1100
+
+    New release sctplib-1.0.30.
+
 commit bc648821b36bb1c4cb5f93494d768da8b745fabb
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Sat Jan 21 22:03:27 2023 +1100

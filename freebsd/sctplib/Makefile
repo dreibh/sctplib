@@ -2,7 +2,7 @@
 # $FreeBSD: head/net/sctplib/Makefile 509201 2019-08-18 11:11:21Z pi $
 
 PORTNAME=	sctplib
-PORTVERSION=	1.0.31~rc1
+PORTVERSION=	1.0.31
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/sctplib/download/
 
