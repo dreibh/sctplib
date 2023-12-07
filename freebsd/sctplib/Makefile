@@ -1,5 +1,4 @@
 # Created by: Thomas Dreibholz <thomas.dreibholz@gmail.com>
-# $FreeBSD: head/net/sctplib/Makefile 509201 2019-08-18 11:11:21Z pi $
 
 PORTNAME=	sctplib
 PORTVERSION=	1.0.31
@@ -8,6 +7,7 @@ MASTER_SITES=	https://www.nntb.no/~dreibh/sctplib/download/
 
 MAINTAINER=	thomas.dreibholz@gmail.com
 COMMENT=	User-space implementation of the SCTP protocol RFC 4960
+WWW=		https://www.nntb.no/~dreibh/sctplib/
 
 LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
