@@ -103,7 +103,6 @@ asynchronous interprocess communication.
 %files libsctplib-devel
 %{_includedir}/sctp.h
 %{_libdir}/libsctplib*.a
-%{_libdir}/libsctplib*.la
 %{_libdir}/libsctplib*.so
 
 
