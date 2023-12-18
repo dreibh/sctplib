@@ -1,5 +1,3 @@
-# Created by: Thomas Dreibholz <thomas.dreibholz@gmail.com>
-
 PORTNAME=	sctplib
 PORTVERSION=	1.0.31
 CATEGORIES=	net
