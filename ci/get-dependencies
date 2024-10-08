@@ -162,10 +162,11 @@ elif system == 'freebsd':
       if output != None:
          ports = output.decode('utf-8').splitlines()
          for port in ports:
-            basename = os.path.basename(port)
-            if basename == 'glib20':
-               basename = 'glib'   # May be there is a better solution here?
-            dependencies.append(basename)
+            if port[0:3] != '---':
+               basename = os.path.basename(port)
+               if basename == 'glib20':
+                  basename = 'glib'   # May be there is a better solution here?
+               dependencies.append(basename)
 
       for dependency in sorted(set(dependencies)):
           sys.stdout.write(dependency + ' ')
