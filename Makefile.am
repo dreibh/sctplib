@@ -14,7 +14,6 @@ EXTRA_DIST = \
    win32-setup.sh  \
    debian/source/format \
    debian/source/lintian-overrides \
-   debian/tests/control \
    debian/upstream/signing-key.asc \
    debian/upstream/metadata \
    debian/compat \
