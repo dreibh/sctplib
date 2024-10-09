@@ -7,7 +7,6 @@ EXTRA_DIST = \
    INSTALL \
    README \
    TODO \
-   sctplib.lsm \
    config.nmake \
    Makefile.nmake \
    README.win32 \
