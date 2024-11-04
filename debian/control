@@ -5,14 +5,14 @@ Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/sctplib/index.html
 Build-Depends: autoconf,
                automake,
-               debhelper (>= 12),
+               debhelper (>= 9),
                ghostscript,
                libglib2.0-dev,
                libtool,
                texlive-fonts-recommended,
                texlive-latex-base,
                texlive-latex-extra
-Standards-Version: 4.6.2
+Standards-Version: 4.7.0
 Rules-Requires-Root: no
 
 Package: libsctplib1

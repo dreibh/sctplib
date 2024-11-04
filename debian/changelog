@@ -1,7 +1,14 @@
+sctplib (1:1.0.32~rc1.3-1ubuntu1) jammy; urgency=medium
+
+  * New upstream release.
+  * debian/control: Updated standards version to 4.7.0.
+  * Closes: #934049 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 09 Oct 2024 16:25:22 +0200
+
 sctplib (1:1.0.31-1ubuntu1) jammy; urgency=medium
 
   * New upstream release.
-  * Closes: #934049 (ITP).
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 06 Dec 2023 16:54:15 +0100
 
