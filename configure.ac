@@ -68,10 +68,11 @@ fi
 
 # ###### Options ############################################################
 AC_ARG_ENABLE([sctp-over-udp],
-[  --enable-sctp-over-udp            enable SCTP over UDP mode ],
-AC_DEFINE(SCTP_OVER_UDP, 1, "Define to 1 if you want SCTP over UDP"), )
+[  --enable-sctp-over-udp            enable SCTP over UDP mode ]
+[default=yes]],enable_sctp_over_udp=$enableval,enable_sctp_over_udp=yes)
 
 if test "$enable_sctp_over_udp" = "yes" ; then
+   AC_DEFINE(SCTP_OVER_UDP, 1, "Define to 1 if you want SCTP over UDP")
    AC_MSG_CHECKING([port number for SCTP over UDP])
    AC_ARG_WITH(sctp_over_udp_port,AS_HELP_STRING([--with-sctp-over-udp-port=FLAGS],[SCTP over UDO port (default: 9899).]),
       sctp_over_udp_port="$withval", sctp_over_udp_port="9899")
@@ -86,7 +87,7 @@ fi
 
 AC_ARG_ENABLE([maintainer-mode],
 [  --enable-maintainer-mode            enable maintainer mode ]
-[default=no]],enable_maintainer_mode=$enableval,enable_maintainer_mode=no)
+[default=yes]],enable_maintainer_mode=$enableval,enable_maintainer_mode=yes)
 
 AC_ARG_ENABLE(ipv6,
 [  --disable-ipv6          turn off IPv6 support ])

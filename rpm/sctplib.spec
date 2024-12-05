@@ -44,7 +44,7 @@ asynchronous interprocess communication.
 %build
 autoreconf -i
 
-%configure --prefix=/usr --enable-static --enable-shared --enable-sctp-over-udp
+%configure --prefix=/usr --enable-sctp-over-udp --disable-maintainer-mode
 make %{?_smp_mflags}
 
 %install
