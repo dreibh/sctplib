@@ -18,8 +18,10 @@ BuildRequires: texlive-collection-latex
 BuildRequires: texlive-collection-latexextra
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-# TEST ONLY:
-# define _unpackaged_files_terminate_build 0
+Requires: libsctplib
+Requires: libsctplib-devel
+Requires: docs
+
 
 %description
 The sctplib library is a fairly complete prototype implementation of the
@@ -50,6 +52,7 @@ make %{?_smp_mflags}
 %install
 make DESTDIR=%{buildroot} install
 
+%files
 
 %package libsctplib
 Summary: User-space implementation of the SCTP protocol RFC 4960
