@@ -18,9 +18,9 @@ BuildRequires: texlive-collection-latex
 BuildRequires: texlive-collection-latexextra
 BuildRoot: %{_tmppath}/%{name}-%{version}-build
 
-Requires: libsctplib
-Requires: libsctplib-devel
-Requires: docs
+Requires: %{name}-libsctplib
+Requires: %{name}-libsctplib-devel
+Requires: %{name}-docs
 
 
 %description
