@@ -2,7 +2,7 @@ Name: sctplib
 Version: 1.0.32~rc1.3
 Release: 1
 Summary: User-space implementation of the SCTP protocol RFC 4960
-License: LGPL-3.0-or-later
+License: LGPL-2.1-or-later
 Group: Applications/Internet
 URL: https://www.nntb.no/~dreibh/sctplib/
 Source: https://www.nntb.no/~dreibh/sctplib/download/%{name}-%{version}.tar.gz
