@@ -14,7 +14,7 @@ Build-Depends: autoconf,
                texlive-fonts-recommended,
                texlive-latex-base,
                texlive-latex-extra
-Standards-Version: 4.7.0
+Standards-Version: 4.7.2
 Rules-Requires-Root: no
 
 Package: libsctplib1

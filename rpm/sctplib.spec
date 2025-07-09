@@ -1,5 +1,5 @@
 Name: sctplib
-Version: 1.0.32~rc1.3
+Version: 1.0.32
 Release: 1
 Summary: User-space implementation of the SCTP protocol RFC 4960
 License: LGPL-2.1-or-later
@@ -130,6 +130,8 @@ Technology Group at the IEM of the University of Essen, Germany.
 
 
 %changelog
+* Wed Jul 09 2025 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.0.32
+- New upstream release.
 * Wed Dec 06 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.0.31
 - New upstream release.
 * Sun Jan 22 2023 Thomas Dreibholz <thomas.dreibholz@gmail.com> - 1.0.30
