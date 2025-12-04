@@ -11,7 +11,7 @@
  *
  * Copyright (C) 2000 by Siemens AG, Munich, Germany.
  * Copyright (C) 2001-2004 Andreas Jungmaier
- * Copyright (C) 2004-2019 Thomas Dreibholz
+ * Copyright (C) 2004-2026 Thomas Dreibholz
  *
  * Acknowledgements:
  * Realized in co-operation between Siemens AG and the University of
