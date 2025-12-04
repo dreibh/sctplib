@@ -16,11 +16,13 @@ SCTPLIB is a user-space implementation of the Stream Control Transmission Protoc
 
 * Copyright (C) 2000 by Siemens AG, Munich, Germany.
 * Copyright (C) 2001-2004 Andreas Jungmaier
-* Copyright (C) 2004-2025 Thomas Dreibholz
+* Copyright (C) 2004-2026 Thomas Dreibholz
 
 Realized in co-operation between
 Siemens AG and
-the Institute of Computer Networking Technology, University of Essen, Germany.
+the [Computer Networking Technolog Group](https://web.archive.org/web/20190409135141/https://www.tdr.wiwi.uni-due.de/en/team/)
+of the [Institute for Experimental Mathematics](https://web.archive.org/web/20120723021117/http://web.iem.uni-due.de/portrait/)
+at the [University of Duisburg-Essen](https://www.uni-due.de/) in Essen, Germany.
 
 ## Acknowledgement
 
