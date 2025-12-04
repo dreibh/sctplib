@@ -14,7 +14,7 @@ SCTPLIB is a user-space implementation of the Stream Control Transmission Protoc
 
 ## Copyright
 
-* Copyright (C) 2000 by Siemens AG, Munich, Germany.
+* Copyright (C) 2000 by Siemens AG, Munich, Germany
 * Copyright (C) 2001-2004 Andreas Jungmaier
 * Copyright (C) 2004-2026 Thomas Dreibholz
 
