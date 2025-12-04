@@ -2,7 +2,7 @@
  SCTPLIB<br />
  <span style="font-size: 75%;">A User-Space SCTP Implementation</span><br />
  <a href="https://www.nntb.no/~dreibh/sctplib/">
-  <img alt="DynMHS Logo" src="https://www.nntb.no/~dreibh/sctp/images/SCTPProject.svg" width="25%" /><br />
+  <img alt="SCTPLIB Logo" src="https://www.nntb.no/~dreibh/sctp/images/SCTPProject.svg" width="25%" /><br />
   <span style="font-size: 75%;">https://www.nntb.no/~dreibh/sctplib</span>
  </a>
 </h1>
@@ -50,13 +50,13 @@ Happy SCTPing! :-)
 
 # 💾 Build from Sources
 
-DynMHS is released under the [GNU General Public Licence&nbsp;(GPL)](https://www.gnu.org/licenses/gpl-3.0.en.html#license-text).
+SCTPLIB is released under the [GNU Lesser General Public License&nbsp;(LGPL), version 2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html#SEC1).
 
 Please use the issue tracker at [https://github.com/dreibh/sctplib/issues](https://github.com/dreibh/sctplib/issues) to report bugs and issues!
 
 ## Development Version
 
-The Git repository of the DynMHS sources can be found at [https://github.com/dreibh/sctplib](https://github.com/dreibh/sctplib):
+The Git repository of the SCTPLIB sources can be found at [https://github.com/dreibh/sctplib](https://github.com/dreibh/sctplib):
 
 ```bash
 git clone https://github.com/dreibh/sctplib
@@ -73,10 +73,10 @@ Contributions:
 * Issue tracker: [https://github.com/dreibh/sctplib/issues](https://github.com/dreibh/sctplib/issues).
   Please submit bug reports, issues, questions, etc. in the issue tracker!
 
-* Pull Requests for DynMHS: [https://github.com/dreibh/sctplib/pulls](https://github.com/dreibh/sctplib/pulls).
-  Your contributions to DynMHS are always welcome!
+* Pull Requests for SCTPLIB: [https://github.com/dreibh/sctplib/pulls](https://github.com/dreibh/sctplib/pulls).
+  Your contributions to SCTPLIB are always welcome!
 
-* CI build tests of DynMHS: [https://github.com/dreibh/sctplib/actions](https://github.com/dreibh/sctplib/actions).
+* CI build tests of SCTPLIB: [https://github.com/dreibh/sctplib/actions](https://github.com/dreibh/sctplib/actions).
 
 ## Release Versions
 
@@ -87,7 +87,7 @@ See [https://www.nntb.no/~dreibh/sctplib/#current-stable-release](https://www.nn
 
 * [HiPerConTracer – High-Performance Connectivity Tracer](https://www.nntb.no/~dreibh/hipercontracer/)
 * [NetPerfMeter – A TCP/MPTCP/UDP/SCTP/DCCP Network Performance Meter Tool](https://www.nntb.no/~dreibh/netperfmeter/)
-* [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/sctplib/)
+* [SubNetCalc – An IPv4/IPv6 Subnet Calculator](https://www.nntb.no/~dreibh/subnetcalc/)
 * [System-Tools – Tools for Basic System Management](https://www.nntb.no/~dreibh/system-tools/)
 * [Virtual Machine Image Builder and System Installation Scripts](https://www.nntb.no/~dreibh/vmimage-builder-scripts/)
 * [Wireshark](https://www.wireshark.org/)
