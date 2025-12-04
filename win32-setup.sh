@@ -3,17 +3,17 @@
 # Win32 sctplib script
 # Copyright (C) 2003-2008 by Michael Tuexen
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
+# This library is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 2.1 of the License, or
 # (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
+# This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
+# You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # Contact: discussion@sctp.de
@@ -22,7 +22,7 @@
 
 DOWNLOAD_PREFIX="http://anonsvn.wireshark.org/wireshark-win32-libs/tags/2007-11-20/packages"
 
-        err_exit () {
+err_exit () {
 	echo "ERROR: $1"
 	echo ""
 	exit 1
@@ -86,7 +86,7 @@ case "$1" in
 		err_exit "Can't download $DOWNLOAD_PREFIX/$PACKAGE_PATH"
 	cd $DEST_SUBDIR
 	echo "Extracting $DEST_PATH/$PACKAGE into $DEST_PATH/$DEST_SUBDIR"
-	unzip -nq "$DEST_PATH/$PACKAGE" || 
+	unzip -nq "$DEST_PATH/$PACKAGE" ||
 		err_exit "Couldn't unpack $DEST_PATH/$PACKAGE"
 	echo "Verifying that the DLLs in $DEST_PATH/$DEST_SUBDIR are executable."
 	for i in `find $DEST_PATH/$DEST_SUBDIR -name \*\.dll` ; do
@@ -95,7 +95,7 @@ case "$1" in
 			echo "$i"
 			chmod a+x "$i"
 		fi
-	done		
+	done
 	;;
 *)
 	usage

@@ -3,11 +3,9 @@ Section: net
 Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/sctplib/index.html
-Vcs-Git: https://github.com/dreibh/sctplib.git
-Vcs-Browser: https://github.com/dreibh/sctplib
 Build-Depends: autoconf,
                automake,
-               debhelper (>= 9),
+               debhelper-compat (= 13),
                ghostscript,
                libglib2.0-dev,
                libtool,
@@ -46,8 +44,7 @@ Package: libsctplib-dev
 Section: libdevel
 Architecture: any
 Depends: libsctplib1 (= ${binary:Version}),
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Recommends: sctplib-doc
 Description: Headers and libraries of the user-space SCTP implementation SCTPLIB
  This package contains development files for SCTPLIB.
@@ -75,8 +72,7 @@ Replaces: sctplib-docs
 Section: doc
 Architecture: all
 Depends: libsctplib1,
-         ${misc:Depends},
-         ${shlibs:Depends}
+         ${misc:Depends}
 Conflicts: sctplib-stable-doc
 Description: Documentation of the user-space SCTP implementation SCTPLIB
  This package contains documentation files for SCTPLIB.

@@ -7,7 +7,7 @@ Stream Control Transmission Protocol, as per RFC 4960.
 
 Copyright (C) 2000 by Siemens AG, Munich, Germany.
 Copyright (C) 2001-2004 Andreas Jungmaier
-Copyright (C) 2004-2017 Thomas Dreibholz
+Copyright (C) 2004-2025 Thomas Dreibholz
 
 Realized in co-operation between Siemens AG and
 the Institute of Computer Networking Technology, University of
@@ -29,12 +29,12 @@ OS's from ftp://www.gtk.org/pub/gtk/
 
 Just use
 prompt> tar xvfz sctplib-1.0.14-XYZ.tar.gz
-and you get a new directory 
+and you get a new directory
 sctplib-1.0.14-XYZ
 
 cd into that and type
 ./configure
-or 
+or
 ./configure --help
 
 
@@ -43,11 +43,11 @@ library! Happy SCTPing! :-)
 
 It contains a number of files that are shortly described hereafter:
 AUTHORS  :    People who have produced this code.
-COPYING  :    The license to be applied for using/compiling/distributing 
-              this code. 
+COPYING  :    The license to be applied for using/compiling/distributing
+              this code.
 INSTALL  :    Basic installation notes.
 NEWS     :    Changes from release to release.
-README   :    This file 
+README   :    This file
 TODO     :    A more or less complete list of missing features/known
               problems, etc.
 sctplib  :    A directory containig the files belonging to the SCTP
