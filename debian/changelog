@@ -1,9 +1,16 @@
+sctplib (1:1.0.33~rc0-1ubuntu1) resolute; urgency=medium
+
+  * New upstream release.
+  * debian/copyright: Fixed LGPL-2.1 license text.
+  * Closes: #934049 (ITP).
+
+ -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Thu, 04 Dec 2025 11:43:56 +0100
+
 sctplib (1:1.0.32-1ubuntu1) questing; urgency=medium
 
   * New upstream release.
   * debian/control: Updated standards version to 4.7.0.
   * debian/control: Updated standards version to 4.7.2.
-  * Closes: #934049 (ITP).
 
  -- Thomas Dreibholz <thomas.dreibholz@gmail.com>  Wed, 09 Jul 2025 10:17:18 +0200
 
