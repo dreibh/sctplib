@@ -2,7 +2,7 @@
  SCTPLIB<br />
  <span style="font-size: 75%;">A User-Space SCTP Implementation</span><br />
  <a href="https://www.nntb.no/~dreibh/sctplib/">
-  <img alt="SCTPLIB Logo" src="https://www.nntb.no/~dreibh/sctp/images/SCTPProject.svg" width="25%" /><br />
+  <img alt="SCTP Project Logo" src="https://www.nntb.no/~dreibh/sctp/images/SCTPProject.svg" width="25%" /><br />
   <span style="font-size: 75%;">https://www.nntb.no/~dreibh/sctplib</span>
  </a>
 </h1>
