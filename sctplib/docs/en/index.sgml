@@ -17,7 +17,7 @@ This Handbook describes Sctplib Version 1.3.0
 
 <sect>Installation
 <p>
-<sect1>How to obtain Sctplib 
+<sect1>How to obtain Sctplib
 <p>
 
 <sect1>Requirements
@@ -38,7 +38,7 @@ the base directory of the Sctplib distribution:
 <p>
 Since Sctplib uses <verb>autoconf</verb> you should have not trouble
 compiling it.
-Should you run into problems please report them to the the author at 
+Should you run into problems please report them to the the author at
 <htmlurl url="mailto:ajung@exp-math.uni-essen.de" name = "Andreas Jungmaier">
 
 
@@ -53,22 +53,21 @@ Should you run into problems please report them to the the author at
 
 <sect>Copyright<p>
 
-Sctplib Copyright 2001 Andreas Jungmaier , ajung@exp-math.uni-essen.de
+Sctplib Copyright 2001 Andreas Jungmaier, ajung@exp-math.uni-essen.de
 
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
+This library is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 2.1 of the License, or
 (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
+This library is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not,
+<htmlurl url = "http://www.gnu.org/licenses/" name = "http://www.gnu.org/licenses/">.
 
 <p>
 </article>
