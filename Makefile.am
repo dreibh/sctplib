@@ -2,15 +2,9 @@ SUBDIRS = sctplib
 
 EXTRA_DIST = \
    AUTHORS \
-   COPYING \
    ChangeLog \
-   INSTALL \
-   README \
-   TODO \
    config.nmake \
-   Makefile.nmake \
-   README.win32 \
-   win32-setup.sh  \
+   COPYING \
    debian/changelog \
    debian/control \
    debian/copyright \
@@ -29,6 +23,12 @@ EXTRA_DIST = \
    freebsd/sctplib/Makefile \
    freebsd/sctplib/pkg-descr \
    freebsd/sctplib/test-packaging \
-   rpm/sctplib.spec
+   INSTALL \
+   Makefile.nmake \
+   README.md \
+   README.win32 \
+   rpm/sctplib.spec \
+   TODO \
+   win32-setup.sh
 
 ACLOCAL_AMFLAGS = -I m4
