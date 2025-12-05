@@ -3,6 +3,8 @@ Section: net
 Priority: optional
 Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 Homepage: https://www.nntb.no/~dreibh/sctplib/index.html
+Vcs-Git: https://github.com/dreibh/sctplib.git
+Vcs-Browser: https://github.com/dreibh/sctplib
 Build-Depends: autoconf,
                automake,
                debhelper-compat (= 13),
