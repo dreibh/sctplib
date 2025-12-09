@@ -2,7 +2,7 @@
 # sctplib package configuration
 # ###########################################################################
 
-AC_INIT([sctplib], [1.0.33~rc0], [dreib@iem.uni-due.de])
+AC_INIT([sctplib], [1.0.33], [dreib@iem.uni-due.de])
 AM_INIT_AUTOMAKE
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_HOST

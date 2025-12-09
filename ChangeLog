@@ -1,3 +1,231 @@
+commit e6f16466fcac605fd546ed1a05d057dd958c0c04
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 16:36:33 2025 +0100
+
+    Updated CI scripts
+
+commit 8b0f9f6809ab73e585c9f228973e37359898d565
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Dec 8 22:32:42 2025 +0100
+
+    Updated CI scripts
+
+commit fa4f763f5f9407f0b0276bbd2a2a6be063f1c15a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Dec 8 09:49:51 2025 +0100
+
+    Updated README.md.
+
+commit 3fa5646a2204e2871489774827272c8da96b9abc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 15:47:57 2025 +0100
+
+    Updated CI scripts
+
+commit 868f0379af85cb727d82e684668f3957a0cb8240
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 15:46:35 2025 +0100
+
+    Packaging update.
+
+commit 5269cf8b037222fff4bc5d1bebbac2f838eda75c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 13:37:15 2025 +0100
+
+    Updated CI scripts
+
+commit 748385cfa52d204ae6ab239bdb44e892df8c114d
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Dec 5 11:23:53 2025 +0100
+
+    Updated CI scripts and configuration.
+
+commit fc7c9431320e2fd49df7c1342be5af92fac2bcb2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 17:58:14 2025 +0100
+
+    Updated CI scripts
+
+commit d6ff271f9cbf2431c3b76d4be2b8f10fb8a85363
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 17:23:55 2025 +0100
+
+    Updated CI configuration
+
+commit 3bb9c12f88daa360628e8744f702b0b28ffa47b5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 15:29:56 2025 +0100
+
+    Updated CI scripts
+
+commit 82c0725a3c5d49ee5dd5b5f909974ffe8e457475
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 15:19:14 2025 +0100
+
+    Updated README.md.
+
+commit a381831417464c580fd86b0cc60ce036a7fa389e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 15:02:12 2025 +0100
+
+    Updated workflows.
+
+commit e6ea51daff811fe174d93459c5283874b741dbed
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 14:14:25 2025 +0100
+
+    Minor update.
+
+commit c588e90b36b643276919ecd83fe6dde55045174f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 14:05:39 2025 +0100
+
+    Updated README.md.
+
+commit a9aed5668af03ea13260364f089a996ecb66caf8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:28:21 2025 +0100
+
+    Minor update.
+
+commit 0e9d050167d275f7e84603fe256cf48a23379175
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:26:56 2025 +0100
+
+    Header updates.
+
+commit de9afb75aca4fff7ec6bbbf016beeba702093886
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:26:42 2025 +0100
+
+    Updated README.md.
+
+commit 1dc3ec6a02e028acd412a94f0d2ed007f7b8db78
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:15:58 2025 +0100
+
+    Sorted entries.
+
+commit 297ffa4d1192c87d9077f2b49b5eed0fd1b9da9e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:10:56 2025 +0100
+
+    Updated CI configuration
+
+commit 489e2b97a9f787055ac058580584a6c1478f8ff9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:10:55 2025 +0100
+
+    Updated CI scripts
+
+commit cd10b4251b40376f8b372ea32bc4e69b8ff6959b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 12:05:36 2025 +0100
+
+    Updated README -> README.md.
+
+commit 4fa58a4fa81f7bcf95b165e0c153351e016c990f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 11:48:49 2025 +0100
+
+    Updated CI scripts
+
+commit f90eb0bab5a4a962eb117de1daa292bd0c9790a2
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 11:46:12 2025 +0100
+
+    Packaging update.
+
+commit 7621b693cebd1b9e70f5a52d036a23c976e52ef6
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 11:43:30 2025 +0100
+
+    Packaging update.
+
+commit 3c5562a9a7b0a9e22b131f615c6f6d02fdcc0960
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 11:41:57 2025 +0100
+
+    Minor documentation fix.
+
+commit ff321961721fc0cb67b22416bfd3b3272842de22
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Dec 4 11:12:22 2025 +0100
+
+    Updated Makefile.am.
+
+commit 4b4b932ed91b92e39bf9e1721c6e6abe2d954245
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 3 15:46:40 2025 +0100
+
+    Updated CI scripts
+
+commit 7869d2e5c8f29c7064736d4510433b31e4c6d9ae
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 15:58:06 2025 +0100
+
+    Updated CI scripts
+
+commit cf516e828ca5c26efd53e1d936578819126891ed
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 11:27:04 2025 +0100
+
+    Updated CI scripts
+
+commit dfa1ed187e86d4834998ed5d6add861ae2d99c9e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Nov 28 10:44:40 2025 +0100
+
+    Workflow update.
+
+commit 2929a50d1f5b91ae00dcd7f770e92ecdd428350f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Aug 13 22:00:02 2025 +0200
+
+    Updated CI configuration
+
+commit ef804df72bbb50df0b2eea168deed9054954596c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 12 14:24:32 2025 +0200
+
+    Updated CI scripts
+
+commit e87780367d966e00ee3ff659e51611e260fed80a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Aug 12 11:35:38 2025 +0200
+
+    Updated workflows.
+
+commit 80e1d6a7882954290c15c0accde894e0c3ff8497
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Aug 1 17:44:33 2025 +0200
+
+    Updated workflows.
+
+commit 8eea2f55bdc3cf14c059d739225820166ace02df
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 14:11:11 2025 +0200
+
+    Updated FreeBSD port.
+
+commit d82ebccc26dc451832a3756fbb952dce2bcb8895
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 10:17:44 2025 +0200
+
+    Updated CI configuration
+
+commit 198308c5690093b4196d54724ad15223f3867696
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 10:17:43 2025 +0200
+
+    Updated CI scripts
+
+commit 810566d9d390da785e68d78ff0e82a60e7d0fee9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Jul 9 10:17:20 2025 +0200
+
+    New release sctplib-1.0.32.
+
 commit 3d4c61b58f5a5f799b6cad5f8304b7af590841b8
 Merge: f07a10a 83a6d9b
 Author: Thomas Dreibholz <dreibh@simula.no>
