@@ -1,3 +1,39 @@
+commit 8e08b966e1edce4308fd90faac0f44009eb7da23
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 27 11:44:12 2026 +0200
+
+    Updated build script.
+
+commit 91466e09125a88d19894955c6771ef886879260b
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 27 11:42:16 2026 +0200
+
+    Updated CI configuration
+
+commit 5e07dde09c139ed3efc47db4cdcac4da9191f93a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Apr 27 11:42:14 2026 +0200
+
+    Updated CI scripts
+
+commit fa57b317fe213602f4b9e9725f1977f7f7dd40d9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Dec 10 09:38:39 2025 +0100
+
+    Updated FreeBSD port.
+
+commit 730355bc4689190fc4c1a0f64970b48ac03217ac
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 17:32:57 2025 +0100
+
+    Configuration update.
+
+commit 5645d7957474cbe7a2655becdaef55577231e36a
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Tue Dec 9 17:15:24 2025 +0100
+
+    New release sctplib-1.0.33.
+
 commit e6f16466fcac605fd546ed1a05d057dd958c0c04
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Tue Dec 9 16:36:33 2025 +0100
