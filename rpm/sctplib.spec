@@ -13,6 +13,8 @@ BuildRequires: automake
 BuildRequires: glib2-devel
 BuildRequires: libtool
 BuildRequires: texlive-latex
+BuildRequires: texlive-tools
+BuildRequires: texlive-l3kernel
 
 Requires: %{name}-libsctplib
 Requires: %{name}-libsctplib-devel
