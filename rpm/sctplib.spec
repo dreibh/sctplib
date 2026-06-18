@@ -44,6 +44,9 @@ asynchronous interprocess communication.
 %setup -q
 
 %build
+export CFLAGS="%{optflags} -ffat-lto-objects"
+export CXXFLAGS="%{optflags} -ffat-lto-objects"
+export LDFLAGS="%{build_ldflags}"
 autoreconf -i
 
 %configure --prefix=/usr --enable-sctp-over-udp --disable-maintainer-mode
@@ -79,6 +82,12 @@ asynchronous interprocess communication.
 %files libsctplib
 %{_libdir}/libsctplib.so.*
 
+%post libsctplib
+ldconfig
+
+%postun libsctplib
+ldconfig
+
 
 %package libsctplib-devel
 Summary: Headers and libraries of the user-space SCTP implementation SCTPLIB
@@ -106,6 +115,7 @@ asynchronous interprocess communication.
 %files libsctplib-devel
 %{_includedir}/sctp.h
 %{_libdir}/libsctplib*.a
+%{_libdir}/libsctplib*.la
 %{_libdir}/libsctplib*.so
 
 
