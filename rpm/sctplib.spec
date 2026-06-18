@@ -10,13 +10,9 @@ Source: https://www.nntb.no/~dreibh/sctplib/download/%{name}-%{version}.tar.gz
 AutoReqProv: on
 BuildRequires: autoconf
 BuildRequires: automake
-BuildRequires: ghostscript
 BuildRequires: glib2-devel
 BuildRequires: libtool
-BuildRequires: texlive-collection-fontsrecommended
-BuildRequires: texlive-collection-latex
-BuildRequires: texlive-collection-latexextra
-BuildRoot: %{_tmppath}/%{name}-%{version}-build
+BuildRequires: texlive-latex
 
 Requires: %{name}-libsctplib
 Requires: %{name}-libsctplib-devel
