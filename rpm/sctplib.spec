@@ -53,6 +53,9 @@ make %{?_smp_mflags}
 %install
 make DESTDIR=%{buildroot} install
 
+# Remove .la files:
+find %{buildroot} -name "*.la" -delete
+
 %files
 
 %package libsctplib
