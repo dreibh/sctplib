@@ -124,7 +124,6 @@ asynchronous interprocess communication.
 Summary: Documentation of the user-space SCTP implementation SCTPLIB
 Group: System Environment/Libraries
 BuildArch: noarch
-Requires: %{name}-libsctplib = %{version}-%{release}
 
 %description docs
 This package contains documentation files for SCTPLIB.
