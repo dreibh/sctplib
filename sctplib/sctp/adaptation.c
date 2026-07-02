@@ -55,7 +55,7 @@
    #include <netinet/ip.h>
    #include <netdb.h>
    #include <arpa/inet.h>      /* for inet_ntoa() under both SOLARIS/LINUX */
-   #include <sys/errno.h>
+   #include <errno.h>
    #include <sys/uio.h>        /* for struct iovec */
    #include <sys/param.h>
    #include <sys/ioctl.h>
