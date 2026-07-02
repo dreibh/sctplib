@@ -1,25 +1,18 @@
-#! /bin/sh
-set -x
+#!/bin/sh -x
 
 rm -rf admin
 mkdir admin
 
-if [ -e /usr/bin/glibtoolize ] ; then
-    glibtoolize --force
-elif [ -e /usr/bin/libtoolize ] ; then
-    libtoolize --force
-elif [ -e /usr/local/bin/libtoolize ] ; then
-    libtoolize --force
+if command -v glibtoolize >/dev/null ; then
+   glibtoolize --force
+elif command -v libtoolize >/dev/null ; then
+   libtoolize --force
 else
-   echo "ERROR: I cannot find libtoolize or glibtoolize!"
+   echo >&2 "ERROR: Cannot find libtoolize or glibtoolize!"
    exit 1
 fi
 
-if [ -e /usr/local/share/aclocal ] ; then
-   aclocal -I /usr/local/share/aclocal
-else
-   aclocal -I /usr/share/aclocal
-fi
+aclocal
 autoheader
 automake --gnu --add-missing --copy
 autoconf
