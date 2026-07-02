@@ -1,5 +1,5 @@
 PORTNAME=	sctplib
-DISTVERSION=	1.0.34
+DISTVERSION=	1.0.35
 CATEGORIES=	net
 MASTER_SITES=	https://www.nntb.no/~dreibh/sctplib/download/
 

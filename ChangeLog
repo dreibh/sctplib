@@ -1,3 +1,106 @@
+commit 7d0cf107a3f6403ebc8e22a9aa83b9dfbd5020bb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 2 13:07:12 2026 +0200
+
+    configure.ac clean-up.
+
+commit 874ebeb4140b23d7ffb3eb95f7e3c36a9c6a21c5
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jul 2 13:01:35 2026 +0200
+
+    Improved bootstrap script.
+
+commit 12d77af636706a9223ae0e64e89a0447fde747ea
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 29 15:43:06 2026 +0200
+
+    Updated CI configuration
+
+commit f09c5adc52a0e9d86d874e788e693372666123e3
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 29 15:43:04 2026 +0200
+
+    Updated CI scripts
+
+commit 754629c5df5ceaadedaa1e27680d729e9d41eea9
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Mon Jun 29 15:41:36 2026 +0200
+
+    Updated FreeBSD workflow.
+
+commit f22187a45975b1844a68d3a425b467ad8a2418e8
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 26 13:24:51 2026 +0200
+
+    Added initial APKBUILD file.
+
+commit 9f99d8ca6d028d7fbee0d115b560b287f74fab77
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 19 16:02:14 2026 +0200
+
+    RPM spec update.
+
+commit 74e30b2cf6369fcf050e0c4b31e16a6e7d8e2985
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 19 14:32:40 2026 +0200
+
+    Minor RPM spec clean-up.
+
+commit bc05c2ab807251ff877866562d6ff78fd5458466
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 19 14:32:28 2026 +0200
+
+    Build script update.
+
+commit 623993883520ad9fd9aa1bb8450f0098fd6f992c
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 19 10:54:54 2026 +0200
+
+    Updated CI scripts
+
+commit 097a60e4516e4c5ae3b8e78110821dc82ed4a128
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Fri Jun 19 10:49:26 2026 +0200
+
+    RPM spec improvements.
+
+commit ec082849a13b9cd31e40e068d75fcbd4e7a7b2cc
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 18:05:12 2026 +0200
+
+    Yet another RPM spec update.
+
+commit d11ecf46415c9c6b0d44d36ec12bf48f190c875f
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 17:51:59 2026 +0200
+
+    Yet another RPM spec update.
+
+commit 7b26c84aa1b372717d5cc900e7b79c64d157671f
+Merge: 076b0e0 e113d31
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 16:35:04 2026 +0200
+
+    Merge branch 'master' of github.com:dreibh/sctplib
+
+commit e113d31301602000b5087041c4292be961f31143
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 16:34:27 2026 +0200
+
+    Improved RPM build dependencies.
+
+commit 076b0e00dde2e21ff359cc494b8631391f48502e
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Thu Jun 18 16:07:08 2026 +0200
+
+    RPM spec improvements.
+
+commit 555bf042044eaa63609e0768cf4e1282ac4945eb
+Author: Thomas Dreibholz <dreibh@simula.no>
+Date:   Wed Apr 29 17:06:09 2026 +0200
+
+    New release sctplib-1.0.34.
+
 commit 8e08b966e1edce4308fd90faac0f44009eb7da23
 Author: Thomas Dreibholz <dreibh@simula.no>
 Date:   Mon Apr 27 11:44:12 2026 +0200
