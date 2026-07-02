@@ -1,6 +1,6 @@
 # Maintainer: Thomas Dreibholz <thomas.dreibholz@gmail.com>
 pkgname=sctplib
-pkgver=1.0.34
+pkgver=1.0.35
 pkgrel=1
 pkgdesc="User-space implementation of the SCTP protocol RFC 4960"
 url="https://www.nntb.no/~dreibh/sctplib/"
@@ -20,7 +20,7 @@ prepare() {
 build() {
 	export CFLAGS="$CFLAGS -ffat-lto-objects"
 	export CXXFLAGS="$CXXFLAGS -ffat-lto-objects"
-	
+
 	./configure \
 		--prefix=/usr \
 		--sysconfdir=/etc \
@@ -33,7 +33,7 @@ build() {
 
 package() {
 	make DESTDIR="$pkgdir" install
-	
+
 	# Delete libtool archive files as per Alpine policy
 	find "$pkgdir" -name "*.la" -delete
 
@@ -43,5 +43,5 @@ package() {
 }
 
 sha512sums="
-6e7270fa2a9f74bf4182010893afeca2877373c088af6f20d134e50d753d68af72481fbc45f6f5e48c39aa4af7886e7091eca59b8461d2fac9c05fc70dd62eb4  sctplib-1.0.34.tar.gz
+c2408ae9d2aa327942f9173d28cae3b8bd8f3d44d0ea833be6e803e2a41a594c764e3b1e7f3deb22b512c68796e0a5cb1b0c0ced4f3c823254d1b2a3d8553849  sctplib-1.0.35.tar.gz
 "
